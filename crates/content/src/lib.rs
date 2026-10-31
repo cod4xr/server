@@ -15,6 +15,7 @@ mod entry_bounds;
 pub mod fastfile;
 mod iwd_archive;
 mod virtual_path;
+pub mod zone;
 
 pub use archive_budget::ArchiveBudget;
 pub use archive_error::{ArchiveError, ArchiveResource};

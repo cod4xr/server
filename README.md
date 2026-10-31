@@ -58,6 +58,9 @@ The complete server rewrite remains open.
 - Unsigned IW3 v5 fastfile envelope decoding with configurable payload/block/
   external budgets, exact size and zlib checksum/end checks, fallible output growth,
   and fifteen independent synthetic envelopes. Asset graphs remain unvalidated.
+- Borrowed IW3 root metadata with separate null/inline/unresolved script slots,
+  preserved unknown asset records, virtual-block accounting, and configurable
+  budgets. Synthetic tables retain 70,000 slots/records; graph bodies remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -99,6 +102,10 @@ This validates compression integrity and reports declared payload/block/external
 bytes without extracting files. Asset records, encoded pointers, geometry, and
 scripts remain unvalidated; this command does not load a playable map. Signed
 fastfiles are explicitly unsupported by this source baseline.
+
+`--inspect-zone-prefix PATH` additionally checks the script-string table, inline
+strings, and asset directory and reports their counts. References and asset bodies
+remain unvalidated; root tables are not a loaded zone or a decoded gameplay map.
 
 Exercise the legacy challenge/cookie exchange over UDP:
 
@@ -157,6 +164,7 @@ python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check
+python tools/generate_zone_fixtures.py --check
 ```
 
 Omit `--check` only when deliberately regenerating and reviewing fixtures.

@@ -154,7 +154,18 @@ file snapshots replace archive-specific file I/O; arbitrary OS strings/paths are
 excluded from snapshot diagnostics. Actual Rust inspection of both stock samples
 below matched independent Python results without copying or extracting content.
 
-Next: typed root asset-directory/script-string prefix decoding before asset graphs.
+Root asset-directory/script-string prefix decoding is implemented and passes full
+Windows workspace formatting, Clippy, debug/release, rustdoc, and repository gates.
+Six content tests and two additional process tests use eleven independent Python
+fixtures. Raw unknown kinds/references remain explicit; inline strings/remainders
+borrow the stream, null/inline-empty differ, virtual alignment does not consume
+input, and five configurable metadata resources have exact boundary coverage.
+Synthetic catalogs preserve 70,000 script slots and 70,000 asset records; these are
+metadata results, not legacy handle/pool or gameplay compatibility. See ADR 0010.
+`--inspect-zone-prefix` reports counts only and states bodies/references remain
+unvalidated. src/xassets.h is source-hashed. Linux validation remains open.
+
+Next: checked serialized block addresses, stream scopes/relocation, and typed bodies.
 Stock main/iw_00..iw_13 contain no raw d3dbsp entries; maps live in zone fastfiles.
 Read-only analysis of stock mp_crash_load.ff/mp_crash.ff confirmed IWffu100/v5,
 zlib streams, a 44-byte XFile header (size, externalSize, nine block sizes), exact
@@ -168,9 +179,13 @@ Source defaults XBLOCK_COUNT_IW3=9, FASTFILE_VERSION=5 are format-profile bounds
 not global engine pools. Root XAssetList graph loading remains unimplemented.
 Read-only prefix research finds zero script strings/six asset records in
 mp_crash_load.ff and 372 inline script strings/823 asset records in mp_crash.ff.
-Counts only were inspected; string/asset contents remain outside Git. Root metadata
-parsing, actual graph validation, block-relative references, and typed schemas
-remain open.
+Actual Rust prefix inspection matches these counts and independent Python offsets;
+stock contents remain outside Git. Full graph validation, block-relative reference
+resolution, and typed schemas remain open. RawFile source/disassembly uses a
+12-byte name/length/buffer record; its pointer loader distinguishes -1 inline,
+-2 inline-with-alias-slot, and encoded aliases. It scopes temporary block zero
+separately from virtual block four. Do not conflate logical allocation alignment
+with serialized input offsets or direct block addresses with alias slots.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

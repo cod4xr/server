@@ -9,7 +9,7 @@ acceptance gate. The server rewrite remains incomplete until S7 passes.
 | S0 | Repository standards, pinned source, primitive codec | Local checks and independent byte vectors | Initial implementation |
 | S1 | Full packet/message codecs and transport | Cross-peer packet traces; loss/reorder tests; malformed-input fuzzing | Envelope/command/info codecs and query UDP implemented; gate open |
 | S2 | Configuration, commands, challenge/auth lifecycle | Unmodified client reaches authenticated connection; bounded state | Open |
-| S3 | Filesystem, maps, assets, checksums, downloads | Stock/custom content loads; pure checks and archive-path tests | Encoded catalog/IWD reader and checksum implemented; gate open |
+| S3 | Filesystem, maps, assets, checksums, downloads | Stock/custom content loads; pure checks and archive-path tests | Encoded catalog/IWD, BSP containers, fastfile envelopes/root metadata implemented; gate open |
 | S4 | Shared simulation, collision, movement, weapon/entity state | Replayed inputs match reference state and prediction behavior | Open |
 | S5 | GSC compiler/VM, builtins, game services | Stock modes and named existing GSC mods run correctly | Open |
 | S6 | Integrated snapshots and playable server | Unmodified clients play full sessions on stock/custom maps | Open |

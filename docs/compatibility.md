@@ -156,6 +156,14 @@ output and trailers are rejected deliberately. Fifteen independent Python fixtur
 and two read-only stock samples establish envelope behavior, not graph/pointer
 validity, decoded maps, authenticity, collision, or gameplay compatibility.
 
+Root metadata follows `Load_XAssetListCustom`, `Load_ScriptStringList`,
+`Load_TempStringArray`, and `Load_XAssetArrayCustom` plus the 32-bit `xassets.h`
+layout. Eleven independent Python fixtures and two stock samples establish prefix
+layout/virtual-allocation behavior, not original-C graph parity. Nonzero counts
+with null tables fail explicitly; source code would omit those tables. Unknown
+types and unresolved reference words remain preserved and uninterpreted. Expanded
+root-table tests do not establish old-client string-handle or asset-pool expansion.
+
 The borrowed connect parser interprets only protocol, challenge, and qport; unknown
 userinfo stays exact. It uses original tokenizer/first-userinfo-token behavior,
 including ignored trailing tokens. Signed-short qport spellings emitted by upstream

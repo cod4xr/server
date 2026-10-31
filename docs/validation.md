@@ -166,3 +166,22 @@ earlier independent Python metadata analysis. No content was copied or extracted
 
 This is envelope evidence only. Asset graph decoding, encoded references, external
 images, geometry, collision, scripting, and live game-client joins remain open.
+
+Zone-prefix parsing adds six content tests and two process tests using eleven
+independent fixtures. Full Windows workspace formatting, warnings-denied Clippy/
+rustdoc, debug/release tests, and repository policy passed. Zone/fastfile fixture
+checks and original C BSP regeneration passed with the newly hashed xassets.h.
+Linux validation for these new layers remains open. The independent Python struct/
+zlib envelopes cover slot distinctions, unknown/
+repeated type records, raw header preservation, logical alignment without input
+padding, all prefix truncations, hostile mutations, exact/one-less count/string/
+metadata budgets, negative/missing/truncated tables, block bounds, independent
+instances, borrowed remainders, and redacted Debug/logs. A 70,000-slot/70,000-record
+synthetic catalog is preserved in full. This is not script-handle compatibility.
+
+Rust prefix inspection matched independent Python counts and offsets read-only for
+the same stock hashes above: `mp_crash_load.ff` has zero script slots, six records,
+64 prefix bytes, 48 virtual bytes, and 813 remainder bytes; `mp_crash.ff` has 372
+inline slots, 823 records, 13,759 prefix bytes, 13,744 virtual bytes, and 63,093,130
+remainder bytes. No contents were copied/extracted or committed. Encoded reference
+validity, asset bodies, stream relocation, interning, and gameplay remain open.

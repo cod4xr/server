@@ -86,6 +86,12 @@ a bounded immutable file-snapshot reader between archive verification and fastfi
 inspection. Neither the stream nor the inspector resolves asset graphs, allocates
 declared blocks, follows native pointers, or publishes map readiness; see ADR 0009.
 
+`ZonePrefix` borrows that stream, owns only a bounded script-slot index, and keeps
+asset-directory records/remainder as borrowed views. Null, inline-empty, and encoded
+string references remain distinct. Virtual allocation alignment does not skip input
+bytes. Unknown kinds and unresolved headers remain explicit metadata until typed
+graph readers validate them; prefix inspection never registers assets. See ADR 0010.
+
 ## Server ownership
 
 The endpoint-cookie core owns only keyed MAC state and consumes explicit observed

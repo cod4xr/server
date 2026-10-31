@@ -31,6 +31,7 @@ pub(crate) fn run() -> Result<(), AppError> {
     match &options.mode {
         Mode::VerifyIwd(path) => return content::verify_iwd(path),
         Mode::InspectFastFile(path) => return content::inspect_fastfile(path),
+        Mode::InspectZonePrefix(path) => return content::inspect_zone_prefix(path),
         Mode::QueryOnly | Mode::HandshakeProbe => {}
     }
     let service = match RuntimeService::for_mode(&options.mode) {

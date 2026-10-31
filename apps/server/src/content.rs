@@ -2,6 +2,7 @@
 use std::path::Path;
 
 use cod4x_content::fastfile::{FastFileBudget, FastFileStream};
+use cod4x_content::zone::{ZonePrefix, ZonePrefixBudget};
 use cod4x_content::{ArchiveBudget, IwdArchive};
 
 use crate::app_error::AppError;
@@ -40,6 +41,10 @@ fn report_failure(result: &Result<(), AppError>) {
                 tracing::error!(event = "content.failed", kind = ?error,
                     "fastfile envelope validation failed");
             }
+            AppError::ZonePrefix(error) => {
+                tracing::error!(event = "content.failed", kind = ?error,
+                    "zone prefix inspection failed");
+            }
             AppError::Snapshot(error) => {
                 tracing::error!(
                     event = "content.failed",
@@ -50,6 +55,37 @@ fn report_failure(result: &Result<(), AppError>) {
             _ => {}
         }
     }
+}
+
+pub(crate) fn inspect_zone_prefix(path: &Path) -> Result<(), AppError> {
+    tracing::info!(
+        event = "content.started",
+        mode = "zone_prefix_inspection",
+        "inspecting zone root tables"
+    );
+    let result = inspect_prefix(path);
+    report_failure(&result);
+    result
+}
+
+fn inspect_prefix(path: &Path) -> Result<(), AppError> {
+    let budget = FastFileBudget::default();
+    let bytes = content_snapshot::read(path, budget.max_file_bytes).map_err(AppError::Snapshot)?;
+    let stream = FastFileStream::decode(&bytes, budget).map_err(AppError::FastFile)?;
+    let prefix =
+        ZonePrefix::parse(&stream, ZonePrefixBudget::default()).map_err(AppError::ZonePrefix)?;
+    tracing::info!(
+        event = "content.prefix_inspected",
+        encoded_bytes = bytes.len(),
+        payload_bytes = stream.header().payload_bytes(),
+        script_strings = prefix.strings().len(),
+        asset_records = prefix.assets().len(),
+        virtual_bytes = prefix.virtual_bytes(),
+        prefix_bytes = stream.payload().len() - prefix.remaining().len(),
+        remaining_bytes = prefix.remaining().len(),
+        "zone root tables inspected; references and asset bodies remain unvalidated"
+    );
+    Ok(())
 }
 
 fn verify(path: &Path) -> Result<(), AppError> {

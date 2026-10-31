@@ -46,6 +46,7 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `content.started` | info | offline IWD verification or fastfile inspection mode |
 | `content.verified` | info | entry/file counts, encoded/metadata/declared bytes, legacy checksum |
 | `content.envelope_verified` | info | encoded/payload/external/total-block bytes; graph remains unvalidated |
+| `content.prefix_inspected` | info | root slot/record counts, prefix/remaining/virtual bytes; bodies stay unvalidated |
 | `content.failed` | error | sanitized content failure or local I/O category |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
@@ -78,6 +79,8 @@ counts/checksums are metadata, not a claim of authenticated content.
 Fastfile inspection reports envelope integrity only and never emits an asset-ready
 or server-started event. Snapshot failures log a fixed category; stderr omits host
 paths and arbitrary operating-system error strings while retaining the I/O kind.
+Zone-prefix inspection is another explicit offline mode. It logs root counts and
+byte accounting, never string contents, type/header arrays, or unvalidated bodies.
 
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided

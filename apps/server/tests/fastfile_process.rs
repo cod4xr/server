@@ -17,13 +17,27 @@ struct FixtureFile(PathBuf);
 
 impl FixtureFile {
     fn new(label: &str) -> Self {
+        Self::from_dataset(
+            label,
+            include_str!("../../../crates/content/tests/fixtures/fastfiles.txt"),
+        )
+    }
+
+    fn zone(label: &str) -> Self {
+        Self::from_dataset(
+            label,
+            include_str!("../../../crates/content/tests/fixtures/zones.txt"),
+        )
+    }
+
+    fn from_dataset(label: &str, dataset: &str) -> Self {
         static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
         let path = std::env::temp_dir().join(format!(
             "cod4x-secret-fastfile-{}-{}.ff",
             std::process::id(),
             NEXT_FILE.fetch_add(1, Ordering::Relaxed)
         ));
-        let row = include_str!("../../../crates/content/tests/fixtures/fastfiles.txt")
+        let row = dataset
             .lines()
             .map(|line| line.split_ascii_whitespace().collect::<Vec<_>>())
             .find(|row| row[0] == label)
@@ -42,6 +56,55 @@ impl FixtureFile {
             .expect("Exclusive test-owned file");
         file.write_all(&bytes).expect("Synthetic envelope");
         Self(path)
+    }
+}
+
+#[test]
+fn zone_inspection_reports_only_root_counts_and_leaves_bodies_unvalidated() {
+    let file = FixtureFile::zone("mixed");
+    let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args(["--json-logs", "--inspect-zone-prefix"])
+        .arg(&file.0)
+        .output()
+        .expect("Inspector");
+    assert!(output.status.success());
+    let logs = String::from_utf8(output.stderr).expect("Logs");
+    assert!(!logs.to_lowercase().contains("secret"));
+    let records: Vec<Value> = logs
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("JSON"))
+        .collect();
+    assert_eq!(records.len(), 2);
+    let fields = &records[1]["fields"];
+    assert_eq!(fields["event"], "content.prefix_inspected");
+    assert_eq!(fields["script_strings"], 5);
+    assert_eq!(fields["asset_records"], 3);
+    assert_eq!(fields["virtual_bytes"], 56);
+    assert_eq!(fields["prefix_bytes"], 70);
+    assert_eq!(fields["remaining_bytes"], 11);
+    assert!(
+        fields["message"]
+            .as_str()
+            .expect("Message")
+            .contains("unvalidated")
+    );
+    assert!(!logs.contains("server.started"));
+}
+
+#[test]
+fn corrupt_root_metadata_fails_after_valid_envelope_without_disclosing_input() {
+    for name in ["short_table", "missing_strings", "short_block"] {
+        let file = FixtureFile::zone(name);
+        let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+            .args(["--json-logs", "--inspect-zone-prefix"])
+            .arg(&file.0)
+            .output()
+            .expect("Inspector");
+        assert!(!output.status.success());
+        let logs = String::from_utf8(output.stderr).expect("Logs");
+        assert!(!logs.to_lowercase().contains("secret"));
+        assert!(logs.contains("content.failed"));
+        assert!(!logs.contains("prefix_inspected"));
     }
 }
 
@@ -119,6 +182,20 @@ fn inspection_requires_one_mode_one_path_and_no_network_options() {
             "other",
         ],
         vec!["--inspect-fastfile", "secret-missing", "--handshake-probe"],
+        vec!["--inspect-zone-prefix"],
+        vec![
+            "--inspect-zone-prefix",
+            "secret-missing",
+            "--inspect-fastfile",
+            "other",
+        ],
+        vec![
+            "--inspect-zone-prefix",
+            "secret-missing",
+            "--bind",
+            "127.0.0.1:0",
+        ],
+        vec!["--inspect-zone-prefix", "secret-missing", "--query-only"],
         vec!["--query-only", "--inspect-fastfile", "secret-missing"],
         vec![
             "--inspect-fastfile",
