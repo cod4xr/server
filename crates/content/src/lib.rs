@@ -10,6 +10,7 @@ mod archive_index;
 mod archive_preflight;
 mod archive_usage;
 mod archive_verification;
+pub mod bsp;
 mod entry_bounds;
 mod iwd_archive;
 mod virtual_path;

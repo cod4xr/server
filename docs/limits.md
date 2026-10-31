@@ -77,6 +77,8 @@ prestige catalog. Inventory the entire dependency chain and actual peer versions
 - Measure real memory, load time, frame time, download cost, and GPU residency on
   supported clients. "Unlimited" is not a resource-management strategy.
 
-Current protocol constants remain compatibility budgets. The asset stores,
-script VM, map loaders, full snapshot projection, extended capabilities, and
-custom client required for these goals remain implementation work.
+Current protocol constants remain compatibility budgets. Growable encoded asset
+ownership, bounded IWD reading, and IBSP container metadata are implemented; their
+tests do not establish decoded asset/geometry expansion. The script VM, fastfile
+graphs, semantic map loading, full snapshot projection, extended capabilities,
+and custom client required for these goals remain implementation work.

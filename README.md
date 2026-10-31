@@ -52,6 +52,9 @@ The complete server rewrite remains open.
 - Read-only IWD content with path/header/metadata budgets, stored/DEFLATE reads,
   CRC and size validation, original override order, and seeded legacy checksums.
   ZIP64 tests admit 66,000 entries; this does not establish old-client ZIP64 support.
+- Borrowed IBSP container validation with wide checked offsets, configurable
+  budgets, raw unknown/duplicate kinds, independent map instances, and 280 original
+  C lookup/checksum cases. Geometry, collision, and fastfile graphs remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -136,6 +139,8 @@ python tools/generate_huffman_vectors.py ../cod4x-reference --check
 python tools/generate_obfuscation_vectors.py ../cod4x-reference --check
 python tools/generate_content_vectors.py ../cod4x-reference --check
 python tools/generate_user_command_vectors.py ../cod4x-reference --check
+python tools/generate_bsp_vectors.py ../cod4x-reference --check
+python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 ```
 

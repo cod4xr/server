@@ -113,9 +113,8 @@ Clippy/rustdoc, and 24 independent Python HMAC vectors pass. It binds observed
 address/port and native IPv6 scope, canonicalizes mapped IPv4, ignores flowinfo,
 and verifies exactly four bytes without exposing key/echo through Debug. It is a
 limited return-path check, not account authentication. No implicit expiry or new
-wire format is introduced. Application OS-entropy and handshake integration remain
-next; no secrets, network listeners, or target directories were created for this
-core implementation. See ADR 0006 for the rationale and reviewed dependencies.
+wire format is introduced. Application OS entropy is integrated in the probe
+described below. See ADR 0006 for the rationale and reviewed dependencies.
 
 The explicit `--handshake-probe` mode is implemented and passes full Windows
 workspace formatting, Clippy, debug/release, rustdoc, and source/dependency policy.
@@ -135,13 +134,27 @@ argument one. Its extra GUID must never enter logs. No live game-client join has
 been attempted or established. Current source policy: 142 files, seven crates,
 largest source still the 287-line generated codebook.
 
-Next research underway: com_bsp_load_obj.c defines IBSP container layouts. Versions
-6..18 use fixed per-version `[length, offset]` directories (41..47 entries);
-19..45 use `[type, length]` chunks following a count with 4-byte aligned sequential
-payloads. Preserve first matching chunk semantics, unlike last-entry IWD lookup.
-The C header declares chunks[100] but file data is dynamic; do not copy that as an
-engine limit. Source hash/ADR/tests are needed before implementing a safe reader.
-This is container metadata, not decoded collision, simulation, or a joinable map.
+IBSP container validation is implemented in content/bsp and passes full Windows
+workspace gates (155 source files, seven crates, largest still 287 generated lines).
+Ten tests include 280 original C lookup/count/presence/checksum cases across all
+forty supported container versions, checked wide offsets, exact budgets, malformed
+and mutating inputs, 1,000 directory entries, first-match duplicates, empty/unknown
+kinds, zero-copy views, independent map instances, and redacted Debug output.
+com_bsp_load_obj.c is source-hashed; see ADR 0008. This is metadata, not decoded
+collision or a joinable map. Seven C oracle generators now exist.
+
+Next: unsigned version-5 fastfile envelope/decompression and then asset graphs.
+Stock main/iw_00..iw_13 contain no raw d3dbsp entries; maps live in zone fastfiles.
+Read-only analysis of stock mp_crash_load.ff/mp_crash.ff confirmed IWffu100/v5,
+zlib streams, a 44-byte XFile header (size, externalSize, nine block sizes), exact
+total output = 44 + size, and no compressed trailing bytes. The full map stream
+was 63,106,933 bytes, declared payload 63,106,889, external bytes 243,254,095;
+the load stream was 921 bytes with payload 877 and external bytes 1,223,352.
+No bytes were extracted/copied into the repo. db_load.cpp rejects signed IWff0100
+and uses ordinary inflate for unsigned files. Preserve that explicit unsupported
+case; decompression integrity must not be described as validated asset graphs.
+Source defaults XBLOCK_COUNT_IW3=9, FASTFILE_VERSION=5 are format-profile bounds,
+not global engine pools. Root XAssetList graph loading remains unimplemented.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

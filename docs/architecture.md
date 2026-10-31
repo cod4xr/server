@@ -72,6 +72,12 @@ reader never accesses host paths or extracts files. IWD entry CRCs also supply
 legacy seeded checksums. Mount order, pure admission, fastfiles, and decoded game
 formats are separate implementation work. See ADR 0005 for dependency costs.
 
+Borrowed BSP containers own only a growable metadata index, preserving raw kinds
+and first-match lookup across the source's old/sequential directory layouts.
+Every nonempty span is validated before publication. Multiple maps can coexist
+without a global current-file pointer; payload views borrow the original source.
+Decoded collision/entity/asset schemas and fastfile graphs remain separate layers.
+
 ## Server ownership
 
 The endpoint-cookie core owns only keyed MAC state and consumes explicit observed
