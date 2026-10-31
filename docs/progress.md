@@ -225,7 +225,25 @@ reference in the BSP vector test, restored to its valid baseline without other
 edits. No literal decoding, interning, AST, parser, or VM execution is implemented.
 See ADR 0014. Linux and original-parser trace conformance remain open.
 
-Next: source-grounded GSC literal/syntax/bytecode/runtime foundations alongside broader
+Bounded legacy literal decoding is implemented and passes full Windows workspace
+gates (239 source files, eight crates). Four tests use 545 source-action/CRT replays
+(522 strings, 23 numeric cases). Owned ordinary/localized bytes, r/t/n/default
+escapes, checked decimal scalars, integer bools/undefined, no interning, source
+immutability, exact budgets, redacted Debug, and 100,000-byte decoded strings pass.
+No old 8191-byte scratch buffer is retained. These replays do not execute the
+original parser/interner and are not counted as original-function generators.
+Finite/in-range C-locale conversions are evidenced; undefined overflow and nonfinite
+literal results fail explicitly. Exponent notation is not a single legacy float
+token. Test helpers enforce full single-lexeme input rather than accept a prefix.
+See ADR 0015. Linux, parser/interner, and whole-program execution remain open.
+
+The first release full-suite run had a probe socket receive timeout; an isolated
+run passed. The smoke test now allows five-second positive receives and a fifteen-
+second child safety bound, with identical three-packet/count/privacy checks and
+immediate max-datagrams exit. Full debug/release workspace reruns passed. No runtime
+or cookie semantics changed. Do not claim a proven timeout root cause.
+
+Next: source-grounded GSC syntax/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
 opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in

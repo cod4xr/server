@@ -71,3 +71,4 @@ jobs:
           python tools/generate_zone_pointer_vectors.py reference --check
           python tools/generate_script_vectors.py reference --check
           python tools/generate_lexical_tables.py reference --check
+          python tools/generate_literal_vectors.py reference --check

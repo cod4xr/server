@@ -90,6 +90,10 @@ Bounded raw legacy lexing now retains trivia, exact spans, and original terminal
 codes using recovered tables/actions. Its 724 source-derived replay cases are not
 original parser execution. Literal semantics, interning, and syntax remain open;
 see ADR 0014. Modern keywords remain opt-in future work.
+Legacy literal decoding now produces owned ordinary/localized byte strings and
+checked scalar values without fixed parser scratch storage or string-table IDs.
+A 100,000-byte string decodes under explicit budgets. The 545 action/CRT replay
+cases do not establish original parser/interner execution; see ADR 0015.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

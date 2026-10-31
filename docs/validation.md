@@ -252,3 +252,21 @@ replays do not execute the original x86 parser and are not counted as original-C
 function fixtures. No literal/string value decoding, interning, syntax validation,
 compiler, bytecode execution, scheduling, or gameplay parity follows from lexing.
 Linux validation and original-parser trace conformance remain open.
+
+Legacy literal decoding passed full Windows workspace gates (239 source files,
+eight crates) with four new tests and 545 action/CRT replays: 522 string cases and
+23 numeric results. Original r/t/n/default-escape behavior, ordinary/localized
+bytes, leading-zero decimal integers, binary32 ties/subnormals/underflow/max finite,
+booleans/undefined, source immutability, wrong kinds, overflow rejection, redacted
+Debug, exact budgets, empty values, and 100,000-byte decoded strings pass. Replay
+calls explicitly select C locale/nearest rounding and assert int32/binary32 shape;
+they do not execute the original parser/interner. Numeric test inputs must cover
+exactly one lexeme; legacy exponent notation is not enabled implicitly.
+
+The first full release run hit a UDP probe receive timeout. The isolated original
+test passed. Its positive receive bounds were raised from two to five seconds and
+the child safety bound from three to fifteen seconds, with the same three-packet,
+reply/cookie, metric, and privacy assertions. The normal packet-count exit remains
+immediate; no production behavior changed. Full workspace debug/release reruns
+passed afterward. Original-parser/CRT-version/locale coverage, interning, whole-
+program syntax/compiler/VM execution, and Linux checks for literals remain open.

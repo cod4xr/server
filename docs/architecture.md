@@ -138,6 +138,9 @@ stages. Generated DFA/action data stays inside an explicit compatibility profile
 scan work/output limits and source ownership remain separate. Exact trivia/spans
 support later tooling without normalizing source. Literal decoding, symbol/module
 registries, syntax/AST, compilation, and a running VM remain open (ADRs 0013/0014).
+Legacy literals now decode in a separate bounded phase with owned byte strings,
+ordinary/localized distinction, checked scalar domains, and no interning/native
+handles. This is not whole-source validation or module publication; see ADR 0015.
 
 ## Future custom client
 

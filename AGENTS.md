@@ -58,6 +58,8 @@ Verify typed raw files with tools/generate_rawfile_fixtures.py --check.
 Verify script scalar/wait semantics with tools/generate_script_vectors.py --check.
 Verify source-derived lexical data with tools/generate_lexical_tables.py --check;
 table replays must not be described as original executable/parser conformance.
+Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;
+these do not execute the original parser or string interner.
 Development logs default to readable output; process tests requiring JSON must
 pass --json-logs explicitly. The user requires one normal target directory:
 never use --target-dir, set CARGO_TARGET_DIR, or create separate preview/WSL build
