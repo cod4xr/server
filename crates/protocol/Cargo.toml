@@ -1,0 +1,11 @@
+[package]
+name = "cod4x-protocol"
+description = "Bounded, safe CoD4X wire-format primitives"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true

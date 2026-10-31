@@ -1,0 +1,21 @@
+[package]
+name = "cod4x-server"
+description = "CoD4X Rust dedicated server development runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+cod4x-observability.workspace = true
+cod4x-protocol.workspace = true
+cod4x-server-core.workspace = true
+ctrlc.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

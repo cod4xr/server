@@ -1,0 +1,57 @@
+name: Rust quality and compatibility
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      RUSTDOCFLAGS: -Dwarnings
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install pinned toolchain
+        run: rustup show
+      - name: Check repository boundaries and source sizes
+        run: python tools/check_repository.py
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Check Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Test debug build
+        run: cargo test --workspace --locked
+      - name: Test release build
+        run: cargo test --workspace --release --locked
+      - name: Build documentation
+        run: cargo doc --workspace --no-deps --locked
+
+  upstream-oracle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check out pinned reference source
+        run: |
+          git clone --no-checkout https://github.com/callofduty4x/CoD4x_Server.git reference
+          git -C reference checkout --detach ddd65fce1a1093017bad2dbb6840d75d11c0d56f
+      - name: Install pinned formatter for generated data
+        run: rustup show
+      - name: Verify reference C fixtures
+        run: |
+          python tools/generate_message_vectors.py reference --check
+          python tools/generate_wire_vectors.py reference --check
+          python tools/generate_huffman_vectors.py reference --check
+          python tools/generate_obfuscation_vectors.py reference --check

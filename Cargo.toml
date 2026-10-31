@@ -1,0 +1,42 @@
+[workspace]
+members = ["crates/observability", "crates/protocol", "crates/server-core", "crates/transport", "apps/server"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "AGPL-3.0-or-later"
+publish = false
+
+[workspace.dependencies]
+cod4x-protocol = { path = "crates/protocol" }
+cod4x-observability = { path = "crates/observability" }
+cod4x-server-core = { path = "crates/server-core" }
+ctrlc = { version = "=3.5.2", features = ["termination"] }
+tracing = { version = "=0.1.44", default-features = false, features = ["std"] }
+tracing-appender = "=0.2.5"
+tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["ansi", "env-filter", "fmt", "json", "registry", "std"] }
+serde_json = "=1.0.154"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+unused_must_use = "deny"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+dbg_macro = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+unwrap_used = "deny"
+wildcard_imports = "deny"
+
+[profile.release]
+overflow-checks = true
+lto = "thin"
+codegen-units = 1

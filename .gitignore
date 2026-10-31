@@ -1,0 +1,11 @@
+/target/
+/reference/
+*.local.*
+.env
+.env.*
+*.pem
+*.key
+/logs/
+*.log
+*.jsonl
+__pycache__/

@@ -1,0 +1,25 @@
+{
+  "repository": "https://github.com/callofduty4x/CoD4x_Server.git",
+  "revision": "ddd65fce1a1093017bad2dbb6840d75d11c0d56f",
+  "recorded_date": "2026-10-31",
+  "files": {
+    "src/msg.c": "3ec28727cea65c38ba9147b4919572dfaf5f4918bc1f053a7d47a69329a332df",
+    "src/netchan.c": "5607790a3372198e4b4a5e470075874fd515a5f1ff6d4e979401f6429d3a7458",
+    "src/netchan.h": "e4a512ff073ca99500ae94490517b992cad2caf4aef37f0b06bcace92ba3d74f",
+    "src/sv_main.c": "0c13e4b9b27b17f11cf3616abd24599aabbb5206724b6a3b22cb96f497aee06a",
+    "src/net_reliabletransport.c": "92a634523e8acd6660bcde7790632c013441dbd6772e402c868b1145157a60ae",
+    "src/qshared.c": "749bb9c5bb32661fcbb19791ef7a695e7ccc82dbb0023850285aeeda1891fed5",
+    "src/cmd.c": "76acd15421b9aba49808760fa419cb93f928ce1c5b4f7187171e2ca77861ad56",
+    "src/q_shared.h": "647c2dd8075c78b3a5b8bf74a377c376bf0c1e14a41e3a9dc6b5c035b38a545c",
+    "src/huffman.c": "94dc8bd96454f236540f3bfc1479867370f9313973995c7c9db834426845a216",
+    "src/huffman.h": "dcd2c2e9e84a3297325d5948790fd3dc365aa41ae97f56d82afaca55830ff14e",
+    "src/sys_cod4defs.h": "308cfd2b893d7132030a7fcc7296faf020688a281a0a869525058c8b7bbb6f89",
+    "src/entity.h": "28dcd55b8439a0c3cb9fdd9b8dae1c875523ec4f33c98679a5f0d57217ca3175",
+    "src/db_load.cpp": "ffafd33deb81aa3c0a18b761fe6923e90b9dc5398c075d6dbf70410493a77e16",
+    "src/scr_vm.h": "fa681481981b1623549aa021d9a80d9d7e3e2224630a295b0e357ecd1e507bcc",
+    "src/cscr_variable.cpp": "3d9d414a44c45a525dfd94d9d966c54920b4d0eff2df79c0909f511d8b2f0e6c",
+    "src/cscr_stringlist.cpp": "0007e5311e8aee5eae2eb98dd204f132dabe2a4881057841bf1c0f1250f4693a",
+    "src/cm_local.h": "cd56e3045a2402c6368842f50596bf98af9f2dc3a11aef519d4ecb690aa0e1d1",
+    "src/sv_net_chan.c": "1d5cafd60520d24531ebedd403812f9592800e8ef41765eb35a3ca9898cbe64a"
+  }
+}

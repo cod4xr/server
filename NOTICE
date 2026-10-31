@@ -1,0 +1,28 @@
+cod4x-rust
+
+This project studies and reimplements behavior from:
+https://github.com/callofduty4x/CoD4x_Server
+Pinned revision: ddd65fce1a1093017bad2dbb6840d75d11c0d56f
+
+The message/index codecs, envelopes, commands, info strings, and static Huffman
+tables follow src/msg.c, src/netchan.c, src/cmd.c, src/qshared.c, and src/huffman.c.
+Their upstream notices include:
+Copyright (C) 2010-2013 Ninja and TheKelm
+Copyright (C) 1999-2005 Id Software, Inc.
+
+The upstream source headers offer GNU Affero General Public License version 3
+or, at your option, any later version. This source-based Rust implementation
+and its derived test fixtures use SPDX identifier AGPL-3.0-or-later. The full
+upstream license text is retained in LICENSE.
+
+tools/generate_message_vectors.py extracts selected original C functions only
+into a temporary compatibility oracle. The product contains no C or assembly
+runtime component. Original upstream notices remain applicable to the extracted
+reference material and derived fixtures.
+
+Other upstream components and bundled third-party libraries have not been
+imported. Their licensing and attribution must be inventoried before reuse.
+Commercial game assets, operator configurations, tokens, and credentials are
+not part of this repository.
+
+This project is independent of the official CoD4X project and of Activision.
