@@ -270,3 +270,22 @@ reply/cookie, metric, and privacy assertions. The normal packet-count exit remai
 immediate; no production behavior changed. Full workspace debug/release reruns
 passed afterward. Original-parser/CRT-version/locale coverage, interning, whole-
 program syntax/compiler/VM execution, and Linux checks for literals remain open.
+
+Structural legacy script/fragment trees passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, and repository policy (258
+source files, eight crates). Seven new tests cover 99 source-table replays with
+exact successful reduction sequences, every two-byte input, original borrowed
+terminals/spans, ordered child containment, source privacy, literal-stage
+composition, and exact/one-less parser budgets. A 12,000-level grouped expression
+uses more than 10,000 live stack entries and drops without recursive tree teardown.
+Adversarial testing caught extra statement-fragment entry productions; all four
+entry productions are now checked against source. Default reductions precede
+needed lookahead, and lexical/syntax failure ordering and EOF caching are covered.
+
+All nine original-function generators and lexical/literal/structural regeneration
+passed after pinning the loader-selector source. Structural replays execute a
+separate table driver, not the original native parser or semantic actions. No
+names are bound and no scripts execute. Semantic AST/compiler/VM, original-parser
+trace and stock-mod conformance, modern language/services, and Linux checks for
+this new layer remain open. Release testing reused the normal target directory
+with four build jobs; no alternate build directory was created.

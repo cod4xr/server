@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: AGPL-3.0-or-later
+"""Recover structural parser data/replays without executing original semantic actions."""
+
+import argparse
+from pathlib import Path
+import subprocess
+
+from reference_source import ReferenceSource
+import script_lexer_reference as lexical
+import script_syntax_reference as syntax
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DIRECTORY = ROOT / "crates/script/src/syntax"
+FIXTURES = ROOT / "crates/script/tests/fixtures/syntax_vectors.txt"
+
+
+def cases() -> list[tuple[str, str]]:
+    scripts = ["", "main() {}", "main(a,b) { return a+b; }", "main() { x=1; wait 0.1; }",
+               "main() { for(i=0;i<10;i++) { if(i==3) break; } }",
+               "main() { self thread worker(); self endon(\"done\"); self waittill(\"ready\"); }",
+               "#include maps\\mp\\common;\nmain() {}", "#using_animtree(\"mp\");\nmain() {}",
+               "main() { a=[]; a[0]=\"value\"; b=(1,2,3); return undefined; }",
+               "main() { switch(x) { case 1: return; default: break; } }",
+               "main() { do { x--; } while(x>0); }", "main() { foreach(x in y) {} }",
+               "main( { }", "main() { return 1 }", "main() { x=1.0e3; }", "main() {} trailing",
+               "/* unfinished", "main() { x=; }", "main() { x=1; }}",
+               "main( { } /* unfinished", "main() {} /* unfinished"]
+    expressions = ["1+2*3", "(1,2,3)", "self.origin", "level.array[0]", "f(1,2)",
+                   "true && !false", "undefined", "\"private-script\"", "a?b:c", "[]",
+                   "(1+2", "1+", "main() {}", "", "1.0e3", "1;2", "{}", "return 1;",
+                   "if(x) return 1;", "x=1;", "wait 1;"]
+    result = [("script", text) for text in scripts] + [("fragment", text) for text in expressions]
+    for depth in (1, 2, 8, 32, 128):
+        expression = "(" * depth + "1" + ")" * depth
+        result += [("fragment", expression), ("script", f"main() {{ return {expression}; }}")]
+    for count in (1, 2, 8, 64):
+        result.append(("script", "\n".join(f"f{index}() {{ return {index}; }}" for index in range(count))))
+    # Every prefix of a representative valid module gives deterministic EOF and
+    # syntax failures independently of a Rust parser's tree construction.
+    module = "main(a) { if(a) return 1; else return 0; }"
+    result += [("script", module[:length]) for length in range(len(module) + 1)]
+    return result
+
+
+def render(tables: dict[str, list[int]], names: list[str], revision: str) -> str:
+    lines = ["// SPDX-License-Identifier: AGPL-3.0-or-later",
+             "// Generated structural grammar data; no semantic actions or native pointers.",
+             f"// Source revision: {revision}."]
+    if "PACT" in names:
+        lines += ["pub(super) const LAST: usize = 1347;", "pub(super) const FINAL: usize = 261;",
+                  "pub(super) const UNSET: i16 = -32768;"]
+    for name in names:
+        values = tables[name]
+        lines.append(f"pub(super) const {name}: [i16; {len(values)}] = [")
+        for index in range(0, len(values), 16):
+            lines.append("    " + ", ".join(map(str, values[index:index + 16])) + ",")
+        lines.append("];\n")
+    return "\n".join(lines)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("reference", type=Path)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    reference = ReferenceSource(args.reference)
+    source = reference.files["src/asmsource/_scr_yacc.asm"]
+    loader = reference.files["tools/cod4_dasm/src/_scr_main.asm"]
+    if 'db "+",0' not in loader or 'mov dword [edx+0x20018], _cstring_' not in loader:
+        raise ValueError("Script-loader selector differs from pinned source")
+    tables = syntax.recover(source)
+    lex = lexical.recover(source)
+    outputs = {}
+    for name, keys in (("legacy_actions.rs", ["TRANSLATE", "PACT", "DEFAULT_REDUCE", "ACTION", "CHECK"]),
+                       ("legacy_productions.rs", ["LHS", "LENGTH", "GOTO_OFFSET", "DEFAULT_GOTO"])):
+        formatted = subprocess.run(["rustfmt", "--edition", "2024", "--emit", "stdout"],
+                                   input=render(tables, keys, reference.revision), text=True,
+                                   capture_output=True, check=True).stdout
+        outputs[DIRECTORY / name] = formatted
+    rows = ["# Structural table replay only; NOT original semantic actions/parser execution.",
+            "# mode source_hex status reduction_sequence"]
+    for mode, text in cases():
+        data = text.encode("ascii")
+        tokens, status = syntax.source_tokens(lex, data)
+        status, reductions = syntax.parse(tables, tokens, mode, status)
+        rows.append(f"{mode} {data.hex() or '~'} {status} {','.join(map(str, reductions)) or '~'}")
+    outputs[FIXTURES] = "\n".join(rows) + "\n"
+    for path, expected in outputs.items():
+        if args.check:
+            if path.read_text(encoding="utf-8") != expected:
+                raise SystemExit(f"Structural parser data/replays differ: {path.name}")
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(expected, encoding="utf-8", newline="\n")
+    print(f"Verified grammar data and {len(rows) - 2} structural source-table replays")
+
+
+if __name__ == "__main__":
+    main()

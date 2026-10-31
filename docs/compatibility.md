@@ -220,9 +220,16 @@ source API. Legacy raw lexing additionally has 724 recovered-table/action replay
 not original x86/parser execution. It preserves raw spelling/trivia and terminal
 codes without interning names or decoding literals. Embedded NULs/invalid bytes,
 unclosed comments, and exhausted work budgets fail explicitly; no input tail is
-silently dropped. New keywords are not activated in this profile. Syntax, values,
-compiler/VM, scheduling, builtins, modern extensions, and stock-mod parity remain
-open release gates, regardless of successful source indexing or lexing.
+silently dropped. New keywords are not activated in this profile. Full semantic
+values, compiler/VM, scheduling, builtins, modern extensions, and stock-mod parity
+remain open release gates, regardless of successful source indexing or lexing.
+
+Bounded literal conversion and structural syntax are now separate implemented
+stages. Ninety-nine recovered-grammar replays compare acceptance and successful
+reduction order without original parser/semantic-action execution. Script and
+fragment trees retain source spans and support configurable deep stacks. No names
+are bound, no complete semantic AST is produced, and no script executes; passing
+structural syntax alone does not imply valid literals or compilable/runnable GSC.
 
 - Connectionless and sequenced packets in both directions, exact framing,
   sequence handling, NAT qport behavior, fragmentation, and compression.

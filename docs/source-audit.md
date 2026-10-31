@@ -75,6 +75,11 @@ The script kernel preserves defined scalar/wait behavior and rejects undefined
 wait conversions. Heap/reference cleanup, error unwinding, scheduling, and parser/
 bytecode execution remain separate work. _scr_yacc.asm contains lexer/parser
 tables/actions; no editable source grammar was found in the pinned tree.
+The loader in tools/cod4_dasm/src/_scr_main.asm supplies the plus entry selector;
+it is now hash-pinned. Structural LALR data from _scr_yacc.asm is recovered with
+signed widths and checked padding. The star entry accepts expressions/statements,
+not only expressions. Table replays and the bounded Rust tree builder do not
+execute native semantic actions or prove compiler/stock-mod conformance.
 
 ## Open research
 

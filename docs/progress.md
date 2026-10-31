@@ -243,7 +243,18 @@ second child safety bound, with identical three-packet/count/privacy checks and
 immediate max-datagrams exit. Full debug/release workspace reruns passed. No runtime
 or cookie semantics changed. Do not claim a proven timeout root cause.
 
-Next: source-grounded GSC syntax/bytecode/runtime foundations alongside broader
+Bounded flat structural GSC trees now pass full Windows workspace gates (258
+source files, eight crates). Seven new tests include 99 independent recovered-
+grammar replays, all two-byte inputs, borrowed source spans, privacy, exact budgets,
+and 12,000 nested groups without recursive tree teardown. The driver respects
+default reductions, sticky EOF, and first-needed lexical/syntax failure ordering.
+Script-loader plus selection is source-pinned; star entry also supports statement
+fragments. These are structural trees, not semantic actions, name binding, a
+compiler, or an executing VM. See ADR 0016. All nine original-function generators
+and lexical/literal/structural replay regeneration pass; Linux and original-parser
+trace/stock-mod conformance remain open.
+
+Next: expose offline GSC structural diagnostics, then semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
 opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in

@@ -136,11 +136,15 @@ implementation work. See ADR 0012 and the expanded GSC contract.
 Script source indexing and borrowed legacy lexemes now form concrete frontend
 stages. Generated DFA/action data stays inside an explicit compatibility profile;
 scan work/output limits and source ownership remain separate. Exact trivia/spans
-support later tooling without normalizing source. Literal decoding, symbol/module
-registries, syntax/AST, compilation, and a running VM remain open (ADRs 0013/0014).
+support later tooling without normalizing source (ADRs 0013/0014). Symbol/module
+registries, semantic AST lowering, compilation, and a running VM remain open.
 Legacy literals now decode in a separate bounded phase with owned byte strings,
 ordinary/localized distinction, checked scalar domains, and no interning/native
 handles. This is not whole-source validation or module publication; see ADR 0015.
+Bounded structural parsing now builds flat concrete grammar trees with scoped
+borrowed node views and original terminal spans. Iterative stacks/tree destruction
+support deep input under explicit budgets. No semantic actions or name binding run;
+structural success does not establish compilation or GSC execution. See ADR 0016.
 
 ## Future custom client
 

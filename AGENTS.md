@@ -60,6 +60,8 @@ Verify source-derived lexical data with tools/generate_lexical_tables.py --check
 table replays must not be described as original executable/parser conformance.
 Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;
 these do not execute the original parser or string interner.
+Verify structural grammar tables/replays with tools/generate_syntax_tables.py
+--check; these do not execute original semantic actions or establish compilation.
 Development logs default to readable output; process tests requiring JSON must
 pass --json-logs explicitly. The user requires one normal target directory:
 never use --target-dir, set CARGO_TARGET_DIR, or create separate preview/WSL build

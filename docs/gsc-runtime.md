@@ -88,12 +88,17 @@ frontend/tooling without normalizing input or exposing scripts through Debug.
 They are not a parser, compiled source map, or debugger; see ADR 0013.
 Bounded raw legacy lexing now retains trivia, exact spans, and original terminal
 codes using recovered tables/actions. Its 724 source-derived replay cases are not
-original parser execution. Literal semantics, interning, and syntax remain open;
-see ADR 0014. Modern keywords remain opt-in future work.
+original parser execution. This stage does not intern names or execute semantic
+actions; see ADR 0014. Modern keywords remain opt-in future work.
 Legacy literal decoding now produces owned ordinary/localized byte strings and
 checked scalar values without fixed parser scratch storage or string-table IDs.
 A 100,000-byte string decodes under explicit budgets. The 545 action/CRT replay
 cases do not establish original parser/interner execution; see ADR 0015.
+Legacy structural syntax now builds flat script/fragment trees from recovered
+grammar data, retaining source terminals without native semantic actions. Ninety-
+nine structural replays, exact resource limits, and 12,000 nested groups pass the
+focused tests; syntax success does not validate literals, bind names, or execute
+GSC. See ADR 0016. This profile does not enable modern keywords implicitly.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
