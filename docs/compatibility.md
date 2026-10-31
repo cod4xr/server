@@ -147,6 +147,15 @@ server acceptance, and movement simulation remain separate work.
 
 ## Release matrix to establish
 
+Unsigned `IWffu100` version-5 envelopes use the pinned `db_load.cpp` twelve-byte
+outer header and zlib-compressed 44-byte `XFile` header plus declared payload.
+The decoder validates every declared accounting budget before output growth and
+requires exact length, checksum, end-of-stream, and no compressed trailer. Signed
+`IWff0100` remains unsupported, matching the baseline's explicit rejection. Extra
+output and trailers are rejected deliberately. Fifteen independent Python fixtures
+and two read-only stock samples establish envelope behavior, not graph/pointer
+validity, decoded maps, authenticity, collision, or gameplay compatibility.
+
 The borrowed connect parser interprets only protocol, challenge, and qport; unknown
 userinfo stays exact. It uses original tokenizer/first-userinfo-token behavior,
 including ignored trailing tokens. Signed-short qport spellings emitted by upstream

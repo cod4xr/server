@@ -55,6 +55,9 @@ The complete server rewrite remains open.
 - Borrowed IBSP container validation with wide checked offsets, configurable
   budgets, raw unknown/duplicate kinds, independent map instances, and 280 original
   C lookup/checksum cases. Geometry, collision, and fastfile graphs remain open.
+- Unsigned IW3 v5 fastfile envelope decoding with configurable payload/block/
+  external budgets, exact size and zlib checksum/end checks, fallible output growth,
+  and fifteen independent synthetic envelopes. Asset graphs remain unvalidated.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -85,6 +88,17 @@ files or logging their names/data. It reports counts and the legacy checksum and
 returns a failure status for corrupt content. The command uses the library's
 default configurable budgets; operator configuration for those budgets is future
 work. Loading decoded assets/maps and checking pure-server admission remain open.
+
+Inspect an unsigned version-5 fastfile envelope offline:
+
+```sh
+cargo run -p cod4x-server -- --inspect-fastfile path/to/map.ff
+```
+
+This validates compression integrity and reports declared payload/block/external
+bytes without extracting files. Asset records, encoded pointers, geometry, and
+scripts remain unvalidated; this command does not load a playable map. Signed
+fastfiles are explicitly unsupported by this source baseline.
 
 Exercise the legacy challenge/cookie exchange over UDP:
 
@@ -142,6 +156,7 @@ python tools/generate_user_command_vectors.py ../cod4x-reference --check
 python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
+python tools/generate_fastfile_fixtures.py --check
 ```
 
 Omit `--check` only when deliberately regenerating and reviewing fixtures.

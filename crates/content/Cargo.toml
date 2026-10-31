@@ -12,4 +12,5 @@ workspace = true
 
 [dependencies]
 crc32fast.workspace = true
+flate2.workspace = true
 zip.workspace = true

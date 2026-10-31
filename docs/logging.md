@@ -43,8 +43,9 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `server.metrics` | info | uptime, received/replied/dropped counts, send errors, dropped logs |
 | `server.stopped` | info | shutdown reason, dropped log count |
 | `server.failed` | error | typed local I/O failure category |
-| `content.started` | info | offline IWD verification mode |
+| `content.started` | info | offline IWD verification or fastfile inspection mode |
 | `content.verified` | info | entry/file counts, encoded/metadata/declared bytes, legacy checksum |
+| `content.envelope_verified` | info | encoded/payload/external/total-block bytes; graph remains unvalidated |
 | `content.failed` | error | sanitized content failure or local I/O category |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
@@ -74,6 +75,9 @@ also omit remote addresses; the startup address is the local listening socket.
 Offline content verification excludes host paths, archive entry names, and
 payloads from logs. Full verification includes overridden original entries;
 counts/checksums are metadata, not a claim of authenticated content.
+Fastfile inspection reports envelope integrity only and never emits an asset-ready
+or server-started event. Snapshot failures log a fixed category; stderr omits host
+paths and arbitrary operating-system error strings while retaining the I/O kind.
 
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided

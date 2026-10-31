@@ -143,7 +143,18 @@ kinds, zero-copy views, independent map instances, and redacted Debug output.
 com_bsp_load_obj.c is source-hashed; see ADR 0008. This is metadata, not decoded
 collision or a joinable map. Seven C oracle generators now exist.
 
-Next: unsigned version-5 fastfile envelope/decompression and then asset graphs.
+Unsigned version-5 fastfile envelope/decompression is implemented and passes full
+Windows workspace gates (167 source files, seven crates). Five content tests and
+three child-process tests use fifteen independent Python zlib fixtures. Exact
+budgets, output length/checksum/end/trailers, all small-sample truncations, mutations,
+forged huge declarations, output ownership, and log redaction pass. Direct flate2
+use adds no package versions or backends. See ADR 0009 and docs/validation.md.
+`--inspect-fastfile` is offline and reports envelope integrity only. Shared bounded
+file snapshots replace archive-specific file I/O; arbitrary OS strings/paths are
+excluded from snapshot diagnostics. Actual Rust inspection of both stock samples
+below matched independent Python results without copying or extracting content.
+
+Next: typed root asset-directory/script-string prefix decoding before asset graphs.
 Stock main/iw_00..iw_13 contain no raw d3dbsp entries; maps live in zone fastfiles.
 Read-only analysis of stock mp_crash_load.ff/mp_crash.ff confirmed IWffu100/v5,
 zlib streams, a 44-byte XFile header (size, externalSize, nine block sizes), exact
@@ -155,6 +166,11 @@ and uses ordinary inflate for unsigned files. Preserve that explicit unsupported
 case; decompression integrity must not be described as validated asset graphs.
 Source defaults XBLOCK_COUNT_IW3=9, FASTFILE_VERSION=5 are format-profile bounds,
 not global engine pools. Root XAssetList graph loading remains unimplemented.
+Read-only prefix research finds zero script strings/six asset records in
+mp_crash_load.ff and 372 inline script strings/823 asset records in mp_crash.ff.
+Counts only were inspected; string/asset contents remain outside Git. Root metadata
+parsing, actual graph validation, block-relative references, and typed schemas
+remain open.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

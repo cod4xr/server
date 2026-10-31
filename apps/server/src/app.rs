@@ -28,8 +28,10 @@ pub(crate) fn run() -> Result<(), AppError> {
     let logs = LogRuntime::build(&options.logs).map_err(AppError::Logging)?;
     tracing::dispatcher::set_global_default(logs.dispatch().clone())
         .map_err(AppError::Subscriber)?;
-    if let Mode::VerifyIwd(path) = &options.mode {
-        return content::verify_iwd(path);
+    match &options.mode {
+        Mode::VerifyIwd(path) => return content::verify_iwd(path),
+        Mode::InspectFastFile(path) => return content::inspect_fastfile(path),
+        Mode::QueryOnly | Mode::HandshakeProbe => {}
     }
     let service = match RuntimeService::for_mode(&options.mode) {
         Ok(service) => service,

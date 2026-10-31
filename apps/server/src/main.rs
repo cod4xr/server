@@ -5,6 +5,7 @@ mod app;
 mod app_error;
 mod arguments;
 mod content;
+mod content_snapshot;
 mod counters;
 mod runtime;
 mod service;

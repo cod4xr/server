@@ -143,3 +143,26 @@ tests include 280 original C lookup/count/presence/checksum cases across version
 unknown/duplicate/empty entries, independent instances, and zero-copy payload
 views. Seven C generators now exist. This is container evidence, not decoded
 geometry, stock fastfile loading, collision, or a game-client join.
+
+Unsigned fastfile decoding adds five content tests and three child-process tests.
+Full Windows workspace formatting, warnings-denied Clippy/rustdoc, debug/release
+tests, and repository policy passed for this checkpoint (167 source files, seven
+crates). Independent archive/cookie/fastfile checks and original C BSP regeneration
+also passed. Linux validation for these added layers remains open.
+Fifteen independent Python zlib envelopes cover empty/small/multi-chunk/expanding
+payloads, unsupported magic/version/signatures, checksums, short headers, declared
+length mismatches, forged 4-GiB declarations with no body, and trailing/concatenated
+streams. Exact/one-less checks cover all five resources. Every small-sample
+truncation, deterministic mutations, owned output, and redacted Debug/logs are tested.
+The inspector reports envelope integrity, never validated asset or map readiness.
+
+Read-only Rust inspection of these local stock envelopes passed and matched the
+earlier independent Python metadata analysis. No content was copied or extracted:
+
+| Fastfile | Encoded bytes | Payload bytes | External bytes | Total block bytes | SHA-256 |
+| --- | --- | --- | --- | --- | --- |
+| `mp_crash_load.ff` | 258 | 877 | 1223352 | 387 | `00df8e88d33df56486d0c5a94c0ca528ec4eb5469720a08465df9406692b883e` |
+| `mp_crash.ff` | 35287381 | 63106889 | 243254095 | 40928457 | `99a91df69078bc11d31de3afb5c3ba56bbefb79854a4d1417d5fecab0dfecb68` |
+
+This is envelope evidence only. Asset graph decoding, encoded references, external
+images, geometry, collision, scripting, and live game-client joins remain open.

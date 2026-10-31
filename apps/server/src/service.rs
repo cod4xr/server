@@ -27,7 +27,9 @@ impl RuntimeService {
                 let cookies = EndpointCookie::try_new(&key[..]).map_err(AppError::Cookie)?;
                 Ok(Self::Probe(HandshakeProbe::new(cookies)))
             }
-            Mode::VerifyIwd(_) => Err(AppError::Arguments("content verification is offline")),
+            Mode::VerifyIwd(_) | Mode::InspectFastFile(_) => {
+                Err(AppError::Arguments("content inspection is offline"))
+            }
         }
     }
 

@@ -12,6 +12,7 @@ mod archive_usage;
 mod archive_verification;
 pub mod bsp;
 mod entry_bounds;
+pub mod fastfile;
 mod iwd_archive;
 mod virtual_path;
 

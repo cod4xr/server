@@ -13,10 +13,12 @@ pub(crate) const HELP: &str = "CoD4X Rust development server
 Usage: cod4x-server --query-only [options]
        cod4x-server --handshake-probe [options]
        cod4x-server --verify-iwd PATH [logging options]
+       cod4x-server --inspect-fastfile PATH [logging options]
 
   --query-only             Enable discovery only; gameplay is not implemented
   --handshake-probe        Exchange challenges; refuse connects without gameplay
   --verify-iwd PATH        Verify all IWD entries offline; no network listener
+  --inspect-fastfile PATH  Validate unsigned v5 envelope only; no asset graph load
   --bind ADDRESS           UDP address (default: 127.0.0.1:28960)
   --log-dir PATH           Dedicated directory for daily JSON log files
   --log-level DIRECTIVES   Explicit tracing filter (default: info)
@@ -43,6 +45,7 @@ pub(crate) enum Mode {
     QueryOnly,
     HandshakeProbe,
     VerifyIwd(PathBuf),
+    InspectFastFile(PathBuf),
 }
 
 #[derive(Debug)]
@@ -61,10 +64,8 @@ impl Arguments {
             duration: None,
             max_datagrams: None,
         };
-        let mut query_only = false;
-        let mut handshake_probe = false;
-        let mut verify_iwd = None;
-        let mut query_settings = false;
+        let mut mode = None;
+        let mut network_settings = false;
         let mut arguments = arguments.into_iter();
         while let Some(argument) = arguments.next() {
             let Some(argument) = argument.to_str() else {
@@ -73,17 +74,20 @@ impl Arguments {
             match argument {
                 "--help" => return Ok(Action::Help),
                 "--version" => return Ok(Action::Version),
-                "--query-only" => query_only = true,
-                "--handshake-probe" => handshake_probe = true,
-                "--verify-iwd" => {
-                    if verify_iwd.is_some() {
-                        return Err(AppError::Arguments("--verify-iwd accepts one archive"));
-                    }
-                    verify_iwd = Some(PathBuf::from(
+                "--query-only" => select_mode(&mut mode, Mode::QueryOnly)?,
+                "--handshake-probe" => select_mode(&mut mode, Mode::HandshakeProbe)?,
+                "--verify-iwd" | "--inspect-fastfile" => {
+                    let path = PathBuf::from(
                         arguments
                             .next()
-                            .ok_or(AppError::Arguments("--verify-iwd needs a path"))?,
-                    ));
+                            .ok_or(AppError::Arguments("content mode needs a path"))?,
+                    );
+                    let selected = if argument == "--verify-iwd" {
+                        Mode::VerifyIwd(path)
+                    } else {
+                        Mode::InspectFastFile(path)
+                    };
+                    select_mode(&mut mode, selected)?;
                 }
                 "--human-logs" => options.logs.console_format = ConsoleFormat::Human,
                 "--json-logs" => options.logs.console_format = ConsoleFormat::Json,
@@ -100,28 +104,20 @@ impl Arguments {
                     let value = value
                         .into_string()
                         .map_err(|_| AppError::Arguments("option value must be UTF-8"))?;
-                    query_settings |=
+                    network_settings |=
                         matches!(argument, "--bind" | "--run-for-ms" | "--max-datagrams");
                     options.apply_text_option(argument, value)?;
                 }
                 _ => return Err(AppError::Arguments("unknown option; use --help")),
             }
         }
-        if let Some(path) = verify_iwd {
-            if query_only || handshake_probe || query_settings {
-                return Err(AppError::Arguments(
-                    "archive verification cannot use query options",
-                ));
-            }
-            options.mode = Mode::VerifyIwd(path);
-        } else if handshake_probe {
-            if query_only {
-                return Err(AppError::Arguments("select one network mode"));
-            }
-            options.mode = Mode::HandshakeProbe;
-        } else if !query_only {
+        options.mode = mode.ok_or(AppError::Arguments(
+            "gameplay is not implemented; select an explicit development mode; use --help",
+        ))?;
+        if network_settings && matches!(options.mode, Mode::VerifyIwd(_) | Mode::InspectFastFile(_))
+        {
             return Err(AppError::Arguments(
-                "gameplay is not implemented; select an explicit development mode; use --help",
+                "offline content modes cannot use network options",
             ));
         }
         Ok(Action::Run(options))
@@ -165,4 +161,12 @@ impl Arguments {
         }
         Ok(())
     }
+}
+
+fn select_mode(current: &mut Option<Mode>, selected: Mode) -> Result<(), AppError> {
+    if current.is_some() {
+        return Err(AppError::Arguments("select exactly one development mode"));
+    }
+    *current = Some(selected);
+    Ok(())
 }

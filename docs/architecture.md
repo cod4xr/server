@@ -69,7 +69,7 @@ decompressed work under explicit budgets, and returns CRC-validated encoded data
 It implements legacy virtual-name normalization and archive-local override order.
 The application owns bounded file snapshots and the offline verifier; the shared
 reader never accesses host paths or extracts files. IWD entry CRCs also supply
-legacy seeded checksums. Mount order, pure admission, fastfiles, and decoded game
+legacy seeded checksums. Mount order, pure admission, and decoded game
 formats are separate implementation work. See ADR 0005 for dependency costs.
 
 Borrowed BSP containers own only a growable metadata index, preserving raw kinds
@@ -77,6 +77,14 @@ and first-match lookup across the source's old/sequential directory layouts.
 Every nonempty span is validated before publication. Multiple maps can coexist
 without a global current-file pointer; payload views borrow the original source.
 Decoded collision/entity/asset schemas and fastfile graphs remain separate layers.
+
+`FastFileStream` owns the decoded unsigned IW3 v5 serialized payload. It admits
+wide header accounting before fallible chunked growth, verifies exact decoded
+length and a single complete zlib stream, and rejects signed files and trailers.
+The nine serialized block fields do not create engine pools. The process shares
+a bounded immutable file-snapshot reader between archive verification and fastfile
+inspection. Neither the stream nor the inspector resolves asset graphs, allocates
+declared blocks, follows native pointers, or publishes map readiness; see ADR 0009.
 
 ## Server ownership
 
