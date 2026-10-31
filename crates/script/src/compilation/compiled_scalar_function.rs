@@ -9,7 +9,7 @@ use crate::execution::VerifiedKernelProgram;
 pub enum ScalarSourceProfile {
     /// Zero parameters and empty/single-return body, validated by bounded pure execution.
     PureReturn,
-    /// Parameters, ordinary/compound name assignments, empty statements and final return.
+    /// Parameters, name assignments/compound/postfix statements, empty statements and final return.
     /// Publication verifies code without executing fabricated argument values.
     LocalStatements,
 }

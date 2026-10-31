@@ -33,6 +33,12 @@ pub(super) fn apply(
                 .map_err(|error| kernel_error::at(pc, KernelErrorKind::Numeric(error)))?;
             KernelValue::Number(value)
         }
+        KernelInstruction::IntegerUpdate(update) => {
+            let value = update
+                .evaluate(stack.number(pc)?)
+                .map_err(|error| kernel_error::at(pc, KernelErrorKind::Numeric(error)))?;
+            KernelValue::Number(value)
+        }
         KernelInstruction::Divide => {
             let (left, right) = stack.pair(pc)?;
             let value = LegacyNumericPair::coerce(left, right)

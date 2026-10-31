@@ -139,6 +139,14 @@ initialized plain names. Preserve prior target/RHS values, source token location
 existing numeric semantics and compiler/name budgets. No compound read creates
 an uninitialized binding; object/index targets and side-effecting RHS semantics
 remain unsupported. Postfix integer-only updates stay separate; see ADR 0034.
+Postfix plain-name statements now use an explicit integer-only value/kernel
+operation. Preserve type rejection and wrapping word semantics, source update
+spans, initialized-name admission and existing quotas. The pinned VM assembly
+hash/profile guard ties grammar tags/compiler opcodes/type checks/instructions;
+it does not execute native handlers or establish full reference/error/VM parity.
+Keep the 0x86 VM dispatch versus 0x89 header debugger inventory distinction.
+Regenerate source profiles and arithmetic vectors; see ADR 0035. Modern update
+rules, postfix expressions/object references and control flow remain separate.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

@@ -475,7 +475,23 @@ side effects, postfix integer updates, control-flow binding, native arity, full
 GSC/stock-mod acceptance and Linux remain open. The twelve-workstream acceptance
 breakdown is now recorded in docs/gsc-runtime.md.
 
-Next: integer-only postfix statements and structured control-flow/local facts,
+Integer-only postfix updates now pass full Windows workspace gates. The legacy
+value operation reuses established wrapping arithmetic and rejects every float;
+a unary typed instruction and initialized plain-name source statements share
+existing stack/fuel/name/store/source-map machinery. Five added tests cover word
+boundaries/float classes, kernel proof/fuel/type errors, source locals/parameters,
+target admission, update-token maps and exact quotas. Both 4,096-stream hostile
+corpora now include updates. All 118 frontend/43 legacy tests plus doctests pass;
+policy checks 417 source files/eight crates, largest 287 lines. Source guards now
+tie grammar tags/compiler opcodes/header types to native VM integer checks/word
+operations and reject 15 in-memory compiler/VM/header mutations. All thirteen
+original-helper/instruction generators regenerate, along with 724 lexical, 545
+literal and 99 structural replays. See ADR 0035. Normal target reused; no new
+dependency/cache. No native interpreter execution, whole reference/unwind/VM
+equivalence, postfix expressions, object/index updates, modern numeric rules,
+control flow, full GSC/stock-mod acceptance or Linux success is claimed.
+
+Next: source-grounded script argument adaptation and structured control-flow/local facts,
 plus source-grounded native argument adaptation. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
@@ -494,12 +510,14 @@ Research-only Git-blob verification for src/asmsource/_scr_vm.asm records canoni
 SHA256 364d29c723327105116498dd6369ea710d27e00078738f4bb12de97b89c9567e
 at the pinned revision, matching the checkout. That dispatch uses 135 entries/
 opcode <=0x86 versus the header's broader 0x89 inventory; do not assume universal
-VM/profile equivalence. This file is not yet added to upstream.lock.json or used
-as adapter/runtime conformance evidence. Arity investigation remains incomplete.
+VM/profile equivalence. The file is now added to upstream.lock.json for selected
+update-profile guards, not whole native runtime/adapter conformance. Arity
+investigation remains incomplete.
 Research in that same verified VM blob finds ++/-- dispatches require native type
 6 (int), then add/subtract one 32-bit word at labels 690/740. Treating postfix
 updates as arbitrary float-capable addition would be incorrect for this profile.
-This is research-only source evidence; updates are not yet implemented by source compilation.
+These selected source roles now guard the implemented scalar update path; original
+VM/reference/error-unwinding execution remains unverified.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

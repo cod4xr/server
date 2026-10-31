@@ -196,7 +196,7 @@ validation remains unchanged. Binding count/identifier-byte visits/logical table
 payload share compiler admission; table overhead, body indices, kernel scopes and
 RSS remain explicitly distinct. Tests compile/invoke 70,000 locals, retain a
 100,000-byte name, and lower 12,000 groups. This profile rejects control flow,
-compound/postfix updates, calls/objects/events, nonfinal returns and duplicate
+calls/objects/events, nonfinal returns and duplicate
 parameters. Full native binding/arity/module acceptance, calls/frames, richer
 values, scheduling, builtins and modern extensions remain required; see ADR 0033.
 Plain-name compound assignments now cover the ten guarded legacy spellings through
@@ -206,6 +206,14 @@ compound-token maps and existing name/task/code budgets remain in use. Numeric
 failures stay runtime errors in this source profile. Richer overloads, object/index
 targets, side-effecting RHS order, postfix updates and full statement execution
 remain separate work; see ADR 0034.
+The local profile additionally supports standalone integer-only postfix statements
+for initialized plain names. A dedicated unary instruction rejects floats and
+uses established wrapping integer arithmetic; stores, source update-token maps,
+name/task/code budgets and caller isolation remain shared. Source guards now pin
+the VM assembly and connect grammar/compiler tags/opcodes with integer type checks
+and 32-bit word updates. These do not execute original handlers or establish full
+native variable-reference/unwinding/VM behavior. Postfix expressions, object/index
+updates, modern numeric rules and general control flow remain open; see ADR 0035.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

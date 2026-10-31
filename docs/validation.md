@@ -571,3 +571,25 @@ No new dependency or alternate target/cache was introduced.
 Postfix integer updates, richer operator overloads, object/index targets, native
 side-effecting reference/RHS evaluation order, control-flow binding, calls/frames,
 native arity/full GSC/stock-mod parity, Linux and performance remain open.
+
+Integer-only postfix updates passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, source policy and diff checks.
+Five added tests cover int32 word boundaries, all float classes, unary kernel
+stack/fuel/type/location failures, source locals/private parameters, initialized/
+plain target admission, update-token maps and complete name/compiler limits. Both
+4,096-stream hostile corpora now include update instructions. All 118 frontend/43
+legacy tests plus doctests pass. Policy checks 417 source files/eight crates,
+largest 287 lines. No new dependency or alternate target/cache was introduced.
+
+The additionally pinned VM assembly matches its Git blob/canonical hash at the
+same source revision. Selected source profiles connect grammar/compiler dispatch,
+opcodes/header types, integer-only branches and add/subtract-one word operations.
+The new guard accepts the baseline and rejects 15 in-memory compiler/VM/header
+mutations. All thirteen original-helper/instruction fixture generators regenerate;
+724 lexical, 545 literal and 99 structural replays also remain unchanged. Existing
+arithmetic helpers ground wrapping reuse; these checks do not execute the whole
+native VM or establish field/reference/error-unwinding parity. Direct VM dispatch
+through 0x86 and header debugger entries through 0x89 remain distinct inventories.
+Postfix expressions, object/index updates, modern numeric rules, native argument
+adaptation, control-flow binding, full GSC/stock-mod acceptance, Linux and
+performance remain open.

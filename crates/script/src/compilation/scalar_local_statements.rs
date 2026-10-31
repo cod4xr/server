@@ -41,6 +41,9 @@ pub(super) fn lower<'tree, 'source>(
             }
             queue_return(builder, value, view.statement_syntax().span())
         }
+        LegacyStatementKind::Update { target, kind } => {
+            scalar_local_assignment::postfix(builder, view.statement_syntax(), target, kind)
+        }
         _ => Err(scalar_compile_error::at(
             view.span(),
             ScalarCompileErrorKind::UnsupportedBody,

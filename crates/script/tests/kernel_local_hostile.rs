@@ -10,7 +10,7 @@ use cod4x_script::execution::{
     KernelInstruction, KernelResource, KernelValue, KernelVerificationBudget,
     VerifiedKernelProgram,
 };
-use cod4x_script::legacy::{LegacyArithmetic, LegacyNumber};
+use cod4x_script::legacy::{LegacyArithmetic, LegacyIntegerUpdate, LegacyNumber};
 
 use crate::kernel_support;
 
@@ -52,7 +52,7 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
             let slot = usize::try_from(next(&mut state) % 12).expect("Small local");
             let target =
                 usize::try_from(next(&mut state)).expect("Supported test host") % (count + 3);
-            input.push(match choice % 10 {
+            input.push(match choice % 12 {
                 0 => KernelInstruction::LoadLocal(slot),
                 1 => KernelInstruction::StoreLocal(slot),
                 2 => kernel_support::integer(choice.cast_signed()),
@@ -65,7 +65,9 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
                 6 => KernelInstruction::Arithmetic(LegacyArithmetic::Add),
                 7 => KernelInstruction::Discard,
                 8 => KernelInstruction::Duplicate,
-                _ => KernelInstruction::Constant(KernelValue::Undefined),
+                9 => KernelInstruction::Constant(KernelValue::Undefined),
+                10 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Increment),
+                _ => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Decrement),
             });
         }
         if iteration % 32 == 0 {

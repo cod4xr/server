@@ -256,6 +256,14 @@ initialization task. Original compound-token spans locate numeric/type failures.
 The profile has no side-effecting RHS calls or object/index targets, so full native
 reference evaluation order remains separate. No new numeric implementation or
 resource namespace is added; postfix updates remain distinct; see ADR 0034.
+Plain-name postfix statements now use the same checked initialized-name/store
+path with a dedicated unary integer-only instruction. Its value helper reuses
+wrapping integer arithmetic and rejects every float. Verification/stack effects,
+fuel/error accounting, source update-token maps and name/storage quotas remain
+shared. Guarded source profiles tie grammar tags/compiler emission to native VM
+integer checks/word operations without executing that interpreter. No object/index
+reference, postfix-expression, native unwind, modern numeric or control-flow
+semantics is inferred; see ADR 0035.
 
 ## Future custom client
 

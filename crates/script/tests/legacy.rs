@@ -4,6 +4,8 @@
 mod kernel_support;
 mod string_support;
 
+#[path = "integer_updates.rs"]
+mod integer_updates;
 #[path = "kernel_budgets.rs"]
 mod kernel_budgets;
 #[path = "kernel_execution.rs"]

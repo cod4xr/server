@@ -128,8 +128,11 @@ The complete server rewrite remains open.
   argument execution. Tests compile/invoke 70,000 locals; general control flow,
   calls/objects/threads, native arity and full GSC/mod acceptance remain open.
 - All ten scalar plain-name compound assignments reuse the checked numeric
-  operations and source maps. Targets must already be initialized; postfix
-  integer updates and object/index assignment semantics remain separate work.
+  operations and source maps. Targets must already be initialized; object/index
+  assignment semantics remain separate work.
+- Integer-only plain-name postfix increment/decrement, with guarded native
+  grammar/compiler/VM type and word-operation profiles. Float updates fail;
+  overflow wraps and runtime errors map to the original update token.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

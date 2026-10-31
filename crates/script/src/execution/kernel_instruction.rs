@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::KernelValue;
-use crate::legacy::{LegacyArithmetic, LegacyComparison, LegacyIntegerOperator};
+use crate::legacy::{
+    LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate,
+};
 
 /// Numeric branch predicate; consumes its condition value without evaluating a source tree.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -29,6 +31,8 @@ pub enum KernelInstruction {
     Compare(LegacyComparison),
     /// Pops right then left numbers and applies an integer-only operator.
     Integer(LegacyIntegerOperator),
+    /// Applies one integer-only increment/decrement, without selecting a writable reference.
+    IntegerUpdate(LegacyIntegerUpdate),
     /// Pops right then left numbers and pushes float-result division.
     Divide,
     /// Converts numeric truth to integer zero or one.
@@ -59,7 +63,7 @@ impl KernelInstruction {
         match self {
             Self::Constant(_) | Self::LoadLocal(_) => (0, 1),
             Self::Arithmetic(_) | Self::Compare(_) | Self::Integer(_) | Self::Divide => (2, 1),
-            Self::CastBool | Self::LogicalNot | Self::BitwiseNot => (1, 1),
+            Self::CastBool | Self::LogicalNot | Self::BitwiseNot | Self::IntegerUpdate(_) => (1, 1),
             Self::Duplicate => (1, 2),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),
             Self::Jump(_) => (0, 0),

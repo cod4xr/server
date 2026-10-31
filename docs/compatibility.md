@@ -328,6 +328,16 @@ uninitialized/non-name targets, runtime numeric/type errors, compound source spa
 and exact compiler/name accounting. Source rules/opcode guards and prior numeric
 fixtures ground the reuse. Richer overloads, object/index references, side-effecting
 RHS ordering, postfix updates and whole VM/compiler parity remain open; see ADR 0034.
+Integer-only plain-name postfix statements now compile/execute through a dedicated
+unary operation that reuses established wrapping arithmetic. Five tests cover
+integer boundaries, float classes, kernel proof/fuel/type failures, source locals/
+parameters, target admission, exact budgets and update-token error maps. Both
+bounded hostile instruction corpora now include updates. Pinned compiler/VM
+source guards establish selected type/word-operation roles, not original handler
+execution or complete reference/unwinding behavior. The native VM dispatch ends
+at 0x86 while the header also lists debugger opcodes through 0x89; this is not
+complete profile equivalence. Postfix expressions, object/index references, modern
+numeric updates and full GSC/VM/stock-mod acceptance remain open; see ADR 0035.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

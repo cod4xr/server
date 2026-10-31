@@ -153,6 +153,16 @@ and then emits the variable-reference/store path. Rust's limited initialized pla
 name profile preserves prior target/RHS alias values with existing scalar helpers;
 this does not establish side-effecting object/index reference ordering or full
 native compiler/VM execution. Postfix update integer-only behavior remains separate.
+The VM assembly is now additionally hash-pinned at the same upstream revision:
+src/asmsource/_scr_vm.asm has canonical SHA256
+364d29c723327105116498dd6369ea710d27e00078738f4bb12de97b89c9567e.
+Selected update profiles tie grammar tags 0x29/0x2a through EmitStatement dispatch
+to opcodes 0x64/0x65, VAR_INTEGER=6 checks, and add/subtract-one word operations.
+The Rust integer-only primitive reuses existing wrapping arithmetic and is now
+connected to unary typed execution and initialized plain-name source statements.
+Source guards do not execute the native handlers or establish object-reference/
+error-unwinding equivalence. VM direct dispatch covers 135 entries through 0x86;
+the header's extra debugger opcodes through 0x89 remain a distinct inventory.
 
 ## Open research
 

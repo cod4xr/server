@@ -10,7 +10,7 @@ use cod4x_script::execution::{
     KernelResource, KernelValue, KernelVerificationBudget, VerifiedKernelProgram,
 };
 use cod4x_script::legacy::{
-    LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyNumber,
+    LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate, LegacyNumber,
 };
 
 fn next(state: &mut u32) -> u32 {
@@ -21,7 +21,7 @@ fn next(state: &mut u32) -> u32 {
 }
 
 fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
-    let choice = next(state) % 17;
+    let choice = next(state) % 19;
     let operand = next(state);
     let target = usize::try_from(operand).expect("Supported test host") % (count + 3);
     match choice {
@@ -51,6 +51,8 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
             condition: KernelBranchCondition::IfFalse,
             target,
         },
+        17 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Increment),
+        18 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Decrement),
         _ => KernelInstruction::Return,
     }
 }

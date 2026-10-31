@@ -12,7 +12,9 @@ use crate::compilation::scalar_task::ScalarTask;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::KernelInstruction;
 use crate::expression::{LegacyInfixOperator, LegacyReferenceKind, LegacyReferenceSyntax};
+use crate::legacy::LegacyIntegerUpdate;
 use crate::lexical::LegacyLexeme;
+use crate::statement::LegacyUpdateKind;
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn assign<'tree, 'source>(
@@ -49,6 +51,30 @@ pub(super) fn compound<'tree, 'source>(
         span,
     )?;
     builder.push_task(ScalarTask::Visit(value), value.span())
+}
+
+pub(super) fn postfix<'tree, 'source>(
+    builder: &mut ScalarBuilder<'tree, 'source>,
+    statement: LegacySyntaxNode<'tree, 'source>,
+    target: LegacySyntaxNode<'tree, 'source>,
+    kind: LegacyUpdateKind,
+) -> Result<(), ScalarCompileError> {
+    let token = target_name(target)?;
+    let (name, slot) = scalar_local_names::lookup(builder, token)?;
+    builder.emit(KernelInstruction::LoadLocal(slot), token.span())?;
+    let span = scalar_body::child(statement, 1, 2)?.span();
+    finish_assignment(builder, name, slot, span.clone())?;
+    let update = match kind {
+        LegacyUpdateKind::Increment => LegacyIntegerUpdate::Increment,
+        LegacyUpdateKind::Decrement => LegacyIntegerUpdate::Decrement,
+    };
+    builder.push_task(
+        ScalarTask::Emit {
+            instruction: KernelInstruction::IntegerUpdate(update),
+            span: span.clone(),
+        },
+        span,
+    )
 }
 
 fn finish_assignment<'source>(
