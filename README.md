@@ -105,6 +105,8 @@ The complete server rewrite remains open.
 - Borrowed named/indirect function and method calls, immediate/thread spelling,
   original module/function references, and separately admitted argument indices.
   These views do not link functions, evaluate receivers/arguments, or create threads.
+- Borrowed name/dollar/field/index/reserved-self reference views, preserving nested
+  operands and original spelling. Scopes, object types, mutability, and values stay unresolved.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

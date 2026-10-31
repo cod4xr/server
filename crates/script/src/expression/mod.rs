@@ -18,6 +18,8 @@ mod legacy_function_name_syntax;
 mod legacy_operators;
 mod legacy_primary_kind;
 mod legacy_primary_syntax;
+mod legacy_reference_kind;
+mod legacy_reference_syntax;
 mod legacy_syntax_profile;
 
 pub use expression_list_budget::ExpressionListBudget;
@@ -34,3 +36,5 @@ pub use legacy_function_name_syntax::LegacyFunctionNameSyntax;
 pub use legacy_operators::{LegacyInfixOperator, LegacyLogicalOperator, LegacyPrefixOperator};
 pub use legacy_primary_kind::{LegacyLiteralPolarity, LegacyObjectRoot, LegacyPrimaryKind};
 pub use legacy_primary_syntax::LegacyPrimarySyntax;
+pub use legacy_reference_kind::LegacyReferenceKind;
+pub use legacy_reference_syntax::LegacyReferenceSyntax;

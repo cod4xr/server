@@ -443,3 +443,13 @@ frontend and 18 legacy tests. Rules 28..39 length/nonterminal/action profiles an
 99 structural replays regenerate. No native semantic actions, module resolution,
 binding, receiver/argument evaluation order, thread scheduling, compiler/VM/
 stock-mod conformance, or Linux acceptance is established. Normal target reused.
+
+Borrowed reference forms passed full Windows workspace formatting, warnings-denied
+Clippy/rustdoc, debug/release tests, source policy, and diff checks. Five tests cover
+all name/dollar/field/index/reserved-self forms, original spans/spelling, direct/
+primary wrappers, field/index/call composition, .self versus .Self, typed category
+failures/privacy, independent trees, and a 12,000-index chain viewed iteratively.
+The suites contain 75 frontend and 18 legacy tests. Reference production/action
+profiles and all 99 structural replays regenerate. No runtime name/object lookup,
+mutability policy, dollar/self authority, reference execution, full grammar recovery,
+compiler/VM/stock-mod or Linux acceptance is established. Normal target reused.

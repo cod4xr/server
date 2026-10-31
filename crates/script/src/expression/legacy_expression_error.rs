@@ -13,6 +13,8 @@ pub enum LegacyExpressionError {
     NotCall,
     /// The supplied syntax does not represent a named callee/function reference.
     NotFunctionName,
+    /// The supplied syntax does not represent a variable/field/index reference.
+    NotReference,
     /// A supported production differs from the pinned child-count/operator profile.
     ProfileMismatch,
 }
@@ -24,6 +26,7 @@ impl fmt::Display for LegacyExpressionError {
             Self::NotPrimary => "legacy expression is not a primary form",
             Self::NotCall => "legacy syntax node is not an invocation",
             Self::NotFunctionName => "legacy syntax node is not a function name",
+            Self::NotReference => "legacy syntax node is not a reference",
             Self::ProfileMismatch => "legacy expression grammar profile mismatch",
         })
     }

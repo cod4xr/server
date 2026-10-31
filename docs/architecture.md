@@ -196,6 +196,11 @@ targets, optional receivers, invocation mode, and original argument syntax. Loca
 construction is constant-cost and allocation-free; ordered argument indices require
 their explicit budget. No module is opened, function linked, receiver evaluated,
 or thread scheduled. Those semantics stay in later compiler/runtime layers; see ADR 0027.
+Reference views now preserve identifiers, dollar-prefixed names, fields, indexes,
+and reserved .self members through local borrowed roles. Nested objects/index
+expressions remain unresolved syntax. No slot, scope, mutability rule, object ID,
+or runtime authority is selected. Reserved .self stays distinct from ordinary
+.Self field syntax; see ADR 0028.
 
 ## Future custom client
 

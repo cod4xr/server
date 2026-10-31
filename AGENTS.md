@@ -93,6 +93,9 @@ or --test legacy plus a module filter, not old standalone leaf targets; see ADR 
 Call/function-name views retain raw virtual paths, names, indirect expressions,
 receiver and invocation modes. Argument lowering is separately budgeted; these
 views grant no I/O/builtin authority and do not link, execute, or schedule. See ADR 0027.
+Reference views preserve raw name/dollar/field/index/reserved .self roles. Do not
+fold .self into ordinary .Self field syntax or infer writable slots/runtime
+authority from a structural reference. Descendant walks need budgets; see ADR 0028.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

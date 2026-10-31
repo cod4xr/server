@@ -267,6 +267,10 @@ Named/external/indirect call views additionally retain original function/module
 tokens, optional receivers, immediate/thread syntax, and argument-list locations.
 Constructors do not fold case, link names, interpret virtual paths as host access,
 evaluate arguments/receivers, or create threads. See ADR 0027; this is not call/VM parity.
+Local reference views preserve five source forms, including reserved .self versus
+ordinary .Self fields. Names and nested index/object operands remain unbound and
+unevaluated; writable slots or debugger authority are not inferred. Source profiles
+and typed views do not establish native reference execution. See ADR 0028.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

@@ -143,6 +143,10 @@ raw callee/module tokens, unresolved receivers, and separately budgeted argument
 Function-reference views preserve original spelling and wide borrowed names. These
 do not resolve modules, enable builtins/host services, evaluate calls, or schedule
 threads; source/runtime evaluation order remains separate. See ADR 0027.
+Reference views now retain raw identifier/dollar/field/index/reserved-self forms,
+including deeply nested objects walked iteratively. The legacy grammar treats
+.self and .Self differently. Scope/type/mutability checks, dollar/self runtime
+availability, actual values, and reference execution remain open; see ADR 0028.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

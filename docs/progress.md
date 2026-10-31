@@ -370,10 +370,19 @@ views do not resolve modules, link functions, evaluate operands, grant host/buil
 authority, or schedule threads. See ADR 0027. Linux/compiler/VM/stock-mod gates stay
 open. The user renamed the existing branch to main; history remained intact.
 
-Next: typed references and body lowering with checked literal conversion, explicit
-binding/control flow, then bounded verified bytecode/execution. Source research
-distinguishes the reserved .self production from ordinary .Self field syntax;
-do not collapse those roles during name normalization or invent runtime behavior.
+Borrowed reference views now pass full Windows workspace gates. Five tests cover
+all five local roles, names/dollar prefixes, direct/primary wrappers, exact spans,
+field/index/call composition, reserved .self versus ordinary .Self, private errors,
+independent sources, and an iterative 12,000-index chain. All 75 frontend and 18
+legacy tests pass. Source profiles guard rules 62..66 without native action or
+reference execution. These views do not resolve variables/objects, decide scopes/
+mutability, or grant dollar/self runtime authority. See ADR 0028. Full grammar
+recovery was not completed; only the targeted .self role was confirmed. Linux/
+compiler/VM/stock-mod acceptance remain open.
+
+Next: bounded verified scalar-program execution and source/body compilation above
+these views, with explicit value/fuel/stack ownership. Full objects, calls, scheduling,
+host services, modern language, and the join/gameplay dependencies remain required.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 

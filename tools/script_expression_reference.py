@@ -40,6 +40,7 @@ def verify(source: str, tables: dict[str, list[int]], header: str) -> None:
     verify_primaries(source, tables, labels)
     verify_lists(source, tables, labels)
     verify_calls(source, tables, labels)
+    verify_references(source, tables, labels)
 
 
 def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
@@ -98,3 +99,18 @@ def verify_calls(source: str, tables: dict[str, list[int]], labels: list[str]) -
             instructions = (f"mov dword [esp], 0x{tag:x}", f"call {constructor}\n")
             if any(text not in body for text in instructions):
                 raise ValueError("Call/name semantic constructor profile changed")
+
+
+def verify_references(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
+    """Guard raw reference roles, without binding names or selecting writable slots."""
+    profiles = {62: (3, 0xf, "node3"), 63: (4, 0xd, "node4"), 64: (1, 4, "node2"),
+                65: (2, 0x50, "node2"), 66: (3, 0x35, "node2")}
+    for rule, (length, tag, constructor) in profiles.items():
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        if tables["LHS"][rule] != 101 or tables["LENGTH"][rule] != length:
+            raise ValueError("Reference production shape changed")
+        instructions = (f"mov dword [esp], 0x{tag:x}", f"call {constructor}\n")
+        if any(text not in body for text in instructions):
+            raise ValueError("Reference action role changed")
+        if rule in (62, 64, 65) and "call SL_ConvertToLowercase" not in body:
+            raise ValueError("Native reference-name action role changed")

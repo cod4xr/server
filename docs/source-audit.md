@@ -117,6 +117,11 @@ Rules 28..39 now guard module/name/reference/callee/mode/invocation roles throug
 lengths, nonterminals, and semantic constructors. Their native lowercase actions
 remain source evidence; borrowed Rust views retain exact spelling for later binding.
 Thread/method/indirect syntax creates no runtime action or target resolution.
+Rules 62..66 guard named/field/index/dollar/reserved-self reference roles. Targeted
+parser-transition research and source-table cases distinguish object.self from
+object.Self; a broader all-production recovery exceeded its research work cap and
+is not claimed complete. Reference views do not infer variable/object semantics,
+mutability, or runtime authority from those structural roles.
 
 ## Open research
 

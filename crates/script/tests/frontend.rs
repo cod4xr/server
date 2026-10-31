@@ -38,6 +38,8 @@ mod literal_vectors;
 mod primary_forms;
 #[path = "primary_literals.rs"]
 mod primary_literals;
+#[path = "reference_views.rs"]
+mod reference_views;
 #[path = "source_boundaries.rs"]
 mod source_boundaries;
 #[path = "source_locations.rs"]
