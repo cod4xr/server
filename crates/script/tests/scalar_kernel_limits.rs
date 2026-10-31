@@ -30,7 +30,7 @@ fn compiler_preserves_independent_kernel_admission_and_failed_work() -> Result<(
             max_local_values: 0,
         },
         validation: KernelExecutionBudget {
-            max_steps: usage.validation_steps,
+            max_steps: usage.validation_steps.expect("Pure validation"),
             max_stack_values: proof.max_stack_values,
             max_stack_bytes: proof.max_stack_values * size_of::<KernelValue>() as u64,
             max_local_values: 0,
@@ -57,7 +57,10 @@ fn compiler_preserves_independent_kernel_admission_and_failed_work() -> Result<(
         assert_eq!(error.peak_metadata_bytes, usage.peak_metadata_bytes);
         assert!(error.span.start <= error.span.end && error.span.end <= text.len() as u64);
         if resource == KernelResource::ExecutionSteps {
-            assert_eq!(kernel.work_steps, usage.validation_steps - 1);
+            assert_eq!(
+                kernel.work_steps,
+                usage.validation_steps.expect("Pure validation") - 1
+            );
             assert_eq!(source.span(error.span).expect("Return span"), b"return 1+2");
         }
     }

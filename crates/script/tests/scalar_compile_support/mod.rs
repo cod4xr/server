@@ -7,7 +7,7 @@
 use cod4x_script::binding::{LegacyDeveloperMode, LegacyModuleSymbols, SymbolBudget};
 use cod4x_script::compilation;
 use cod4x_script::compilation::{
-    CompiledScalarFunction, ScalarCompilationBudget, ScalarCompileError,
+    CompiledScalarFunction, ScalarCompilationBudget, ScalarCompileError, ScalarSourceProfile,
 };
 use cod4x_script::declaration::{DeclarationBudget, LegacyModuleItem, LegacyModuleSyntax};
 use cod4x_script::source::{SourceBudget, SourceText};
@@ -16,6 +16,21 @@ use cod4x_script::syntax::{LegacySyntaxBudget, LegacySyntaxMode, LegacySyntaxTre
 pub fn compile(
     bytes: &[u8],
     budget: ScalarCompilationBudget,
+) -> Result<CompiledScalarFunction, ScalarCompileError> {
+    compile_profile(bytes, budget, ScalarSourceProfile::PureReturn)
+}
+
+pub fn compile_local(
+    bytes: &[u8],
+    budget: ScalarCompilationBudget,
+) -> Result<CompiledScalarFunction, ScalarCompileError> {
+    compile_profile(bytes, budget, ScalarSourceProfile::LocalStatements)
+}
+
+fn compile_profile(
+    bytes: &[u8],
+    budget: ScalarCompilationBudget,
+    profile: ScalarSourceProfile,
 ) -> Result<CompiledScalarFunction, ScalarCompileError> {
     let source = SourceText::index(bytes, SourceBudget::default()).expect("Source");
     let tree = LegacySyntaxTree::parse_structure(
@@ -40,5 +55,10 @@ pub fn compile(
             _ => None,
         })
         .expect("Single synthetic function");
-    compilation::compile_scalar_function(function, budget)
+    match profile {
+        ScalarSourceProfile::PureReturn => compilation::compile_scalar_function(function, budget),
+        ScalarSourceProfile::LocalStatements => {
+            compilation::compile_local_scalar_function(function, budget)
+        }
+    }
 }

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::binding::LegacyIdentifier;
 use std::ops::Range;
 
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -10,6 +11,15 @@ pub(super) struct ScalarPatchSite(pub(super) usize);
 
 pub(super) enum ScalarTask<'tree, 'source> {
     Visit(LegacySyntaxNode<'tree, 'source>),
+    Statement {
+        syntax: LegacySyntaxNode<'tree, 'source>,
+        last: bool,
+    },
+    FinishAssignment {
+        name: LegacyIdentifier<'source>,
+        slot: usize,
+        span: Range<u64>,
+    },
     Emit {
         instruction: KernelInstruction,
         span: Range<u64>,
@@ -29,7 +39,9 @@ impl ScalarTask<'_, '_> {
     pub(super) fn span(&self) -> Range<u64> {
         match self {
             Self::Visit(node) => node.span(),
+            Self::Statement { syntax, .. } => syntax.span(),
             Self::Emit { span, .. }
+            | Self::FinishAssignment { span, .. }
             | Self::BeginLogical { span, .. }
             | Self::EndLogical { span, .. } => span.clone(),
         }

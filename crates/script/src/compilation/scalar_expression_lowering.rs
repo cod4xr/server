@@ -5,6 +5,7 @@ use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_literal;
+use crate::compilation::scalar_local_names;
 use crate::compilation::scalar_task::ScalarTask;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -82,6 +83,9 @@ fn primary<'tree, 'source>(
         scalar_compile_error::at(node.span(), ScalarCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
+        LegacyPrimaryKind::Reference { syntax } if builder.locals.is_some() => {
+            scalar_local_names::read(builder, syntax)
+        }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder
                 .ledger

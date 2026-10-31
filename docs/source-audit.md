@@ -140,7 +140,13 @@ uninitialised-variable compiler error on invalid reads. The scalar backend now
 uses separate initialized-state/value slots and wide checked indices with budgets,
 without claiming source definite-assignment equivalence. Its exact internal
 argument binding does not infer native missing/extra-argument behavior from the
-EmitThreadInternal parameter walk. That adapter and source binding remain open.
+EmitThreadInternal parameter walk. That adapter and general source binding remain open.
+An explicit straight-line scalar-local source profile now reuses guarded name
+reference, assignment/return/body and expression roles. Parameters and source-
+ordered name assignments use initialized-state tracking, while full control-flow
+scope/definite assignment is still open. Duplicate-parameter/nonfinal-return
+rejection is this profile's deliberate policy, not inferred native compiler parity.
+No original compiler or VM instruction handler executes in its source tests.
 
 ## Open research
 

@@ -64,7 +64,7 @@ fn source_short_circuit_branches_skip_numeric_errors_and_normalize_bool_results(
             outcome.value,
             KernelValue::Number(LegacyNumber::Integer(expected))
         );
-        assert_eq!(outcome.steps, compiled.usage().validation_steps);
+        assert_eq!(Some(outcome.steps), compiled.usage().validation_steps);
     }
     let text = b"main(){return true && (1/0);}";
     let error = scalar_compile_support::compile(text, ScalarCompilationBudget::default())

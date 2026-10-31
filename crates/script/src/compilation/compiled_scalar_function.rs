@@ -4,10 +4,20 @@ use std::ops::Range;
 
 use crate::execution::VerifiedKernelProgram;
 
+/// Explicit accepted source/validation contract for an owned scalar function.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ScalarSourceProfile {
+    /// Zero parameters and empty/single-return body, validated by bounded pure execution.
+    PureReturn,
+    /// Parameters, ordinary name assignments, empty statements and optional final return.
+    /// Publication verifies code without executing fabricated argument values.
+    LocalStatements,
+}
+
 /// Successful restricted source compiler accounting, excluding allocator overhead/RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ScalarCompilationUsage {
-    /// Body/task/literal-byte/resolution work charged to the compiler.
+    /// Body/queue/task/literal/identifier-byte/resolution work charged to the compiler.
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.
     pub instructions: u64,
@@ -17,23 +27,33 @@ pub struct ScalarCompilationUsage {
     pub peak_metadata_bytes: u64,
     /// Actual verification scans/visits/edges in the separate kernel scope.
     pub verification_steps: u64,
-    /// Actual instructions run during separate pure validation execution.
-    pub validation_steps: u64,
+    /// Bound local names, including parameters, in the local-statements profile.
+    pub local_bindings: u64,
+    /// Identifier bytes charged across declaration/read/initialization visits.
+    pub identifier_bytes: u64,
+    /// Actual pure validation instructions; None when this profile does not pre-execute.
+    pub validation_steps: Option<u64>,
 }
 
-/// Owned pure scalar function code/maps, with no source/tree/name references.
+/// Owned restricted scalar function code/maps, with no source/tree/name references.
 ///
-/// The profile accepts no parameters and only empty/single-return bodies. It is
-/// not a full GSC function/module compiler or activation mechanism. Callers retain
-/// the source/module association for these original byte spans and bind names.
+/// The explicit profile controls accepted syntax/validation; neither implements
+/// full GSC function/module compilation or activation. Callers retain source/module
+/// association for these byte spans and resolve module/function names.
 pub struct CompiledScalarFunction {
+    pub(super) profile: ScalarSourceProfile,
     pub(super) program: VerifiedKernelProgram,
     pub(super) spans: Vec<Range<u64>>,
     pub(super) usage: ScalarCompilationUsage,
 }
 
 impl CompiledScalarFunction {
-    /// Borrows the immutable scalar proof; invocation has its own stack/fuel budget.
+    /// Returns the source/validation contract without source names or values.
+    #[must_use]
+    pub fn profile(&self) -> ScalarSourceProfile {
+        self.profile
+    }
+    /// Borrows the immutable scalar proof; invocation admits arguments/locals/stack/fuel.
     #[must_use]
     pub fn program(&self) -> &VerifiedKernelProgram {
         &self.program
@@ -56,6 +76,7 @@ impl fmt::Debug for CompiledScalarFunction {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("CompiledScalarFunction")
+            .field("profile", &self.profile)
             .field("usage", &self.usage)
             .finish_non_exhaustive()
     }

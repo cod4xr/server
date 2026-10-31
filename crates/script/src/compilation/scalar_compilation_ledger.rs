@@ -13,21 +13,65 @@ use crate::execution::KernelInstruction;
 pub(super) struct ScalarCompilationLedger {
     pub(super) budget: ScalarCompilationBudget,
     pub(super) usage: ScalarCompilationUsage,
+    binding_bytes: u64,
 }
 
 impl ScalarCompilationLedger {
     pub(super) fn new(budget: ScalarCompilationBudget) -> Self {
         Self {
             budget,
+            binding_bytes: 0,
             usage: ScalarCompilationUsage {
                 compiler_steps: 0,
                 instructions: 0,
                 peak_task_frames: 0,
                 peak_metadata_bytes: 0,
                 verification_steps: 0,
-                validation_steps: 0,
+                validation_steps: None,
+                local_bindings: 0,
+                identifier_bytes: 0,
             },
         }
+    }
+
+    pub(super) fn identifier(
+        &mut self,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        let next = self
+            .usage
+            .identifier_bytes
+            .checked_add(bytes)
+            .ok_or_else(|| {
+                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            })?;
+        check(
+            ScalarCompilationResource::IdentifierBytes,
+            next,
+            self.budget.max_identifier_bytes,
+            span.clone(),
+        )?;
+        self.charge(bytes, span)?;
+        self.usage.identifier_bytes = next;
+        Ok(())
+    }
+
+    pub(super) fn bindings(
+        &mut self,
+        count: u64,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        check(
+            ScalarCompilationResource::LocalBindings,
+            count,
+            self.budget.max_local_bindings,
+            span,
+        )?;
+        self.usage.local_bindings = count;
+        self.binding_bytes = bytes;
+        Ok(())
     }
 
     pub(super) fn charge(
@@ -78,7 +122,7 @@ impl ScalarCompilationLedger {
             .ok_or_else(|| {
                 scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
             })?;
-        self.metadata(bytes, span)?;
+        self.metadata_with_bindings(bytes, span)?;
         self.usage.instructions = instructions as u64;
         self.usage.peak_task_frames = self.usage.peak_task_frames.max(tasks as u64);
         Ok(())
@@ -98,6 +142,17 @@ impl ScalarCompilationLedger {
             .ok_or_else(|| {
                 scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
             })?;
+        self.metadata_with_bindings(bytes, span)
+    }
+
+    fn metadata_with_bindings(
+        &mut self,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        let bytes = bytes.checked_add(self.binding_bytes).ok_or_else(|| {
+            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+        })?;
         self.metadata(bytes, span)
     }
 

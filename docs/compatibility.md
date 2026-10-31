@@ -308,6 +308,19 @@ arguments/slots, and another 4,096 hostile streams. These internal capacities do
 not establish source parameter/local support or client-visible expansion. Native
 missing/extra-argument policy, full local binding/definite assignment, call frames,
 source general-body execution, and VM parity remain open; see ADR 0032.
+A separate scalar-local source profile now compiles parameters, ordinary name
+assignments/reassignments, empty statements, and final/fallthrough returns. It
+uses legacy identifier identity (including long-name exact-case fallback), checks
+initialization in source order, and keeps stored Undefined distinct from missing
+assignment. Eleven integration tests cover real source invocation, source maps,
+privacy/ownership, unsupported syntax, budgets, 70,000 local names, 100,000-byte
+names and 12,000 groups. Publication verifies without made-up parameter values;
+runtime numeric errors remain located. Duplicate-parameter/nonfinal-return
+rejections are explicit restricted policies, not complete native compiler
+acceptance/error-order claims. Source control-flow binding, native arity, calls,
+objects/threads/events/builtins, modules/stock mods and full VM parity remain open;
+see ADR 0033. The original pure-return entry point retains its accepted syntax and
+validation behavior; optional validation accounting makes the profile difference explicit.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

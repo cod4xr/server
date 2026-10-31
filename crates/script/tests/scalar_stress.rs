@@ -48,5 +48,5 @@ fn logical_source_resolves_branch_destinations_beyond_sixteen_bits() {
         .execute(KernelExecutionBudget::default())
         .expect("Wide logical execution");
     assert_eq!(outcome.value, KernelValue::Number(LegacyNumber::Integer(1)));
-    assert_eq!(outcome.steps, compiled.usage().validation_steps);
+    assert_eq!(Some(outcome.steps), compiled.usage().validation_steps);
 }

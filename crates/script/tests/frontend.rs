@@ -6,6 +6,14 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_source_budgets.rs"]
+mod local_source_budgets;
+#[path = "local_source_execution.rs"]
+mod local_source_execution;
+#[path = "local_source_rejections.rs"]
+mod local_source_rejections;
+#[path = "local_source_stress.rs"]
+mod local_source_stress;
 #[path = "scalar_budgets.rs"]
 mod scalar_budgets;
 #[path = "scalar_compilation.rs"]

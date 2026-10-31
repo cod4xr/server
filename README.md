@@ -121,7 +121,12 @@ The complete server rewrite remains open.
   storage before allocation; local binding and general-body execution remain open.
 - Scalar-kernel local loads/stores with immutable parameter/local layouts, exact
   internal argument binding, uninitialized-read errors, isolated invocations, and
-  local count/byte budgets. Source local binding, native GSC arity, and call frames remain open.
+  local count/byte budgets. General source binding, native GSC arity, and call frames remain open.
+- A separate straight-line scalar source profile now binds parameters/local names,
+  ordinary assignments/reassignments, empty statements and final/fallthrough returns.
+  It preserves initialization checks and owns verified code/maps without fabricated
+  argument execution. Tests compile/invoke 70,000 locals; general control flow,
+  calls/objects/threads, native arity and full GSC/mod acceptance remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

@@ -3,13 +3,15 @@ use std::error::Error;
 use std::fmt;
 use std::ops::Range;
 
+use crate::binding::LegacyIdentifierError;
 use crate::execution::KernelError;
 use crate::literal::LegacyLiteralError;
+use crate::statement::StatementListError;
 
 /// Restricted scalar compiler resource, independent of legacy parser/VM pools.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ScalarCompilationResource {
-    /// Compiler actions, literal-byte work, and instruction resolution.
+    /// Compiler actions, literal/identifier-byte work, and instruction resolution.
     Steps,
     /// Emitted typed instructions.
     Instructions,
@@ -17,6 +19,10 @@ pub enum ScalarCompilationResource {
     TaskFrames,
     /// Logical compiler-owned pending/task/code/map metadata.
     MetadataBytes,
+    /// Complete bound names, including parameters.
+    LocalBindings,
+    /// Identifier bytes across name visits.
+    IdentifierBytes,
 }
 
 /// Fixed scalar compilation category, without source text, values, or names.
@@ -24,12 +30,26 @@ pub enum ScalarCompilationResource {
 pub enum ScalarCompileErrorKind {
     /// This source profile accepts no parameters.
     UnsupportedParameters,
-    /// This source profile accepts only empty or single-return bodies.
+    /// A statement is outside the selected restricted source profile.
     UnsupportedBody,
     /// Strings, vectors, objects, references, calls, and other primaries are unsupported.
     UnsupportedPrimary,
     /// Parentheses must contain exactly one scalar expression in this profile.
     UnsupportedGroupArity,
+    /// This profile permits only plain-name local assignment targets.
+    UnsupportedLocalTarget,
+    /// This restricted profile rejects repeated canonical parameter names.
+    DuplicateParameter,
+    /// A name has no initialized slot at this point in the straight-line source.
+    UninitializedLocal,
+    /// This restricted profile permits return only as the final immediate statement.
+    ReturnNotLast,
+    /// A private local slot/table invariant did not hold.
+    InvalidLocalBinding,
+    /// Identifier admission failed without retaining its spelling.
+    Identifier(LegacyIdentifierError),
+    /// Separately admitted immediate body indexing failed.
+    BodyList(StatementListError),
     /// Required private source production/child invariants did not hold.
     InvalidStructure,
     /// A compiler-owned branch relocation was unresolved, rebound, or invalid.
@@ -79,6 +99,8 @@ impl fmt::Display for ScalarCompileError {
 impl Error for ScalarCompileError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match &self.kind {
+            ScalarCompileErrorKind::Identifier(error) => Some(error),
+            ScalarCompileErrorKind::BodyList(error) => Some(error),
             ScalarCompileErrorKind::Literal(error) => Some(error),
             ScalarCompileErrorKind::Kernel(error) => Some(error),
             _ => None,

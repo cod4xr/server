@@ -4,6 +4,7 @@ use std::ops::Range;
 
 use crate::compilation::scalar_compilation_ledger::ScalarCompilationLedger;
 use crate::compilation::scalar_compile_error;
+use crate::compilation::scalar_local_bindings::ScalarLocalBindings;
 use crate::compilation::scalar_task::{
     PendingScalarInstruction, PendingScalarKind, ScalarPatchSite, ScalarTask,
 };
@@ -12,6 +13,7 @@ use crate::execution::{KernelBranchCondition, KernelInstruction};
 
 pub(super) struct ScalarBuilder<'tree, 'source> {
     pub(super) ledger: ScalarCompilationLedger,
+    pub(super) locals: Option<ScalarLocalBindings<'source>>,
     tasks: Vec<ScalarTask<'tree, 'source>>,
     instructions: Vec<PendingScalarInstruction>,
     active_task: bool,
@@ -21,10 +23,28 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
     pub(super) fn new(budget: ScalarCompilationBudget) -> Self {
         Self {
             ledger: ScalarCompilationLedger::new(budget),
+            locals: None,
             tasks: Vec::new(),
             instructions: Vec::new(),
             active_task: false,
         }
+    }
+
+    pub(super) fn admit_binding(
+        &mut self,
+        count: u64,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        self.ledger.bindings(count, bytes, span.clone())?;
+        let live = self
+            .tasks
+            .len()
+            .checked_add(usize::from(self.active_task))
+            .ok_or_else(|| {
+                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            })?;
+        self.ledger.admit(self.instructions.len(), live, span)
     }
 
     pub(super) fn push_task(

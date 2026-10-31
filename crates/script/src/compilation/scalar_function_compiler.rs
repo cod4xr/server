@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use std::ops::Range;
-
 use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_expression_lowering;
+use crate::compilation::scalar_program;
 use crate::compilation::scalar_task::ScalarTask;
+use crate::compilation::scalar_task_lowering;
 use crate::compilation::{
-    CompiledScalarFunction, ScalarCompilationBudget, ScalarCompileError, ScalarCompileErrorKind,
+    CompiledScalarFunction, ScalarCompilationBudget, ScalarCompileError, ScalarSourceProfile,
 };
 use crate::declaration::LegacyFunctionSyntax;
-use crate::execution::{KernelError, KernelInstruction, KernelValue, VerifiedKernelProgram};
+use crate::execution::{KernelFunctionLayout, KernelInstruction, KernelValue};
 
 /// Compiles the restricted zero-parameter, empty/single-scalar-return source profile.
 ///
@@ -61,46 +59,11 @@ fn compile<'tree, 'source>(
             body.return_span,
         )?;
     }
-    while let Some(task) = builder.next_task() {
-        builder.ledger.charge(1, task.span())?;
-        match task {
-            ScalarTask::Visit(node) => scalar_expression_lowering::visit(builder, node)?,
-            ScalarTask::Emit { instruction, span } => builder.emit(instruction, span)?,
-            ScalarTask::BeginLogical {
-                operator,
-                right,
-                span,
-            } => scalar_expression_lowering::logical(builder, operator, right, span)?,
-            ScalarTask::EndLogical { site, span } => builder.bind(site, span)?,
-        }
-    }
-    let fallback = function.body().span();
-    let (code, spans) = builder.resolve(fallback.clone())?;
-    let program = VerifiedKernelProgram::verify(&code, builder.ledger.budget.verification)
-        .map_err(|error| kernel_error(error, &spans, fallback.clone()))?;
-    drop(code);
-    let validation = program
-        .execute(builder.ledger.budget.validation)
-        .map_err(|error| kernel_error(error, &spans, fallback))?;
-    builder.ledger.usage.verification_steps = program.usage().verification_steps;
-    builder.ledger.usage.validation_steps = validation.steps;
-    Ok(CompiledScalarFunction {
-        program,
-        spans,
-        usage: builder.ledger.usage,
-    })
-}
-
-fn kernel_error(
-    error: KernelError,
-    spans: &[Range<u64>],
-    fallback: Range<u64>,
-) -> ScalarCompileError {
-    let span = error
-        .instruction
-        .and_then(|pc| usize::try_from(pc).ok())
-        .and_then(|pc| spans.get(pc))
-        .cloned()
-        .unwrap_or(fallback);
-    scalar_compile_error::at(span, ScalarCompileErrorKind::Kernel(error))
+    scalar_task_lowering::drain(builder)?;
+    scalar_program::finish(
+        builder,
+        KernelFunctionLayout::default(),
+        function.body().span(),
+        ScalarSourceProfile::PureReturn,
+    )
 }

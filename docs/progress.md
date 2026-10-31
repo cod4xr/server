@@ -440,9 +440,32 @@ dependencies or alternate caches. Exact internal arity is not native GSC policy;
 source local binding/definite assignment/general-body execution, call frames,
 scheduler, host services, stock-mod acceptance and Linux remain open.
 
-Next: source local binding/lowering and source-grounded native argument adaptation,
-preserving compile-time initialization errors and wide indices. Full objects,
-calls, scheduling, host services, modern language, and join/gameplay remain required.
+The separate straight-line scalar-local source profile now passes full Windows
+workspace gates. Parameters, plain-name assignments/reassignments, empty statements
+and final/fallthrough returns compile into owned verified code/maps. Initialized
+reads use legacy name identity; first self-reads/late/missing names fail, including
+in skipped logical source. New targets initialize after RHS/store, while assigned
+locals and mutable parameters retain prior initialization. Hash iteration never
+selects slot or diagnostic order. Binding counts/identifier visits/logical map-pair
+payload share compiler admission; body indices/kernel/table overhead remain distinct.
+The original pure-return entry point retains accepted syntax/validation. Results
+now tag their source profile; validation steps are Some for pure-return validation
+and None for local compilation, which never executes fabricated arguments.
+Eleven added tests cover source invocation, runtime source maps, privacy/ownership,
+initialization/rejection policies, exact/one-less compiler/body/kernel limits,
+70,000 source locals, 100,000-byte names and 12,000 groups. All 112 frontend/41
+legacy tests and doctests pass; policy checks 411 source files/eight crates,
+largest 287 lines. Grammar/statement/source guards and 99 replays regenerate.
+See ADR 0033. Normal target reused with no dependency/cache additions. This is
+not full native binding/arity/duplicate-parameter/diagnostic-order equivalence,
+control-flow compilation, whole-module/stock-mod execution, or Linux acceptance.
+
+Next: scalar compound/postfix statements and structured control-flow/local facts,
+plus source-grounded native argument adaptation. Full objects, calls, scheduling,
+host services, modern language, and join/gameplay remain required. The user's
+latest full-GSC task-count question was answered as roughly 10–12 major remaining
+workstreams, each containing many implementation/testing tasks, not an exact task
+inventory or delivery promise; expanded language/services require further work.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 Further pinned source research finds a 64-local registration check in
@@ -458,6 +481,10 @@ at the pinned revision, matching the checkout. That dispatch uses 135 entries/
 opcode <=0x86 versus the header's broader 0x89 inventory; do not assume universal
 VM/profile equivalence. This file is not yet added to upstream.lock.json or used
 as adapter/runtime conformance evidence. Arity investigation remains incomplete.
+Research in that same verified VM blob finds ++/-- dispatches require native type
+6 (int), then add/subtract one 32-bit word at labels 690/740. Treating postfix
+updates as arbitrary float-capable addition would be incorrect for this profile.
+This is research-only source evidence; updates are not yet implemented by source compilation.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

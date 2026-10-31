@@ -532,3 +532,26 @@ These local views/indices do not establish local binding, lvalue/control-flow
 legality, developer activation, event/debugger execution, general-body compilation,
 scheduling, full GSC/stock-mod acceptance, Linux success, or performance. The
 normal target directory was reused without dependencies or alternate caches.
+
+The explicit straight-line scalar-local source profile passed full Windows
+workspace formatting, warnings-denied Clippy/rustdoc, debug/release tests, source
+policy, and diff checks. Eleven new integration tests compile/invoke real scalar
+parameter/local source, mutable parameters and reassignment, initialized Undefined,
+final/fallthrough returns, lazy argument-dependent numeric errors/source maps,
+source-independent ownership/privacy, initialization/rejection policies, complete
+compiler/binding/name/body/kernel admission, 70,000 source locals, 100,000-byte
+identifiers, and 12,000 groups. The original pure-return tests pass with unchanged
+syntax/validation behavior. Explicit result profiles and optional validation-step
+accounting distinguish verified local functions from pre-executed pure functions.
+All 112 frontend/41 legacy tests and doctests pass. Policy checks 411 source files/
+eight crates, largest 287 lines; source/statement guards and all 99 structural
+replays regenerate. No new dependency or alternate target/cache was introduced.
+
+This restricted source profile rejects general control flow, updates, non-name
+targets, richer values, calls/objects/events, duplicate parameters, and nonfinal
+returns. Those policies do not establish native duplicate-parameter, arity,
+diagnostic-order, full binding, stock-mod/compiler/VM, or Linux equivalence.
+Logical map-pair payload/name-visit/compiler quotas exclude table capacity/control
+overhead, input/body/kernel scopes and aggregate RSS/CPU guarantees. Native argument
+adaptation, control-flow facts, calls/frames, values/heap, scheduler/builtins/game
+integration and modern language remain required work.

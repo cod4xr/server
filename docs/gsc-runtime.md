@@ -185,6 +185,20 @@ The exact internal argument contract still needs a source-grounded legacy arity
 adapter. Source local binding/definite assignment, call frames, general bodies,
 objects, scheduler, and native VM acceptance remain open. The restricted source
 compiler keeps its zero-parameter profile; see ADR 0032.
+A separate straight-line scalar-local source entry point now binds parameter and
+plain local names, assignments/reassignments, empty statements, and final or
+fallthrough returns. Initialized reads use legacy name identity and wide slots;
+new targets remain uninitialized until RHS lowering/store finishes. Skipped
+logical source still undergoes name checks. Code/maps own no source or names, and
+this profile publishes after verification without pre-executing made-up arguments.
+The result records its profile and optional validation steps; original pure-return
+validation remains unchanged. Binding count/identifier-byte visits/logical table
+payload share compiler admission; table overhead, body indices, kernel scopes and
+RSS remain explicitly distinct. Tests compile/invoke 70,000 locals, retain a
+100,000-byte name, and lower 12,000 groups. This profile rejects control flow,
+compound/postfix updates, calls/objects/events, nonfinal returns and duplicate
+parameters. Full native binding/arity/module acceptance, calls/frames, richer
+values, scheduling, builtins and modern extensions remain required; see ADR 0033.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

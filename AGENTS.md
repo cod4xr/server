@@ -123,6 +123,17 @@ Exact internal argument slices are not native GSC missing/extra-argument policy.
 Retain runtime local checks, failed work/local admission, and caller isolation.
 This adds no source local binding, call stack, definite-assignment proof, scheduler,
 or host authority; the restricted source compiler remains unchanged. See ADR 0032.
+A separate straight-line scalar-local source profile now binds parameters/plain
+name assignments and checks initialization in source order, including skipped
+source. Initialize new targets only after RHS lowering/store; preserve reassignment
+and initialized Undefined. Admit binding count/identifier visits/logical map-pair
+payload alongside compiler tasks/code; hash capacity/control/allocator overhead
+and separately admitted body/kernel scopes are excluded, not aggregate RSS.
+Reject unsupported control flow/targets/values, nonfinal returns and duplicate
+parameters explicitly under this profile. Results tag the source profile and
+optional validation steps; local-profile compilation must not run fabricated
+arguments. This is not native arity/duplicate-parameter/whole-mod equivalence,
+control-flow definite assignment, general GSC or activation. See ADR 0033.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

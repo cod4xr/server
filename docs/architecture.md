@@ -236,6 +236,20 @@ at their instruction. Invocations share only immutable code/layouts. Local count
 logical bytes and failed admission/work stay visible without source/value leakage.
 Exact arity is an internal contract, not native GSC adaptation. Source local binding,
 call frames/stack, objects and scheduling remain separate; see ADR 0032.
+A separate straight-line scalar-local source profile now binds parameters and
+plain-name assignments through a fallibly grown randomized map. Slot assignment
+and diagnostics use source order, never map iteration. New targets remain
+uninitialized during RHS lowering; stores initialize, and reassignment preserves
+existing initialization. Source reads, even in skipped logical branches, must
+have initialized bindings. Binding count/visited identifier bytes and logical pair
+payload are admitted alongside compiler work/tasks/code/maps; table capacity/
+control overhead and body/kernel scopes remain separately identified. Results own
+code/maps with a profile tag and optional validation accounting. The original pure
+profile pre-executes under its budget; parameter/local compilation publishes a
+proof without fabricated argument execution. Unsupported statements/targets/values,
+nonfinal returns and duplicate parameters fail explicitly. Full native binding/
+arity, control-flow facts, calls/objects/scheduling and activation remain open;
+see ADR 0033.
 
 ## Future custom client
 
