@@ -2,7 +2,7 @@
 use std::fmt;
 
 use crate::literal::legacy_literal_error;
-use crate::literal::{LegacyLiteralError, LegacyLiteralResource};
+use crate::literal::{LegacyLiteralError, LegacyLiteralResource, LegacyStringError};
 
 /// Legacy string literal category, independent of runtime interning/handles.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -36,6 +36,44 @@ impl LegacyString {
     #[must_use]
     pub fn into_bytes(self) -> Vec<u8> {
         self.bytes
+    }
+
+    /// Concatenates ordinary decoded strings under an explicit result-byte budget.
+    ///
+    /// This preserves valid native plain-string byte results and intentionally
+    /// expands past its fixed scratch-buffer ceiling. No terminator, UTF-8 repair,
+    /// formatting/coercion, native interning, or VM reference effects are added.
+    /// The budget covers logical result bytes; inputs, allocator overhead, and
+    /// aggregate runtime/temporary memory accounting remain caller responsibilities.
+    ///
+    /// # Errors
+    /// Rejects localized operands, checked size overflow, budget exhaustion, and
+    /// allocation failure. Inputs remain unchanged and no partial result escapes.
+    pub fn concatenate(&self, other: &Self, maximum: u64) -> Result<Self, LegacyStringError> {
+        if self.kind != LegacyStringKind::Plain || other.kind != LegacyStringKind::Plain {
+            return Err(LegacyStringError::ExpectedPlainString);
+        }
+        let length = self
+            .bytes
+            .len()
+            .checked_add(other.bytes.len())
+            .ok_or(LegacyStringError::SizeOverflow)?;
+        if length as u64 > maximum {
+            return Err(LegacyStringError::BudgetExceeded {
+                requested: length as u64,
+                maximum,
+            });
+        }
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(length)
+            .map_err(|_| LegacyStringError::AllocationFailed)?;
+        bytes.extend_from_slice(&self.bytes);
+        bytes.extend_from_slice(&other.bytes);
+        Ok(Self {
+            kind: LegacyStringKind::Plain,
+            bytes,
+        })
     }
 
     pub(super) fn decode(

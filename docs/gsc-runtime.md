@@ -113,6 +113,11 @@ The scalar kernel now adds numeric pair coercion, six explicit language comparis
 and float-result division against 12,416 original-helper cases. Legacy tolerance,
 unordered comparisons, mixed-number rounding, and signed-zero errors remain
 explicit; see ADR 0020. This is not full operators, constant folding, or execution.
+Owned plain strings now concatenate under checked result-byte budgets without
+the native 8190-byte payload ceiling. Tests distinguish 54 unchanged native results
+from 54 deliberate capacity expansions, up to 200,000 bytes. This is a value helper,
+not VM integration, aggregate heap accounting, localized/mixed coercion, or a client
+wire expansion; see ADR 0021.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -62,6 +62,10 @@ Verify scalar coercion/comparison/division with tools/generate_numeric_vectors.p
 --check. Its nearest/SSE profile aborts nonnumeric services; arithmetic NaN payloads
 and native VM error unwinding are not asserted. Use explicit GSC comparisons,
 not the Rust data enum's derived PartialEq; see ADR 0020.
+Verify plain-string results/intentional capacity expansion with
+tools/generate_string_operation_vectors.py --check. Its native string/ref services
+are stubs; native capacity-error cases are not parity successes. Owned result-byte
+budgets do not establish aggregate VM heap accounting; see ADR 0021.
 Verify source-derived lexical data with tools/generate_lexical_tables.py --check;
 table replays must not be described as original executable/parser conformance.
 Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;

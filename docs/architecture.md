@@ -168,6 +168,10 @@ The scalar semantic kernel now provides explicit pair coercion/comparisons/divis
 for later frontend/VM consumers. Rust data equality is not a GSC language operator;
 float profile/error scope remain explicit. No heap references, stack cleanup, or
 host FP-control state is owned by these helpers; see ADR 0020.
+Owned plain-string concatenation now admits checked result lengths and fallible
+growth without the native scratch ceiling. It owns only the result bytes, leaving
+aggregate heap/reference/GC policy to an implemented runtime boundary. Localized
+and mixed-kind coercion remain separate; see ADR 0021.
 
 ## Future custom client
 

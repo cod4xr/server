@@ -371,3 +371,14 @@ source-derived grammar/declaration/symbol profile check also passes. These resul
 do not establish host FP-control independence, native VM cleanup/unwinding,
 integer overflow operators, full value/operator coverage, compiler/VM execution,
 stock-mod/gameplay parity, or Linux acceptance for the added numeric layer.
+
+Owned plain-string concatenation passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, repository policy, and diff
+checks. Four tests cover 54 original helper successes and 54 deliberate expansions
+past native scratch-capacity failures, up to 200,000 result bytes. Exact/one-less
+budgets, empty/self operands, byte order/non-UTF-8 preservation, localized rejection,
+unchanged inputs, and private errors/Debug pass. The native harness uses actual
+addition/weaker-string functions with stubbed string/ref services. All twelve
+original-function generators and structural/profile regeneration pass. Result-only
+accounting is not aggregate VM heap accounting; no interning, mixed coercion,
+bytecode/VM, stock-mod, or Linux acceptance is claimed. Normal target reused.

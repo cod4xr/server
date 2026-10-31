@@ -301,15 +301,20 @@ Int division yields float; signed-zero denominators return DivisionByZero withou
 partial caller mutation. Arithmetic NaN payloads are unspecified; FP control state,
 VM error cleanup, strings/vectors/objects, and other operators remain separate.
 
-Next: expand owned string operations under configurable budgets, then continue
-source-grounded arithmetic and expression/body lowering. Scr_EvalPlus uses an
-8192-byte stack scratch and rejects total plain-string payload >=8191 bytes.
-That guard is a capacity-removal target, unlike the isolated long-identifier case
-quirk. Preserve old valid byte results, remove the scratch ceiling, admit fallible
-growth before copying, and keep localized/mixed coercion and VM interning separate.
-The existing LegacyString owns decoded literal bytes without engine IDs; no full
-runtime value/GC design is chosen by that type. Integer add/sub/mul/shift overflow
-and modulo edge cases still need explicit evidence/profile decisions.
+Owned ordinary-string concatenation now passes full Windows workspace gates.
+Four tests preserve 54 native helper byte results and intentionally expand 54
+native scratch-capacity failures, including a 200,000-byte result. Checked length,
+exact/one-less result budgets, fallible reserve, empty/self operands, raw bytes,
+localized rejection, source privacy, and unchanged inputs pass. The result budget
+does not account for aggregate runtime memory, allocator overhead, or input storage.
+No interner, heap/GC choice, mixed coercion, VM integration, or wire expansion is
+established. The actual C helper uses a stricter cutoff than archival assembly;
+ADR 0021 records that distinction. All twelve original-function generators pass;
+string/ref service stubs and capacity changes are explicit, not full native parity.
+
+Next: source-grounded arithmetic and expression/body lowering. Integer signed
+overflow, shifts, and remainder faults need explicit machine-profile/error policy
+rather than undefined C operators or Rust build-mode-dependent overflow behavior.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

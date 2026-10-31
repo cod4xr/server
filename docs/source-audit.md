@@ -86,6 +86,11 @@ not a Rust storage cap. Hash-pinned _scr_compiler.asm and cscr_variable.h ground
 local duplicate/developer-region handling and the native developer_script flag.
 Mechanical branch/profile checks do not execute the native compiler; import/call/
 parameter/local binding, bytecode, and complete legacy semantics remain open.
+Original scalar helpers now supply 12,416 coercion/comparison/division cases under
+an explicit nearest/SSE profile. Scr_CastWeakerStringPair and Scr_EvalPlus also
+ground 54 valid plain-string results and 54 intentional scratch-limit expansions.
+Their string/ref services are stubbed and mixed-kind services abort. Neither
+oracle establishes full VM reference cleanup, error unwinding, or execution.
 
 ## Open research
 

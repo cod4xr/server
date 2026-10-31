@@ -240,6 +240,11 @@ An additional 12,416 original-helper cases now cover scalar coercion, six numeri
 comparisons, and float-result division under explicit nearest/SSE conditions.
 Arithmetic NaN payloads and native error unwinding are excluded. Approximate
 equality and negated unordered predicates must not be replaced by Rust operators.
+Plain-string concatenation additionally preserves 54 native helper results while
+intentionally admitting 54 old scratch-capacity errors under configurable result
+budgets. The source harness stubs string/ref services; neither full interning nor
+VM error unwinding is asserted. Larger owned strings do not widen wire/client
+profiles. See ADR 0021 for the explicit compatibility change.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

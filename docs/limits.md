@@ -52,6 +52,7 @@ they do not establish a universal limit for every client or CoD4X version.
 | Existing pool overrides | `DB_ParseRequestedXAssetNum`: selected pools can grow up to 65535 | Investigate current override coverage; do not assume every pool is fixed |
 | Script identifiers | `cscr_variable.cpp`/`scr_vm.h`: packed masks and 16-bit fields | New runtime representation, language/behavior compatibility, host APIs |
 | Script strings | `cscr_stringlist.cpp`: 32768-entry hash allocation | Growable intern table with memory/CPU accounting |
+| String concatenation | `Scr_EvalPlus`: 8192-byte scratch, maximum 8190-byte payload | Budgeted owned concatenation implemented; VM/interner accounting remains open |
 | Script file handles | `scr_vm.h`: ten handles | Managed, quota-accounted resources and sandboxed filesystem APIs |
 | Map/collision formats | `cm_local.h`: several 16-bit counts/indices | Validate old formats; extended geometry needs compatible new readers |
 | Paths | `q_shared.h`: 64-byte virtual and 256-byte OS paths | Internal path handling, archive validation, legacy name encoding |

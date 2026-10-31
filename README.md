@@ -88,6 +88,9 @@ The complete server rewrite remains open.
   definitions, and configurable index budgets. Calls/imports/bodies remain unresolved.
 - Legacy scalar coercion, six language comparisons, and float-result division
   checked against 12,416 original-helper cases. Full operators/values/VM remain open.
+- Owned plain-string concatenation with checked, fallible, budgeted growth. Tests
+  preserve 54 native byte results and deliberately expand 54 native capacity-error
+  cases, up to 200,000 bytes. This helper does not implement VM strings or coercion.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -210,6 +213,7 @@ python tools/generate_zone_pointer_vectors.py ../cod4x-reference --check
 python tools/generate_script_vectors.py ../cod4x-reference --check
 python tools/generate_identifier_vectors.py ../cod4x-reference --check
 python tools/generate_numeric_vectors.py ../cod4x-reference --check
+python tools/generate_string_operation_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check
