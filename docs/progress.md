@@ -460,7 +460,22 @@ See ADR 0033. Normal target reused with no dependency/cache additions. This is
 not full native binding/arity/duplicate-parameter/diagnostic-order equivalence,
 control-flow compilation, whole-module/stock-mod execution, or Linux acceptance.
 
-Next: scalar compound/postfix statements and structured control-flow/local facts,
+Scalar-local compound assignments now pass full Windows workspace gates. Three
+added tests execute all ten operators through existing numeric instructions,
+including wrap/shift/float-result division, mixed floats, target/RHS alias values,
+parameter mutation isolation, uninitialized/non-name rejections, located runtime
+type/numeric failures, and complete exact compiler/name admission. Checked
+initialized-name lookup is shared with expression reads; stores reuse existing
+assignment tasks and budgets. Source maps retain the compound token. Existing
+source/kernel tests pass: 115 frontend and 41 legacy tests plus doctests; policy
+checks 413 source files/eight crates, largest 287 lines. Grammar/compound profiles,
+99 structural replays and 11,519 arithmetic reference cases regenerate. See ADR
+0034. No new dependency/cache or target directory. Full object/reference/RHS
+side effects, postfix integer updates, control-flow binding, native arity, full
+GSC/stock-mod acceptance and Linux remain open. The twelve-workstream acceptance
+breakdown is now recorded in docs/gsc-runtime.md.
+
+Next: integer-only postfix statements and structured control-flow/local facts,
 plus source-grounded native argument adaptation. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

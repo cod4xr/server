@@ -57,9 +57,9 @@ pub(super) fn declare<'source>(
     Ok((name, index))
 }
 
-pub(super) fn read(
-    builder: &mut ScalarBuilder<'_, '_>,
-    syntax: LegacySyntaxNode<'_, '_>,
+pub(super) fn read<'tree, 'source>(
+    builder: &mut ScalarBuilder<'tree, 'source>,
+    syntax: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<(), ScalarCompileError> {
     let reference = LegacyReferenceSyntax::from_node(syntax).map_err(|_| {
         scalar_compile_error::at(syntax.span(), ScalarCompileErrorKind::InvalidStructure)
@@ -70,6 +70,14 @@ pub(super) fn read(
             ScalarCompileErrorKind::UnsupportedPrimary,
         ));
     };
+    let (_, slot) = lookup(builder, token)?;
+    builder.emit(KernelInstruction::LoadLocal(slot), token.span())
+}
+
+pub(super) fn lookup<'source>(
+    builder: &mut ScalarBuilder<'_, 'source>,
+    token: LegacyLexeme<'source>,
+) -> Result<(LegacyIdentifier<'source>, usize), ScalarCompileError> {
     let name = identifier(builder, token)?;
     let slot = builder
         .locals
@@ -80,7 +88,7 @@ pub(super) fn read(
         .ok_or_else(|| {
             scalar_compile_error::at(token.span(), ScalarCompileErrorKind::UninitializedLocal)
         })?;
-    builder.emit(KernelInstruction::LoadLocal(slot.index), token.span())
+    Ok((name, slot.index))
 }
 
 pub(super) fn initialize<'source>(

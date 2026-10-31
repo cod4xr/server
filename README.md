@@ -127,6 +127,9 @@ The complete server rewrite remains open.
   It preserves initialization checks and owns verified code/maps without fabricated
   argument execution. Tests compile/invoke 70,000 locals; general control flow,
   calls/objects/threads, native arity and full GSC/mod acceptance remain open.
+- All ten scalar plain-name compound assignments reuse the checked numeric
+  operations and source maps. Targets must already be initialized; postfix
+  integer updates and object/index assignment semantics remain separate work.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

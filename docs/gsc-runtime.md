@@ -199,6 +199,40 @@ RSS remain explicitly distinct. Tests compile/invoke 70,000 locals, retain a
 compound/postfix updates, calls/objects/events, nonfinal returns and duplicate
 parameters. Full native binding/arity/module acceptance, calls/frames, richer
 values, scheduling, builtins and modern extensions remain required; see ADR 0033.
+Plain-name compound assignments now cover the ten guarded legacy spellings through
+existing scalar numeric instructions. Targets must already be initialized; prior
+target and RHS alias values are preserved before the checked store. Original
+compound-token maps and existing name/task/code budgets remain in use. Numeric
+failures stay runtime errors in this source profile. Richer overloads, object/index
+targets, side-effecting RHS order, postfix updates and full statement execution
+remain separate work; see ADR 0034.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
+
+## Remaining legacy acceptance workstreams
+
+The current planning estimate is roughly 10–12 major workstreams, not a count of
+small coding tasks or a delivery promise. This working breakdown uses twelve;
+several interact and each requires multiple implementation/validation changes.
+Partial scalar/source support does not close any full legacy acceptance gate.
+
+| Workstream | Required completion evidence |
+| --- | --- |
+| Full semantic frontend | Every supported legacy statement/expression/directive lowers with valid diagnostics and budgets |
+| Binding and control flow | Locals/scopes/initialization, branches/loops/switch, returns/break/continue match the named source profile |
+| Complete values and heap | Strings/vectors/arrays/objects/references, identity/lifetimes and operator overloads work under admitted memory |
+| General code generation | Full expression/statement lowering preserves observable evaluation/control flow and source locations |
+| Modules and linking | Script lookup/imports/functions/developer/animation references resolve and publish atomically |
+| Calls and frames | Functions/methods/indirect calls, native argument rules and unwinding work without native frame/slot ceilings |
+| Cooperative scheduling | Threads/waits/frame waits/notify/waittill/match/endon obey game-time and cancellation semantics |
+| Legacy builtin library | Required builtin names, arguments/results/errors and service behavior match supported mods |
+| Engine/game integration | Real entity/player/asset/collision/HUD/game services support the scripts, not fabricated host responses |
+| Errors and developer tools | Runtime failures cleanly unwind; diagnostics/debugger/profiling and lifecycle behavior have explicit contracts |
+| Compatibility validation | Named stock modes/mods run with recorded content/version evidence on target platforms |
+| Resource and operational validation | Fuzz/load/soak/reload, memory growth, exhaustion/cancellation and performance gates pass |
+
+Some engine integration depends on the server's asset/simulation milestones. A
+compiler that emits code without those services is not full existing-mod support.
+Expanded language, asynchronous services, modern standard library and their
+tooling/capability contracts add further work beyond this legacy acceptance list.

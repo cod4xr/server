@@ -555,3 +555,19 @@ Logical map-pair payload/name-visit/compiler quotas exclude table capacity/contr
 overhead, input/body/kernel scopes and aggregate RSS/CPU guarantees. Native argument
 adaptation, control-flow facts, calls/frames, values/heap, scheduler/builtins/game
 integration and modern language remain required work.
+
+Scalar plain-name compound source assignments passed full Windows workspace
+formatting, warnings-denied Clippy/rustdoc, debug/release tests, source policy and
+diff checks. Three new tests cover all ten operators, integer wrap/shift/remainder,
+float-result division/mixed arithmetic, prior target/RHS aliasing, mutable parameter
+isolation, initialized/non-name admission, located runtime type/numeric failures,
+compound-token maps and complete exact compiler/name budgets. Existing source/
+numeric suites pass: 115 frontend/41 legacy tests and doctests. Policy checks 413
+source files/eight crates, largest 287 lines. Guarded source profiles/99 structural
+replays and all 11,519 arithmetic helper/instruction cases regenerate. The shared
+checked initialized-name lookup and assignment store path preserve quotas/privacy.
+No new dependency or alternate target/cache was introduced.
+
+Postfix integer updates, richer operator overloads, object/index targets, native
+side-effecting reference/RHS evaluation order, control-flow binding, calls/frames,
+native arity/full GSC/stock-mod parity, Linux and performance remain open.

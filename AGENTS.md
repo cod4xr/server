@@ -134,6 +134,11 @@ parameters explicitly under this profile. Results tag the source profile and
 optional validation steps; local-profile compilation must not run fabricated
 arguments. This is not native arity/duplicate-parameter/whole-mod equivalence,
 control-flow definite assignment, general GSC or activation. See ADR 0033.
+Scalar-local source now includes the ten guarded compound assignments for
+initialized plain names. Preserve prior target/RHS values, source token locations,
+existing numeric semantics and compiler/name budgets. No compound read creates
+an uninitialized binding; object/index targets and side-effecting RHS semantics
+remain unsupported. Postfix integer-only updates stay separate; see ADR 0034.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

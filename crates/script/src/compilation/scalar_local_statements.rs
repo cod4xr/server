@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_local_bindings::ScalarLocalDeclaration;
-use crate::compilation::scalar_local_names;
+use crate::compilation::scalar_local_assignment;
 use crate::compilation::scalar_task::ScalarTask;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelInstruction, KernelValue};
-use crate::expression::{LegacyReferenceKind, LegacyReferenceSyntax};
 use crate::statement::{LegacyStatementKind, LegacyStatementSyntax};
 use crate::syntax::LegacySyntaxNode;
 
@@ -22,31 +19,19 @@ pub(super) fn lower<'tree, 'source>(
     match view.kind() {
         LegacyStatementKind::Empty => Ok(()),
         LegacyStatementKind::Assignment { target, value } => {
-            let reference = LegacyReferenceSyntax::from_node(target).map_err(|_| {
-                scalar_compile_error::at(
-                    target.span(),
-                    ScalarCompileErrorKind::UnsupportedLocalTarget,
-                )
-            })?;
-            let LegacyReferenceKind::Name { name: token } = reference.kind() else {
-                return Err(scalar_compile_error::at(
-                    target.span(),
-                    ScalarCompileErrorKind::UnsupportedLocalTarget,
-                ));
-            };
-            let (name, slot) =
-                scalar_local_names::declare(builder, token, ScalarLocalDeclaration::Assignment)?;
-            let span = scalar_body::child(view.statement_syntax(), 1, 3)?.span();
-            builder.push_task(
-                ScalarTask::FinishAssignment {
-                    name,
-                    slot,
-                    span: span.clone(),
-                },
-                span,
-            )?;
-            builder.push_task(ScalarTask::Visit(value), value.span())
+            scalar_local_assignment::assign(builder, view.statement_syntax(), target, value)
         }
+        LegacyStatementKind::CompoundAssignment {
+            target,
+            operator,
+            value,
+        } => scalar_local_assignment::compound(
+            builder,
+            view.statement_syntax(),
+            target,
+            operator,
+            value,
+        ),
         LegacyStatementKind::Return { value } => {
             if !last {
                 return Err(scalar_compile_error::at(

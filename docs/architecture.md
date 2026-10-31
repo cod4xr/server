@@ -250,6 +250,12 @@ proof without fabricated argument execution. Unsupported statements/targets/valu
 nonfinal returns and duplicate parameters fail explicitly. Full native binding/
 arity, control-flow facts, calls/objects/scheduling and activation remain open;
 see ADR 0033.
+Scalar-local compound assignments now read an initialized plain target, lower its
+RHS, emit the shared numeric infix instruction, and use the existing checked store/
+initialization task. Original compound-token spans locate numeric/type failures.
+The profile has no side-effecting RHS calls or object/index targets, so full native
+reference evaluation order remains separate. No new numeric implementation or
+resource namespace is added; postfix updates remain distinct; see ADR 0034.
 
 ## Future custom client
 

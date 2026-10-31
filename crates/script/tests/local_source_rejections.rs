@@ -79,7 +79,6 @@ fn general_control_flow_updates_values_and_calls_remain_explicitly_unsupported()
         "main(){while(true){}}",
         "main(){{x=1;}}",
         "main(){x=1;x++;}",
-        "main(){x=1;x+=2;}",
         "main(){wait 1;}",
         "main(){PrivateCall();}",
     ] {

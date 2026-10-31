@@ -321,6 +321,13 @@ acceptance/error-order claims. Source control-flow binding, native arity, calls,
 objects/threads/events/builtins, modules/stock mods and full VM parity remain open;
 see ADR 0033. The original pure-return entry point retains its accepted syntax and
 validation behavior; optional validation accounting makes the profile difference explicit.
+Ten plain-name compound assignments now compile through the same scalar numeric
+instructions. Three tests exercise all operators, wrap/shift/division domains,
+mixed floats, aliased RHS/prior target values, parameter mutation isolation,
+uninitialized/non-name targets, runtime numeric/type errors, compound source spans,
+and exact compiler/name accounting. Source rules/opcode guards and prior numeric
+fixtures ground the reuse. Richer overloads, object/index references, side-effecting
+RHS ordering, postfix updates and whole VM/compiler parity remain open; see ADR 0034.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

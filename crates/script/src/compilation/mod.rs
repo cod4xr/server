@@ -14,6 +14,7 @@ mod scalar_compile_error;
 mod scalar_expression_lowering;
 mod scalar_function_compiler;
 mod scalar_literal;
+mod scalar_local_assignment;
 mod scalar_local_bindings;
 mod scalar_local_compiler;
 mod scalar_local_names;

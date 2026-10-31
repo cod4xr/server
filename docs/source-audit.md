@@ -147,6 +147,12 @@ ordered name assignments use initialized-state tracking, while full control-flow
 scope/definite assignment is still open. Duplicate-parameter/nonfinal-return
 rejection is this profile's deliberate policy, not inferred native compiler parity.
 No original compiler or VM instruction handler executes in its source tests.
+Compound assignments reuse the guarded rules 73..82 and opcode identities. Native
+EmitStatement_790 loads the variable expression before lowering the RHS/operator
+and then emits the variable-reference/store path. Rust's limited initialized plain-
+name profile preserves prior target/RHS alias values with existing scalar helpers;
+this does not establish side-effecting object/index reference ordering or full
+native compiler/VM execution. Postfix update integer-only behavior remains separate.
 
 ## Open research
 

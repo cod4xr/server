@@ -6,6 +6,8 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_compound_source.rs"]
+mod local_compound_source;
 #[path = "local_source_budgets.rs"]
 mod local_source_budgets;
 #[path = "local_source_execution.rs"]

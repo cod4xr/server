@@ -148,7 +148,7 @@ pub(super) fn logical<'tree, 'source>(
     builder.push_task(ScalarTask::Visit(right), right.span())
 }
 
-fn infix(operator: LegacyInfixOperator) -> KernelInstruction {
+pub(super) fn infix(operator: LegacyInfixOperator) -> KernelInstruction {
     match operator {
         LegacyInfixOperator::BitwiseOr => KernelInstruction::Integer(LegacyIntegerOperator::Or),
         LegacyInfixOperator::BitwiseExclusiveOr => {

@@ -17,7 +17,7 @@ use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacySta
 
 /// Compiles the explicit straight-line scalar parameter/name-assignment profile.
 ///
-/// Accepts parameters, ordinary plain-name assignments, empty statements, and an
+/// Accepts parameters, ordinary/compound plain-name assignments, empty statements, and an
 /// optional final return. Fallthrough returns Undefined. Names use legacy identity;
 /// unknown/uninitialized reads, duplicate parameters and nonfinal returns fail.
 /// Other statements/targets/values remain unsupported, including skipped source.
