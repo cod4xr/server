@@ -393,12 +393,30 @@ has no source compiler, full value/object model, calls/frames, scheduling, host 
 native/serialized ABI, stock-mod acceptance, or Linux acceptance. It owns no game
 state and grants no runtime services. Normal target reused; no new dependencies.
 
-Next: source-to-kernel compilation for an explicitly limited pure scalar function
-profile, with original source maps, checked signed literals, short-circuit lowering,
-resource admission, and rejection of unsupported bodies/values. Full objects, calls,
-scheduling, host services, modern language, and join/gameplay remain required.
+Restricted source-to-kernel compilation now passes full Windows workspace gates.
+It accepts zero-parameter empty/single-scalar-return functions and owns verified
+code/original source maps. Twelve integration tests cover all numeric operators,
+lazy branches, checked signed domains/negative float zero, source-independent
+ownership/private diagnostics, compiler/literal/kernel admission, failed work,
+12,000 groups/operators, and branch destinations beyond 16 bits. Unsupported
+parameters/bodies/values, including unreachable calls, return typed errors. No
+partial function is published before proof and bounded pure validation complete.
+The suites contain 87 frontend and 31 legacy tests; source policy checks 377 files
+in eight crates (largest 287 lines). Body/action profiles regenerate alongside 99
+structural replays and reject 18 in-memory production/action mutations. These
+checks do not execute the native compiler. Signed MIN admission is an explicit
+checked domain policy, not undefined native atoi-overflow parity; see ADR 0030.
+Normal target reused, with no new dependency or alternate cache. Linux, complete
+source/compiler/VM/stock-mod acceptance and gameplay remain open.
+
+Next: function bodies and local-variable handling with source-grounded behavior,
+wide indices, and separately admitted storage/work. Full objects, calls, scheduling,
+host services, modern language, and join/gameplay remain required.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
+Further pinned source research finds a 64-local registration check in
+Scr_CalcLocalVarsVariableExpressionRef and 32 call frames/2,048 value/local slots
+in scr_vm.h. These native capacities must not become new internal allocation rules.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

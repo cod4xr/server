@@ -208,6 +208,14 @@ proof, admits stack storage, and charges fuel/peaks on successful and failed wor
 Constants/operands remain outside Debug/errors. This typed profile has no native/
 serialized bytecode ABI, source compiler, object heap, frames/calls, scheduler,
 host services, or server state; see ADR 0029.
+An explicit restricted source compiler now sits above typed function/expression
+views and that kernel. It lowers zero-parameter empty/single-scalar-return bodies
+iteratively, binds private branch relocations, resolves owned code/maps, verifies,
+and performs separately budgeted pure validation before publishing a function.
+Unsupported syntax fails explicitly, including in unreachable branches. Source
+association and prior module/name/developer binding stay with callers. No module
+activation, general statements/values, calls/frames, scheduler, or host authority
+is introduced; see ADR 0030.
 
 ## Future custom client
 

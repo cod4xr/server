@@ -3,6 +3,20 @@
 
 mod expression_list_support;
 mod expression_support;
+mod scalar_compile_support;
+
+#[path = "scalar_budgets.rs"]
+mod scalar_budgets;
+#[path = "scalar_compilation.rs"]
+mod scalar_compilation;
+#[path = "scalar_kernel_limits.rs"]
+mod scalar_kernel_limits;
+#[path = "scalar_operators.rs"]
+mod scalar_operators;
+#[path = "scalar_rejections.rs"]
+mod scalar_rejections;
+#[path = "scalar_stress.rs"]
+mod scalar_stress;
 
 #[path = "call_views.rs"]
 mod call_views;

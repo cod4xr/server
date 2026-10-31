@@ -67,7 +67,7 @@ The complete server rewrite remains open.
   root/inserted aliases, scoped temporary-memory accounting, and configurable
   budgets. Mixed stock zones, registry publication, and GSC execution remain open.
 - Dependency-free legacy script scalar/wait semantics checked against 827 original
-  function cases. This is a tested kernel; the compiler/VM and expanded language
+  function cases. This is a tested kernel; the full compiler/VM and expanded language
   features described in the GSC contract remain unimplemented.
 - Bounded immutable script-source indexing and borrowed exact line/span views,
   with wide byte locations, explicit LF/CRLF behavior, and redacted diagnostics.
@@ -79,7 +79,7 @@ The complete server rewrite remains open.
   decodes without the old scratch-buffer ceiling; interning/VM capacity is separate.
 - Bounded flat legacy script/fragment syntax trees with 99 structural grammar
   replays, original terminal spans, explicit budgets, and 12,000-level nesting.
-  This stage runs no semantic actions; compilation/execution remain unimplemented.
+  This stage runs no semantic actions; general compilation/execution remain open.
 - Typed legacy module declarations with ordered includes, functions, parameters,
   animation-tree directives, and developer markers under explicit budgets. Raw
   spelling/duplicates remain preserved; body lowering and full semantic binding remain open.
@@ -93,7 +93,7 @@ The complete server rewrite remains open.
   cases, up to 200,000 bytes. This helper does not implement VM strings or coercion.
 - Scalar addition/subtraction/multiplication, integer bitwise operators, signed
   remainder, and explicit x86-profile shifts. Another 10,701 defined original C
-  cases and 818 isolated instruction cases cover this kernel; execution stays open.
+  cases and 818 isolated instruction cases cover these helpers; full GSC execution stays open.
 - Allocation-free typed expression-operator views preserving source operands,
   precedence, and separate short-circuit branches. Descendants remain unresolved;
   this does not validate literals, bind descendants, compile, or evaluate scripts.
@@ -109,8 +109,12 @@ The complete server rewrite remains open.
   operands and original spelling. Scopes, object types, mutability, and values stay unresolved.
 - Owned verified scalar instruction execution with checked control-flow/stack
   joins, separately budgeted fuel/stack, and work-accounted failures. Tests execute
-  22,383 source-grounded scalar cases and 4,096 hostile streams; source compilation,
+  22,383 source-grounded scalar cases and 4,096 hostile streams; full source compilation,
   objects, calls, threads, host services, and complete GSC execution remain open.
+- Restricted source compilation for zero-parameter empty/single-scalar-return
+  functions, with owned verified code/source maps, iterative lowering, numeric
+  operators, lazy logical branches, and separate compiler/kernel budgets. This
+  explicitly rejects general bodies/values and does not activate modules or run stock mods.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

@@ -122,6 +122,12 @@ parser-transition research and source-table cases distinguish object.self from
 object.Self; a broader all-production recovery exceeded its research work cap and
 is not claimed complete. Reference views do not infer variable/object semantics,
 mutability, or runtime authority from those structural roles.
+Rules 68/69 identify value/void returns, 94/97/108 preserve statement wrappers,
+and 109/110 append/end body lists. Their pinned length/nonterminal/action profiles
+now guard a restricted scalar source compiler. That compiler supports actual
+owned numeric code/maps and lazy branches; these source checks still do not run
+the original compiler. Negative integer MIN admission is an explicit checked
+domain policy; undefined native atoi overflow is not used as evidence.
 
 ## Open research
 

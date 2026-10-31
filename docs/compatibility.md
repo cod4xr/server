@@ -279,6 +279,17 @@ instructions have no native/serialized ABI; undefined is returned/copied/discard
 not a claim of complete legacy value operators. Source compilation, native VM
 cleanup/scheduling, stock scripts, and GSC/client interoperability remain open.
 See ADR 0029 for scope, fuel accounting, and FP-profile assumptions.
+A restricted source compiler additionally connects typed legacy functions to that
+kernel for zero-parameter empty/single-scalar-return bodies. Numeric/undefined/bool
+literals, single-value groups, numeric operators, and lazy OR/AND are supported;
+other parameters/bodies/values fail explicitly. Code/source maps own no source
+references, and verification plus bounded pure validation precede publication.
+Signed -2147483648 uses an explicit checked domain policy, not undefined native
+atoi-overflow evidence. Twelve integration tests exercise this restricted path,
+including resource limits and wide branches; pinned body/action profiles do not
+execute the original compiler. Full module/stock-script compilation, native
+diagnostic ordering, calls/objects/scheduling/host services and interoperability
+remain open; see ADR 0030.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

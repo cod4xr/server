@@ -41,6 +41,7 @@ def verify(source: str, tables: dict[str, list[int]], header: str) -> None:
     verify_lists(source, tables, labels)
     verify_calls(source, tables, labels)
     verify_references(source, tables, labels)
+    verify_scalar_body(source, tables, labels)
 
 
 def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
@@ -114,3 +115,21 @@ def verify_references(source: str, tables: dict[str, list[int]], labels: list[st
             raise ValueError("Reference action role changed")
         if rule in (62, 64, 65) and "call SL_ConvertToLowercase" not in body:
             raise ValueError("Native reference-name action role changed")
+
+
+def verify_scalar_body(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
+    """Guard restricted return/body roles; this does not execute the native compiler."""
+    alias = ("mov ebx, [ebp-0x280c]", "mov edi, [ebp-0x2810]", "jmp yyparse_420")
+    profiles = {
+        68: (102, 2, ("mov dword [esp], 0x1b", "call node2\n", "mov ecx, [ebx]")),
+        69: (102, 1, ("mov dword [esp], 0x1c", "call node1\n")),
+        94: (103, 1, alias), 97: (105, 2, alias), 108: (106, 1, alias),
+        109: (107, 2, ("mov ecx, [eax]", "mov edx, [eax-0x8]", "call append_node\n")),
+        110: (107, 0, ("mov dword [esp], 0x0", "call node0\n", "call linked_list_end\n")),
+    }
+    for rule, (lhs, length, instructions) in profiles.items():
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        if tables["LHS"][rule] != lhs or tables["LENGTH"][rule] != length:
+            raise ValueError("Scalar return/body production shape changed")
+        if any(text not in body for text in instructions):
+            raise ValueError("Scalar return/body action role changed")

@@ -52,6 +52,8 @@ they do not establish a universal limit for every client or CoD4X version.
 | Existing pool overrides | `DB_ParseRequestedXAssetNum`: selected pools can grow up to 65535 | Investigate current override coverage; do not assume every pool is fixed |
 | Script identifiers | `cscr_variable.cpp`/`scr_vm.h`: packed masks and 16-bit fields | New runtime representation, language/behavior compatibility, host APIs |
 | Compiler temporaries/branches | `_scr_compiler.asm`: 32-value constant stack and 16-bit expression jump patches | Budgeted compiler work/storage and wide internal control-flow locations |
+| Function locals | `Scr_CalcLocalVarsVariableExpressionRef`: count compared with 0x3f before insertion | Budgeted local slots and checked wide indices; binding semantics need separate evidence |
+| Script call/value stacks | `scr_vm.h`: 32 function frames, 2048 value/local-variable slots | Separately budgeted frames/value storage; scheduler and full VM remain open |
 | Script strings | `cscr_stringlist.cpp`: 32768-entry hash allocation | Growable intern table with memory/CPU accounting |
 | String concatenation | `Scr_EvalPlus`: 8192-byte scratch, maximum 8190-byte payload | Budgeted owned concatenation implemented; VM/interner accounting remains open |
 | Script file handles | `scr_vm.h`: ten handles | Managed, quota-accounted resources and sandboxed filesystem APIs |

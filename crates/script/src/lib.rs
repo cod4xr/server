@@ -3,11 +3,13 @@
 //!
 //! Current scope is legacy numeric/wait primitives, source views, lexing, literals,
 //! structural/operator views, typed declarations, local binding, and a verified
-//! scalar instruction kernel. GSC source compilation/full VM integration, modern
+//! scalar instruction kernel with restricted scalar source compilation. Full GSC
+//! compilation/VM integration, modern
 //! language features, scheduling, objects, and host services remain required work.
 //! Legacy representations do not cap those future runtime resources.
 
 pub mod binding;
+pub mod compilation;
 pub mod declaration;
 pub mod execution;
 pub mod expression;

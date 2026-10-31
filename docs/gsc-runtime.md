@@ -155,6 +155,15 @@ source-grounded scalar cases through actual execution and exercise 4,096 hostile
 streams, 70,000-index targets, and 4,096-value stacks. This is not a GSC source
 compiler/full VM, general undefined/value semantics, heap, scheduler, serialized
 bytecode ABI, or host standard library. See ADR 0029; S5 remains open.
+Restricted source compilation now accepts zero-parameter empty/single-scalar-return
+functions above the typed views/kernel. It emits owned code and original source
+maps, preserves short-circuit branches, and validates before publication under
+separate compiler/literal/verifier/execution scopes. Unsupported bodies/values,
+including unreachable calls, fail explicitly. Twelve tests cover this path,
+operator selection/signed boundaries, ownership/privacy, exact limits, deep input,
+and branch destinations beyond 16 bits. This does not compile whole stock modules,
+bind locals/calls, allocate objects, schedule threads, or enable host services.
+See ADR 0030; modern-mode language and standard-library work remains required.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

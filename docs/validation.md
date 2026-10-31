@@ -472,3 +472,24 @@ legacy value/error-unwinding semantics is claimed. Source compilation, objects,
 call frames, scheduling, host services, stock-mod/full GSC/server gameplay, host
 FP-control independence, Linux acceptance, and performance gates remain open.
 All builds use the normal target directory; no dependency or alternate cache added.
+
+Restricted scalar source compilation passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, source policy, and diff checks.
+Twelve new integration tests traverse source indexing, lexing, structural parsing,
+declarations, restricted compilation, owned verification, and execution. Coverage
+includes every numeric infix/prefix, lazy OR/AND, signed MIN/overflow and float
+negative zero, source maps, ownership/privacy, exact/one-less compiler limits,
+separate literal/kernel admission and failed work, unsupported source (including
+unreachable calls), 12,000-level groups/operators, and real branch destinations
+beyond 16 bits. The suites contain 87 frontend and 31 legacy tests; source policy
+checks 377 source files/eight crates, largest 287 lines. Pinned return/body action
+profiles and all 99 structural replays regenerate; the new body guard rejects 18
+in-memory production/action mutations without modifying the reference checkout.
+
+This profile accepts only zero-parameter empty/single-scalar-return functions and
+publishes after proof plus bounded pure validation. It does not activate modules,
+compile stock scripts, bind locals/calls, implement objects/scheduling/host services,
+establish native compiler diagnostic order, or provide full GSC/gameplay support.
+Checked signed MIN admission is an explicit domain policy, not native atoi-overflow
+evidence. Linux, broader compatibility, and performance gates remain open. The
+normal target directory was reused without dependencies or alternate caches.

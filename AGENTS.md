@@ -102,6 +102,13 @@ joins/returns/fallthrough, and storage/work before proof publication. Execution
 requires separate stack/fuel admission; failed work must remain charged. Do not
 describe it as source compilation/full GSC execution or invent a serialized/native
 bytecode ABI, object heap, scheduler, or host authority. See ADR 0029.
+Restricted scalar source compilation now connects typed zero-parameter empty/
+single-return bodies to owned code/maps. Reject unsupported syntax explicitly;
+preserve lazy branches, source spans, live-task/compiler work/storage limits, and
+separate kernel proof/validation budgets. No partial function/module activation
+may escape failure. Checked signed MIN literal admission is an explicit domain
+policy, not native atoi overflow parity. This is not general GSC compilation,
+locals/calls/objects/scheduling/host services or stock-mod acceptance; see ADR 0030.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
