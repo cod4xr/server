@@ -191,6 +191,11 @@ iterative immutable passes preflight complete count/work/logical metadata before
 fallible reserve. It retains nesting, supports reverse iteration, and publishes no
 partial result. Source order remains separate from runtime argument order and
 group/vector/call arity; see ADR 0025.
+Call/function-name views now retain raw names/virtual module paths, named/indirect
+targets, optional receivers, invocation mode, and original argument syntax. Local
+construction is constant-cost and allocation-free; ordered argument indices require
+their explicit budget. No module is opened, function linked, receiver evaluated,
+or thread scheduled. Those semantics stay in later compiler/runtime layers; see ADR 0027.
 
 ## Future custom client
 

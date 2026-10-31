@@ -138,6 +138,11 @@ count/two-pass work/logical metadata budgets, including 70,000-entry tests. Nati
 prepend actions do not become an implicit runtime evaluation policy. List arity,
 descendant semantics, executable argument capacity, and VM behavior remain open;
 see ADR 0025. This is frontend capacity, not expanded running GSC support.
+Named/indirect and function/method call views now expose immediate/thread spelling,
+raw callee/module tokens, unresolved receivers, and separately budgeted arguments.
+Function-reference views preserve original spelling and wide borrowed names. These
+do not resolve modules, enable builtins/host services, evaluate calls, or schedule
+threads; source/runtime evaluation order remains separate. See ADR 0027.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -9,6 +9,10 @@ pub enum LegacyExpressionError {
     NotExpression,
     /// A valid expression uses an operator rather than a primary production.
     NotPrimary,
+    /// The supplied syntax does not represent an invocation.
+    NotCall,
+    /// The supplied syntax does not represent a named callee/function reference.
+    NotFunctionName,
     /// A supported production differs from the pinned child-count/operator profile.
     ProfileMismatch,
 }
@@ -18,6 +22,8 @@ impl fmt::Display for LegacyExpressionError {
         formatter.write_str(match self {
             Self::NotExpression => "legacy syntax node is not an expression",
             Self::NotPrimary => "legacy expression is not a primary form",
+            Self::NotCall => "legacy syntax node is not an invocation",
+            Self::NotFunctionName => "legacy syntax node is not a function name",
             Self::ProfileMismatch => "legacy expression grammar profile mismatch",
         })
     }

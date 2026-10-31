@@ -432,3 +432,14 @@ remain enabled. The source policy guard accepts complete suites and rejects inje
 missing/extra/duplicate/gated/nested-unregistered leaves in disposable fixtures.
 Leaf/fixture locations remain unchanged, helpers are shared, normal target reused,
 and no stale artifacts are deleted. No build-time/RSS performance claim is made.
+
+Borrowed call/function-name views passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, repository policy, and diff
+checks. Seven added tests cover all named/indirect, function/method, and immediate/
+thread combinations, external paths, exact case/spans, direct/primary wrappers,
+empty/nested argument admission, typed category failures, private diagnostics,
+independent trees, and a borrowed 100,000-byte name. The suites now contain 70
+frontend and 18 legacy tests. Rules 28..39 length/nonterminal/action profiles and
+99 structural replays regenerate. No native semantic actions, module resolution,
+binding, receiver/argument evaluation order, thread scheduling, compiler/VM/
+stock-mod conformance, or Linux acceptance is established. Normal target reused.

@@ -263,6 +263,10 @@ Expression lists now preserve complete source order with budgeted fallible indic
 The native actions prepend nodes; runtime argument evaluation/push order still
 needs compiler/VM evidence. Empty/single/nested lists and 70,000 retained entries
 establish frontend representation only, not call/vector arity or execution. See ADR 0025.
+Named/external/indirect call views additionally retain original function/module
+tokens, optional receivers, immediate/thread syntax, and argument-list locations.
+Constructors do not fold case, link names, interpret virtual paths as host access,
+evaluate arguments/receivers, or create threads. See ADR 0027; this is not call/VM parity.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

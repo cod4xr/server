@@ -102,6 +102,9 @@ The complete server rewrite remains open.
   animation/debugger syntax. Local roles do not establish value/runtime support.
 - Fallible source-ordered expression-list indices under count/work/metadata budgets,
   tested with 70,000 entries. Runtime call/vector arity and argument evaluation stay open.
+- Borrowed named/indirect function and method calls, immediate/thread spelling,
+  original module/function references, and separately admitted argument indices.
+  These views do not link functions, evaluate receivers/arguments, or create threads.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

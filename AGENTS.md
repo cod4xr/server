@@ -90,6 +90,9 @@ see ADR 0025. Script tests use explicit frontend/legacy suites with small leaf f
 Register each new #[test] leaf in exactly one suite; repository policy guards
 missing/duplicate/gated registrations, including subfolders. Use --test frontend
 or --test legacy plus a module filter, not old standalone leaf targets; see ADR 0026.
+Call/function-name views retain raw virtual paths, names, indirect expressions,
+receiver and invocation modes. Argument lowering is separately budgeted; these
+views grant no I/O/builtin authority and do not link, execute, or schedule. See ADR 0027.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

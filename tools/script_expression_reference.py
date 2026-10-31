@@ -39,6 +39,7 @@ def verify(source: str, tables: dict[str, list[int]], header: str) -> None:
         raise ValueError("Opaque primitive nonterminal profile changed")
     verify_primaries(source, tables, labels)
     verify_lists(source, tables, labels)
+    verify_calls(source, tables, labels)
 
 
 def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
@@ -75,3 +76,25 @@ def verify_lists(source: str, tables: dict[str, list[int]], labels: list[str]) -
             raise ValueError("Expression list production profile changed")
         if any(text not in body for text in instructions):
             raise ValueError("Expression list action role changed")
+
+
+def verify_calls(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
+    """Guard exact callee/name/invocation roles, not native calls or scheduling."""
+    profiles = {
+        28: (94, 1, None, None), 29: (94, 1, None, None),
+        30: (95, 3, 0x15, "node3"), 31: (95, 1, 0x14, "node2"),
+        32: (96, 3, 0x15, "node3"), 33: (96, 2, 0x14, "node2"),
+        34: (97, 1, 0x12, "node2"), 35: (97, 5, 0x16, "node2"),
+        36: (98, 1, 0x1a, "node2"), 37: (98, 2, 0x1e, "node3"),
+        38: (99, 4, 0x17, "node3"), 39: (99, 5, 0x18, "node5"),
+    }
+    for rule, (lhs, length, tag, constructor) in profiles.items():
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        if tables["LHS"][rule] != lhs or tables["LENGTH"][rule] != length:
+            raise ValueError("Call/name production shape changed")
+        if rule <= 33 and "call SL_ConvertToLowercase" not in body:
+            raise ValueError("Native name action role changed")
+        if tag is not None:
+            instructions = (f"mov dword [esp], 0x{tag:x}", f"call {constructor}\n")
+            if any(text not in body for text in instructions):
+                raise ValueError("Call/name semantic constructor profile changed")

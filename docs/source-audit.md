@@ -113,6 +113,10 @@ Expression-list rules 111/112 prepend native nodes, 113 aliases the nonempty lis
 and 114 creates the empty node. Their checked profiles ground iterative flat
 source-order indices. Native evaluation/push order is not inferred from that index;
 arity, call/parameter semantics, and executable capacities remain separate work.
+Rules 28..39 now guard module/name/reference/callee/mode/invocation roles through
+lengths, nonterminals, and semantic constructors. Their native lowercase actions
+remain source evidence; borrowed Rust views retain exact spelling for later binding.
+Thread/method/indirect syntax creates no runtime action or target resolution.
 
 ## Open research
 

@@ -4,6 +4,8 @@
 mod expression_list_support;
 mod expression_support;
 
+#[path = "call_views.rs"]
+mod call_views;
 #[path = "declaration_budgets.rs"]
 mod declaration_budgets;
 #[path = "declaration_views.rs"]
@@ -16,6 +18,8 @@ mod expression_lists;
 mod expression_operators;
 #[path = "expression_structure.rs"]
 mod expression_structure;
+#[path = "function_names.rs"]
+mod function_names;
 #[path = "identifier_identity.rs"]
 mod identifier_identity;
 #[path = "identifier_vectors.rs"]

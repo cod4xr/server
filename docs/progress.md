@@ -360,8 +360,20 @@ Leaf/fixture files stay in place, helper modules are shared, and all builds reus
 the normal target. No old artifacts are deleted or speed/RSS improvement claimed.
 See ADR 0026. Focused Cargo commands now select frontend/legacy plus module filters.
 
-Next: typed calls/function names/references and body lowering with checked literal
-conversion, explicit binding, and control-flow policy before bytecode/execution.
+Borrowed invocation/function-name views now pass full Windows workspace gates.
+Seven tests cover named/external/indirect targets, function/method receivers,
+immediate/thread spelling, original case/module/name/spans, direct/primary wrappers,
+empty/nested separately budgeted arguments, failures/privacy, independent trees,
+and a borrowed 100,000-byte callee name. Full suites retain 70 frontend and 18 legacy
+tests. Source profiles guard rules 28..39 without executing native actions. These
+views do not resolve modules, link functions, evaluate operands, grant host/builtin
+authority, or schedule threads. See ADR 0027. Linux/compiler/VM/stock-mod gates stay
+open. The user renamed the existing branch to main; history remained intact.
+
+Next: typed references and body lowering with checked literal conversion, explicit
+binding/control flow, then bounded verified bytecode/execution. Source research
+distinguishes the reserved .self production from ordinary .Self field syntax;
+do not collapse those roles during name normalization or invent runtime behavior.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 
