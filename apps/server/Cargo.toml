@@ -13,6 +13,8 @@ cod4x-observability.workspace = true
 cod4x-protocol.workspace = true
 cod4x-server-core.workspace = true
 ctrlc.workspace = true
+getrandom.workspace = true
+zeroize.workspace = true
 tracing.workspace = true
 
 [dev-dependencies]

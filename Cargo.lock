@@ -95,8 +95,10 @@ dependencies = [
  "cod4x-protocol",
  "cod4x-server-core",
  "ctrlc",
+ "getrandom",
  "serde_json",
  "tracing",
+ "zeroize",
 ]
 
 [[package]]

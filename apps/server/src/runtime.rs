@@ -6,24 +6,24 @@ use std::time::{Duration, Instant};
 
 use cod4x_observability::LogRuntime;
 use cod4x_protocol::MAX_PACKET_BYTES;
-use cod4x_server_core::{DiscoveryService, QueryOutcome};
 
 use crate::arguments::Arguments;
 use crate::counters::Counters;
+use crate::service::RuntimeService;
 
 pub(crate) struct Runtime {
     socket: UdpSocket,
-    discovery: DiscoveryService,
+    service: RuntimeService,
     counters: Counters,
 }
 
 impl Runtime {
-    pub(crate) fn bind(address: SocketAddr) -> io::Result<Self> {
+    pub(crate) fn bind(address: SocketAddr, service: RuntimeService) -> io::Result<Self> {
         let socket = UdpSocket::bind(address)?;
         socket.set_read_timeout(Some(Duration::from_millis(50)))?;
         Ok(Self {
             socket,
-            discovery: DiscoveryService::default(),
+            service,
             counters: Counters::default(),
         })
     }
@@ -78,11 +78,14 @@ impl Runtime {
                 Err(error) => break Err(error),
             };
             self.counters.received = self.counters.received.saturating_add(1);
-            let outcome =
-                self.discovery
-                    .handle(source.ip(), &input[..length], &mut output, elapsed);
-            self.counters.record(outcome);
-            if let QueryOutcome::Reply { length, .. } = outcome {
+            let received_at = start.elapsed();
+            if let Some(length) = self.service.handle(
+                source,
+                &input[..length],
+                &mut output,
+                received_at,
+                &mut self.counters,
+            ) {
                 match self.socket.send_to(&output[..length], source) {
                     Ok(sent) if sent == length => {
                         self.counters.replied = self.counters.replied.saturating_add(1);

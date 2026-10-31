@@ -5,11 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 typedef unsigned char byte;
 typedef int qboolean;
 typedef int netsrc_t;
-typedef int netadr_t;
+typedef struct { int type; unsigned short port; } netadr_t;
 enum { qfalse = 0, qtrue = 1, NS_CLIENT = 0, NS_SERVER = 1 };
 enum { ERR_DROP = 1, CON_CHANNEL_SYSTEM = 0, CON_CHANNEL_NETWORK = 1 };
 #define MAX_INFO_STRING 1024
@@ -55,6 +56,8 @@ static cvar_t *qport = &port;
 static cvar_t *msg_printEntityNums = &quiet;
 static char *netsrcString[2] = {"client", "server"};
 static int packet_case;
+static int challenge_fixture;
+static int fixture_server_challenge, fixture_client_challenge;
 
 typedef struct {
     int cmd_argc, availableBuf;
@@ -93,7 +96,11 @@ static qboolean NET_SendPacket(netsrc_t sock, int length, const void *data,
                               netadr_t *address) {
     (void)sock;
     (void)address;
-    printf("packet %d ", packet_case);
+    if (challenge_fixture) {
+        printf("challenge %d %d ", fixture_server_challenge, fixture_client_challenge);
+    } else {
+        printf("packet %d ", packet_case);
+    }
     print_hex(data, length);
     putchar('\n');
     return qtrue;

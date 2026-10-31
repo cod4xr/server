@@ -22,12 +22,13 @@ FUNCTIONS = {
         "MSG_GetByte", "MSG_ReadByte", "MSG_ReadString"
     ),
     "src/netchan.c": (
-        "Netchan_TransmitNextFragment", "Netchan_Transmit"
+        "Netchan_TransmitNextFragment", "Netchan_Transmit", "NET_OutOfBandPrint"
     ),
     "src/cmd.c": ("Cmd_TokenizeStringInternal",),
     "src/qshared.c": (
         "Info_RemoveKey", "Info_ValueForKey", "Info_SetValueForKey"
     ),
+    "src/sv_client.c": ("SV_GetChallenge",),
 }
 
 
@@ -41,7 +42,8 @@ def main() -> None:
         raise SystemExit("Upstream oracle requires a little-endian host")
     reference = ReferenceSource(args.reference)
     parts = [
-        (ROOT / "tools/oracles/wire_preamble.h").read_text(encoding="utf-8")
+        (ROOT / "tools/oracles/wire_preamble.h").read_text(encoding="utf-8"),
+        (ROOT / "tools/oracles/challenge_preamble.h").read_text(encoding="utf-8"),
     ]
     for filename, functions in FUNCTIONS.items():
         for name in functions:

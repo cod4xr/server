@@ -8,7 +8,7 @@ Inherited engine limits are removal targets: internal storage uses configurable
 resource budgets, while old client/wire bounds stay inside compatibility profiles.
 The engine must preserve full content catalogs rather than require asset cuts.
 
-**Status: protocol foundation and runnable query-only development runtime.**
+**Status: protocol/content foundation and runnable development probes.**
 There is no gameplay, authentication, decoded map loading, scripting VM, renderer, or
 master-server integration yet. Real local UDP discovery and structured process
 logs are tested; interoperability with existing game clients is still unverified.
@@ -28,7 +28,7 @@ The complete server rewrite remains open.
   ceiling, a pinned Rust toolchain, and Windows/Linux CI definitions.
 - Borrowed connectionless/channel envelopes in both directions, explicit special
   transport markers, command tokens, bounded info strings, and ordered legacy
-  entity/client index codecs. Another 128 fixtures come from original functions.
+  entity/client index codecs. Another 168 fixtures come from original functions.
 - Socket-free channel sequencing and fragmentation in `cod4x-transport`, with
   cancellation, bounded reassembly, duplicate/reordering tests, and reference
   packetization. Wider engine IDs remain separate from legacy peer namespaces.
@@ -82,6 +82,16 @@ files or logging their names/data. It reports counts and the legacy checksum and
 returns a failure status for corrupt content. The command uses the library's
 default configurable budgets; operator configuration for those budgets is future
 work. Loading decoded assets/maps and checking pure-server admission remain open.
+
+Exercise the legacy challenge/cookie exchange over UDP:
+
+```sh
+cargo run -p cod4x-server -- --handshake-probe --bind 127.0.0.1:28960
+```
+
+This mode verifies a return path and always refuses connects with a clear
+gameplay-unavailable error. It does not admit players or authenticate accounts.
+Its process key comes from OS entropy; logs report only aggregate categories.
 
 ## Source baseline
 

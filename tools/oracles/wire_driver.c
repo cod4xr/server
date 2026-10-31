@@ -160,6 +160,22 @@ static void connect_vectors(void) {
     }
 }
 
+static void challenge_vectors(void) {
+    const int server_values[] = {0, 1, -1, INT32_MIN, INT32_MAX};
+    const char *client_values[] = {"0", "1", "-1", "-2147483648", "2147483647",
+                                    " +00042 ", "-00012", ""};
+    netadr_t source = {NA_IP6, 28960};
+    challenge_fixture = 1;
+    for (unsigned server = 0; server < 5; ++server) {
+        for (unsigned client = 0; client < 8; ++client) {
+            fixture_server_challenge = server_values[server];
+            fixture_client_argument = client_values[client];
+            fixture_client_challenge = atoi(fixture_client_argument);
+            SV_GetChallenge(&source);
+        }
+    }
+}
+
 int main(void) {
     packet_vectors();
     token_vectors();
@@ -167,5 +183,6 @@ int main(void) {
     index_vectors();
     string_vectors();
     connect_vectors();
+    challenge_vectors();
     return 0;
 }

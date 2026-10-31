@@ -53,6 +53,11 @@ is counted by low-cardinality category; it does not generate one log event per
 packet. Persistent errors must be summarized or rate limited rather than logged
 in an unbounded retry loop.
 
+Handshake-probe metrics add `probe_challenges` and `probe_verified_rejections`.
+These count prepared diagnostic replies, while `replied` counts successful sends.
+No players are admitted, and a verified cookie does not authenticate an account.
+Nonce, GUID, key, password, and userinfo values never enter probe logs.
+
 Future connection events will use process-generated connection IDs/spans. Do not
 use player-controlled strings as metric labels. Authentication decisions, map
 lifecycle, script failures, content validation, and extension negotiation need

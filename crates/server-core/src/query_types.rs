@@ -14,9 +14,9 @@ pub enum QueryKind {
 pub enum DropReason {
     /// Envelope or command framing is invalid or oversized.
     Malformed,
-    /// Packet transport or command is outside the implemented discovery service.
+    /// Packet transport or command is outside the selected development service.
     Unsupported,
-    /// Query echo would exceed limits or contain forbidden characters.
+    /// A query echo/nonce is invalid, or an endpoint cookie does not verify.
     InvalidChallenge,
     /// Per-address/global/state-capacity budget is exhausted or time regressed.
     RateLimited,

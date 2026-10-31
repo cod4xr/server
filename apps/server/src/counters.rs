@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::time::Duration;
 
-use cod4x_server_core::{DropReason, QueryOutcome};
+use cod4x_server_core::{DropReason, ProbeOutcome, ProbeReply, QueryOutcome};
 
 #[derive(Debug, Default)]
 pub(crate) struct Counters {
@@ -14,20 +14,45 @@ pub(crate) struct Counters {
     rate_limited: u64,
     output_capacity: u64,
     unclassified: u64,
+    probe_challenges: u64,
+    probe_verified_rejections: u64,
 }
 
 impl Counters {
     pub(crate) fn record(&mut self, outcome: QueryOutcome) {
+        match outcome {
+            QueryOutcome::Reply { .. } => (),
+            QueryOutcome::Dropped(reason) => self.record_drop(reason),
+            _ => self.unclassified = self.unclassified.saturating_add(1),
+        }
+    }
+
+    pub(crate) fn record_probe(&mut self, outcome: ProbeOutcome) {
         let counter = match outcome {
-            QueryOutcome::Reply { .. } => return,
-            QueryOutcome::Dropped(reason) => match reason {
-                DropReason::Malformed => &mut self.malformed,
-                DropReason::Unsupported => &mut self.unsupported,
-                DropReason::InvalidChallenge => &mut self.invalid_challenge,
-                DropReason::RateLimited => &mut self.rate_limited,
-                DropReason::OutputCapacity => &mut self.output_capacity,
-                _ => &mut self.unclassified,
-            },
+            ProbeOutcome::Reply {
+                kind: ProbeReply::Challenge,
+                ..
+            } => &mut self.probe_challenges,
+            ProbeOutcome::Reply {
+                kind: ProbeReply::Unavailable,
+                ..
+            } => &mut self.probe_verified_rejections,
+            ProbeOutcome::Dropped(reason) => {
+                self.record_drop(reason);
+                return;
+            }
+            _ => &mut self.unclassified,
+        };
+        *counter = counter.saturating_add(1);
+    }
+
+    fn record_drop(&mut self, reason: DropReason) {
+        let counter = match reason {
+            DropReason::Malformed => &mut self.malformed,
+            DropReason::Unsupported => &mut self.unsupported,
+            DropReason::InvalidChallenge => &mut self.invalid_challenge,
+            DropReason::RateLimited => &mut self.rate_limited,
+            DropReason::OutputCapacity => &mut self.output_capacity,
             _ => &mut self.unclassified,
         };
         *counter = counter.saturating_add(1);
@@ -47,6 +72,8 @@ impl Counters {
             output_capacity = self.output_capacity,
             send_errors = self.send_errors,
             unclassified = self.unclassified,
+            probe_challenges = self.probe_challenges,
+            probe_verified_rejections = self.probe_verified_rejections,
             dropped_logs,
             "server counters"
         );

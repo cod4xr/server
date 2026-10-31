@@ -5,5 +5,5 @@
   "cod4x-observability": ["serde_json", "tracing", "tracing-appender", "tracing-subscriber"],
   "cod4x-server-core": ["cod4x-protocol", "hmac", "sha2"],
   "cod4x-transport": ["cod4x-protocol"],
-  "cod4x-server": ["cod4x-content", "cod4x-observability", "cod4x-protocol", "cod4x-server-core", "ctrlc", "serde_json", "tracing"]
+  "cod4x-server": ["cod4x-content", "cod4x-observability", "cod4x-protocol", "cod4x-server-core", "ctrlc", "getrandom", "serde_json", "tracing", "zeroize"]
 }

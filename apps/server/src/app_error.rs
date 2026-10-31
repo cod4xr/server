@@ -12,6 +12,8 @@ pub(crate) enum AppError {
     Io(io::Error),
     Content(cod4x_content::ArchiveError),
     ContentIo(io::Error),
+    Entropy(getrandom::Error),
+    Cookie(cod4x_server_core::CookieKeyError),
 }
 
 impl fmt::Display for AppError {
@@ -26,6 +28,8 @@ impl fmt::Display for AppError {
             Self::Io(error) => write!(formatter, "socket operation failed: {error}"),
             Self::Content(error) => write!(formatter, "content verification failed: {error}"),
             Self::ContentIo(error) => write!(formatter, "content read failed: {error}"),
+            Self::Entropy(error) => write!(formatter, "process entropy failed: {error}"),
+            Self::Cookie(error) => write!(formatter, "cookie initialization failed: {error}"),
         }
     }
 }
@@ -39,6 +43,8 @@ impl Error for AppError {
             Self::Signal(error) => Some(error),
             Self::Io(error) | Self::ContentIo(error) => Some(error),
             Self::Content(error) => Some(error),
+            Self::Entropy(error) => Some(error),
+            Self::Cookie(error) => Some(error),
         }
     }
 }

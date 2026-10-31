@@ -80,6 +80,11 @@ per ADR 0006; protocol stays dependency-free. The process owns fresh OS entropy,
 key lifetime, and provider replacement. Legacy cookies remain 32-bit opaque echoes,
 with no implicit expiry, identity authentication, or network admission behavior.
 
+The explicit handshake-probe runtime owns OS entropy and source-key zeroization.
+Its core issues/verifies endpoint cookies under reply budgets and always refuses
+gameplay admission. Runtime service selection is explicit; query-only and offline
+content modes do not become implicit connection servers. See ADR 0007.
+
 Keep connection/authentication state, server commands, map lifecycle, snapshots,
 game services, script execution, and operations in cohesive modules. Prefer one
 explicit owner for mutable simulation state. Threading/async decisions require

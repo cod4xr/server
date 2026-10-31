@@ -8,6 +8,7 @@ use crate::app_error::AppError;
 use crate::arguments::{self, Action, Arguments, Mode};
 use crate::content;
 use crate::runtime::Runtime;
+use crate::service::RuntimeService;
 
 pub(crate) fn run() -> Result<(), AppError> {
     let options = match Arguments::parse(std::env::args_os().skip(1))? {
@@ -30,16 +31,28 @@ pub(crate) fn run() -> Result<(), AppError> {
     if let Mode::VerifyIwd(path) = &options.mode {
         return content::verify_iwd(path);
     }
+    let service = match RuntimeService::for_mode(&options.mode) {
+        Ok(service) => service,
+        Err(error) => {
+            tracing::error!(
+                event = "server.failed",
+                kind = "initialization",
+                "development service initialization failed"
+            );
+            return Err(error);
+        }
+    };
+    let mode = service.label();
     // The signal handler and main thread share only this shutdown flag.
     let stop = Arc::new(AtomicBool::new(false));
     let signal_stop = Arc::clone(&stop);
     ctrlc::set_handler(move || signal_stop.store(true, Ordering::Relaxed))
         .map_err(AppError::Signal)?;
     let result = (|| {
-        let mut runtime = Runtime::bind(options.bind)?;
+        let mut runtime = Runtime::bind(options.bind, service)?;
         let address = runtime.local_address()?;
         tracing::info!(event = "server.started", version = env!("CARGO_PKG_VERSION"),
-            bind = %address, mode = "query_only", "development UDP runtime started");
+            bind = %address, mode, "development UDP runtime started");
         runtime.run(&options, &stop, &logs)
     })();
     match result {

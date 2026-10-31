@@ -116,6 +116,32 @@ limited return-path check, not account authentication. No implicit expiry or new
 wire format is introduced. Application OS-entropy and handshake integration remain
 next; no secrets, network listeners, or target directories were created for this
 core implementation. See ADR 0006 for the rationale and reviewed dependencies.
+
+The explicit `--handshake-probe` mode is implemented and passes full Windows
+workspace formatting, Clippy, debug/release, rustdoc, and source/dependency policy.
+Four core tests and two real child-process tests prove challenge exchange, bad-
+cookie drops, explicit refusal after valid proof, bounded budgets/clock handling,
+mode separation, and sanitized aggregate counters. It never admits players or
+sends connectResponse, and never contacts auth/master backends. Process entropy
+uses getrandom 0.4.3 with a Zeroizing source key; no new transitive versions were
+introduced by their direct application use. See ADR 0007.
+
+Forty datagrams now come from complete original SV_GetChallenge and
+NET_OutOfBandPrint functions with aborting/unexercised auth stubs and synthetic
+cookie hooks, making 168 wire fixtures. All six original C generators and both
+independent Python fixture generators passed again. Client handshake disassembly
+is now source-hashed; it sends `getchallenge 0 "<guid>"` and consumes response
+argument one. Its extra GUID must never enter logs. No live game-client join has
+been attempted or established. Current source policy: 142 files, seven crates,
+largest source still the 287-line generated codebook.
+
+Next research underway: com_bsp_load_obj.c defines IBSP container layouts. Versions
+6..18 use fixed per-version `[length, offset]` directories (41..47 entries);
+19..45 use `[type, length]` chunks following a count with 4-byte aligned sequential
+payloads. Preserve first matching chunk semantics, unlike last-entry IWD lookup.
+The C header declares chunks[100] but file data is dynamic; do not copy that as an
+engine limit. Source hash/ADR/tests are needed before implementing a safe reader.
+This is container metadata, not decoded collision, simulation, or a joinable map.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

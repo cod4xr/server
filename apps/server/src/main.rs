@@ -7,6 +7,7 @@ mod arguments;
 mod content;
 mod counters;
 mod runtime;
+mod service;
 
 use std::process::ExitCode;
 

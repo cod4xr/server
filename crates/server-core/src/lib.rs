@@ -4,10 +4,14 @@
 
 mod discovery;
 mod endpoint_cookie;
+mod handshake_probe;
+mod probe_outcome;
 mod query_budget;
 mod query_types;
 mod token_bucket;
 
 pub use discovery::DiscoveryService;
 pub use endpoint_cookie::{CookieKeyError, ENDPOINT_COOKIE_KEY_BYTES, EndpointCookie};
+pub use handshake_probe::HandshakeProbe;
+pub use probe_outcome::{ProbeOutcome, ProbeReply};
 pub use query_types::{DropReason, QueryKind, QueryOutcome};

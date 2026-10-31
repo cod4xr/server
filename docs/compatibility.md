@@ -160,6 +160,14 @@ behavior or ambiguous first-key selection. Unknown passwords/names/extensions ar
 preserved; no claimed client IP/GUID is trusted. The request's Debug output exposes
 only byte count. Raw userinfo views can contain credentials and must never be logged.
 
+An explicit diagnostic handshake probe now produces the pinned challenge-response
+shape, backed by an opaque modern endpoint cookie. Forty original complete-function
+datagrams cover signed boundaries and client echoes, for 168 total wire fixtures.
+Real UDP tests prove an exchange with the test peer, silent bad-cookie handling,
+and gameplay-unavailable refusal after valid proof. No successful connectResponse
+is sent, and no account is authenticated. This does not establish an unmodified
+game-client join or full release/profile interoperability.
+
 Record server revision, client build, negotiated protocol, platform, map/content
 hashes, mod revision, plugin presence, and test result for every conformance run.
 Keep credentials and proprietary assets out of fixtures. Cover baseline CoD4,
