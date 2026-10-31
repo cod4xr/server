@@ -130,11 +130,42 @@ static void string_vectors(void) {
     }
 }
 
+static void connect_vectors(void) {
+    const char *cases[] = {
+        "connect \"\\protocol\\6\\challenge\\0\\qport\\0\"",
+        "connect \"\\protocol\\21\\challenge\\-2147483648\\qport\\-32768\"",
+        "connect \"\\protocol\\21\\challenge\\2147483647\\qport\\65535\"",
+        "CONNECT \"\\PROTOCOL\\21\\Challenge\\-1\\QPORT\\-1\"",
+        "/* prefix */ connect \"protocol\\6\\challenge\\123\\qport\\32767\"",
+        "connect \"\\protocol\\ +00021 \\challenge\\ +042 \\qport\\ +00042 \"",
+        "connect \"\\protocol\\21\\challenge\\-00123\\qport\\32768\\future\\yes\" trailing",
+        "connect \"\\protocol\\0\\challenge\\1\\qport\\10\"",
+        "connect \"\\protocol\\2147483647\\challenge\\2\\qport\\11\"",
+        "connect \"\\protocol\\21\\challenge\\0\\qport\\12\\name\\Player\xff\"",
+        "connect \"\\protocol\\21\\challenge\\1\\qport\\13\\password\\synthetic secret\"",
+        "connect \"\\protocol\\21\\challenge\\2\\qport\\14\\xver\\21.2\" // rest"
+    };
+    for (unsigned i = 0; i < sizeof(cases) / sizeof(cases[0]); ++i) {
+        char storage[10000];
+        char *arguments[MAX_STRING_TOKENS + 1];
+        cmdTokenizeParams_t params = {0, sizeof(storage), storage, arguments};
+        Cmd_TokenizeStringInternal(cases[i], qfalse, &params);
+        assert(params.cmd_argc >= 2);
+        int protocol = atoi(Info_ValueForKey(arguments[1], "protocol"));
+        int challenge = atoi(Info_ValueForKey(arguments[1], "challenge"));
+        unsigned short port = atoi(Info_ValueForKey(arguments[1], "qport"));
+        printf("connect ");
+        print_hex(cases[i], strlen(cases[i]));
+        printf(" %d %d %u\n", protocol, challenge, (unsigned)port);
+    }
+}
+
 int main(void) {
     packet_vectors();
     token_vectors();
     info_vectors();
     index_vectors();
     string_vectors();
+    connect_vectors();
     return 0;
 }

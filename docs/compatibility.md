@@ -147,6 +147,19 @@ server acceptance, and movement simulation remain separate work.
 
 ## Release matrix to establish
 
+The borrowed connect parser interprets only protocol, challenge, and qport; unknown
+userinfo stays exact. It uses original tokenizer/first-userinfo-token behavior,
+including ignored trailing tokens. Signed-short qport spellings emitted by upstream
+and unsigned 16-bit spellings normalize to the same raw channel value. Four tests
+include twelve independent C tokenizer/lookup/decimal cases. This is field parsing,
+not a port of `SV_DirectConnect`, cookie verification, or connection admission.
+
+Malformed decimals, missing required fields, overflow, and duplicate critical keys
+(including case aliases) are rejected explicitly instead of `atoi` default/prefix
+behavior or ambiguous first-key selection. Unknown passwords/names/extensions are
+preserved; no claimed client IP/GUID is trusted. The request's Debug output exposes
+only byte count. Raw userinfo views can contain credentials and must never be logged.
+
 Record server revision, client build, negotiated protocol, platform, map/content
 hashes, mod revision, plugin presence, and test result for every conformance run.
 Keep credentials and proprietary assets out of fixtures. Cover baseline CoD4,

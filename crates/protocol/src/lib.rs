@@ -31,6 +31,7 @@
 
 mod command;
 pub mod compression;
+pub mod connection;
 mod index;
 mod info;
 mod message_error;

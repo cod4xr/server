@@ -97,6 +97,20 @@ do not replace it with an expiring/domain-specific design without auditing those
 other callers. It currently derives from a single SHA1 compression with a random
 per-process secret. The response shape is `challengeResponse <server> <client>
 0 xproto 18`. No authentication/connection handler has been implemented yet.
+
+Borrowed connect parsing now passes protocol debug/release tests and Clippy.
+Four tests include twelve new original C tokenizer/lookup/decimal vectors, making
+128 wire fixtures total. Signed-short/unsigned qport spellings normalize to raw
+16-bit routing values; unknown userinfo is retained; duplicated critical fields
+and undefined/overflowing atoi-style inputs fail explicitly. Request Debug omits
+credentials and challenge echoes. sv_client.c is now hashed in upstream.lock.json.
+This parser has no admission/cookie/account-auth behavior.
+
+Cookie research: RustCrypto hmac 0.13.0 / sha2 0.11.1 registry sources and official
+API docs were inspected, but dependencies have not been added yet. A modern MAC
+can replace the original opaque SHA1-compression cookie internally without changing
+its signed 32-bit echo. Preserve one endpoint-cookie namespace across connect and
+Source-engine queries; don't expire/change its scope before auditing all callers.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

@@ -23,6 +23,7 @@
     "src/sv_net_chan.c": "1d5cafd60520d24531ebedd403812f9592800e8ef41765eb35a3ca9898cbe64a",
     "src/filesystem.c": "c0a537a1240be64523a59d38b7f5a6f0adcec7703f0c95c992ec6ebe0ce2839c",
     "src/player.h": "9d0fa39737a88385dfd65f550cddcecf0c2b15e170a48f906b50f52a09643854",
-    "src/q_math.h": "f3b4aad07962c0aac398612f8814da597db0bc52fdecee19b5976fd665170db0"
+    "src/q_math.h": "f3b4aad07962c0aac398612f8814da597db0bc52fdecee19b5976fd665170db0",
+    "src/sv_client.c": "49ef45af60b095dbbc5b3f14b08a78fb8af4161815728cefbb3b8c5d13c9a034"
   }
 }

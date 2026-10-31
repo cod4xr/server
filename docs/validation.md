@@ -110,3 +110,10 @@ This establishes IWD metadata and payload verification for these content hashes,
 not map/fastfile decoding, pure admission, or join/gameplay compatibility. Linux
 validation for the new content/user-command layers remains open; no separate build
 cache was created to obtain it.
+
+Four additional connect-parser tests passed Windows protocol debug/release and
+warnings-denied Clippy. Twelve C tokenizer/info-lookup/atoi fixtures raise the wire
+fixture total to 128. They cover numeric boundaries, signed qport spelling, case,
+comments, whitespace, and unknown fields. Separate tests reject malformed decimals,
+overflow, missing/duplicated critical fields and verify credential/challenge Debug
+redaction. These tests provide no challenge authenticity or connection acceptance.
