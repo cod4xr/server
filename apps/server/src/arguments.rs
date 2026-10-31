@@ -16,6 +16,7 @@ Usage: cod4x-server --query-only [options]
        cod4x-server --inspect-fastfile PATH [logging options]
        cod4x-server --inspect-zone-prefix PATH [logging options]
        cod4x-server --inspect-rawfiles PATH [logging options]
+       cod4x-server --inspect-gsc PATH [logging options]
 
   --query-only             Enable discovery only; gameplay is not implemented
   --handshake-probe        Exchange challenges; refuse connects without gameplay
@@ -23,6 +24,7 @@ Usage: cod4x-server --query-only [options]
   --inspect-fastfile PATH  Validate unsigned v5 envelope only; no asset graph load
   --inspect-zone-prefix PATH  Inspect IW3 root tables; asset bodies stay unvalidated
   --inspect-rawfiles PATH  Decode raw-file-only collection offline; execute no scripts
+  --inspect-gsc PATH       Inspect legacy GSC structure offline; no compilation/execution
   --bind ADDRESS           UDP address (default: 127.0.0.1:28960)
   --log-dir PATH           Dedicated directory for daily JSON log files
   --log-level DIRECTIVES   Explicit tracing filter (default: info)
@@ -52,6 +54,7 @@ pub(crate) enum Mode {
     InspectFastFile(PathBuf),
     InspectZonePrefix(PathBuf),
     InspectRawFiles(PathBuf),
+    InspectGsc(PathBuf),
 }
 
 #[derive(Debug)]
@@ -85,7 +88,8 @@ impl Arguments {
                 "--verify-iwd"
                 | "--inspect-fastfile"
                 | "--inspect-zone-prefix"
-                | "--inspect-rawfiles" => {
+                | "--inspect-rawfiles"
+                | "--inspect-gsc" => {
                     let path = PathBuf::from(
                         arguments
                             .next()
@@ -95,6 +99,7 @@ impl Arguments {
                         "--verify-iwd" => Mode::VerifyIwd(path),
                         "--inspect-fastfile" => Mode::InspectFastFile(path),
                         "--inspect-zone-prefix" => Mode::InspectZonePrefix(path),
+                        "--inspect-gsc" => Mode::InspectGsc(path),
                         _ => Mode::InspectRawFiles(path),
                     };
                     select_mode(&mut mode, selected)?;
@@ -179,7 +184,8 @@ impl Mode {
             Self::VerifyIwd(_)
             | Self::InspectFastFile(_)
             | Self::InspectZonePrefix(_)
-            | Self::InspectRawFiles(_) => true,
+            | Self::InspectRawFiles(_)
+            | Self::InspectGsc(_) => true,
         }
     }
 }

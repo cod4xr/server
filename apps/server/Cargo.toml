@@ -11,6 +11,7 @@ publish.workspace = true
 cod4x-content.workspace = true
 cod4x-observability.workspace = true
 cod4x-protocol.workspace = true
+cod4x-script.workspace = true
 cod4x-server-core.workspace = true
 ctrlc.workspace = true
 getrandom.workspace = true

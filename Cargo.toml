@@ -21,6 +21,7 @@ publish = false
 [workspace.dependencies]
 cod4x-content = { path = "crates/content" }
 cod4x-protocol = { path = "crates/protocol" }
+cod4x-script = { path = "crates/script" }
 cod4x-observability = { path = "crates/observability" }
 cod4x-server-core = { path = "crates/server-core" }
 ctrlc = { version = "=3.5.2", features = ["termination"] }

@@ -30,7 +30,8 @@ impl RuntimeService {
             Mode::VerifyIwd(_)
             | Mode::InspectFastFile(_)
             | Mode::InspectZonePrefix(_)
-            | Mode::InspectRawFiles(_) => Err(AppError::Arguments("content inspection is offline")),
+            | Mode::InspectRawFiles(_)
+            | Mode::InspectGsc(_) => Err(AppError::Arguments("content inspection is offline")),
         }
     }
 

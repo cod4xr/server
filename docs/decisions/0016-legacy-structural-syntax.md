@@ -44,6 +44,12 @@ after shifting it. Fail at the first needed scanner/syntax/resource error withou
 publishing a partial tree. Error recovery intentionally differs from the original
 compiler. Debug/errors expose categories, byte offsets, and counts, not source.
 
+The --inspect-gsc process mode reads a bounded regular-file snapshot, indexes it,
+and inspects the Script grammar without opening a listener. Its distinct events
+report structural counts or original line/byte-column errors. No include resolution,
+literal conversion, semantic binding, compilation, or execution is implied. The
+application's internal script dependency adds no external packages or native code.
+
 ## Alternatives and migration
 
 Linking native assembly would preserve architecture/global-state assumptions.

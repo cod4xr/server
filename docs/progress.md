@@ -254,7 +254,14 @@ compiler, or an executing VM. See ADR 0016. All nine original-function generator
 and lexical/literal/structural replay regeneration pass; Linux and original-parser
 trace/stock-mod conformance remain open.
 
-Next: expose offline GSC structural diagnostics, then semantic/bytecode/runtime foundations alongside broader
+Offline --inspect-gsc now passes full Windows workspace gates (260 source files,
+eight crates). Four process tests cover JSON/human logs, counts, original error
+locations, oversize/missing sources, mode/network exclusion, and source/path
+redaction. It uses bounded snapshots and adds only an internal script dependency.
+Structural inspection does not validate literal values, resolve includes, bind
+names, compile, or execute GSC. Linux checks remain open.
+
+Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
 opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in

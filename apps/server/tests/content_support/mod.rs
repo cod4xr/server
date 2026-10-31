@@ -45,12 +45,6 @@ impl FixtureFile {
     }
 
     fn from_dataset(label: &str, dataset: &str) -> Self {
-        static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
-        let path = std::env::temp_dir().join(format!(
-            "cod4x-secret-content-{}-{}.fixture",
-            std::process::id(),
-            NEXT_FILE.fetch_add(1, Ordering::Relaxed)
-        ));
         let row = dataset
             .lines()
             .map(|line| line.split_ascii_whitespace().collect::<Vec<_>>())
@@ -63,12 +57,22 @@ impl FixtureFile {
                 u8::from_str_radix(std::str::from_utf8(pair).expect("Hex ASCII"), 16).expect("Byte")
             })
             .collect();
+        Self::from_bytes(&bytes)
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> Self {
+        static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
+        let path = std::env::temp_dir().join(format!(
+            "cod4x-secret-content-{}-{}.fixture",
+            std::process::id(),
+            NEXT_FILE.fetch_add(1, Ordering::Relaxed)
+        ));
         let mut file = OpenOptions::new()
             .create_new(true)
             .write(true)
             .open(&path)
             .expect("Exclusive test-owned file");
-        file.write_all(&bytes).expect("Synthetic content");
+        file.write_all(bytes).expect("Synthetic content");
         Self(path)
     }
 }

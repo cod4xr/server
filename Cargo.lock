@@ -98,6 +98,7 @@ dependencies = [
  "cod4x-content",
  "cod4x-observability",
  "cod4x-protocol",
+ "cod4x-script",
  "cod4x-server-core",
  "ctrlc",
  "getrandom",

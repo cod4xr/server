@@ -8,6 +8,7 @@ mod content;
 mod content_snapshot;
 mod counters;
 mod runtime;
+mod script;
 mod service;
 
 use std::process::ExitCode;

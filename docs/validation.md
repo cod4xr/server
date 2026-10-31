@@ -289,3 +289,12 @@ names are bound and no scripts execute. Semantic AST/compiler/VM, original-parse
 trace and stock-mod conformance, modern language/services, and Linux checks for
 this new layer remain open. Release testing reused the normal target directory
 with four build jobs; no alternate build directory was created.
+
+Offline --inspect-gsc integration passed all Windows workspace gates (260 source
+files, eight crates). Four process tests cover JSON and human logs, aggregate
+counts, original line/byte-column failures, missing/oversize files, mode/network
+exclusion, nonzero failures without partial success, and source/path redaction.
+The oversize test changes only a disposable test file's length; the reader rejects
+its metadata before loading contents. The internal application-to-script dependency
+adds no external packages. No includes are resolved, literal values validated,
+names bound, code compiled, or scripts executed. Linux checks remain open.

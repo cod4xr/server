@@ -145,6 +145,10 @@ Bounded structural parsing now builds flat concrete grammar trees with scoped
 borrowed node views and original terminal spans. Iterative stacks/tree destruction
 support deep input under explicit budgets. No semantic actions or name binding run;
 structural success does not establish compilation or GSC execution. See ADR 0016.
+The application now consumes cod4x-script through an explicit offline --inspect-gsc
+mode, using bounded file snapshots and location/count-only events. This approved
+internal dependency adds no third-party packages, build scripts, or FFI; the shared
+script library still owns no filesystem, logging, sockets, or server state.
 
 ## Future custom client
 

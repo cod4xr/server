@@ -128,6 +128,17 @@ remain unvalidated; root tables are not a loaded zone or a decoded gameplay map.
 usage. It rejects other asset types before returning content, opens no listener,
 and executes no scripts. Names and buffer bytes remain outside diagnostics.
 
+Inspect a loose legacy GSC file offline:
+
+```sh
+cargo run -p cod4x-server -- --inspect-gsc path/to/script.gsc
+```
+
+This checks structural syntax and reports counts or the original line/byte column
+on failure. It does not resolve includes/names, validate literal values, compile,
+or execute scripts. Source bytes and file paths stay outside logs. Default source,
+scanner, and parser budgets apply; command-line budget overrides remain future work.
+
 Exercise the legacy challenge/cookie exchange over UDP:
 
 ```sh
