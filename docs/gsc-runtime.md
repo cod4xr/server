@@ -79,6 +79,10 @@ checks, cancellation tests, and replayable scheduler behavior. Keep a support/
 version matrix.
 
 Current content readers do not compile, execute, profile, reload, or debug GSC.
+The dependency-free cod4x-script kernel now implements numeric truth/negation/
+complement and explicit-profile wait conversion, checked against 827 original
+function cases. It owns no bytecode, objects, threads, or host services. See
+[ADR 0012](decisions/0012-script-semantics-boundary.md) for exact scope and limits.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

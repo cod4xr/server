@@ -35,7 +35,7 @@ class ReferenceSource:
         """Extract a function verbatim, tracking C comments and string literals."""
         source = self.files[filename]
         pattern = (
-            rf"(?m)^(?:(?:static|__cdecl|__optimize3|__regparm[123])\s+)*"
+            rf"(?m)^(?:(?:static|inline|__cdecl|__optimize3|__regparm[123])\s+)*"
             rf"(?:void|(?:char|byte)\s*\*|bool|int|unsigned(?:\s+int)?|"
             rf"u?int(?:8|16|32|64)_t|qboolean)\s*"
             rf"(?:(?:__cdecl|QDECL)\s+)*{re.escape(name)}\s*\([^;{{]*\)\s*\{{"

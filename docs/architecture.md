@@ -26,7 +26,8 @@ client presentation ---------------------> read-only simulation output
 
 Arrows mean allowed conceptual dependency, not a list of crates already built.
 Current implemented boundaries are `cod4x-protocol`, `cod4x-transport`,
-`cod4x-server-core`, `cod4x-assets`, `cod4x-content`, `cod4x-observability`, and the
+`cod4x-server-core`, `cod4x-assets`, `cod4x-content`, `cod4x-observability`,
+`cod4x-script`, and the
 `apps/server` process. Protocol and deterministic
 server services remain dependency-light; process signals and logging sinks live
 above them. No client or simulation crate exists yet. Do not manufacture empty
@@ -125,6 +126,12 @@ engine/game APIs; they must not change legacy codecs. Native plugin ABI support
 needs a separate policy: an existing 32-bit plugin cannot simply be loaded into
 a 64-bit Rust process. Assess a constrained compatibility host before promising
 unchanged native-plugin support.
+
+`cod4x-script` now implements dependency-free legacy numeric and wait primitives
+without game globals, native references, a host clock, or I/O. The selected rounding
+profile and defined input domains are explicit. It is not a compiler or running VM;
+new value/handle storage, scheduling, host services, and the modern language remain
+implementation work. See ADR 0012 and the expanded GSC contract.
 
 ## Future custom client
 

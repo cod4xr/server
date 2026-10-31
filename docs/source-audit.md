@@ -68,6 +68,14 @@ samples validate container/prefix behavior; original C block conversion supplies
 ninety valid relative-offset cases. These do not establish full relocation or graph
 validation. The source's native pointer narrowing never enters the Rust runtime.
 
+The actual numeric truth/negation/complement helpers and VM_CalcWaitTime now supply
+827 semantic cases. f2rint uses SSE control-state rounding; the oracle explicitly
+selects nearest with FTZ/DAZ disabled, while Windows bootstrap requests nearest.
+The script kernel preserves defined scalar/wait behavior and rejects undefined
+wait conversions. Heap/reference cleanup, error unwinding, scheduling, and parser/
+bytecode execution remain separate work. _scr_yacc.asm contains lexer/parser
+tables/actions; no editable source grammar was found in the pinned tree.
+
 ## Open research
 
 Inventory all public protocol variants, authentication dependencies, third-party

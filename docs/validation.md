@@ -211,3 +211,19 @@ Names/buffers remain borrowed; Debug/log/process failures omit their contents an
 host paths. The inspector opens no listener or extracted files. Original full
 C/ASM loader/registration differential checks, actual mixed stock-zone decoding,
 script execution, and Linux checks for this layer remain open.
+
+The new dependency-free script kernel passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, and repository policy (208
+source files, eight crates). Five tests include 827 original-function cases: 572
+numeric truth/negation/complement and 255 explicit-profile wait results/errors.
+Nearest-even ties, positive fractional/subnormal minimum-one waits, signed zeros,
+non-finite/overflow rejection, large frame-rate conversion, and relative results
+beyond the old 24-bit clock are covered. The oracle explicitly controls SSE
+rounding/FTZ/DAZ and excludes undefined source wait products/conversions.
+
+All nine original-source fixture generators and independent raw-file regeneration
+passed after adding inline-function extraction support. Source hashes now include
+cscr_vm.cpp, _scr_yacc.asm, and Windows floating-environment initialization. Numeric
+helpers do not implement stack cleanup, heap references, error unwinding, full
+values, parser/compiler, bytecode, scheduler, or modern language/services. No actual
+GSC script executes, and Linux validation for the new kernel remains open.

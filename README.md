@@ -64,6 +64,9 @@ The complete server rewrite remains open.
 - Typed raw-file-only collections with validated buffers, shared/suffix names,
   root/inserted aliases, scoped temporary-memory accounting, and configurable
   budgets. Mixed stock zones, registry publication, and GSC execution remain open.
+- Dependency-free legacy script scalar/wait semantics checked against 827 original
+  function cases. This is a tested kernel; the compiler/VM and expanded language
+  features described in the GSC contract remain unimplemented.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -169,6 +172,7 @@ python tools/generate_content_vectors.py ../cod4x-reference --check
 python tools/generate_user_command_vectors.py ../cod4x-reference --check
 python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_zone_pointer_vectors.py ../cod4x-reference --check
+python tools/generate_script_vectors.py ../cod4x-reference --check
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check

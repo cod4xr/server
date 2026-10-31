@@ -5,6 +5,7 @@ members = [
     "crates/content",
     "crates/observability",
     "crates/protocol",
+    "crates/script",
     "crates/server-core",
     "crates/transport",
 ]

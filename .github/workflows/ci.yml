@@ -69,3 +69,4 @@ jobs:
           python tools/generate_user_command_vectors.py reference --check
           python tools/generate_bsp_vectors.py reference --check
           python tools/generate_zone_pointer_vectors.py reference --check
+          python tools/generate_script_vectors.py reference --check

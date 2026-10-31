@@ -88,6 +88,10 @@ name = "cod4x-protocol"
 version = "0.1.0"
 
 [[package]]
+name = "cod4x-script"
+version = "0.1.0"
+
+[[package]]
 name = "cod4x-server"
 version = "0.1.0"
 dependencies = [

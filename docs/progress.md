@@ -193,7 +193,17 @@ with legacy semantics; modules/collections/optional types/errors/async host I/O,
 JSON/database/HTTP services, debugging/profiling, and reload are required directions,
 not implemented features. Keep wide handles/budgets and reusable host boundaries.
 
-Next: source-grounded GSC semantics/compiler/runtime foundations alongside broader
+The dependency-free cod4x-script kernel implements legacy numeric truth, logical
+negation, integer complement, and explicit nearest-even-profile wait conversion.
+Five tests include 827 original-function cases (572 numeric, 255 waits) and boundary
+rejections. Full Windows workspace gates passed (208 source files, eight crates);
+all nine original-source generators and independent raw-file regeneration passed.
+The C oracle controls SSE rounding/FTZ/DAZ, excludes undefined wait conversions,
+and records errors rather than implementing longjmp/VM cleanup. Relative results
+use u64 without the old 24-bit mask; modern durations/numbers remain separate.
+No third-party dependency or old package version was added/changed. See ADR 0012.
+
+Next: source-grounded GSC frontend/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
 opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in
