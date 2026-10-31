@@ -16,6 +16,7 @@ that block. The separate WSL validation directory was already absent when checke
 
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.
+  Keyed legacy player-command decoding is now implemented as a separate module.
 - `crates/transport`: ordinary channel send sequences, borrowed transmission,
   bounded reassembly, cancellation, stale/duplicate/reorder handling.
 - `crates/server-core`: deterministic query-only discovery and bounded global/IP
@@ -75,6 +76,27 @@ several weeks to a few months for a first joinable stock-map build, roughly
 5–10% toward first join and under 5% of the complete rewrite. These are rough
 planning estimates, not measured progress or delivery promises. User explicitly
 said to continue working after answering; do not end at this checkpoint.
+
+User-command decoder passes debug differential/boundary tests and workspace
+Clippy. Evidence includes 512 original C cases at all 65 storage splits, every
+command truncation with atomic cursor checks, and all 65,536 signed-short melee
+angles compared through a C digest. Full Windows workspace debug/release,
+Clippy/rustdoc, formatting, and source policy passed. Command encoder, full packet profile/state, and simulation
+remain open. New source hashes include player.h and q_math.h; six C generators
+now exist. No target directory or private/proprietary fixtures were added.
+
+Read-only full verification also passed for three stock installation archives:
+localized_english_iw06.iwd (7 entries/3 visible files), iw_12.iwd (33/33), and
+iw_13.iwd (265/265). No bytes were copied into the repo or extracted. Independent
+Python metadata CRC calculations matched the Rust legacy checksums. Exact archive
+hashes are recorded in docs/validation.md; this is not decoded map/gameplay proof.
+
+Next: research connection/challenge and protocol profile state. The source uses
+an endpoint-derived 32-bit cookie in connect and Source-engine query challenges;
+do not replace it with an expiring/domain-specific design without auditing those
+other callers. It currently derives from a single SHA1 compression with a random
+per-process secret. The response shape is `challengeResponse <server> <client>
+0 xproto 18`. No authentication/connection handler has been implemented yet.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

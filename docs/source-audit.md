@@ -53,6 +53,12 @@ overread is replaced by bounded virtual zero padding. Asset pool defaults and
 overrides, configstring ranges, packed script structures, and collision indices
 were inspected for docs/limits.md; their expanded replacements remain open.
 
+`filesystem.c` path comparison, archive-local chain order, ZIP positioning, and
+seeded CRC32 checksums now ground the IWD reader. `player.h` command fields,
+`q_math.h` angle conversion, and the keyed command decoder/helpers in `msg.c`
+are pinned and independently exercised. Decoder types use peer-sized values;
+they do not impose those widths on future simulation or asset storage.
+
 ## Open research
 
 Inventory all public protocol variants, authentication dependencies, third-party

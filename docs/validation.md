@@ -86,3 +86,27 @@ opening sockets or extracting files. It returns nonzero on invalid content,
 reports aggregate counts/checksums, and process tests exclude names, payloads,
 and local paths from logs. These tests do not establish decoded map/fastfile
 loading, pure-server admission, stock-client ZIP64 support, or gameplay.
+
+Five further Windows player-command tests passed in debug/release, together with
+the full workspace gates. A pinned C decoder generated 512 commands; Rust matches
+all 65 storage splits for each command, exact binary32 yaw bits, bytes consumed,
+and following cached bits/bytes. Every truncated command preserves both cursors.
+The original full command decoder also supplies an exhaustive digest for all
+65,536 signed-short melee angles. Invalid baseline domains and explicit timestamp
+wrap/negative-zero preservation are tested. These are source differential results,
+not live client input, server acceptance, or movement/prediction evidence.
+
+Full read-only verification passed three stock IWDs from the local game installation,
+with independently matching Python seeded-CRC metadata calculations. Files remained
+outside the project and were neither copied nor extracted. Exact samples:
+
+| Archive | Entries / visible files | Legacy checksum (feed 0) | SHA-256 |
+| --- | --- | --- | --- |
+| `localized_english_iw06.iwd` | 7 / 3 | 3429767158 | `df764ade4b0e8a34fea5ee5f0ac750f25239130290dd456f446d83977f994efe` |
+| `iw_12.iwd` | 33 / 33 | 1043426064 | `a63bcfc3f4248acc63220743bced2dd2fb9384c782521b75a4dbe21f0ee2d4b5` |
+| `iw_13.iwd` | 265 / 265 | 2115322797 | `42a4de64e9b2504d2e7af9ced686a396bdb9c2eec7213031f836f3dc529a1166` |
+
+This establishes IWD metadata and payload verification for these content hashes,
+not map/fastfile decoding, pure admission, or join/gameplay compatibility. Linux
+validation for the new content/user-command layers remains open; no separate build
+cache was created to obtain it.

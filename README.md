@@ -28,12 +28,15 @@ The complete server rewrite remains open.
   ceiling, a pinned Rust toolchain, and Windows/Linux CI definitions.
 - Borrowed connectionless/channel envelopes in both directions, explicit special
   transport markers, command tokens, bounded info strings, and ordered legacy
-  entity/client index codecs. Another 104 fixtures come from original functions.
+  entity/client index codecs. Another 116 fixtures come from original functions.
 - Socket-free channel sequencing and fragmentation in `cod4x-transport`, with
   cancellation, bounded reassembly, duplicate/reordering tests, and reference
   packetization. Wider engine IDs remain separate from legacy peer namespaces.
 - Static Huffman compression/decompression verified against 257 codebook entries
   and 32 original C samples, preserving padding behavior without out-of-bounds reads.
+- Keyed legacy player-command decoding, checked against 512 original C cases at
+  every storage split, all truncation boundaries, and every signed-short melee
+  angle. Commands remain separate from simulation and wider engine identifiers.
 - A query-only UDP application with deterministic discovery services, bounded
   per-IP/global reply budgets, shutdown signals, and real process/socket tests.
 - Structured JSON logs, readable console option, daily file rotation/retention,
@@ -119,6 +122,7 @@ python tools/generate_wire_vectors.py ../cod4x-reference --check
 python tools/generate_huffman_vectors.py ../cod4x-reference --check
 python tools/generate_obfuscation_vectors.py ../cod4x-reference --check
 python tools/generate_content_vectors.py ../cod4x-reference --check
+python tools/generate_user_command_vectors.py ../cod4x-reference --check
 python tools/generate_archive_fixtures.py --check
 ```
 

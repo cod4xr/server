@@ -58,3 +58,4 @@ jobs:
           python tools/generate_huffman_vectors.py reference --check
           python tools/generate_obfuscation_vectors.py reference --check
           python tools/generate_content_vectors.py reference --check
+          python tools/generate_user_command_vectors.py reference --check

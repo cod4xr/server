@@ -42,6 +42,7 @@ Verify generated compression data with tools/generate_huffman_vectors.py --check
 Verify keyed payload fixtures with tools/generate_obfuscation_vectors.py --check.
 Verify archive fixtures with tools/generate_archive_fixtures.py --check and
 original filesystem vectors with tools/generate_content_vectors.py --check.
+Verify player-command fixtures with tools/generate_user_command_vectors.py --check.
 Development logs default to readable output; process tests requiring JSON must
 pass --json-logs explicitly. The user requires one normal target directory:
 never use --target-dir, set CARGO_TARGET_DIR, or create separate preview/WSL build

@@ -41,8 +41,8 @@ Deliberate API differences preserve valid wire bytes while changing failures:
 - Operations fail atomically instead of partially reading/writing. Callers
   must abort the higher-level parse on error.
 
-The message codec does not implement full delta fields, entity/player state,
-or user commands yet. Bounded legacy strings, static Huffman coding, ordered
+The message codec does not implement full delta fields or entity/player state
+yet. Legacy user-command decoding, bounded strings, static Huffman coding, ordered
 legacy entity/client indices, and direction-specific channel XOR are implemented.
 Envelope framing, command-line extraction, and info strings are implemented.
 No assumption is made that bytes above ASCII are UTF-8.
@@ -122,6 +122,28 @@ it is neither encryption nor authentication. A separate original-source fixture
 records an empty-command bug where the C routine reads stale bytes after NUL.
 The Rust implementation deliberately excludes those bytes from key material.
 This safety difference remains explicit pending full peer interoperability tests.
+
+## Legacy player commands
+
+The decoder ports `MSG_ReadDeltaUsercmdKey` and its field/movement helpers from
+the pinned source. It preserves branch-specific key/timestamp order, 10/-10
+movement thresholds, conditional selected-location/melee fields, signed melee
+short angles, and unchanged field bits. It is allocation-free and commits reader
+cursors only after the complete command succeeds. The data type describes this
+peer profile, not a C struct ABI or engine-sized asset/entity namespace.
+
+Caller baselines must have representable 21-bit buttons, seven-bit weapon/offhand
+slots, and a finite yaw within defined float-to-int conversion range. Invalid
+baselines are rejected before reading instead of reproducing C conversion UB or
+fallback logging. Timestamp byte deltas explicitly wrap signed 32-bit values.
+The C oracle uses `-fwrapv`, signed char, and explicit binary32 evaluation settings
+to record that behavior; this does not establish original x86 gameplay rounding.
+
+Five tests include 512 original C results at all 65 storage splits, cursor-tail
+comparisons, every command truncation, invalid baselines, and exhaustive 65,536
+melee decode results checked through a C-produced digest. This implements a
+decoder only. Command emission, packet opcodes/authentication, timing policy,
+server acceptance, and movement simulation remain separate work.
 
 ## Release matrix to establish
 

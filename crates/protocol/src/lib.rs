@@ -40,6 +40,7 @@ mod message_string_reader;
 mod message_writer;
 pub mod obfuscation;
 mod packet;
+pub mod user_command;
 
 pub use command::{CommandLine, CommandTokens, MAX_COMMAND_BYTES};
 pub use index::{LegacyIndexDecoder, LegacyIndexEncoder, LegacyIndexError, LegacyIndexKind};
