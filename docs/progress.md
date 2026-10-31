@@ -332,8 +332,18 @@ or evaluate expressions. Source profiles guard action roles/opcode identity with
 native action execution; lexical/literal/structural regeneration passes. See ADR
 0023. Compiler/VM/stock-mod and Linux acceptance remain open.
 
-Next: typed primary/list/call/reference and body lowering, with checked literal
-conversion and explicit binding/control-flow semantics before bytecode/execution.
+Typed borrowed primary views now pass full Windows workspace gates. Seven tests
+cover all 22 primitive productions, raw literal polarity/spelling (including still-
+unconverted overflow spellings), parenthesized lists, unresolved call/reference/
+function subtrees, special roots, size/empty-array/animation/#animtree/breakon forms,
+category failures, unchanged source, and private diagnostics. Existing operator
+tests also pass after sharing checked child access. Primary action profiles now
+guard every local role; no native semantic actions execute. This does not convert
+values, resolve descendants, choose arity/evaluation order, or enable runtime
+animation/debugging. See ADR 0024. Linux/compiler/VM/stock-mod gates remain open.
+
+Next: budgeted ordered expression lists, then typed calls/references and body
+lowering with checked literal conversion and explicit binding/control-flow policy.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 

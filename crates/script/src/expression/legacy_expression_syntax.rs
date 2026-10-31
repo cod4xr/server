@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
+use crate::expression::legacy_syntax_profile;
 use crate::expression::{
     LegacyExpressionError, LegacyExpressionKind, LegacyInfixOperator, LegacyLogicalOperator,
     LegacyPrefixOperator,
 };
-use crate::syntax::{LegacySyntaxNode, LegacySyntaxNodeKind};
+use crate::syntax::LegacySyntaxNode;
 
 /// Borrowed typed operator view, retaining the original supplied node and span.
 #[derive(Clone, Copy, Debug)]
@@ -29,11 +30,11 @@ impl<'tree, 'source> LegacyExpressionSyntax<'tree, 'source> {
         syntax: LegacySyntaxNode<'tree, 'source>,
     ) -> Result<Self, LegacyExpressionError> {
         let mut node = syntax;
-        if production(node) == Some(2) {
-            node = child(node, 1, 2)?;
+        if legacy_syntax_profile::production(node) == Some(2) {
+            node = legacy_syntax_profile::child(node, 1, 2)?;
         }
-        if production(node) == Some(5) {
-            node = child(node, 0, 1)?;
+        if legacy_syntax_profile::production(node) == Some(5) {
+            node = legacy_syntax_profile::child(node, 0, 1)?;
         }
         let kind = classify(node)?;
         Ok(Self { syntax, kind })
@@ -61,7 +62,9 @@ impl<'tree, 'source> LegacyExpressionSyntax<'tree, 'source> {
 fn classify<'tree, 'source>(
     node: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<LegacyExpressionKind<'tree, 'source>, LegacyExpressionError> {
-    let rule = production(node).ok_or(LegacyExpressionError::NotExpression)?;
+    let rule =
+        legacy_syntax_profile::production(node).ok_or(LegacyExpressionError::NotExpression)?;
+    let child = |index, count| legacy_syntax_profile::child(node, index, count);
     Ok(match rule {
         6 | 7 => LegacyExpressionKind::Logical {
             operator: if rule == 6 {
@@ -69,14 +72,14 @@ fn classify<'tree, 'source>(
             } else {
                 LegacyLogicalOperator::And
             },
-            left: child(node, 0, 3)?,
-            right: child(node, 2, 3)?,
+            left: child(0, 3)?,
+            right: child(2, 3)?,
         },
         8..=23 => LegacyExpressionKind::Infix {
             operator: LegacyInfixOperator::from_production(rule)
                 .ok_or(LegacyExpressionError::ProfileMismatch)?,
-            left: child(node, 0, 3)?,
-            right: child(node, 2, 3)?,
+            left: child(0, 3)?,
+            right: child(2, 3)?,
         },
         24 | 25 => LegacyExpressionKind::Prefix {
             operator: if rule == 24 {
@@ -84,30 +87,9 @@ fn classify<'tree, 'source>(
             } else {
                 LegacyPrefixOperator::BitwiseNot
             },
-            operand: child(node, 1, 2)?,
+            operand: child(1, 2)?,
         },
         40..=61 => LegacyExpressionKind::Primary { syntax: node },
         _ => return Err(LegacyExpressionError::NotExpression),
     })
-}
-
-fn production(node: LegacySyntaxNode<'_, '_>) -> Option<u16> {
-    match node.kind() {
-        LegacySyntaxNodeKind::Production(rule) => Some(rule.as_u16()),
-        _ => None,
-    }
-}
-
-fn child<'tree, 'source>(
-    node: LegacySyntaxNode<'tree, 'source>,
-    index: usize,
-    count: usize,
-) -> Result<LegacySyntaxNode<'tree, 'source>, LegacyExpressionError> {
-    let mut children = node.children();
-    if children.len() != count {
-        return Err(LegacyExpressionError::ProfileMismatch);
-    }
-    children
-        .nth(index)
-        .ok_or(LegacyExpressionError::ProfileMismatch)
 }

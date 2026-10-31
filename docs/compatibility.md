@@ -252,9 +252,13 @@ Signed overflow wraps, shift counts use five low bits, and MIN%-1 becomes a type
 error rather than a native quotient fault. See ADR 0022; this is not VM conformance.
 Typed expression views additionally expose original operator/operand structure
 without executing semantic actions. Source profiles guard wrappers, sixteen eager
-operators, two logical branches, and two prefixes. Primary forms remain opaque,
+operators, two logical branches, and two prefixes. Primary descendants stay unresolved,
 including structurally accepted literals that later value validation may reject.
 See ADR 0023; no compiler execution is established.
+Separate primary views additionally classify all 22 primitive productions without
+native semantic actions or value conversion. Signed literal tokens, grouped lists,
+unresolved call/reference subtrees, and animation/debugger forms retain their exact
+roles/spans. These are local frontend views, not runtime feature support; see ADR 0024.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

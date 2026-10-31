@@ -105,6 +105,10 @@ expression-branch patches. These are compiler capacity-removal targets, not limi
 on new engine bytecode. Primary research distinguishes signed literal nodes,
 parenthesized lists, calls/references, #animtree, and breakon forms; none is executed
 by the operator view. Runtime/debugger availability needs separate policy/evidence.
+All 22 primary production/action profiles now guard separate borrowed primary
+views. Raw sign/token identity, grouped lists, calls/references, special objects,
+size/empty-array/animation/#animtree/breakon forms stay distinct. No original
+semantic actions execute, and descendants/runtime modes remain unresolved.
 
 ## Open research
 

@@ -2,12 +2,12 @@
 use std::error::Error;
 use std::fmt;
 
-/// Numeric type failure, excluding source values from diagnostics.
+/// Scalar operator failure, excluding source values from diagnostics.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum LegacyNumberError {
     /// The operator requires an integer and does not coerce a float.
     ExpectedInteger,
-    /// Division rejects integer zero and either signed float zero.
+    /// Division/remainder rejects zero; float division rejects either signed zero.
     DivisionByZero,
     /// MIN%-1 would overflow the native signed quotient and fault its IDIV.
     RemainderOverflow,

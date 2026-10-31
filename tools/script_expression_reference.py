@@ -37,3 +37,24 @@ def verify(source: str, tables: dict[str, list[int]], header: str) -> None:
         raise ValueError("Operator expression nonterminal changed")
     if any(tables["LHS"][rule] != 100 for rule in range(40, 62)):
         raise ValueError("Opaque primitive nonterminal profile changed")
+    verify_primaries(source, tables, labels)
+
+
+def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
+    """Guard local primary roles without executing or converting their values."""
+    profiles = (
+        (3, 0x2e, "node2"), (1, 7, "node2"), (1, 8, "node2"),
+        (2, 9, "node2"), (2, 10, "node2"), (1, 11, "node2"), (1, 12, "node2"),
+        (1, 0x13, "node1"), (1, 0x11, "node2"), (1, 0x1f, "node1"),
+        (1, 0x20, "node1"), (1, 0x22, "node1"), (1, 0x23, "node1"), (1, 0x24, "node1"),
+        (2, 0x34, "node2"), (1, 0x12, "node2"), (2, 0x42, "node1"), (2, 0x43, "node2"),
+        (1, 0x48, "node1"), (1, 0x49, "node1"), (1, 0x4a, "node1"), (5, 0x4b, "node3"),
+    )
+    for rule, (length, tag, constructor) in enumerate(profiles, 40):
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        instructions = (f"mov dword [esp], 0x{tag:x}", f"call {constructor}\n")
+        if tables["LENGTH"][rule] != length or any(text not in body for text in instructions):
+            raise ValueError(f"Primary production/action profile changed: {rule}")
+    watch = source.split(labels[61] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+    if "mov edi, [ebx-0x8]" not in watch or "mov edx, [ebx-0x20]" not in watch:
+        raise ValueError("Breakon operand role changed")

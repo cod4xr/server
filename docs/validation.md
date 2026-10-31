@@ -404,3 +404,14 @@ profiles and all 99 structural, 724 lexical, and 545 literal replays regenerate.
 These are source-table/action profiles, not execution of native semantic actions.
 No full primary AST, descendant validation, binding, evaluator, compiler, VM,
 stock-mod, or Linux acceptance is established. The normal target directory is reused.
+
+Borrowed typed primary forms passed full Windows workspace formatting, warnings-
+denied Clippy/rustdoc, debug/release tests, source policy, and diff checks. Seven
+new tests cover all 22 primitive roles, exact token/sign/span retention, grouped
+lists, call/reference/function subtrees, object roots, size/array/animation forms,
+#animtree/breakon, category failures, independent live trees, and source privacy.
+Existing operator tests pass after checked child access is shared. Source action/
+constructor profiles verify every primary role and retain 99 structural replays.
+Oversize/negative literal spellings are retained, not converted or accepted as
+runtime values. No arity/descendant binding/evaluation, debugger/animation runtime,
+compiler/VM/stock-mod conformance, or Linux acceptance is established.

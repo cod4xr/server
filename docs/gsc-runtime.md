@@ -125,9 +125,14 @@ MIN%-1 becomes a controlled error. These helpers are not a compiler or runtime.
 See ADR 0022 for evidence scope and intentional invalid-input changes.
 Typed borrowed expression-operator views now preserve precedence, operand order,
 original spans, prefix operations, and separate short-circuit branches. Primary
-forms explicitly await lowering. Classification is constant-cost and performs no
+descendants await lowering. Classification is constant-cost and performs no
 descendant validation/evaluation; complete expressions/IR/bytecode and execution
 remain open. See ADR 0023.
+Separate typed primary views now preserve all primitive roles, including original
+signed-literal tokens, grouped expression lists, unresolved calls/references,
+special roots, and animation/debugger syntax. Primary classification alone does
+not validate arity/literal values, bind descendants, or enable runtime services.
+See ADR 0024; full semantic lowering/compilation/execution remains open.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

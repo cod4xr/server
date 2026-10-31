@@ -180,8 +180,12 @@ executable bodies, runtime stacks, heap references, or host services.
 Borrowed expression-operator views now classify one structural node in constant
 work without allocation or recursion, retaining its original span and scoped
 operands. Short-circuit logic stays separate from eager infix syntax. Primary
-forms remain opaque until their own lowering; classification does not decode,
-bind, or execute descendants. See ADR 0023.
+forms pass to their own local role classification; neither view decodes, binds,
+or executes descendants. See ADR 0023.
+Separate constant-cost primary views now classify all 22 primitive productions,
+preserving literal polarity, grouped lists, call/reference subtrees, special roots,
+size/array/animation/debugger forms. These local roles do not grant runtime
+capabilities, resolve descendants, decode values, or create objects; see ADR 0024.
 
 ## Future custom client
 
