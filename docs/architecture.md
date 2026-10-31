@@ -74,6 +74,12 @@ formats are separate implementation work. See ADR 0005 for dependency costs.
 
 ## Server ownership
 
+The endpoint-cookie core owns only keyed MAC state and consumes explicit observed
+socket addresses. It introduces reviewed HMAC/SHA-256 dependencies into server-core
+per ADR 0006; protocol stays dependency-free. The process owns fresh OS entropy,
+key lifetime, and provider replacement. Legacy cookies remain 32-bit opaque echoes,
+with no implicit expiry, identity authentication, or network admission behavior.
+
 Keep connection/authentication state, server commands, map lifecycle, snapshots,
 game services, script execution, and operations in cohesive modules. Prefer one
 explicit owner for mutable simulation state. Threading/async decisions require

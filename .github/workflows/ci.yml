@@ -27,6 +27,8 @@ jobs:
         run: python tools/check_repository.py
       - name: Check independent archive fixtures
         run: python tools/generate_archive_fixtures.py --check
+      - name: Check independent endpoint cookie fixtures
+        run: python tools/generate_cookie_vectors.py --check
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Check Clippy

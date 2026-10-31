@@ -31,8 +31,9 @@ the subscriber also requires JSON serialization transitively. Exact direct
 versions and the full resolution are recorded in Cargo.lock. Review any change
 to transitives/build scripts and future dependencies through the policy file.
 
-Protocol remains free of third-party dependencies. Server-core depends only on
-protocol. Neither depends on process signal or sink crates. The signal callback
+Protocol remains free of third-party dependencies. Server-core initially depended
+only on protocol; ADR 0006 subsequently adds HMAC/SHA-256 for endpoint cookies.
+Neither depends on process signal or sink crates. The signal callback
 shares only an atomic stop flag with the runtime; mutable service state has one
 owner. No async executor or thread-per-client architecture is introduced.
 

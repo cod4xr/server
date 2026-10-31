@@ -24,6 +24,8 @@ cod4x-observability = { path = "crates/observability" }
 cod4x-server-core = { path = "crates/server-core" }
 ctrlc = { version = "=3.5.2", features = ["termination"] }
 crc32fast = "=1.5.3"
+hmac = { version = "=0.13.0", default-features = false, features = ["zeroize"] }
+sha2 = { version = "=0.11.1", default-features = false, features = ["zeroize"] }
 tracing = { version = "=0.1.44", default-features = false, features = ["std"] }
 tracing-appender = "=0.2.5"
 tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["ansi", "env-filter", "fmt", "json", "registry", "std"] }

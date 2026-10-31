@@ -106,11 +106,16 @@ and undefined/overflowing atoi-style inputs fail explicitly. Request Debug omits
 credentials and challenge echoes. sv_client.c is now hashed in upstream.lock.json.
 This parser has no admission/cookie/account-auth behavior.
 
-Cookie research: RustCrypto hmac 0.13.0 / sha2 0.11.1 registry sources and official
-API docs were inspected, but dependencies have not been added yet. A modern MAC
-can replace the original opaque SHA1-compression cookie internally without changing
-its signed 32-bit echo. Preserve one endpoint-cookie namespace across connect and
-Source-engine queries; don't expire/change its scope before auditing all callers.
+The endpoint-cookie core is now implemented using pinned RustCrypto hmac 0.13.0 /
+sha2 0.11.1 with reviewed zeroize features and eleven MIT/Apache-2.0 additions, no
+new build scripts or prior version changes. Three Windows core debug/release tests,
+Clippy/rustdoc, and 24 independent Python HMAC vectors pass. It binds observed
+address/port and native IPv6 scope, canonicalizes mapped IPv4, ignores flowinfo,
+and verifies exactly four bytes without exposing key/echo through Debug. It is a
+limited return-path check, not account authentication. No implicit expiry or new
+wire format is introduced. Application OS-entropy and handshake integration remain
+next; no secrets, network listeners, or target directories were created for this
+core implementation. See ADR 0006 for the rationale and reviewed dependencies.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

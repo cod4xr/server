@@ -117,3 +117,11 @@ fixture total to 128. They cover numeric boundaries, signed qport spelling, case
 comments, whitespace, and unknown fields. Separate tests reject malformed decimals,
 overflow, missing/duplicated critical fields and verify credential/challenge Debug
 redaction. These tests provide no challenge authenticity or connection acceptance.
+
+Three endpoint-cookie tests passed Windows core debug/release and warnings-denied
+Clippy/rustdoc. Twenty-four independently generated Python HMAC/SHA-256 fixtures
+cover three synthetic keys, IPv4/IPv6/mapped endpoints, ports, and scope IDs.
+Every tag bit is altered and rejected; key rotation, endpoint changes, flowinfo
+semantics, fixed key length, and Debug redaction are tested. This proves the core
+derivation/verification contract, not application entropy, challenge exchange,
+rate policy integration, account authentication, or live peer compatibility.

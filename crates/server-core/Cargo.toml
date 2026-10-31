@@ -9,6 +9,8 @@ publish.workspace = true
 
 [dependencies]
 cod4x-protocol.workspace = true
+hmac.workspace = true
+sha2.workspace = true
 
 [lints]
 workspace = true
