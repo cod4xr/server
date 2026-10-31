@@ -271,6 +271,14 @@ Local reference views preserve five source forms, including reserved .self versu
 ordinary .Self fields. Names and nested index/object operands remain unbound and
 unevaluated; writable slots or debugger authority are not inferred. Source profiles
 and typed views do not establish native reference execution. See ADR 0028.
+The owned scalar kernel now executes validated typed instructions through the
+existing numeric helpers. Its 22,383 source-grounded cases cover arithmetic/
+instruction-profile results, comparisons, division, and numeric failures. A
+separate 4,096-stream hostile corpus exercises verifier/runtime contracts. Typed
+instructions have no native/serialized ABI; undefined is returned/copied/discarded,
+not a claim of complete legacy value operators. Source compilation, native VM
+cleanup/scheduling, stock scripts, and GSC/client interoperability remain open.
+See ADR 0029 for scope, fuel accounting, and FP-profile assumptions.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

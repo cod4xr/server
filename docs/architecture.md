@@ -201,6 +201,13 @@ and reserved .self members through local borrowed roles. Nested objects/index
 expressions remain unresolved syntax. No slot, scope, mutability rule, object ID,
 or runtime authority is selected. Reserved .self stays distinct from ordinary
 .Self field syntax; see ADR 0028.
+The scalar execution boundary now owns immutable verified instruction programs.
+Instruction count/logical storage admission, full target scans, and iterative
+reachable stack-flow checks precede proof publication. Execution borrows that
+proof, admits stack storage, and charges fuel/peaks on successful and failed work.
+Constants/operands remain outside Debug/errors. This typed profile has no native/
+serialized bytecode ABI, source compiler, object heap, frames/calls, scheduler,
+host services, or server state; see ADR 0029.
 
 ## Future custom client
 

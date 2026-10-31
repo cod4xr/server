@@ -9,7 +9,7 @@ resource budgets, while old client/wire bounds stay inside compatibility profile
 The engine must preserve full content catalogs rather than require asset cuts.
 
 **Status: protocol/content foundation and runnable development probes.**
-There is no gameplay, authentication, decoded map loading, scripting VM, renderer, or
+There is no gameplay, authentication, decoded map loading, complete GSC VM, renderer, or
 master-server integration yet. Real local UDP discovery and structured process
 logs are tested; interoperability with existing game clients is still unverified.
 The complete server rewrite remains open.
@@ -107,6 +107,10 @@ The complete server rewrite remains open.
   These views do not link functions, evaluate receivers/arguments, or create threads.
 - Borrowed name/dollar/field/index/reserved-self reference views, preserving nested
   operands and original spelling. Scopes, object types, mutability, and values stay unresolved.
+- Owned verified scalar instruction execution with checked control-flow/stack
+  joins, separately budgeted fuel/stack, and work-accounted failures. Tests execute
+  22,383 source-grounded scalar cases and 4,096 hostile streams; source compilation,
+  objects, calls, threads, host services, and complete GSC execution remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

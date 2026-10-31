@@ -147,6 +147,14 @@ Reference views now retain raw identifier/dollar/field/index/reserved-self forms
 including deeply nested objects walked iteratively. The legacy grammar treats
 .self and .Self differently. Scope/type/mutability checks, dollar/self runtime
 availability, actual values, and reference execution remain open; see ADR 0028.
+Owned scalar instruction programs now verify targets, reachable stack heights,
+joins, returns, and fallthrough under explicit storage/work quotas. Pure execution
+supports undefined returns and numeric operations/branches with separate stack/
+fuel admission; failures retain charged work and peaks. Tests route 22,383 existing
+source-grounded scalar cases through actual execution and exercise 4,096 hostile
+streams, 70,000-index targets, and 4,096-value stacks. This is not a GSC source
+compiler/full VM, general undefined/value semantics, heap, scheduler, serialized
+bytecode ABI, or host standard library. See ADR 0029; S5 remains open.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -1,7 +1,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
 
+mod kernel_support;
 mod string_support;
+
+#[path = "kernel_budgets.rs"]
+mod kernel_budgets;
+#[path = "kernel_execution.rs"]
+mod kernel_execution;
+#[path = "kernel_hostile.rs"]
+mod kernel_hostile;
+#[path = "kernel_vectors.rs"]
+mod kernel_vectors;
+#[path = "kernel_verification.rs"]
+mod kernel_verification;
 
 #[path = "arithmetic_boundaries.rs"]
 mod arithmetic_boundaries;

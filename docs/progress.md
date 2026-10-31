@@ -368,7 +368,7 @@ and a borrowed 100,000-byte callee name. Full suites retain 70 frontend and 18 l
 tests. Source profiles guard rules 28..39 without executing native actions. These
 views do not resolve modules, link functions, evaluate operands, grant host/builtin
 authority, or schedule threads. See ADR 0027. Linux/compiler/VM/stock-mod gates stay
-open. The user renamed the existing branch to main; history remained intact.
+open. The existing branch was renamed externally to main; history remained intact.
 
 Borrowed reference views now pass full Windows workspace gates. Five tests cover
 all five local roles, names/dollar prefixes, direct/primary wrappers, exact spans,
@@ -380,9 +380,23 @@ mutability, or grant dollar/self runtime authority. See ADR 0028. Full grammar
 recovery was not completed; only the targeted .self role was confirmed. Linux/
 compiler/VM/stock-mod acceptance remain open.
 
-Next: bounded verified scalar-program execution and source/body compilation above
-these views, with explicit value/fuel/stack ownership. Full objects, calls, scheduling,
-host services, modern language, and the join/gameplay dependencies remain required.
+The owned verified scalar execution kernel now passes full Windows workspace gates.
+Thirteen tests exercise actual arithmetic/comparison/division/unary/branch/stack/
+return execution, ownership/privacy, malformed targets/returns/fallthrough/joins,
+exact/one-less budgets, 70,000-index jumps, 4,096-value stacks, balanced loop fuel,
+and 4,096 deterministic hostile streams. Execution routes 22,383 existing fixtures:
+11,519 arithmetic/profile cases and 10,864 comparison/division cases. Coercion-only
+P records are not counted as executed opcode cases. Failed work/peaks remain
+charged; no result or external mutation escapes failures. The suites contain 75
+frontend and 31 legacy tests. See ADR 0029. This typed numeric/undefined profile
+has no source compiler, full value/object model, calls/frames, scheduling, host I/O,
+native/serialized ABI, stock-mod acceptance, or Linux acceptance. It owns no game
+state and grants no runtime services. Normal target reused; no new dependencies.
+
+Next: source-to-kernel compilation for an explicitly limited pure scalar function
+profile, with original source maps, checked signed literals, short-circuit lowering,
+resource admission, and rejection of unsupported bodies/values. Full objects, calls,
+scheduling, host services, modern language, and join/gameplay remain required.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 

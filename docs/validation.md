@@ -453,3 +453,22 @@ The suites contain 75 frontend and 18 legacy tests. Reference production/action
 profiles and all 99 structural replays regenerate. No runtime name/object lookup,
 mutability policy, dollar/self authority, reference execution, full grammar recovery,
 compiler/VM/stock-mod or Linux acceptance is established. Normal target reused.
+
+The owned verified scalar execution kernel passed full Windows workspace
+formatting, warnings-denied Clippy/rustdoc, debug/release tests, source policy, and
+diff checks (359 source files, eight crates; largest source remains 287 lines).
+Thirteen new tests exercise real instruction execution, 22,383 source-grounded
+scalar fixture cases, every admission boundary, runtime/error work accounting,
+constant ownership/privacy, invalid targets/returns/fallthrough/stack joins,
+70,000-index targets, 4,096-value stacks, balanced loop fuel, and 4,096 deterministic
+hostile typed streams. The source fixtures comprise 11,519 arithmetic/profile
+cases plus 10,864 comparisons/divisions; 1,552 coercion-only records are not counted
+as executed opcodes. Arithmetic NaNs assert class, not payload. The grouped suites
+contain 75 frontend and 31 legacy tests, with existing doctests still enabled.
+
+Only numeric/undefined typed internal instructions are supported. Undefined numeric
+operations fail explicitly, and no serialized/native bytecode ABI or complete
+legacy value/error-unwinding semantics is claimed. Source compilation, objects,
+call frames, scheduling, host services, stock-mod/full GSC/server gameplay, host
+FP-control independence, Linux acceptance, and performance gates remain open.
+All builds use the normal target directory; no dependency or alternate cache added.

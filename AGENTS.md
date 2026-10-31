@@ -96,6 +96,12 @@ views grant no I/O/builtin authority and do not link, execute, or schedule. See 
 Reference views preserve raw name/dollar/field/index/reserved .self roles. Do not
 fold .self into ordinary .Self field syntax or infer writable slots/runtime
 authority from a structural reference. Descendant walks need budgets; see ADR 0028.
+The execution kernel owns immutable verified typed instructions for numeric/
+undefined data only. Verify all targets (even unreachable code), reachable stack
+joins/returns/fallthrough, and storage/work before proof publication. Execution
+requires separate stack/fuel admission; failed work must remain charged. Do not
+describe it as source compilation/full GSC execution or invent a serialized/native
+bytecode ABI, object heap, scheduler, or host authority. See ADR 0029.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
