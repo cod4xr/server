@@ -393,3 +393,14 @@ remainder pair is excluded from oracle execution and tested as a deliberate type
 Rust error. Overflow/count/sign boundaries and float rejection pass. All thirteen
 original-function/profile generators pass. No host FP-control independence,
 VM/compiler/stock-mod conformance, performance claim, or Linux acceptance follows.
+
+Borrowed typed expression operators passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, source policy, and diff checks.
+Eight tests cover every infix/logical/prefix operator, original operands/spans,
+precedence/associativity, primary opacity, unrelated-node failures, independent
+trees, privacy, and an iterative 12,000-operator walk. Classification itself makes
+only bounded local reads and allocates nothing. Grammar action/tag/opcode identity
+profiles and all 99 structural, 724 lexical, and 545 literal replays regenerate.
+These are source-table/action profiles, not execution of native semantic actions.
+No full primary AST, descendant validation, binding, evaluator, compiler, VM,
+stock-mod, or Linux acceptance is established. The normal target directory is reused.

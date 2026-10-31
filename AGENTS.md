@@ -78,6 +78,9 @@ Verify structural grammar tables/replays with tools/generate_syntax_tables.py
 --check; these do not execute original semantic actions or establish compilation.
 That check also guards typed declaration action/production profiles. Preserve raw
 declaration spelling/duplicates until verified name binding; see ADR 0017.
+It also guards typed expression operator/wrapper roles. Preserve short-circuit
+branches separately from eager infix operators. Primary views remain opaque;
+local classification is not descendant validation or evaluation. See ADR 0023.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

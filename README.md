@@ -94,6 +94,9 @@ The complete server rewrite remains open.
 - Scalar addition/subtraction/multiplication, integer bitwise operators, signed
   remainder, and explicit x86-profile shifts. Another 10,701 defined original C
   cases and 818 isolated instruction cases cover this kernel; execution stays open.
+- Allocation-free typed expression-operator views preserving source operands,
+  precedence, and separate short-circuit branches. Primary forms remain opaque;
+  this does not validate literals, bind descendants, compile, or evaluate scripts.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

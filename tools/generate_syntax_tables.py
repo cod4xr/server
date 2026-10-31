@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from reference_source import ReferenceSource
+import script_expression_reference as expressions
 import script_lexer_reference as lexical
 import script_syntax_reference as syntax
 
@@ -72,6 +73,7 @@ def main() -> None:
         raise ValueError("Script-loader selector differs from pinned source")
     tables = syntax.recover(source)
     syntax.verify_declarations(source, tables)
+    expressions.verify(source, tables, reference.files["src/scr_vm.h"])
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])
     lex = lexical.recover(source)
@@ -97,7 +99,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Verified grammar/declaration/symbol profiles and {len(rows) - 2} structural replays")
+    print(f"Verified grammar/declaration/symbol/operator profiles and {len(rows) - 2} structural replays")
 
 
 if __name__ == "__main__":

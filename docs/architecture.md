@@ -177,6 +177,11 @@ wrapping/count semantics from Rust build profiles and untrusted bytecode. Define
 original C cases and isolated archival instruction tests remain distinct; a native
 remainder quotient fault becomes a typed error. See ADR 0022. This still owns no
 executable bodies, runtime stacks, heap references, or host services.
+Borrowed expression-operator views now classify one structural node in constant
+work without allocation or recursion, retaining its original span and scoped
+operands. Short-circuit logic stays separate from eager infix syntax. Primary
+forms remain opaque until their own lowering; classification does not decode,
+bind, or execute descendants. See ADR 0023.
 
 ## Future custom client
 

@@ -250,6 +250,11 @@ Scalar add/subtract/multiply and integer bitwise/remainder/shift behavior now ha
 record an archival x86 profile, not execution of full original assembly routines.
 Signed overflow wraps, shift counts use five low bits, and MIN%-1 becomes a typed
 error rather than a native quotient fault. See ADR 0022; this is not VM conformance.
+Typed expression views additionally expose original operator/operand structure
+without executing semantic actions. Source profiles guard wrappers, sixteen eager
+operators, two logical branches, and two prefixes. Primary forms remain opaque,
+including structurally accepted literals that later value validation may reject.
+See ADR 0023; no compiler execution is established.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

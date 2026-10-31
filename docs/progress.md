@@ -322,8 +322,20 @@ and MIN%-1 becomes RemainderOverflow instead of a host fault. See ADR 0022. All
 thirteen original-function/profile generators pass after adding the source hash.
 No compiler, full value system, VM, or Linux acceptance follows from this kernel.
 
-Next: typed expression/operator and primary/body lowering above the structural
-tree, preserving source order/spans and separate short-circuit control flow.
+Typed borrowed expression-operator views now pass full Windows workspace gates.
+Eight tests cover all sixteen eager operators, two logical branches, two prefixes,
+source order/spans, precedence/associativity, primary opacity, private Debug/errors,
+independent trees, category failures, and 12,000 nested operators viewed iteratively.
+Classification performs bounded local reads without allocation, recursion, or a
+descendant walk. It does not decode literals, bind names, select overloaded values,
+or evaluate expressions. Source profiles guard action roles/opcode identity without
+native action execution; lexical/literal/structural regeneration passes. See ADR
+0023. Compiler/VM/stock-mod and Linux acceptance remain open.
+
+Next: typed primary/list/call/reference and body lowering, with checked literal
+conversion and explicit binding/control-flow semantics before bytecode/execution.
+The audit also identified 32-value native compiler temporaries and short expression
+jump patches; preserve configurable budgets/wide locations rather than those caps.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

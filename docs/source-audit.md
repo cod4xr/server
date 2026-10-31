@@ -96,6 +96,15 @@ wrapping/shift profile. Exact instruction-block checks and isolated x86 instruct
 cases supplement defined-domain original C arithmetic without executing undefined
 C signed operations or full archival assembly routines. Native MIN%-1 IDIV would
 fault; the safe Rust helper returns a typed error. See ADR 0022.
+Grammar action constructors/tags, expression/primitive nonterminals, and scr_vm.h
+operator identities now guard typed operator views. Tests inspect source operand
+order/precedence without replaying native semantic actions. This local shape layer
+does not validate primary forms or execute them; see ADR 0023.
+EmitOrEvalExpression also exposes the native 32-value compilation stack and short
+expression-branch patches. These are compiler capacity-removal targets, not limits
+on new engine bytecode. Primary research distinguishes signed literal nodes,
+parenthesized lists, calls/references, #animtree, and breakon forms; none is executed
+by the operator view. Runtime/debugger availability needs separate policy/evidence.
 
 ## Open research
 
