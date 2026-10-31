@@ -291,12 +291,25 @@ disabled (default disabled). It reports total/active/visibility counts and both
 duplicate locations, never script names/paths. The flag is rejected outside this
 mode. Linux and original-compiler/stock-mod acceptance remain open.
 
-Next: source-grounded scalar coercion/arithmetic before expression/body lowering
-and verified execution. cscr_variable.cpp has Scr_CastWeakerPair/StringPair and
-Scr_EvalPlus/Minus/Multiply/Divide/Mod. Integer division produces a float; zero
-division reports an error. Helpers also handle strings/vectors; numeric subsets
-must remain explicit. Obtain original-function evidence and define overflow/FP
-profiles before implementing arithmetic; do not infer full native/VM semantics.
+Scalar coercion, six numeric comparisons, and float-result division now pass full
+Windows workspace gates (294 source files/eight crates) against 12,416 cases from
+eight actual functions. See ADR 0020. All eleven original-function generators pass
+after shared declaration extraction/post-return calling-convention support. The
+explicit nearest/SSE profile preserves mixed conversion, a binary32 difference
+compared against a binary64 1e-6 threshold, and <=/>= predicate negation for NaNs.
+Int division yields float; signed-zero denominators return DivisionByZero without
+partial caller mutation. Arithmetic NaN payloads are unspecified; FP control state,
+VM error cleanup, strings/vectors/objects, and other operators remain separate.
+
+Next: expand owned string operations under configurable budgets, then continue
+source-grounded arithmetic and expression/body lowering. Scr_EvalPlus uses an
+8192-byte stack scratch and rejects total plain-string payload >=8191 bytes.
+That guard is a capacity-removal target, unlike the isolated long-identifier case
+quirk. Preserve old valid byte results, remove the scratch ceiling, admit fallible
+growth before copying, and keep localized/mixed coercion and VM interning separate.
+The existing LegacyString owns decoded literal bytes without engine IDs; no full
+runtime value/GC design is chosen by that type. Integer add/sub/mul/shift overflow
+and modulo edge cases still need explicit evidence/profile decisions.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

@@ -12,6 +12,14 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def declaration(source: str, pattern: str) -> str:
+    """Extract one source declaration using an explicit caller-owned pattern."""
+    matches = list(re.finditer(pattern, source, re.DOTALL))
+    if len(matches) != 1:
+        raise ValueError("Expected one matching source declaration")
+    return matches[0][0]
+
+
 class ReferenceSource:
     """A verified, immutable-in-memory snapshot of recorded upstream files."""
 
@@ -38,7 +46,7 @@ class ReferenceSource:
             rf"(?m)^(?:(?:static|inline|__cdecl|__optimize3|__regparm[123])\s+)*"
             rf"(?:void|(?:char|byte)\s*\*|bool|int|unsigned(?:\s+int)?|"
             rf"u?int(?:8|16|32|64)_t|qboolean)\s*"
-            rf"(?:(?:__cdecl|QDECL)\s+)*{re.escape(name)}\s*\([^;{{]*\)\s*\{{"
+            rf"(?:(?:__cdecl|QDECL|__regparm[123])\s+)*{re.escape(name)}\s*\([^;{{]*\)\s*\{{"
         )
         matches = list(re.finditer(pattern, source))
         if len(matches) != 1:

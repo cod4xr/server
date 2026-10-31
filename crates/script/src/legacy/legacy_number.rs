@@ -2,6 +2,8 @@
 use crate::legacy::LegacyNumberError;
 
 /// Legacy GSC numeric scalars; not the future runtime's full value/handle model.
+/// The derived `PartialEq` uses Rust numeric equality, not GSC semantics.
+/// Language operators use `LegacyNumericPair::compare` instead.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum LegacyNumber {
     /// Signed 32-bit compatibility integer.

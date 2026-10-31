@@ -354,3 +354,20 @@ locations, invalid regions, and exclusion of names/paths from output. No imports
 body literals, parameter/local scopes, calls, builtins, bytecode, VM, or modern
 language/services are completed by this stage. Linux/stock-mod/compiler acceptance
 remain open. All builds reuse the normal target directory.
+
+Scalar coercion/comparison/division passed full Windows workspace gates (294
+source files, eight crates). Four new tests cover 12,416 original-helper cases:
+1,552 coercions, 9,312 comparisons, and 1,552 divisions. The oracle checks int32/
+binary32 shapes, nearest SSE, FTZ/DAZ off, and no excess expression precision.
+Nonnumeric services abort; native error hooks record rather than unwind. Exact
+coercion/finite-result bits, tolerance neighbors, integer-to-float ties, signed
+zeros, subnormals, infinities, quiet/signaling NaNs, and zero errors pass. Arithmetic
+NaN results compare class only. Legacy <=/>= unordered behavior and the binary64
+tolerance threshold are explicit and differ from Rust's ordinary operators.
+
+All eleven original-function generators pass after shared declaration extraction
+and post-return calling-convention support were added to the source reader. The
+source-derived grammar/declaration/symbol profile check also passes. These results
+do not establish host FP-control independence, native VM cleanup/unwinding,
+integer overflow operators, full value/operator coverage, compiler/VM execution,
+stock-mod/gameplay parity, or Linux acceptance for the added numeric layer.

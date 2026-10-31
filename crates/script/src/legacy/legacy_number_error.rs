@@ -7,11 +7,16 @@ use std::fmt;
 pub enum LegacyNumberError {
     /// The operator requires an integer and does not coerce a float.
     ExpectedInteger,
+    /// Division rejects integer zero and either signed float zero.
+    DivisionByZero,
 }
 
 impl fmt::Display for LegacyNumberError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        formatter.write_str("legacy script operator requires an integer")
+        formatter.write_str(match self {
+            Self::ExpectedInteger => "legacy script operator requires an integer",
+            Self::DivisionByZero => "legacy script division by zero",
+        })
     }
 }
 

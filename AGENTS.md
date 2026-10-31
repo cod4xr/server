@@ -58,6 +58,10 @@ Verify typed raw files with tools/generate_rawfile_fixtures.py --check.
 Verify script scalar/wait semantics with tools/generate_script_vectors.py --check.
 Verify original ASCII identifier conversion with tools/generate_identifier_vectors.py
 --check. The native string/ref services are stubbed; this is not full interning.
+Verify scalar coercion/comparison/division with tools/generate_numeric_vectors.py
+--check. Its nearest/SSE profile aborts nonnumeric services; arithmetic NaN payloads
+and native VM error unwinding are not asserted. Use explicit GSC comparisons,
+not the Rust data enum's derived PartialEq; see ADR 0020.
 Verify source-derived lexical data with tools/generate_lexical_tables.py --check;
 table replays must not be described as original executable/parser conformance.
 Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;

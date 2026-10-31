@@ -109,6 +109,10 @@ rules under an explicit mode, preserving inactive definition metadata. Borrowed
 ASCII identifier keys match 125 original helper cases, including native long-name
 case fallback without a storage ceiling. This does not bind imports, parameters,
 locals, calls, or builtins and does not lower/execute bodies; see ADR 0019.
+The scalar kernel now adds numeric pair coercion, six explicit language comparisons,
+and float-result division against 12,416 original-helper cases. Legacy tolerance,
+unordered comparisons, mixed-number rounding, and signed-zero errors remain
+explicit; see ADR 0020. This is not full operators, constant folding, or execution.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

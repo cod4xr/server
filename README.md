@@ -86,6 +86,8 @@ The complete server rewrite remains open.
 - Local function binding with original ASCII name identity, source-offset
   duplicate diagnostics, explicit developer-script modes, retained inactive
   definitions, and configurable index budgets. Calls/imports/bodies remain unresolved.
+- Legacy scalar coercion, six language comparisons, and float-result division
+  checked against 12,416 original-helper cases. Full operators/values/VM remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -207,6 +209,7 @@ python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_zone_pointer_vectors.py ../cod4x-reference --check
 python tools/generate_script_vectors.py ../cod4x-reference --check
 python tools/generate_identifier_vectors.py ../cod4x-reference --check
+python tools/generate_numeric_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check

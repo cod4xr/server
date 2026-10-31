@@ -164,6 +164,10 @@ metadata remains retained. Legacy ASCII identity is isolated from runtime string
 storage; no engine function IDs are assigned. Import/call/parameter/local binding
 and executable bodies remain open. The inspector reports name/region failures
 with both original locations, never source text. See ADR 0019.
+The scalar semantic kernel now provides explicit pair coercion/comparisons/division
+for later frontend/VM consumers. Rust data equality is not a GSC language operator;
+float profile/error scope remain explicit. No heap references, stack cleanup, or
+host FP-control state is owned by these helpers; see ADR 0020.
 
 ## Future custom client
 

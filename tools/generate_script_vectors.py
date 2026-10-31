@@ -4,23 +4,15 @@
 
 import argparse
 from pathlib import Path
-import re
 import subprocess
 import sys
 import tempfile
 
-from reference_source import ReferenceSource
+from reference_source import ReferenceSource, declaration
 
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "crates/script/tests/fixtures/legacy_vectors.txt"
-
-
-def declaration(source: str, pattern: str) -> str:
-    match = re.search(pattern, source, re.DOTALL)
-    if not match:
-        raise ValueError("Original script declaration not found")
-    return match.group(0)
 
 
 def main() -> None:

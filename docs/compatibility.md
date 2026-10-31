@@ -236,6 +236,11 @@ duplicate checks. It retains inactive definitions and borrows canonical ASCII ke
 String/ref services are stubbed in that oracle, and native compiler execution is
 not established. Imports, calls, parameters/locals, builtins, bytecode, and full
 GSC semantics remain open; see ADR 0019.
+An additional 12,416 original-helper cases now cover scalar coercion, six numeric
+comparisons, and float-result division under explicit nearest/SSE conditions.
+Arithmetic NaN payloads and native error unwinding are excluded. Approximate
+equality and negated unordered predicates must not be replaced by Rust operators.
+Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,
   sequence handling, NAT qport behavior, fragmentation, and compression.
