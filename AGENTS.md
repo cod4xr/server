@@ -17,6 +17,12 @@ Read README.md, docs/engineering.md, docs/architecture.md, docs/compatibility.md
 and docs/roadmap.md before changing the architecture or claiming compatibility.
 
 Follow Google's Rust Style Guide, as adapted explicitly in docs/engineering.md.
+GSC is a core expansion target, not merely a legacy VM port. Preserve existing
+scripts through a compatibility mode; richer language features, built-in services,
+asynchronous I/O, and developer tooling belong in the Rust engine and must not
+require native CoD4X plugins. Keep extensions versioned and use wide runtime IDs/
+configurable budgets. Read docs/gsc-runtime.md before designing this subsystem.
+Do not claim GSC is implemented based on plans, content readers, or an empty crate.
 Implement leaf modules, use explicit imports and typed errors, document public
 APIs, and keep unsafe code forbidden. All crates must inherit workspace lints.
 Do not add speculative crates, placeholder implementations, or unused abstractions.

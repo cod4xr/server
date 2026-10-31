@@ -179,4 +179,5 @@ The C oracle is test tooling and is never linked into the Rust product.
 - [Capacity limits and content expansion](docs/limits.md)
 - [Source audit](docs/source-audit.md)
 - [Milestones and acceptance gates](docs/roadmap.md)
+- [Expanded GSC runtime requirements](docs/gsc-runtime.md)
 - [Local validation record](docs/validation.md)

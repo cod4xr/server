@@ -24,7 +24,9 @@ Work can move between milestones when dependencies require it; this is a map of
 acceptance gates, not a claim that complete network joins precede asset loading.
 Client-aware API design starts now; client product development follows the server
 and shared-core compatibility work. GSC mod support and native plugin support
-must remain separately tracked.
+must remain separately tracked. Expanded GSC is also a core requirement: richer
+language features, built-in services, async I/O, and tooling must not require native
+plugins. See [the GSC runtime contract](gsc-runtime.md); these remain unimplemented.
 
 ## Next concrete work
 
