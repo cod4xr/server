@@ -203,6 +203,15 @@ and records errors rather than implementing longjmp/VM cleanup. Relative results
 use u64 without the old 24-bit mask; modern durations/numbers remain separate.
 No third-party dependency or old package version was added/changed. See ADR 0012.
 
+Bounded immutable script-source indexing is implemented and passes full Windows
+workspace gates (216 source files, eight crates). Six tests cover raw byte locations,
+LF/CRLF/standalone-CR behavior, tabs/NUL/non-UTF-8/UTF-8, exact EOF/empty/trailing
+lines, borrowed spans, invalid ranges, exact budgets, independent sources, redacted
+Debug, and 70,001-line input. Every offset of 256 deterministic byte patterns is
+checked against a separate scan. SourceText is a frontend/tooling container, not
+lexical validation, a compiled source map, a module registry, or a debugger. See
+ADR 0013. Linux validation for this layer remains open.
+
 Next: source-grounded GSC frontend/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode

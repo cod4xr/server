@@ -67,6 +67,8 @@ The complete server rewrite remains open.
 - Dependency-free legacy script scalar/wait semantics checked against 827 original
   function cases. This is a tested kernel; the compiler/VM and expanded language
   features described in the GSC contract remain unimplemented.
+- Bounded immutable script-source indexing and borrowed exact line/span views,
+  with wide byte locations, explicit LF/CRLF behavior, and redacted diagnostics.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

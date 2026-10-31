@@ -227,3 +227,12 @@ cscr_vm.cpp, _scr_yacc.asm, and Windows floating-environment initialization. Num
 helpers do not implement stack cleanup, heap references, error unwinding, full
 values, parser/compiler, bytecode, scheduler, or modern language/services. No actual
 GSC script executes, and Linux validation for the new kernel remains open.
+
+Immutable source indexing passed the full Windows workspace gates (216 source
+files, eight crates) with six additional source-view tests. Every offset in 256
+deterministic byte patterns matches a separate simple line/column scan. Mixed
+endings, exact EOF/empty/trailing lines, binary/UTF-8/NUL/tab bytes, borrowed spans,
+independent sources, rejected ranges, exact budgets, redacted Debug, and 70,001-line
+input pass. The API intentionally specifies byte coordinates without claiming old
+formatted-line ABI, lexer/parser, compiled source-map, or debugger conformance.
+Linux validation for this added layer remains open.

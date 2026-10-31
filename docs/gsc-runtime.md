@@ -83,6 +83,9 @@ The dependency-free cod4x-script kernel now implements numeric truth/negation/
 complement and explicit-profile wait conversion, checked against 827 original
 function cases. It owns no bytecode, objects, threads, or host services. See
 [ADR 0012](decisions/0012-script-semantics-boundary.md) for exact scope and limits.
+Bounded immutable source/line/span views now supply byte locations for future
+frontend/tooling without normalizing input or exposing scripts through Debug.
+They are not a parser, compiled source map, or debugger; see ADR 0013.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
