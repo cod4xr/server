@@ -84,6 +84,12 @@ primary descendants; local classification is not validation/evaluation. See ADR 
 Separate primary views now expose local literal/group/call/reference/object and
 animation/debugger roles without converting, binding, or executing descendants.
 Retain raw signed literal syntax and parenthesized lists; see ADR 0024.
+Expression-list indices preflight both passes and complete count/metadata before
+allocation. Source order does not establish native argument evaluation/push order;
+see ADR 0025. Script tests use explicit frontend/legacy suites with small leaf files.
+Register each new #[test] leaf in exactly one suite; repository policy guards
+missing/duplicate/gated registrations, including subfolders. Use --test frontend
+or --test legacy plus a module filter, not old standalone leaf targets; see ADR 0026.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

@@ -259,6 +259,10 @@ Separate primary views additionally classify all 22 primitive productions withou
 native semantic actions or value conversion. Signed literal tokens, grouped lists,
 unresolved call/reference subtrees, and animation/debugger forms retain their exact
 roles/spans. These are local frontend views, not runtime feature support; see ADR 0024.
+Expression lists now preserve complete source order with budgeted fallible indices.
+The native actions prepend nodes; runtime argument evaluation/push order still
+needs compiler/VM evidence. Empty/single/nested lists and 70,000 retained entries
+establish frontend representation only, not call/vector arity or execution. See ADR 0025.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

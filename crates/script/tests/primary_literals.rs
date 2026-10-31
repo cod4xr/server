@@ -5,7 +5,7 @@
     reason = "Tests supply synthetic literal/primary sources and scoped nodes."
 )]
 
-mod expression_support;
+use crate::expression_support;
 
 use cod4x_script::expression::{
     LegacyExpressionError, LegacyLiteralPolarity, LegacyPrimaryKind, LegacyPrimarySyntax,

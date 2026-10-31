@@ -99,7 +99,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Verified grammar/declaration/symbol/operator profiles and {len(rows) - 2} structural replays")
+    print(f"Verified grammar/declaration/symbol/expression profiles and {len(rows) - 2} structural replays")
 
 
 if __name__ == "__main__":

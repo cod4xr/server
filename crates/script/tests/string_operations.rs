@@ -5,7 +5,7 @@
     reason = "Tests own synthetic decoded string operands."
 )]
 
-mod string_support;
+use crate::string_support;
 
 use cod4x_script::literal::{LegacyStringError, LegacyStringKind};
 

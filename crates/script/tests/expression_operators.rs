@@ -5,7 +5,7 @@
     reason = "Tests supply synthetic structurally valid expressions."
 )]
 
-mod expression_support;
+use crate::expression_support;
 
 use cod4x_script::expression::{
     LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator, LegacyLogicalOperator,

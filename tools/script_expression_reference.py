@@ -38,6 +38,7 @@ def verify(source: str, tables: dict[str, list[int]], header: str) -> None:
     if any(tables["LHS"][rule] != 100 for rule in range(40, 62)):
         raise ValueError("Opaque primitive nonterminal profile changed")
     verify_primaries(source, tables, labels)
+    verify_lists(source, tables, labels)
 
 
 def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
@@ -58,3 +59,19 @@ def verify_primaries(source: str, tables: dict[str, list[int]], labels: list[str
     watch = source.split(labels[61] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
     if "mov edi, [ebx-0x8]" not in watch or "mov edx, [ebx-0x20]" not in watch:
         raise ValueError("Breakon operand role changed")
+
+
+def verify_lists(source: str, tables: dict[str, list[int]], labels: list[str]) -> None:
+    """Check spine/optional roles; prepended native nodes do not assert evaluation order."""
+    profiles = {
+        111: (108, 3, ("call node2_\n", "call prepend_node\n", "mov ecx, [ecx-0x10]")),
+        112: (108, 1, ("call node0\n", "call node2_\n", "call prepend_node\n")),
+        113: (109, 1, ("mov ebx, [ebp-0x280c]",)),
+        114: (109, 0, ("mov dword [esp], 0x0", "call node0\n")),
+    }
+    for rule, (lhs, length, instructions) in profiles.items():
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        if tables["LHS"][rule] != lhs or tables["LENGTH"][rule] != length:
+            raise ValueError("Expression list production profile changed")
+        if any(text not in body for text in instructions):
+            raise ValueError("Expression list action role changed")

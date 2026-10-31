@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tomllib
 
+import script_test_targets
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SUFFIXES = {
@@ -78,6 +79,7 @@ def main() -> None:
         failures.append(
             "Dependency policy must describe exactly the workspace crates"
         )
+    failures.extend(script_test_targets.validate(ROOT))
     if failures:
         print("\n".join(failures), file=sys.stderr)
         raise SystemExit(1)

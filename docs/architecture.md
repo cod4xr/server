@@ -186,6 +186,11 @@ Separate constant-cost primary views now classify all 22 primitive productions,
 preserving literal polarity, grouped lists, call/reference subtrees, special roots,
 size/array/animation/debugger forms. These local roles do not grant runtime
 capabilities, resolve descendants, decode values, or create objects; see ADR 0024.
+Expression-list lowering now owns a flat source-ordered borrowed-node index. Two
+iterative immutable passes preflight complete count/work/logical metadata before
+fallible reserve. It retains nesting, supports reverse iteration, and publishes no
+partial result. Source order remains separate from runtime argument order and
+group/vector/call arity; see ADR 0025.
 
 ## Future custom client
 

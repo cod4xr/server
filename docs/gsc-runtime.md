@@ -133,6 +133,11 @@ signed-literal tokens, grouped expression lists, unresolved calls/references,
 special roots, and animation/debugger syntax. Primary classification alone does
 not validate arity/literal values, bind descendants, or enable runtime services.
 See ADR 0024; full semantic lowering/compilation/execution remains open.
+Ordered expression-list indices now retain complete source operands under explicit
+count/two-pass work/logical metadata budgets, including 70,000-entry tests. Native
+prepend actions do not become an implicit runtime evaluation policy. List arity,
+descendant semantics, executable argument capacity, and VM behavior remain open;
+see ADR 0025. This is frontend capacity, not expanded running GSC support.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

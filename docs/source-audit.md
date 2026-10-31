@@ -109,6 +109,10 @@ All 22 primary production/action profiles now guard separate borrowed primary
 views. Raw sign/token identity, grouped lists, calls/references, special objects,
 size/empty-array/animation/#animtree/breakon forms stay distinct. No original
 semantic actions execute, and descendants/runtime modes remain unresolved.
+Expression-list rules 111/112 prepend native nodes, 113 aliases the nonempty list,
+and 114 creates the empty node. Their checked profiles ground iterative flat
+source-order indices. Native evaluation/push order is not inferred from that index;
+arity, call/parameter semantics, and executable capacities remain separate work.
 
 ## Open research
 

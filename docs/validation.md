@@ -415,3 +415,20 @@ constructor profiles verify every primary role and retain 99 structural replays.
 Oversize/negative literal spellings are retained, not converted or accepted as
 runtime values. No arity/descendant binding/evaluation, debugger/animation runtime,
 compiler/VM/stock-mod conformance, or Linux acceptance is established.
+
+Expression lists and explicit script suites passed full Windows workspace
+formatting, warnings-denied Clippy/rustdoc, debug/release tests, repository policy,
+and diff checks. Six added tests retain 70,000 entries, complete nested operands,
+source/reverse order, exact spans, empty/single/prefix forms, exact/one-less count/
+two-pass work/logical metadata, zero-work admission, private errors, and unchanged
+independent sources. Output allocation follows complete preflight; no recursive
+ownership or implicit argument evaluation is added. List production/action profiles
+and all 99 structural replays regenerate. Native prepend order is not an execution
+claim; arity/runtime parameter capacity/compiler/VM/stock-mod and Linux remain open.
+
+The thirty-to-two Cargo suite migration preserves all 81 discovered test names and
+their multiplicities: 63 frontend, 18 legacy. All pass in debug/release; doctests
+remain enabled. The source policy guard accepts complete suites and rejects injected
+missing/extra/duplicate/gated/nested-unregistered leaves in disposable fixtures.
+Leaf/fixture locations remain unchanged, helpers are shared, normal target reused,
+and no stale artifacts are deleted. No build-time/RSS performance claim is made.

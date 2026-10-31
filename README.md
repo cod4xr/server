@@ -100,6 +100,8 @@ The complete server rewrite remains open.
 - Separate borrowed views for all 22 primary productions, retaining raw literal
   polarity, grouped lists, call/reference subtrees, object roots, size/array/
   animation/debugger syntax. Local roles do not establish value/runtime support.
+- Fallible source-ordered expression-list indices under count/work/metadata budgets,
+  tested with 70,000 entries. Runtime call/vector arity and argument evaluation stay open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -203,6 +205,10 @@ Build API documentation with `RUSTDOCFLAGS=-Dwarnings` set in your environment:
 ```sh
 cargo doc --workspace --no-deps --locked
 ```
+
+Script tests use explicit `frontend` and `legacy` suites while leaf files stay
+separate. Filter a module with `cargo test -p cod4x-script --test frontend -- expression_lists::`.
+Repository policy ensures each test leaf is registered exactly once.
 
 To reproduce the C fixtures, use Python 3.11+, Git, and GCC on a little-endian
 host. The generator verifies the upstream revision and canonical source hash

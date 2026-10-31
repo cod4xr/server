@@ -6,6 +6,15 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
+autotests = false
+
+[[test]]
+name = "frontend"
+path = "tests/frontend.rs"
+
+[[test]]
+name = "legacy"
+path = "tests/legacy.rs"
 
 [lints]
 workspace = true

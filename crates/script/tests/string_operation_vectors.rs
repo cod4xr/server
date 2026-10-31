@@ -5,7 +5,7 @@
     reason = "Tests decode known synthetic native string fixtures."
 )]
 
-mod string_support;
+use crate::string_support;
 
 use cod4x_script::literal::{LegacyStringError, LegacyStringKind};
 

@@ -5,7 +5,7 @@
     reason = "Tests own structurally valid synthetic primary inputs."
 )]
 
-mod expression_support;
+use crate::expression_support;
 
 use std::collections::BTreeSet;
 

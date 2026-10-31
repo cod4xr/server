@@ -26,6 +26,10 @@ grouping and lowercase hexadecimal spelling where stable rustfmt cannot.
 - Create crates for meaningful ownership, dependency, platform, or trust
   boundaries. Create subfolders for cohesive groups within a crate. Do not create
   empty crates or an unrelated `utils` dumping ground.
+- Script integration tests use explicit frontend/legacy suite roots containing
+  module declarations only. Leaf files and fixtures retain separate ownership.
+  Repository policy requires every plain #[test] file to be registered exactly
+  once without gating, including leaves added in subfolders; see ADR 0026.
 - Each crate inherits package metadata and workspace lints. New dependencies
   require an explicit allowed dependency entry, rationale, license review,
   maintenance review, and consideration of build scripts and transitive costs.

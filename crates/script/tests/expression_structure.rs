@@ -5,7 +5,7 @@
     reason = "Tests provide synthetic structural source and checked scoped views."
 )]
 
-mod expression_support;
+use crate::expression_support;
 
 use cod4x_script::expression::{
     LegacyExpressionError, LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator,

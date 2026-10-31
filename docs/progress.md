@@ -342,8 +342,26 @@ guard every local role; no native semantic actions execute. This does not conver
 values, resolve descendants, choose arity/evaluation order, or enable runtime
 animation/debugging. See ADR 0024. Linux/compiler/VM/stock-mod gates remain open.
 
-Next: budgeted ordered expression lists, then typed calls/references and body
-lowering with checked literal conversion and explicit binding/control-flow policy.
+Budgeted source-ordered expression-list indices now pass full Windows workspace
+gates. Six tests cover nested expression retention, forward/reverse order, original
+spans/borrows, empty/single/prefix lists, every exact/one-less quota, zero/preflight
+work, unrelated-node failures, privacy, independent trees, and 70,000 entries.
+Both passes and complete logical storage are admitted before fallible allocation.
+Native actions prepend nodes; source ordering is not runtime evaluation/push order.
+No arity, executable parameter capacity, binding, or evaluation is established.
+See ADR 0025. Source list-role/structural regeneration passes; Linux gates stay open.
+
+Script integration tests now use two small module-only Cargo roots instead of
+thirty leaf binaries. Pre/post Cargo inventories retain all 81 names with identical
+multiplicities (63 frontend, 18 legacy), and full debug/release suites pass. Policy
+guards every plain #[test] file's unconditional registration, including subfolders;
+disposable checks reject missing/duplicate/extra/gated/nested-unregistered leaves.
+Leaf/fixture files stay in place, helper modules are shared, and all builds reuse
+the normal target. No old artifacts are deleted or speed/RSS improvement claimed.
+See ADR 0026. Focused Cargo commands now select frontend/legacy plus module filters.
+
+Next: typed calls/function names/references and body lowering with checked literal
+conversion, explicit binding, and control-flow policy before bytecode/execution.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 
