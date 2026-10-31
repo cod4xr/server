@@ -66,3 +66,23 @@ and reused one slot through 10,000 unload/reload cycles without reusing handles.
 Budget rejection preserves data/accounting; case/kind/raw-byte names, wide sizes,
 stale/cross-catalog IDs, and exhausted generations are covered. These tests prove
 encoded storage behavior, not decoded asset residency or legacy client expansion.
+
+The later content boundary passed fifteen Windows debug/release tests and
+warnings-denied Clippy/rustdoc, with three additional real verifier-process tests.
+Eighteen independent synthetic Python ZIP fixtures exercise stored/DEFLATE data,
+ZIP64 footers/local headers, precedence, corruption, and malformed paths/headers.
+Thirty-two pinned-original-C vectors verify seven byte-path comparisons and 25
+seeded legacy archive checksums. A 66,000-entry synthetic ZIP64 archive passes;
+compressed expansion, forged output lengths, repeated payload references, payload
+spans crossing the directory, all truncations of a sample, and deterministic byte
+mutations are covered. Hidden corrupt duplicates fail full verification while the
+visible override remains readable. Eight admission resources have exact/one-less
+boundary coverage. All five C generators and independent archive regeneration
+passed; prior workspace gates passed before the final integration, followed by
+affected content/server gates. New content Linux validation remains open.
+
+The executable's `--verify-iwd` mode verifies immutable bounded snapshots without
+opening sockets or extracting files. It returns nonzero on invalid content,
+reports aggregate counts/checksums, and process tests exclude names, payloads,
+and local paths from logs. These tests do not establish decoded map/fastfile
+loading, pure-server admission, stock-client ZIP64 support, or gameplay.

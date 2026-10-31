@@ -26,7 +26,8 @@ client presentation ---------------------> read-only simulation output
 
 Arrows mean allowed conceptual dependency, not a list of crates already built.
 Current implemented boundaries are `cod4x-protocol`, `cod4x-transport`,
-`cod4x-server-core`, `cod4x-assets`, `cod4x-observability`, and the `apps/server` process. Protocol and deterministic
+`cod4x-server-core`, `cod4x-assets`, `cod4x-content`, `cod4x-observability`, and the
+`apps/server` process. Protocol and deterministic
 server services remain dependency-light; process signals and logging sinks live
 above them. No client or simulation crate exists yet. Do not manufacture empty
 crates to make this diagram look implemented.
@@ -62,6 +63,14 @@ logical byte/count budgets, and opaque catalog/slot/generation handles. Removal
 invalidates handles and reuses slots. It has no codec, filesystem, or rendering
 dependencies. Counts and names are independent of legacy wire namespaces; memory
 statistics describe owned bytes, not allocator overhead or process RSS.
+
+The content boundary borrows immutable IWD bytes, admits metadata and compressed/
+decompressed work under explicit budgets, and returns CRC-validated encoded data.
+It implements legacy virtual-name normalization and archive-local override order.
+The application owns bounded file snapshots and the offline verifier; the shared
+reader never accesses host paths or extracts files. IWD entry CRCs also supply
+legacy seeded checksums. Mount order, pure admission, fastfiles, and decoded game
+formats are separate implementation work. See ADR 0005 for dependency costs.
 
 ## Server ownership
 

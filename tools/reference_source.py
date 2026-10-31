@@ -35,7 +35,7 @@ class ReferenceSource:
         """Extract a function verbatim, tracking C comments and string literals."""
         source = self.files[filename]
         pattern = (
-            rf"(?m)^(?:static\s+)?(?:void|char\s*\*|int|qboolean)\s*"
+            rf"(?m)^(?:static\s+)?(?:void|char\s*\*|int|unsigned(?:\s+int)?|qboolean)\s*"
             rf"{re.escape(name)}\s*\([^;{{]*\)\s*\{{"
         )
         matches = list(re.finditer(pattern, source))

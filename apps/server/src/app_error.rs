@@ -10,6 +10,8 @@ pub(crate) enum AppError {
     Subscriber(tracing::subscriber::SetGlobalDefaultError),
     Signal(ctrlc::Error),
     Io(io::Error),
+    Content(cod4x_content::ArchiveError),
+    ContentIo(io::Error),
 }
 
 impl fmt::Display for AppError {
@@ -22,6 +24,8 @@ impl fmt::Display for AppError {
                 write!(formatter, "shutdown signal registration failed: {error}")
             }
             Self::Io(error) => write!(formatter, "socket operation failed: {error}"),
+            Self::Content(error) => write!(formatter, "content verification failed: {error}"),
+            Self::ContentIo(error) => write!(formatter, "content read failed: {error}"),
         }
     }
 }
@@ -33,7 +37,8 @@ impl Error for AppError {
             Self::Logging(error) => Some(error),
             Self::Subscriber(error) => Some(error),
             Self::Signal(error) => Some(error),
-            Self::Io(error) => Some(error),
+            Self::Io(error) | Self::ContentIo(error) => Some(error),
+            Self::Content(error) => Some(error),
         }
     }
 }

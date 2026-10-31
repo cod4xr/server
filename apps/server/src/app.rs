@@ -5,7 +5,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use cod4x_observability::LogRuntime;
 
 use crate::app_error::AppError;
-use crate::arguments::{self, Action, Arguments};
+use crate::arguments::{self, Action, Arguments, Mode};
+use crate::content;
 use crate::runtime::Runtime;
 
 pub(crate) fn run() -> Result<(), AppError> {
@@ -26,6 +27,9 @@ pub(crate) fn run() -> Result<(), AppError> {
     let logs = LogRuntime::build(&options.logs).map_err(AppError::Logging)?;
     tracing::dispatcher::set_global_default(logs.dispatch().clone())
         .map_err(AppError::Subscriber)?;
+    if let Mode::VerifyIwd(path) = &options.mode {
+        return content::verify_iwd(path);
+    }
     // The signal handler and main thread share only this shutdown flag.
     let stop = Arc::new(AtomicBool::new(false));
     let signal_stop = Arc::clone(&stop);

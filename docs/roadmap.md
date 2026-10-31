@@ -9,7 +9,7 @@ acceptance gate. The server rewrite remains incomplete until S7 passes.
 | S0 | Repository standards, pinned source, primitive codec | Local checks and independent byte vectors | Initial implementation |
 | S1 | Full packet/message codecs and transport | Cross-peer packet traces; loss/reorder tests; malformed-input fuzzing | Envelope/command/info codecs and query UDP implemented; gate open |
 | S2 | Configuration, commands, challenge/auth lifecycle | Unmodified client reaches authenticated connection; bounded state | Open |
-| S3 | Filesystem, maps, assets, checksums, downloads | Stock/custom content loads; pure checks and archive-path tests | Open |
+| S3 | Filesystem, maps, assets, checksums, downloads | Stock/custom content loads; pure checks and archive-path tests | Encoded catalog/IWD reader and checksum implemented; gate open |
 | S4 | Shared simulation, collision, movement, weapon/entity state | Replayed inputs match reference state and prediction behavior | Open |
 | S5 | GSC compiler/VM, builtins, game services | Stock modes and named existing GSC mods run correctly | Open |
 | S6 | Integrated snapshots and playable server | Unmodified clients play full sessions on stock/custom maps | Open |
@@ -28,15 +28,16 @@ must remain separately tracked.
 
 ## Next concrete work
 
-1. Implement channel sequencing, fragmentation state, and deterministic impairment
-   tests using the verified envelopes. Continue legacy/profile inventory.
-2. Port Huffman and keyed/delta primitives; inventory opcode and field layouts.
-   Add coverage-guided parser fuzzing and deterministic impairment tests.
+1. Continue remaining delta/user-command/snapshot codecs and legacy/profile
+   inventory above implemented channel, Huffman, XOR, and index primitives.
+2. Add coverage-guided parser fuzzing and deterministic impairment workloads.
 3. Extend the query-only runtime with verified configuration, explicit lifecycle
    ownership, and implemented channel services. Preserve structured logging and
    aggregate overload metrics. Do not pretend to load maps or admit players while
    simulation and assets are absent.
-4. Build reference join/gameplay traces and asset/scripting inventories. Resolve
+4. Implement archive mount order, fastfile/map readers, pure admission, and
+   validated imports above the encoded catalog/IWD layer. Build reference
+   join/gameplay traces and asset/scripting inventories. Resolve
    architecture and ABI decisions in ADRs before widening the implementation.
 
 ## Release evidence

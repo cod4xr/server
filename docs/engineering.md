@@ -18,7 +18,7 @@ grouping and lowercase hexadecimal spelling where stable rustfmt cannot.
 
 - Aim for at most 250 lines per source file. The hard ceiling is 400 lines,
   including comments, tests, and embedded source. CI rejects larger handwritten
-  `.rs`, `.py`, `.c`, `.cpp`, `.h`, `.js`, `.ts`, and `.tsx` files.
+  `.rs`, `.py`, `.c`, `.cpp`, `.h`, `.js`, `.ts`, `.tsx`, `.ps1`, and `.sh` files.
 - Split by responsibility and dependency direction, not arbitrary line chunks.
   Root modules declare modules and re-export APIs; implementations live in leaf
   modules named after their main type. Keep integration tests outside production

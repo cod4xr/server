@@ -43,6 +43,9 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `server.metrics` | info | uptime, received/replied/dropped counts, send errors, dropped logs |
 | `server.stopped` | info | shutdown reason, dropped log count |
 | `server.failed` | error | typed local I/O failure category |
+| `content.started` | info | offline IWD verification mode |
+| `content.verified` | info | entry/file counts, encoded/metadata/declared bytes, legacy checksum |
+| `content.failed` | error | sanitized content failure or local I/O category |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
 Metrics are emitted every ten seconds and at normal shutdown. Rejected traffic
@@ -63,6 +66,9 @@ at trace level. Current process tests send a recognizable secret through real
 UDP queries and assert it never appears in captured logs. Protocol error types
 and query drop categories contain no received contents. Ordinary discovery logs
 also omit remote addresses; the startup address is the local listening socket.
+Offline content verification excludes host paths, archive entry names, and
+payloads from logs. Full verification includes overridden original entries;
+counts/checksums are metadata, not a claim of authenticated content.
 
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided

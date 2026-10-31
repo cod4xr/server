@@ -26,10 +26,14 @@ that block. The separate WSL validation directory was already absent when checke
   aggregate traffic/lifecycle logging, and real child-process/socket tests.
 - `crates/assets`: configurable encoded-byte ownership, exact names, wide opaque
   handles, stale/cross-catalog rejection, slot reuse, and logical usage metrics.
+- `crates/content`: bounded immutable IWD/ZIP64 index, virtual byte paths,
+  stored/DEFLATE output, original override precedence, full payload verification,
+  and legacy seeded CRC checksums. Application has an offline `--verify-iwd` mode.
 
 The reference checkout is `../cod4x-reference`. Upstream source and all generators
 are pinned/hashes checked. There are no game assets, ApX code, private configs,
-remote deployments, client implementation, map loader, game simulation, or GSC VM.
+remote deployments, client implementation, decoded map loader, game simulation,
+or GSC VM.
 
 ## Verified checkpoints
 
@@ -54,8 +58,23 @@ registration, exact names, redacted Debug output, and 10,000 unload/reload cycle
 Initialized slots and byte budgets do not measure total allocator/RSS overhead.
 Linux validation for this new crate remains open; do not create another cache.
 
-Implement bounded IWD content reading independently of legacy wire caps, then
-integrate explicit content inspection/loading with the application.
+The IWD implementation passes Windows debug/release tests, including 66,000 ZIP64 entries,
+compressed expansion/corruption, hidden corrupt duplicates, exact admission
+budgets, path/header rejection, and real offline verifier processes with sanitized
+logs. Eighteen independent Python ZIP fixtures and 32 original C path/checksum
+vectors are checked in. All four older C generators still match. The complete
+workspace passed Windows Clippy/debug/release/rustdoc before full-verification/CLI
+integration; all affected checks also passed afterward, including compressed span
+and repeated-work bounds. No new target
+directories were created. New content Linux checks remain open under the one-
+target policy. See ADR 0005 for reviewed ZIP dependencies and remaining costs.
+
+Continue remaining user-command/delta codecs, mount order, and decoded map/
+fastfile formats. The user asked for an ETA and completion percentage: answered
+several weeks to a few months for a first joinable stock-map build, roughly
+5–10% toward first join and under 5% of the complete rewrite. These are rough
+planning estimates, not measured progress or delivery promises. User explicitly
+said to continue working after answering; do not end at this checkpoint.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

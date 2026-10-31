@@ -9,7 +9,7 @@ resource budgets, while old client/wire bounds stay inside compatibility profile
 The engine must preserve full content catalogs rather than require asset cuts.
 
 **Status: protocol foundation and runnable query-only development runtime.**
-There is no gameplay, authentication, map loading, scripting VM, renderer, or
+There is no gameplay, authentication, decoded map loading, scripting VM, renderer, or
 master-server integration yet. Real local UDP discovery and structured process
 logs are tested; interoperability with existing game clients is still unverified.
 The complete server rewrite remains open.
@@ -43,6 +43,9 @@ The complete server rewrite remains open.
   wide generation-checked handles, unload/reload, and usage accounting. Synthetic
   tests retain 5,000 images and 1,500 models without legacy pool ceilings; format
   decoding and client-visible capacity negotiation remain separate work.
+- Read-only IWD content with path/header/metadata budgets, stored/DEFLATE reads,
+  CRC and size validation, original override order, and seeded legacy checksums.
+  ZIP64 tests admit 66,000 entries; this does not establish old-client ZIP64 support.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -61,6 +64,18 @@ release builds use JSON. Override with `--human-logs` or `--json-logs`, and use
 provides a bounded local run. The default bind is loopback, the mode must be
 explicit, and discovery advertises a development server with zero player slots.
 See [logging and operations](docs/logging.md) for event and retention contracts.
+
+Verify an operator-supplied IWD without opening a network listener:
+
+```sh
+cargo run -p cod4x-server -- --verify-iwd path/to/content.iwd
+```
+
+This checks every original payload, including hidden duplicates, without extracting
+files or logging their names/data. It reports counts and the legacy checksum and
+returns a failure status for corrupt content. The command uses the library's
+default configurable budgets; operator configuration for those budgets is future
+work. Loading decoded assets/maps and checking pure-server admission remain open.
 
 ## Source baseline
 
@@ -102,6 +117,9 @@ git -C ../cod4x-reference checkout --detach ddd65fce1a1093017bad2dbb6840d75d11c0
 python tools/generate_message_vectors.py ../cod4x-reference --check
 python tools/generate_wire_vectors.py ../cod4x-reference --check
 python tools/generate_huffman_vectors.py ../cod4x-reference --check
+python tools/generate_obfuscation_vectors.py ../cod4x-reference --check
+python tools/generate_content_vectors.py ../cod4x-reference --check
+python tools/generate_archive_fixtures.py --check
 ```
 
 Omit `--check` only when deliberately regenerating and reviewing fixtures.

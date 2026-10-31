@@ -2,6 +2,7 @@
 members = [
     "apps/server",
     "crates/assets",
+    "crates/content",
     "crates/observability",
     "crates/protocol",
     "crates/server-core",
@@ -17,14 +18,17 @@ license = "AGPL-3.0-or-later"
 publish = false
 
 [workspace.dependencies]
+cod4x-content = { path = "crates/content" }
 cod4x-protocol = { path = "crates/protocol" }
 cod4x-observability = { path = "crates/observability" }
 cod4x-server-core = { path = "crates/server-core" }
 ctrlc = { version = "=3.5.2", features = ["termination"] }
+crc32fast = "=1.5.3"
 tracing = { version = "=0.1.44", default-features = false, features = ["std"] }
 tracing-appender = "=0.2.5"
 tracing-subscriber = { version = "=0.3.23", default-features = false, features = ["ansi", "env-filter", "fmt", "json", "registry", "std"] }
 serde_json = "=1.0.154"
+zip = { version = "=9.2.0", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

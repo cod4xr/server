@@ -25,6 +25,8 @@ jobs:
         run: rustup show
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
+      - name: Check independent archive fixtures
+        run: python tools/generate_archive_fixtures.py --check
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Check Clippy
@@ -55,3 +57,4 @@ jobs:
           python tools/generate_wire_vectors.py reference --check
           python tools/generate_huffman_vectors.py reference --check
           python tools/generate_obfuscation_vectors.py reference --check
+          python tools/generate_content_vectors.py reference --check
