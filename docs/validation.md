@@ -195,3 +195,19 @@ are covered. The C harness uses real in-bounds allocations and records only u32
 relative offsets after the original native-pointer narrowing; no host addresses
 enter fixtures. Logical capacity checks do not resolve aliases, prove residency,
 validate target schemas/alignment, or establish graph/gameplay compatibility.
+
+The raw-file-only reader adds six content tests and three real inspector-process
+tests. Full Windows workspace formatting, warnings-denied Clippy/rustdoc, debug/
+release tests, and repository policy passed (198 source files, seven crates).
+Independent raw-file/root fixtures and original block-offset regeneration passed.
+Read-only inspection of stock mp_crash_load.ff returned the required unsupported-
+asset failure, with no extracted files or partial success. Twenty independent
+Python envelopes cover exact/binary/empty/absent buffers,
+known prefix/shared/suffix names, root and inserted aliases, forward-null cells,
+temporary block reuse, virtual alignment, unsupported kinds, invalid references,
+negative lengths, inconsistent buffers, missing terminators, all sample body
+truncations, deterministic mutations, and five exact/one-less budgets are covered.
+Names/buffers remain borrowed; Debug/log/process failures omit their contents and
+host paths. The inspector opens no listener or extracted files. Original full
+C/ASM loader/registration differential checks, actual mixed stock-zone decoding,
+script execution, and Linux checks for this layer remain open.

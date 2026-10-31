@@ -92,6 +92,15 @@ string references remain distinct. Virtual allocation alignment does not skip in
 bytes. Unknown kinds and unresolved headers remain explicit metadata until typed
 graph readers validate them; prefix inspection never registers assets. See ADR 0010.
 
+`RawFileCollection` provides the first typed asset subset above the prefix. It
+rejects non-raw-file roots upfront, borrows exact name/buffer bytes, preserves null
+slots and aliases, and returns only a complete validated supported collection.
+Private staging maps logical alias slots and known inline string regions rather
+than native pointers. Temporary headers reuse scoped block-zero capacity; virtual
+block-four accounting includes alignment and inserted slots. No asset enters an
+engine registry and no script executes; mixed stock-zone graphs remain open.
+See ADR 0011. Expanded GSC requirements live in docs/gsc-runtime.md.
+
 ## Server ownership
 
 The endpoint-cookie core owns only keyed MAC state and consumes explicit observed

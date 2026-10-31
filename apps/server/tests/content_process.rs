@@ -5,55 +5,17 @@
     reason = "Tests own exact synthetic files and child processes."
 )]
 
-use std::fs::{self, OpenOptions};
-use std::io::Write;
-use std::path::PathBuf;
+mod content_support;
+
 use std::process::Command;
-use std::sync::atomic::{AtomicU64, Ordering};
 
 use serde_json::Value;
 
-struct FixtureFile(PathBuf);
-
-impl FixtureFile {
-    fn new(label: &str) -> Self {
-        static NEXT_FILE: AtomicU64 = AtomicU64::new(0);
-        let path = std::env::temp_dir().join(format!(
-            "cod4x-secret-content-{}-{}.iwd",
-            std::process::id(),
-            NEXT_FILE.fetch_add(1, Ordering::Relaxed)
-        ));
-        let (_, hex) = include_str!("../../../crates/content/tests/fixtures/archives.txt")
-            .lines()
-            .filter_map(|line| line.split_once(' '))
-            .find(|(name, _)| *name == label)
-            .expect("Independent fixture");
-        let bytes: Vec<u8> = hex
-            .as_bytes()
-            .chunks_exact(2)
-            .map(|pair| {
-                u8::from_str_radix(std::str::from_utf8(pair).expect("Hex ASCII"), 16).expect("Byte")
-            })
-            .collect();
-        let mut file = OpenOptions::new()
-            .create_new(true)
-            .write(true)
-            .open(&path)
-            .expect("Exclusive test-owned file");
-        file.write_all(&bytes).expect("Synthetic fixture");
-        Self(path)
-    }
-}
-
-impl Drop for FixtureFile {
-    fn drop(&mut self) {
-        let _ = fs::remove_file(&self.0);
-    }
-}
+use content_support::FixtureFile;
 
 #[test]
 fn offline_verification_emits_counts_without_paths_names_or_payloads() {
-    let file = FixtureFile::new("single");
+    let file = FixtureFile::iwd("single");
     let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
         .args(["--json-logs", "--verify-iwd"])
         .arg(&file.0)
@@ -76,7 +38,7 @@ fn offline_verification_emits_counts_without_paths_names_or_payloads() {
 #[test]
 fn corrupt_hidden_content_causes_a_sanitized_failure_exit() {
     for label in ["bad_crc", "hidden_bad_crc", "bad_local_name", "traversal"] {
-        let file = FixtureFile::new(label);
+        let file = FixtureFile::iwd(label);
         let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
             .args(["--json-logs", "--verify-iwd"])
             .arg(&file.0)

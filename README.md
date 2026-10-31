@@ -61,6 +61,9 @@ The complete server rewrite remains open.
 - Borrowed IW3 root metadata with separate null/inline/unresolved script slots,
   preserved unknown asset records, virtual-block accounting, and configurable
   budgets. Synthetic tables retain 70,000 slots/records; graph bodies remain open.
+- Typed raw-file-only collections with validated buffers, shared/suffix names,
+  root/inserted aliases, scoped temporary-memory accounting, and configurable
+  budgets. Mixed stock zones, registry publication, and GSC execution remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -106,6 +109,10 @@ fastfiles are explicitly unsupported by this source baseline.
 `--inspect-zone-prefix PATH` additionally checks the script-string table, inline
 strings, and asset directory and reports their counts. References and asset bodies
 remain unvalidated; root tables are not a loaded zone or a decoded gameplay map.
+
+`--inspect-rawfiles PATH` decodes a raw-file-only collection and reports aggregate
+usage. It rejects other asset types before returning content, opens no listener,
+and executes no scripts. Names and buffer bytes remain outside diagnostics.
 
 Exercise the legacy challenge/cookie exchange over UDP:
 
@@ -166,6 +173,7 @@ python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check
 python tools/generate_zone_fixtures.py --check
+python tools/generate_rawfile_fixtures.py --check
 ```
 
 Omit `--check` only when deliberately regenerating and reviewing fixtures.

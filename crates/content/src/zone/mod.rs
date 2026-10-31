@@ -2,6 +2,7 @@
 //! Bounded IW3 root metadata; asset bodies and encoded references remain unresolved.
 
 mod prefix_cursor;
+pub mod rawfiles;
 mod script_strings;
 mod zone_address;
 mod zone_asset_record;

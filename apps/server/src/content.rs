@@ -2,6 +2,7 @@
 use std::path::Path;
 
 use cod4x_content::fastfile::{FastFileBudget, FastFileStream};
+use cod4x_content::zone::rawfiles::{RawFileBudget, RawFileCollection};
 use cod4x_content::zone::{ZonePrefix, ZonePrefixBudget};
 use cod4x_content::{ArchiveBudget, IwdArchive};
 
@@ -45,6 +46,10 @@ fn report_failure(result: &Result<(), AppError>) {
                 tracing::error!(event = "content.failed", kind = ?error,
                     "zone prefix inspection failed");
             }
+            AppError::RawFile(error) => {
+                tracing::error!(event = "content.failed", kind = ?error,
+                    "raw-file collection inspection failed");
+            }
             AppError::Snapshot(error) => {
                 tracing::error!(
                     event = "content.failed",
@@ -55,6 +60,43 @@ fn report_failure(result: &Result<(), AppError>) {
             _ => {}
         }
     }
+}
+
+pub(crate) fn inspect_rawfiles(path: &Path) -> Result<(), AppError> {
+    tracing::info!(
+        event = "content.started",
+        mode = "rawfile_inspection",
+        "inspecting raw-file-only collection"
+    );
+    let result = inspect_raw_collection(path);
+    report_failure(&result);
+    result
+}
+
+fn inspect_raw_collection(path: &Path) -> Result<(), AppError> {
+    let budget = FastFileBudget::default();
+    let bytes = content_snapshot::read(path, budget.max_file_bytes).map_err(AppError::Snapshot)?;
+    let stream = FastFileStream::decode(&bytes, budget).map_err(AppError::FastFile)?;
+    let collection =
+        RawFileCollection::decode(&stream, RawFileBudget::default()).map_err(AppError::RawFile)?;
+    let usage = collection.usage();
+    tracing::info!(
+        event = "content.rawfiles_inspected",
+        encoded_bytes = bytes.len(),
+        root_entries = usage.root_entries,
+        present_entries = collection
+            .entries()
+            .iter()
+            .filter(|entry| entry.is_some())
+            .count(),
+        inline_name_bytes = usage.inline_name_bytes,
+        inline_buffer_bytes = usage.inline_buffer_bytes,
+        virtual_bytes = usage.virtual_bytes,
+        temporary_bytes = usage.temporary_bytes,
+        peak_metadata_bytes = usage.peak_metadata_bytes,
+        "raw-file-only collection decoded for inspection"
+    );
+    Ok(())
 }
 
 pub(crate) fn inspect_zone_prefix(path: &Path) -> Result<(), AppError> {

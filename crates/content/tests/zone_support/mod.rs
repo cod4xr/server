@@ -12,7 +12,15 @@ use cod4x_content::fastfile::{FastFileBudget, FastFileStream};
 use flate2::{Compress, Compression, FlushCompress, Status};
 
 pub fn fixture(name: &str) -> FastFileStream {
-    let (_, hex) = include_str!("../fixtures/zones.txt")
+    from_dataset(name, include_str!("../fixtures/zones.txt"))
+}
+
+pub fn raw_fixture(name: &str) -> FastFileStream {
+    from_dataset(name, include_str!("../fixtures/rawfiles.txt"))
+}
+
+fn from_dataset(name: &str, dataset: &str) -> FastFileStream {
+    let (_, hex) = dataset
         .lines()
         .filter_map(|line| line.split_once(' '))
         .find(|(label, _)| *label == name)
@@ -28,6 +36,10 @@ pub fn fixture(name: &str) -> FastFileStream {
 }
 
 pub fn from_payload(payload: &[u8], block_bytes: u32) -> FastFileStream {
+    from_payload_with_temp(payload, block_bytes, 0)
+}
+
+pub fn from_payload_with_temp(payload: &[u8], block_bytes: u32, temp_bytes: u32) -> FastFileStream {
     let mut plain = vec![0; 44];
     plain[..4].copy_from_slice(
         &u32::try_from(payload.len())
@@ -35,6 +47,7 @@ pub fn from_payload(payload: &[u8], block_bytes: u32) -> FastFileStream {
             .to_le_bytes(),
     );
     plain[24..28].copy_from_slice(&block_bytes.to_le_bytes());
+    plain[8..12].copy_from_slice(&temp_bytes.to_le_bytes());
     plain.extend_from_slice(payload);
     let mut compressor = Compress::new(Compression::fast(), true);
     let mut encoded = Vec::with_capacity(plain.len() + 1024);

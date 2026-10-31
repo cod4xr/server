@@ -170,6 +170,16 @@ subtract one before decoding the four-bit block tag/28-bit offset. Invalid tags
 and overflow/out-of-block spans fail explicitly. An admitted logical span is not
 proof of loaded bytes, bound aliases, alignment, zone ownership, or target type.
 
+The first typed collection supports only raw-file roots (type 31). It preserves
+null entries, backward aliases, forward references to known null cells, -2 inserted
+aliases, and direct/suffix names within known loaded string regions. Raw buffers
+use the source's nonzero-presence rule and length + 1 read. Negative lengths,
+inconsistent absent buffers, missing final NULs, and excess body bytes fail
+explicitly. Null zero-length buffers and present empty buffers remain distinct;
+interior NULs/binary bytes are preserved. All other root kinds and unsupported
+reference targets are rejected before publishing a collection. Twenty independent
+Python fixtures establish this subset; full loader/registry parity remains open.
+
 The borrowed connect parser interprets only protocol, challenge, and qport; unknown
 userinfo stays exact. It uses original tokenizer/first-userinfo-token behavior,
 including ignored trailing tokens. Signed-short qport spellings emitted by upstream

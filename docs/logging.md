@@ -47,6 +47,7 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `content.verified` | info | entry/file counts, encoded/metadata/declared bytes, legacy checksum |
 | `content.envelope_verified` | info | encoded/payload/external/total-block bytes; graph remains unvalidated |
 | `content.prefix_inspected` | info | root slot/record counts, prefix/remaining/virtual bytes; bodies stay unvalidated |
+| `content.rawfiles_inspected` | info | root/present slots, inline name/buffer bytes, virtual/temp usage, logical peak metadata |
 | `content.failed` | error | sanitized content failure or local I/O category |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
@@ -81,6 +82,10 @@ or server-started event. Snapshot failures log a fixed category; stderr omits ho
 paths and arbitrary operating-system error strings while retaining the I/O kind.
 Zone-prefix inspection is another explicit offline mode. It logs root counts and
 byte accounting, never string contents, type/header arrays, or unvalidated bodies.
+Raw-file-only inspection reports typed decode accounting. Present slots include
+aliases, so they are not a unique-file count. Metadata is logical peak decode
+storage, not retained memory or RSS. The command does not register assets or run
+scripts, and logs omit names, payloads, and host paths.
 
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided

@@ -173,10 +173,36 @@ a native pointer; capacity is separate from loaded residency, aliases, alignment
 ownership, and target type. Eight C oracle generators now exist. Prefix metadata
 still preserves unresolved words and requests header classification lazily.
 
-Next: first typed raw-file-only collection reader, then broader stream/asset graphs.
-ADR 0011 and independent synthetic raw-file fixture preparation are in progress;
-no typed loader is implemented yet. Full Windows checks above cover only the
-implemented offset/prefix/envelope layers. Linux checks for additions remain open.
+The first typed raw-file-only collection reader is implemented and passes full
+Windows workspace formatting, Clippy, debug/release, rustdoc, and repository gates
+(198 source files, seven crates, largest still the 287-line generated codebook).
+Six content tests and three child-process tests use twenty independent Python
+envelopes. Whole-collection publication, root/inserted aliases, forward-null cells,
+known prefix/shared/suffix names, binary/null/empty buffers, temp reuse, alignment,
+work/metadata budgets, truncations/mutations, and sanitized diagnostics pass.
+`--inspect-rawfiles` is offline, rejects other asset kinds upfront, and reports
+logical usage without executing scripts. Stock mp_crash_load.ff is explicitly
+rejected as UnsupportedAsset, with no partial success. rawfile.h and _db_load.asm
+are source-hashed. See ADR 0011. Full native loader/registry differential evidence,
+mixed-zone decoding, and Linux validation for this layer remain open.
+
+The user requires a significantly expanded GSC runtime, beyond legacy parity,
+with built-in language/services/tooling instead of native plugins. This is now in
+AGENTS.md, docs/gsc-runtime.md, and the roadmap. A versioned modern mode must coexist
+with legacy semantics; modules/collections/optional types/errors/async host I/O,
+JSON/database/HTTP services, debugging/profiling, and reload are required directions,
+not implemented features. Keep wide handles/budgets and reusable host boundaries.
+
+Next: source-grounded GSC semantics/compiler/runtime foundations alongside broader
+asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
+Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
+opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in
+cscr_vm.cpp. VM_CalcWaitTime uses SSE f2rint, which follows the current rounding
+environment; Win32 Sys_SetFloatEnv selects nearest rounding. Under that profile,
+positive nonzero fractional waits rounded to zero become one tick, while exact
+zero remains zero. Numeric bool conversion in
+Scr_CastBool accepts integers/floats only. Need independent evidence before porting;
+do not claim a running compiler/VM based on these observations.
 Stock main/iw_00..iw_13 contain no raw d3dbsp entries; maps live in zone fastfiles.
 Read-only analysis of stock mp_crash_load.ff/mp_crash.ff confirmed IWffu100/v5,
 zlib streams, a 44-byte XFile header (size, externalSize, nine block sizes), exact
@@ -187,12 +213,12 @@ No bytes were extracted/copied into the repo. db_load.cpp rejects signed IWff010
 and uses ordinary inflate for unsigned files. Preserve that explicit unsupported
 case; decompression integrity must not be described as validated asset graphs.
 Source defaults XBLOCK_COUNT_IW3=9, FASTFILE_VERSION=5 are format-profile bounds,
-not global engine pools. Root XAssetList graph loading remains unimplemented.
+not global engine pools. Full mixed XAssetList graph loading remains unimplemented.
 Read-only prefix research finds zero script strings/six asset records in
 mp_crash_load.ff and 372 inline script strings/823 asset records in mp_crash.ff.
 Actual Rust prefix inspection matches these counts and independent Python offsets;
-stock contents remain outside Git. Full graph validation, block-relative reference
-resolution, and typed schemas remain open. RawFile source/disassembly uses a
+stock contents remain outside Git. Broader graph validation, block-relative
+relocation, and other typed schemas remain open. RawFile source/disassembly uses a
 12-byte name/length/buffer record; its pointer loader distinguishes -1 inline,
 -2 inline-with-alias-slot, and encoded aliases. It scopes temporary block zero
 separately from virtual block four. Do not conflate logical allocation alignment

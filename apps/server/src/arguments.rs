@@ -15,12 +15,14 @@ Usage: cod4x-server --query-only [options]
        cod4x-server --verify-iwd PATH [logging options]
        cod4x-server --inspect-fastfile PATH [logging options]
        cod4x-server --inspect-zone-prefix PATH [logging options]
+       cod4x-server --inspect-rawfiles PATH [logging options]
 
   --query-only             Enable discovery only; gameplay is not implemented
   --handshake-probe        Exchange challenges; refuse connects without gameplay
   --verify-iwd PATH        Verify all IWD entries offline; no network listener
   --inspect-fastfile PATH  Validate unsigned v5 envelope only; no asset graph load
   --inspect-zone-prefix PATH  Inspect IW3 root tables; asset bodies stay unvalidated
+  --inspect-rawfiles PATH  Decode raw-file-only collection offline; execute no scripts
   --bind ADDRESS           UDP address (default: 127.0.0.1:28960)
   --log-dir PATH           Dedicated directory for daily JSON log files
   --log-level DIRECTIVES   Explicit tracing filter (default: info)
@@ -49,6 +51,7 @@ pub(crate) enum Mode {
     VerifyIwd(PathBuf),
     InspectFastFile(PathBuf),
     InspectZonePrefix(PathBuf),
+    InspectRawFiles(PathBuf),
 }
 
 #[derive(Debug)]
@@ -79,7 +82,10 @@ impl Arguments {
                 "--version" => return Ok(Action::Version),
                 "--query-only" => select_mode(&mut mode, Mode::QueryOnly)?,
                 "--handshake-probe" => select_mode(&mut mode, Mode::HandshakeProbe)?,
-                "--verify-iwd" | "--inspect-fastfile" | "--inspect-zone-prefix" => {
+                "--verify-iwd"
+                | "--inspect-fastfile"
+                | "--inspect-zone-prefix"
+                | "--inspect-rawfiles" => {
                     let path = PathBuf::from(
                         arguments
                             .next()
@@ -88,7 +94,8 @@ impl Arguments {
                     let selected = match argument {
                         "--verify-iwd" => Mode::VerifyIwd(path),
                         "--inspect-fastfile" => Mode::InspectFastFile(path),
-                        _ => Mode::InspectZonePrefix(path),
+                        "--inspect-zone-prefix" => Mode::InspectZonePrefix(path),
+                        _ => Mode::InspectRawFiles(path),
                     };
                     select_mode(&mut mode, selected)?;
                 }
@@ -117,12 +124,7 @@ impl Arguments {
         options.mode = mode.ok_or(AppError::Arguments(
             "gameplay is not implemented; select an explicit development mode; use --help",
         ))?;
-        if network_settings
-            && matches!(
-                options.mode,
-                Mode::VerifyIwd(_) | Mode::InspectFastFile(_) | Mode::InspectZonePrefix(_)
-            )
-        {
+        if network_settings && options.mode.is_offline() {
             return Err(AppError::Arguments(
                 "offline content modes cannot use network options",
             ));
@@ -167,6 +169,18 @@ impl Arguments {
             _ => return Err(AppError::Arguments("unsupported text option")),
         }
         Ok(())
+    }
+}
+
+impl Mode {
+    fn is_offline(&self) -> bool {
+        match self {
+            Self::QueryOnly | Self::HandshakeProbe => false,
+            Self::VerifyIwd(_)
+            | Self::InspectFastFile(_)
+            | Self::InspectZonePrefix(_)
+            | Self::InspectRawFiles(_) => true,
+        }
     }
 }
 
