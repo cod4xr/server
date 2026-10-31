@@ -28,6 +28,7 @@ ctrlc = { version = "=3.5.2", features = ["termination"] }
 crc32fast = "=1.5.3"
 flate2 = { version = "=1.1.10", default-features = false, features = ["zlib-rs"] }
 hmac = { version = "=0.13.0", default-features = false, features = ["zeroize"] }
+mio = { version = "=1.2.4", default-features = false, features = ["net", "os-poll"] }
 sha2 = { version = "=0.11.1", default-features = false, features = ["zeroize"] }
 getrandom = { version = "=0.4.3", features = ["std"] }
 zeroize = { version = "=1.9.1", default-features = false }

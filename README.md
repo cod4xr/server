@@ -42,6 +42,8 @@ The complete server rewrite remains open.
   rejection of malformed or duplicate critical fields. Admission remains open.
 - A query-only UDP application with deterministic discovery services, bounded
   per-IP/global reply budgets, shutdown signals, and real process/socket tests.
+- Nonblocking development UDP readiness polling with per-datagram lifecycle
+  checks, bounded waits, repeated cookie-exchange and queued-burst process tests.
 - Structured JSON logs, readable console option, daily file rotation/retention,
   bounded asynchronous output, dropped-record counters, lifecycle events, and
   aggregate traffic metrics. Log regression tests exclude remote payloads.

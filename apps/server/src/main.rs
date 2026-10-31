@@ -7,6 +7,7 @@ mod arguments;
 mod content;
 mod content_snapshot;
 mod counters;
+mod ready_socket;
 mod runtime;
 mod script;
 mod service;

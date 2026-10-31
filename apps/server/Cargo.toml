@@ -15,6 +15,7 @@ cod4x-script.workspace = true
 cod4x-server-core.workspace = true
 ctrlc.workspace = true
 getrandom.workspace = true
+mio.workspace = true
 zeroize.workspace = true
 tracing.workspace = true
 

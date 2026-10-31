@@ -114,6 +114,11 @@ The explicit handshake-probe runtime owns OS entropy and source-key zeroization.
 Its core issues/verifies endpoint cookies under reply budgets and always refuses
 gameplay admission. Runtime service selection is explicit; query-only and offline
 content modes do not become implicit connection servers. See ADR 0007.
+Development UDP now uses one nonblocking readiness registration in the process,
+draining receives to WouldBlock with lifecycle checks between datagrams. Core
+services still own no I/O. Mio is an explicitly reviewed application dependency;
+the change removes repeated blocking receive timeouts, not gameplay admission or
+transport reliability work. See ADR 0018.
 
 Keep connection/authentication state, server commands, map lifecycle, snapshots,
 game services, script execution, and operations in cohesive modules. Prefer one

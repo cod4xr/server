@@ -317,3 +317,19 @@ them. This does not prove an OS-level cause. Full release acceptance is open whi
 the blocking receive-timeout loop is replaced with readiness polling and verified.
 No test timeout was raised again. Module binding/body lowering/compiler/VM and
 Linux validation remain open for the new declarations.
+
+The process now uses Mio nonblocking readiness polling instead of blocking socket
+receive timeouts. Full Windows workspace formatting, warnings-denied Clippy/
+rustdoc, debug/release tests, and source/dependency policy pass (270 source files,
+eight crates), clearing the release failure above for this revision. Each probe
+test repeats the original three-packet exchange 16 times with unchanged metrics/
+privacy assertions and unchanged five-second positive receive bounds. A four-
+request burst additionally verifies complete queued-request servicing. Deadline,
+max-datagram, offline inspection, logging, and other process tests pass.
+
+Mio 1.2.4 is pinned with only net/os-poll features. It adds no executor or project
+unsafe code. The lockfile adds Mio plus target-conditional WASI metadata and reuses
+existing libc/windows-sys versions; package/license/build-script review is in ADR
+0018. No firewall/machine settings or alternate target directories were changed.
+The observations do not establish a specific OS defect, zero-loss reliability,
+throughput/latency improvements, or Linux success for this new I/O boundary.

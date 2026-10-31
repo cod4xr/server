@@ -32,6 +32,14 @@ fn send(socket: &UdpSocket, address: SocketAddr, body: &[u8]) {
 #[test]
 fn real_handshake_probe_verifies_a_return_path_and_refuses_gameplay_without_disclosure()
 -> Result<(), String> {
+    // Repeated idle/receive boundaries caught loss that a single exchange missed.
+    for _ in 0..16 {
+        exchange_and_check_metrics()?;
+    }
+    Ok(())
+}
+
+fn exchange_and_check_metrics() -> Result<(), String> {
     // This checks protocol/process behavior rather than response latency. Leave
     // scheduling headroom for loaded Windows/CI hosts; max-datagrams normally
     // stops the child immediately after the same three asserted packets.
@@ -140,6 +148,77 @@ fn assert_private_logs_and_metrics(startup: &str, rest: &str) {
     assert_eq!(metrics["fields"]["invalid_challenge"], 1);
     assert_eq!(metrics["fields"]["probe_challenges"], 1);
     assert_eq!(metrics["fields"]["probe_verified_rejections"], 1);
+}
+
+#[test]
+fn queued_challenge_burst_is_fully_received_and_answered() -> Result<(), String> {
+    let child = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args([
+            "--handshake-probe",
+            "--json-logs",
+            "--bind",
+            "127.0.0.1:0",
+            "--run-for-ms",
+            "15000",
+            "--max-datagrams",
+            "4",
+        ])
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("Probe process");
+    let mut child = ProbeProcess(child);
+    let mut logs = BufReader::new(child.0.stderr.take().expect("Logs"));
+    let mut startup = String::new();
+    logs.read_line(&mut startup).expect("Startup");
+    let event: Value = serde_json::from_str(&startup).expect("JSON");
+    let address: SocketAddr = event["fields"]["bind"]
+        .as_str()
+        .expect("Bind")
+        .parse()
+        .expect("Address");
+    let socket = UdpSocket::bind("127.0.0.1:0").expect("Client");
+    socket
+        .set_read_timeout(Some(Duration::from_secs(5)))
+        .expect("Timeout");
+    for nonce in 0..4 {
+        send(&socket, address, format!("getchallenge {nonce}").as_bytes());
+    }
+    let mut seen = [false; 4];
+    let mut response = [0; 1024];
+    for _ in 0..4 {
+        let (length, _) = socket.recv_from(&mut response).expect("Queued response");
+        let Packet::Connectionless(body) =
+            Packet::parse(&response[..length], Direction::ServerToClient).expect("Packet")
+        else {
+            return Err("Expected connectionless response".to_owned());
+        };
+        let line = CommandLine::parse(body).expect("Line");
+        let nonce: usize = std::str::from_utf8(line.tokens().nth(2).expect("Nonce"))
+            .expect("ASCII")
+            .parse()
+            .expect("Number");
+        let slot = seen.get_mut(nonce).ok_or("Invalid nonce index")?;
+        assert!(!*slot, "Duplicate response");
+        *slot = true;
+    }
+    assert!(seen.into_iter().all(|seen| seen));
+    assert!(child.0.wait().expect("Reap").success());
+    let mut rest = String::new();
+    logs.read_to_string(&mut rest).expect("Logs");
+    let records: Vec<Value> = rest
+        .lines()
+        .map(|row| serde_json::from_str(row).expect("JSON"))
+        .collect();
+    let metrics = records
+        .iter()
+        .find(|record| record["fields"]["event"] == "server.metrics")
+        .expect("Metrics");
+    assert_eq!(metrics["fields"]["received"], 4);
+    assert_eq!(metrics["fields"]["replied"], 4);
+    assert_eq!(metrics["fields"]["probe_challenges"], 4);
+    Ok(())
 }
 
 #[test]

@@ -265,12 +265,23 @@ Typed module syntax is implemented with six tests, 66,000-function/1,024-paramet
 synthetic coverage, raw spelling/order/duplicates, original body views, budgets,
 and privacy. Windows full debug/Clippy/rustdoc, focused script release, policy
 (269 source files/eight crates), and source-profile regeneration pass. See ADR
-0017. The full release probe again timed out; local controlled repetitions found
-missing third datagrams near blocking receive-timeout timing, with no MAC/send
-failure. Do not raise timeouts again or claim a proven OS defect. Fix the process
-I/O loop with reviewed readiness polling, rerun the original probe/counters and
-full release gate, then continue source-grounded module binding. Current runtime
-still uses std UDP with a 50-ms receive timeout; that replacement is not yet done.
+0017. The full release probe subsequently timed out; local controlled repetitions
+found missing third datagrams near blocking receive-timeout timing, with no MAC/
+send failure. That I/O loop is now replaced with reviewed Mio 1.2.4 readiness
+polling (ADR 0018). All Windows workspace gates pass again (270 source files/eight
+crates), including 16 original exchanges per probe test and a queued burst test.
+No further timeout increase, firewall changes, or alternate target directory was
+used. Do not claim a proven OS defect, zero packet loss, or performance gains.
+
+Continue module-level name binding. Source compiler research in
+asmsource/_scr_compiler.asm finds duplicate-function rejection in
+SpecifyThreadPosition and nonnested/matched /# ... #/ regions; #using_animtree
+inside a developer region is rejected. That compiler source is not yet hash-
+pinned and no binding implementation exists. cscr_stringlist.cpp's actual
+SL_ConvertToLowercase uses C tolower only when name length plus NUL <=8192;
+longer names return unchanged. Preserve this as a named legacy compatibility
+quirk without imposing a storage/admission ceiling. Modern naming must remain
+separate. Obtain original-function case vectors before implementing the name key.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
