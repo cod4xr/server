@@ -115,6 +115,10 @@ The complete server rewrite remains open.
   functions, with owned verified code/source maps, iterative lowering, numeric
   operators, lazy logical branches, and separate compiler/kernel budgets. This
   explicitly rejects general bodies/values and does not activate modules or run stock mods.
+- Borrowed typed statements for assignment/update, return/wait/call/events,
+  blocks/conditionals/loops/switch labels, developer/debugger/profile syntax,
+  and empty statements. Ordered immediate body indices admit both passes/count/
+  storage before allocation; local binding and general-body execution remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

@@ -409,14 +409,33 @@ checked domain policy, not undefined native atoi-overflow parity; see ADR 0030.
 Normal target reused, with no new dependency or alternate cache. Linux, complete
 source/compiler/VM/stock-mod acceptance and gameplay remain open.
 
-Next: function bodies and local-variable handling with source-grounded behavior,
-wide indices, and separately admitted storage/work. Full objects, calls, scheduling,
+Typed statements and admitted ordered body lists now pass full Windows workspace
+gates. Fourteen tests cover all 37 direct statement productions, bounded wrappers,
+original/direct operation spans, ten compound operators, distinct event payloads,
+opaque for options, nested bodies/labels, privacy/independent trees, 12,000 nested
+conditionals, 70,000 immediate statements, and complete count/two-pass work/storage
+admission. Failed work/counts remain visible without partial indices. The restricted
+scalar compiler reuses return classification with unchanged source maps/profile.
+Statement/body/compound source profiles and 99 structural replays regenerate; the
+new guard rejects 131 in-memory shape/action mutations. See ADR 0031. Suites now
+contain 101 frontend and 31 legacy tests; policy checks 395 source files/eight
+crates, largest 287 lines. Normal target reused with no new dependency/cache.
+These are typed syntax/body indices, not local binding, lvalue/control-flow scope,
+developer activation, debugger/event runtime, general-body execution or scheduling.
+Linux and full compiler/VM/stock-mod acceptance remain open.
+
+Next: admitted local slots/argument storage and local-variable lowering, preserving
+uninitialized-variable errors and wide indices. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 Further pinned source research finds a 64-local registration check in
 Scr_CalcLocalVarsVariableExpressionRef and 32 call frames/2,048 value/local slots
 in scr_vm.h. These native capacities must not become new internal allocation rules.
+Scr_FindLocalVarIndex checks initialization bits and emits an uninitialised-variable
+compiler error on invalid reads; allocating every local as a readable Undefined
+would not preserve that behavior. Runtime initialized Undefined must stay distinct
+from a slot that has never been initialized. Native arity policy needs separate research.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

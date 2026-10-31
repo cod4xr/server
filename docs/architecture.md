@@ -216,6 +216,15 @@ Unsupported syntax fails explicitly, including in unreachable branches. Source
 association and prior module/name/developer binding stay with callers. No module
 activation, general statements/values, calls/frames, scheduler, or host authority
 is introduced; see ADR 0030.
+Borrowed statement views now expose local assignment/update/return/wait/call/event,
+control-flow/body/label, and developer/debugger/profile roles. They preserve both
+supplied wrapper and direct operation nodes, so the restricted compiler can reuse
+return classification without changing source maps. Descendants, event-specific
+lists, and for-condition/update options remain unresolved. Separate flat body
+indices admit both spine passes, count/address arithmetic, and logical node bytes
+before allocation; failures retain actual work/admitted counts. Nested bodies
+stay separate. No local binding, lvalue/scope legality, developer activation,
+general-body execution, or scheduling follows from this layer; see ADR 0031.
 
 ## Future custom client
 

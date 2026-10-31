@@ -290,6 +290,15 @@ including resource limits and wide branches; pinned body/action profiles do not
 execute the original compiler. Full module/stock-script compilation, native
 diagnostic ordering, calls/objects/scheduling/host services and interoperability
 remain open; see ADR 0030.
+Typed statement views additionally retain all 37 direct statement productions and
+pinned wrappers without native semantic actions. Specialized waittill/match/notify
+lists remain distinct from ordinary expression lists; endon retains one expression.
+Ordered body indices preserve immediate source order and labels without flattening
+nested bodies. Fourteen tests cover roles, wrappers/source privacy, independent
+trees, deep/wide input, and complete body-list admission. These do not establish
+scope/lvalue legality, event argument semantics, developer/debugger availability,
+general statement compilation/execution, scheduler or stock-mod compatibility.
+The existing restricted compiler reuses return classification; see ADR 0031.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

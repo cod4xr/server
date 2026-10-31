@@ -4,6 +4,7 @@
 mod expression_list_support;
 mod expression_support;
 mod scalar_compile_support;
+mod statement_support;
 
 #[path = "scalar_budgets.rs"]
 mod scalar_budgets;
@@ -17,6 +18,18 @@ mod scalar_operators;
 mod scalar_rejections;
 #[path = "scalar_stress.rs"]
 mod scalar_stress;
+#[path = "statement_basic.rs"]
+mod statement_basic;
+#[path = "statement_control.rs"]
+mod statement_control;
+#[path = "statement_events.rs"]
+mod statement_events;
+#[path = "statement_list_budgets.rs"]
+mod statement_list_budgets;
+#[path = "statement_lists.rs"]
+mod statement_lists;
+#[path = "statement_views.rs"]
+mod statement_views;
 
 #[path = "call_views.rs"]
 mod call_views;

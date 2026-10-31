@@ -164,6 +164,16 @@ operator selection/signed boundaries, ownership/privacy, exact limits, deep inpu
 and branch destinations beyond 16 bits. This does not compile whole stock modules,
 bind locals/calls, allocate objects, schedule threads, or enable host services.
 See ADR 0030; modern-mode language and standard-library work remains required.
+Typed statement views now cover all direct assignment/update, return/wait/call/
+event, control-flow/body/label, developer/debugger/profile, and empty-statement
+roles. Supplied wrappers/direct operation locations remain available without
+walking descendants. Specialized event lists and optional for-condition/update
+syntax retain their own profiles. Separate ordered body indices retain 70,000
+immediate statements under preflighted count/two-pass work/logical storage budgets,
+and failed work remains visible. Nested bodies stay separate and flat-owned.
+The scalar compiler reuses typed return handling without broadening its profile.
+Local binding, writable references, control-flow legality/lowering, actual events/
+waits, developer policy, and general-body execution remain required; see ADR 0031.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

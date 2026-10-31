@@ -4,6 +4,7 @@ use std::ops::Range;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::declaration::LegacyFunctionSyntax;
+use crate::statement::{LegacyStatementError, LegacyStatementKind, LegacyStatementSyntax};
 use crate::syntax::{LegacySyntaxNode, LegacySyntaxNodeKind};
 
 pub(super) struct ScalarBody<'tree, 'source> {
@@ -46,30 +47,21 @@ pub(super) fn lower<'tree, 'source>(
             ScalarCompileErrorKind::UnsupportedBody,
         ));
     }
-    let mut statement = child(body, 1, 2)?;
-    for (rule, count) in [(108, 1), (97, 2), (94, 1)] {
-        if production(statement) != Some(rule) {
-            return Err(scalar_compile_error::at(
-                statement.span(),
-                ScalarCompileErrorKind::UnsupportedBody,
-            ));
-        }
-        statement = child(statement, 0, count)?;
-    }
-    match production(statement) {
-        Some(68) => Ok(ScalarBody {
-            expression: Some(child(statement, 1, 2)?),
-            return_span: statement.span(),
+    let node = child(body, 1, 2)?;
+    let statement = LegacyStatementSyntax::from_node(node).map_err(|error| {
+        let kind = match error {
+            LegacyStatementError::NotStatement => ScalarCompileErrorKind::UnsupportedBody,
+            LegacyStatementError::ProfileMismatch => ScalarCompileErrorKind::InvalidStructure,
+        };
+        scalar_compile_error::at(node.span(), kind)
+    })?;
+    match statement.kind() {
+        LegacyStatementKind::Return { value } => Ok(ScalarBody {
+            expression: value,
+            return_span: statement.statement_syntax().span(),
         }),
-        Some(69) => {
-            child(statement, 0, 1)?;
-            Ok(ScalarBody {
-                expression: None,
-                return_span: statement.span(),
-            })
-        }
         _ => Err(scalar_compile_error::at(
-            statement.span(),
+            statement.statement_syntax().span(),
             ScalarCompileErrorKind::UnsupportedBody,
         )),
     }

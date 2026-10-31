@@ -493,3 +493,22 @@ establish native compiler diagnostic order, or provide full GSC/gameplay support
 Checked signed MIN admission is an explicit domain policy, not native atoi-overflow
 evidence. Linux, broader compatibility, and performance gates remain open. The
 normal target directory was reused without dependencies or alternate caches.
+
+Typed statement views and ordered immediate body lists passed full Windows
+workspace formatting, warnings-denied Clippy/rustdoc, debug/release tests, source
+policy, and diff checks. Fourteen tests cover all 37 direct productions, bounded
+wrappers and original/direct spans, compound identities, specialized event lists,
+for options, nested bodies/labels, privacy and independent trees, 12,000 nested
+conditionals, 70,000 immediate statements, and exact/one-less count/two-pass work/
+logical storage limits. Preflighted second-pass work is charged when visited;
+errors retain actual failed work and admitted counts, without partial indices.
+The restricted scalar compiler now reuses typed return handling without changing
+its accepted profile/source maps. All 101 frontend/31 legacy tests and doctests
+pass. Policy checks 395 source files/eight crates, largest 287 lines. Statement/
+body/compound source guards and 99 structural replays regenerate; the new guard
+rejects 131 in-memory production/action mutations without modifying the baseline.
+
+These local views/indices do not establish local binding, lvalue/control-flow
+legality, developer activation, event/debugger execution, general-body compilation,
+scheduling, full GSC/stock-mod acceptance, Linux success, or performance. The
+normal target directory was reused without dependencies or alternate caches.

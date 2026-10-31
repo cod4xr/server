@@ -128,6 +128,12 @@ now guard a restricted scalar source compiler. That compiler supports actual
 owned numeric code/maps and lazy branches; these source checks still do not run
 the original compiler. Negative integer MIN admission is an explicit checked
 domain policy; undefined native atoi overflow is not used as evidence.
+Rules 67..110 now guard direct statement, wrapper, optional update, and body-list
+profiles, including the ten compound operator opcode identities. Typed views
+preserve event lists 119..124 as opaque distinct payloads, not ordinary argument
+lists. Source-table research finds the bare-semicolon statement outside the
+nonterminal used for a for-loop body; valid empty-body tests therefore use braces.
+These are pinned structural/action profiles, not native compiler/VM execution.
 
 ## Open research
 

@@ -109,6 +109,13 @@ separate kernel proof/validation budgets. No partial function/module activation
 may escape failure. Checked signed MIN literal admission is an explicit domain
 policy, not native atoi overflow parity. This is not general GSC compilation,
 locals/calls/objects/scheduling/host services or stock-mod acceptance; see ADR 0030.
+Typed statement views now preserve supplied and direct operation nodes, with
+unresolved expression/reference/body/event/for-option children. Keep specialized
+event argument profiles distinct from ordinary expression lists. Body indices
+preflight both passes/count/storage before allocation, retain actual failed work,
+and never flatten nested bodies. Syntax does not grant lvalue/control-flow scope,
+developer activation, debugger/host authority, or scheduling. Guard statement/body
+profiles via generate_syntax_tables.py --check; see ADR 0031.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
