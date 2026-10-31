@@ -86,6 +86,10 @@ function cases. It owns no bytecode, objects, threads, or host services. See
 Bounded immutable source/line/span views now supply byte locations for future
 frontend/tooling without normalizing input or exposing scripts through Debug.
 They are not a parser, compiled source map, or debugger; see ADR 0013.
+Bounded raw legacy lexing now retains trivia, exact spans, and original terminal
+codes using recovered tables/actions. Its 724 source-derived replay cases are not
+original parser execution. Literal semantics, interning, and syntax remain open;
+see ADR 0014. Modern keywords remain opt-in future work.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

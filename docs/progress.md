@@ -212,7 +212,20 @@ checked against a separate scan. SourceText is a frontend/tooling container, not
 lexical validation, a compiled source map, a module registry, or a debugger. See
 ADR 0013. Linux validation for this layer remains open.
 
-Next: source-grounded GSC frontend/bytecode/runtime foundations alongside broader
+Bounded borrowed legacy lexing is implemented and passes full Windows workspace
+gates (229 source files, eight crates). Eight tests cover 724 source-derived lexical
+replays, exact terminal codes/spans/trivia/case, comment modes, EOF/NUL failures,
+fused error closure, work/lexeme/byte budgets, redacted Debug, 100,002-byte raw
+literals, and all 65,536 two-byte inputs. Generated tables/actions and reachable
+fallback invariants are checked by generate_lexical_tables.py. These are source-
+table replays, NOT original x86/parser execution or another original-C generator.
+An independent boundary test caught comment-mode mapping; changes are now derived
+from actual source actions. Full workspace checks also caught an unexpected extra
+reference in the BSP vector test, restored to its valid baseline without other
+edits. No literal decoding, interning, AST, parser, or VM execution is implemented.
+See ADR 0014. Linux and original-parser trace conformance remain open.
+
+Next: source-grounded GSC literal/syntax/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode
 opcodes in scr_vm.h (0x00..0x89, count 0x8a), and wait/scheduler helpers in

@@ -133,6 +133,12 @@ profile and defined input domains are explicit. It is not a compiler or running 
 new value/handle storage, scheduling, host services, and the modern language remain
 implementation work. See ADR 0012 and the expanded GSC contract.
 
+Script source indexing and borrowed legacy lexemes now form concrete frontend
+stages. Generated DFA/action data stays inside an explicit compatibility profile;
+scan work/output limits and source ownership remain separate. Exact trivia/spans
+support later tooling without normalizing source. Literal decoding, symbol/module
+registries, syntax/AST, compilation, and a running VM remain open (ADRs 0013/0014).
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

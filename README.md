@@ -69,6 +69,9 @@ The complete server rewrite remains open.
   features described in the GSC contract remain unimplemented.
 - Bounded immutable script-source indexing and borrowed exact line/span views,
   with wide byte locations, explicit LF/CRLF behavior, and redacted diagnostics.
+- Bounded borrowed legacy lexemes/trivia from recovered source tables, with 724
+  source-derived replays and hostile-byte tests. Literal decoding, syntax parsing,
+  compilation, and execution remain open; original parser parity is unverified.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -175,6 +178,7 @@ python tools/generate_user_command_vectors.py ../cod4x-reference --check
 python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_zone_pointer_vectors.py ../cod4x-reference --check
 python tools/generate_script_vectors.py ../cod4x-reference --check
+python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check

@@ -215,6 +215,15 @@ the future client. Do not infer compatibility from marketing version text.
 
 ## Compatibility suites required before release
 
+The script kernel has original-function numeric/wait vectors and a new bounded
+source API. Legacy raw lexing additionally has 724 recovered-table/action replays,
+not original x86/parser execution. It preserves raw spelling/trivia and terminal
+codes without interning names or decoding literals. Embedded NULs/invalid bytes,
+unclosed comments, and exhausted work budgets fail explicitly; no input tail is
+silently dropped. New keywords are not activated in this profile. Syntax, values,
+compiler/VM, scheduling, builtins, modern extensions, and stock-mod parity remain
+open release gates, regardless of successful source indexing or lexing.
+
 - Connectionless and sequenced packets in both directions, exact framing,
   sequence handling, NAT qport behavior, fragmentation, and compression.
 - Authentication, challenges, reconnects, reliable commands, downloading,

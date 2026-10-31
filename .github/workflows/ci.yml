@@ -59,7 +59,7 @@ jobs:
           git -C reference checkout --detach ddd65fce1a1093017bad2dbb6840d75d11c0d56f
       - name: Install pinned formatter for generated data
         run: rustup show
-      - name: Verify reference C fixtures
+      - name: Verify source-grounded compatibility fixtures
         run: |
           python tools/generate_message_vectors.py reference --check
           python tools/generate_wire_vectors.py reference --check
@@ -70,3 +70,4 @@ jobs:
           python tools/generate_bsp_vectors.py reference --check
           python tools/generate_zone_pointer_vectors.py reference --check
           python tools/generate_script_vectors.py reference --check
+          python tools/generate_lexical_tables.py reference --check

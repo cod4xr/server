@@ -236,3 +236,19 @@ independent sources, rejected ranges, exact budgets, redacted Debug, and 70,001-
 input pass. The API intentionally specifies byte coordinates without claiming old
 formatted-line ABI, lexer/parser, compiled source-map, or debugger conformance.
 Linux validation for this added layer remains open.
+
+Raw legacy lexing passed full Windows workspace formatting, warnings-denied Clippy/
+rustdoc, debug/release tests, and policy (229 source files, eight crates). Eight
+tests cover 724 source-derived table/action replays, exact terminal codes, raw case/
+spans/trivia, comment transitions, empty/EOF/NUL handling, error closure, redacted
+Debug, exact budgets/work accounting, 100,002-byte raw literals, and every two-byte
+input (65,536 cases). Reachable transition/fallback invariants are checked during
+regeneration. A boundary test caught and corrected comment-mode mapping; generated
+mode changes now come from source action instructions. The full check also caught
+an extra reference in an existing BSP test, restored to its valid baseline form.
+
+Table/replay regeneration and the 827 original scalar/wait cases passed. Lexical
+replays do not execute the original x86 parser and are not counted as original-C
+function fixtures. No literal/string value decoding, interning, syntax validation,
+compiler, bytecode execution, scheduling, or gameplay parity follows from lexing.
+Linux validation and original-parser trace conformance remain open.
