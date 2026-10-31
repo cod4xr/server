@@ -26,7 +26,7 @@ client presentation ---------------------> read-only simulation output
 
 Arrows mean allowed conceptual dependency, not a list of crates already built.
 Current implemented boundaries are `cod4x-protocol`, `cod4x-transport`,
-`cod4x-server-core`, `cod4x-observability`, and the `apps/server` process. Protocol and deterministic
+`cod4x-server-core`, `cod4x-assets`, `cod4x-observability`, and the `apps/server` process. Protocol and deterministic
 server services remain dependency-light; process signals and logging sinks live
 above them. No client or simulation crate exists yet. Do not manufacture empty
 crates to make this diagram look implemented.
@@ -56,6 +56,12 @@ access, content acquisition, decompression, archive paths, and validation are
 separate concerns. Shared parsers must not embed server-specific filesystem roots
 or depend on graphics APIs. Rendering, audio playback, input, and windowing remain
 client-specific. Proprietary content is supplied separately by the operator/user.
+
+The asset catalog owns encoded bytes with exact kind/name lookup, configurable
+logical byte/count budgets, and opaque catalog/slot/generation handles. Removal
+invalidates handles and reuses slots. It has no codec, filesystem, or rendering
+dependencies. Counts and names are independent of legacy wire namespaces; memory
+statistics describe owned bytes, not allocator overhead or process RSS.
 
 ## Server ownership
 

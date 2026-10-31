@@ -2,7 +2,7 @@
 
 Date: 2026-10-31
 
-Status: accepted for the next asset-storage implementation.
+Status: accepted and implemented in `cod4x-assets`.
 
 ## Context
 

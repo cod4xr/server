@@ -24,6 +24,8 @@ that block. The separate WSL validation directory was already absent when checke
   retention, bounded nonblocking queues, drop accounting, and flush lifetime.
 - `apps/server`: explicit query-only loopback UDP process, controlled shutdown,
   aggregate traffic/lifecycle logging, and real child-process/socket tests.
+- `crates/assets`: configurable encoded-byte ownership, exact names, wide opaque
+  handles, stale/cross-catalog rejection, slot reuse, and logical usage metrics.
 
 The reference checkout is `../cod4x-reference`. Upstream source and all generators
 are pinned/hashes checked. There are no game assets, ApX code, private configs,
@@ -45,8 +47,15 @@ handwritten files near/below the 250-line target. Hosted GitHub CI has not run.
 
 ## Immediate follow-on work
 
-Finish the current documentation/checkpoint.
-Implement growable asset storage per ADR 0004, independently of legacy wire caps.
+Asset catalog debug/release tests and warnings-denied Clippy passed on Windows.
+Ten tests cover 6,500 retained assets (5,000 images with 50 prestige entries and
+1,500 models with a 100-character roster), resource failures without partial
+registration, exact names, redacted Debug output, and 10,000 unload/reload cycles.
+Initialized slots and byte budgets do not measure total allocator/RSS overhead.
+Linux validation for this new crate remains open; do not create another cache.
+
+Implement bounded IWD content reading independently of legacy wire caps, then
+integrate explicit content inspection/loading with the application.
 Continue remaining delta/message primitives and coverage-guided fuzzing; existing
 stress tests cover 4096 mixed inputs and all 65536 two-byte compressed inputs.
 Continue

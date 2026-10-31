@@ -59,3 +59,10 @@ it is not coverage-guided fuzzing.
 These checks do not establish full peer interoperability, a playable server,
 authentication, map/asset loading, expanded engine capacity, GSC behavior,
 performance improvement, complete fuzz coverage, or production readiness.
+
+The later asset catalog passed ten Windows debug/release tests and warnings-denied
+Clippy. It retained 6,500 synthetic assets, including 5,000 images and 1,500 models,
+and reused one slot through 10,000 unload/reload cycles without reusing handles.
+Budget rejection preserves data/accounting; case/kind/raw-byte names, wide sizes,
+stale/cross-catalog IDs, and exhausted generations are covered. These tests prove
+encoded storage behavior, not decoded asset residency or legacy client expansion.

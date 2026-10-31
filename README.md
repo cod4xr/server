@@ -39,6 +39,10 @@ The complete server rewrite remains open.
 - Structured JSON logs, readable console option, daily file rotation/retention,
   bounded asynchronous output, dropped-record counters, lifecycle events, and
   aggregate traffic metrics. Log regression tests exclude remote payloads.
+- Growable encoded asset storage with configurable budgets, exact byte names,
+  wide generation-checked handles, unload/reload, and usage accounting. Synthetic
+  tests retain 5,000 images and 1,500 models without legacy pool ceilings; format
+  decoding and client-visible capacity negotiation remain separate work.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -69,6 +73,10 @@ Game content is not included.
 ## Development
 
 Install the pinned toolchain with `rustup show`, then run from the repository:
+
+Use only the normal `target` directory. On Windows run
+`& .\tools\stop-dev-server.ps1` before rebuilding to stop a previous development
+server after verifying its executable belongs to this repository.
 
 ```sh
 python tools/check_repository.py

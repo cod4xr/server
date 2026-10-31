@@ -11,7 +11,9 @@ import tomllib
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_SUFFIXES = {".rs", ".py", ".c", ".cpp", ".h", ".js", ".ts", ".tsx"}
+SOURCE_SUFFIXES = {
+    ".rs", ".py", ".c", ".cpp", ".h", ".js", ".ts", ".tsx", ".ps1", ".sh"
+}
 EXCLUDED = {
     ".git", "target", "reference", ".venv", "__pycache__", "node_modules"
 }

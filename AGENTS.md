@@ -47,6 +47,8 @@ caches. Before rebuilding, stop the old local development server after verifying
 its executable belongs to this repository. Do not stop unrelated processes or
 production servers. This explicit user authorization supersedes the earlier
 local-development no-stop rule; remote deployment/administration stays separate.
+On Windows run tools/stop-dev-server.ps1 before rebuilding the process. It checks
+the exact repository-owned debug/release executable paths before stopping them.
 Report what was verified, what remains unimplemented, and which acceptance gates
 are still open. Passing round trips alone is not compatibility evidence.
 

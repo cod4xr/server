@@ -1,4 +1,5 @@
 {
+  "cod4x-assets": [],
   "cod4x-protocol": [],
   "cod4x-observability": ["serde_json", "tracing", "tracing-appender", "tracing-subscriber"],
   "cod4x-server-core": ["cod4x-protocol"],
