@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::zone::{ZonePointer, ZonePointerError};
+
 /// Raw IW3 root directory record, separate from a decoded or registered asset.
 ///
 /// Unknown kinds and all encoded header values are preserved. No pointer is
@@ -20,6 +22,14 @@ impl ZoneAssetRecord {
     #[must_use]
     pub fn encoded_header(self) -> u32 {
         self.header
+    }
+
+    /// Classifies the header word without resolving an asset or alias target.
+    ///
+    /// # Errors
+    /// Rejects invalid block tags. Type-specific pointer rules remain unchecked.
+    pub fn decode_header(self) -> Result<ZonePointer, ZonePointerError> {
+        ZonePointer::decode(self.header)
     }
 
     pub(super) fn parse(bytes: &[u8]) -> Self {

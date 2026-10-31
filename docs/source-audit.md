@@ -59,6 +59,15 @@ seeded CRC32 checksums now ground the IWD reader. `player.h` command fields,
 are pinned and independently exercised. Decoder types use peer-sized values;
 they do not impose those widths on future simulation or asset storage.
 
+`com_bsp_load_obj.c` supplies borrowed-container layouts and original lookup/count/
+checksum fixtures. `db_load.cpp` supplies unsigned v5 envelope/header/inflate rules,
+root loading order, logical stream alignment, direct offsets, alias indirection,
+temporary-block rewind, and deferred stream behavior. `xassets.h` supplies 32-bit
+root/record layouts. Independent synthetic envelopes/root tables and read-only stock
+samples validate container/prefix behavior; original C block conversion supplies
+ninety valid relative-offset cases. These do not establish full relocation or graph
+validation. The source's native pointer narrowing never enters the Rust runtime.
+
 ## Open research
 
 Inventory all public protocol variants, authentication dependencies, third-party

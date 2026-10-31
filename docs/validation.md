@@ -185,3 +185,13 @@ the same stock hashes above: `mp_crash_load.ff` has zero script slots, six recor
 inline slots, 823 records, 13,759 prefix bytes, 13,744 virtual bytes, and 63,093,130
 remainder bytes. No contents were copied/extracted or committed. Encoded reference
 validity, asset bodies, stream relocation, interning, and gameplay remain open.
+
+Serialized pointer classification adds four content tests and ninety original-C
+relative block offsets. Full Windows workspace formatting, warnings-denied Clippy/
+rustdoc, debug/release tests, and policy passed. Original conversion fixtures and
+independent root-table regeneration also passed. All nine blocks, null/-1/-2,
+28-bit boundaries, invalid tags, exact/one-past/zero-length spans, and u64 overflow
+are covered. The C harness uses real in-bounds allocations and records only u32
+relative offsets after the original native-pointer narrowing; no host addresses
+enter fixtures. Logical capacity checks do not resolve aliases, prove residency,
+validate target schemas/alignment, or establish graph/gameplay compatibility.

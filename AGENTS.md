@@ -47,6 +47,7 @@ Verify independent cookie fixtures with tools/generate_cookie_vectors.py --check
 Verify BSP fixtures with tools/generate_bsp_vectors.py --check.
 Verify independent fastfile envelopes with tools/generate_fastfile_fixtures.py --check.
 Verify independent zone root tables with tools/generate_zone_fixtures.py --check.
+Verify serialized block offsets with tools/generate_zone_pointer_vectors.py --check.
 Development logs default to readable output; process tests requiring JSON must
 pass --json-logs explicitly. The user requires one normal target directory:
 never use --target-dir, set CARGO_TARGET_DIR, or create separate preview/WSL build

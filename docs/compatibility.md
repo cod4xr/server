@@ -164,6 +164,12 @@ with null tables fail explicitly; source code would omit those tables. Unknown
 types and unresolved reference words remain preserved and uninterpreted. Expanded
 root-table tests do not establish old-client string-handle or asset-pool expansion.
 
+Serialized block-address classification matches ninety original-C in-bounds
+relative offsets across nine blocks. Raw zero/-1/-2 remain distinct; other words
+subtract one before decoding the four-bit block tag/28-bit offset. Invalid tags
+and overflow/out-of-block spans fail explicitly. An admitted logical span is not
+proof of loaded bytes, bound aliases, alignment, zone ownership, or target type.
+
 The borrowed connect parser interprets only protocol, challenge, and qport; unknown
 userinfo stays exact. It uses original tokenizer/first-userinfo-token behavior,
 including ignored trailing tokens. Signed-short qport spellings emitted by upstream

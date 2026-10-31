@@ -165,7 +165,18 @@ metadata results, not legacy handle/pool or gameplay compatibility. See ADR 0010
 `--inspect-zone-prefix` reports counts only and states bodies/references remain
 unvalidated. src/xassets.h is source-hashed. Linux validation remains open.
 
-Next: checked serialized block addresses, stream scopes/relocation, and typed bodies.
+Checked serialized block addresses are implemented and pass full Windows workspace
+gates. Four tests include ninety original-C relative offsets across all nine
+blocks, distinct null/-1/-2 classification, 28-bit boundaries, invalid tags, checked
+wide spans, empty/end spans, and overflow. Address classification never produces
+a native pointer; capacity is separate from loaded residency, aliases, alignment,
+ownership, and target type. Eight C oracle generators now exist. Prefix metadata
+still preserves unresolved words and requests header classification lazily.
+
+Next: first typed raw-file-only collection reader, then broader stream/asset graphs.
+ADR 0011 and independent synthetic raw-file fixture preparation are in progress;
+no typed loader is implemented yet. Full Windows checks above cover only the
+implemented offset/prefix/envelope layers. Linux checks for additions remain open.
 Stock main/iw_00..iw_13 contain no raw d3dbsp entries; maps live in zone fastfiles.
 Read-only analysis of stock mp_crash_load.ff/mp_crash.ff confirmed IWffu100/v5,
 zlib streams, a 44-byte XFile header (size, externalSize, nine block sizes), exact

@@ -40,6 +40,13 @@ an explicit unvalidated-body message. Envelope-only inspection retains its exist
 contract. No listener opens, content is not extracted, and names/payloads stay out
 of logs and Git. Public-server admission must wait for full graph validation.
 
+`ZonePointer` separately classifies null/-1/-2 and checked block-relative offset
+words. `ZoneAddress` uses wide checked span arithmetic against declared block
+sizes, never native pointers. Classification and capacity do not prove loaded
+residency, alias bindings, ownership, alignment, or the target type. Prefix parsing
+keeps raw unresolved words; callers request header classification explicitly and
+must still apply the asset schema's pointer rules before interpreting any target.
+
 ## Alternatives and migration
 
 Native-pointer relocation would violate safe ownership and 64-bit portability.
@@ -64,3 +71,11 @@ Read-only Rust and independent Python prefix inspection match the two stock
 fastfile hashes recorded in docs/validation.md. These are layout/metadata checks,
 not original-C graph differential tests or evidence of string interning, reference
 resolution, decoded geometry, GSC execution, game-client compatibility, or gameplay.
+
+Four further tests classify pointer words and check logical spans. Ninety relative
+offsets come from the original `DB_ConvertOffsetToPointer` over real in-bounds
+allocations in all nine blocks. The C function deliberately narrows native pointers
+to DWORD; the harness records only unsigned relative offsets modulo 2^32, never
+host addresses. Sentinel/28-bit-boundary/invalid-tag/overflow tests are separate
+Rust checks. No invalid C pointer/index is exercised. This establishes conversion
+arithmetic, not a safe native ABI or full graph relocation.
