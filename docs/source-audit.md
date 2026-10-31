@@ -91,6 +91,11 @@ an explicit nearest/SSE profile. Scr_CastWeakerStringPair and Scr_EvalPlus also
 ground 54 valid plain-string results and 54 intentional scratch-limit expansions.
 Their string/ref services are stubbed and mixed-kind services abort. Neither
 oracle establishes full VM reference cleanup, error unwinding, or execution.
+Hash-pinned tools/cod4_dasm/src/_scr_variable.asm now grounds an explicit integer
+wrapping/shift profile. Exact instruction-block checks and isolated x86 instruction
+cases supplement defined-domain original C arithmetic without executing undefined
+C signed operations or full archival assembly routines. Native MIN%-1 IDIV would
+fault; the safe Rust helper returns a typed error. See ADR 0022.
 
 ## Open research
 

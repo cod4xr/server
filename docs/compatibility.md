@@ -245,6 +245,11 @@ intentionally admitting 54 old scratch-capacity errors under configurable result
 budgets. The source harness stubs string/ref services; neither full interning nor
 VM error unwinding is asserted. Larger owned strings do not widen wire/client
 profiles. See ADR 0021 for the explicit compatibility change.
+Scalar add/subtract/multiply and integer bitwise/remainder/shift behavior now has
+10,701 defined original C cases plus 818 isolated instruction cases. The latter
+record an archival x86 profile, not execution of full original assembly routines.
+Signed overflow wraps, shift counts use five low bits, and MIN%-1 becomes a typed
+error rather than a native quotient fault. See ADR 0022; this is not VM conformance.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

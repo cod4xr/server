@@ -73,6 +73,7 @@ jobs:
           python tools/generate_identifier_vectors.py reference --check
           python tools/generate_numeric_vectors.py reference --check
           python tools/generate_string_operation_vectors.py reference --check
+          python tools/generate_arithmetic_vectors.py reference --check
           python tools/generate_lexical_tables.py reference --check
           python tools/generate_literal_vectors.py reference --check
           python tools/generate_syntax_tables.py reference --check

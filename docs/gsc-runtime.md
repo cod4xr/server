@@ -118,6 +118,11 @@ the native 8190-byte payload ceiling. Tests distinguish 54 unchanged native resu
 from 54 deliberate capacity expansions, up to 200,000 bytes. This is a value helper,
 not VM integration, aggregate heap accounting, localized/mixed coercion, or a client
 wire expansion; see ADR 0021.
+The scalar kernel also implements add/subtract/multiply and integer-only bitwise,
+signed remainder, and masked shifts under an explicit archival instruction profile.
+Tests include 10,701 defined original C cases and 818 isolated instruction cases;
+MIN%-1 becomes a controlled error. These helpers are not a compiler or runtime.
+See ADR 0022 for evidence scope and intentional invalid-input changes.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

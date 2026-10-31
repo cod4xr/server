@@ -312,9 +312,18 @@ established. The actual C helper uses a stricter cutoff than archival assembly;
 ADR 0021 records that distinction. All twelve original-function generators pass;
 string/ref service stubs and capacity changes are explicit, not full native parity.
 
-Next: source-grounded arithmetic and expression/body lowering. Integer signed
-overflow, shifts, and remainder faults need explicit machine-profile/error policy
-rather than undefined C operators or Rust build-mode-dependent overflow behavior.
+Scalar add/subtract/multiply and integer OR/AND/XOR, signed remainder, and masked
+shifts now pass full Windows workspace gates. Five tests include 10,701 defined
+original-helper cases and 818 explicitly tagged isolated instruction cases. The
+archival assembly hash/instruction blocks are checked; this is not execution of
+full native routines. GCC O0/O2 agree. Integer results wrap consistently, signed
+shift counts use five low bits, noninteger inputs fail before remainder checks,
+and MIN%-1 becomes RemainderOverflow instead of a host fault. See ADR 0022. All
+thirteen original-function/profile generators pass after adding the source hash.
+No compiler, full value system, VM, or Linux acceptance follows from this kernel.
+
+Next: typed expression/operator and primary/body lowering above the structural
+tree, preserving source order/spans and separate short-circuit control flow.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

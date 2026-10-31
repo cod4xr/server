@@ -9,6 +9,8 @@ pub enum LegacyNumberError {
     ExpectedInteger,
     /// Division rejects integer zero and either signed float zero.
     DivisionByZero,
+    /// MIN%-1 would overflow the native signed quotient and fault its IDIV.
+    RemainderOverflow,
 }
 
 impl fmt::Display for LegacyNumberError {
@@ -16,6 +18,7 @@ impl fmt::Display for LegacyNumberError {
         formatter.write_str(match self {
             Self::ExpectedInteger => "legacy script operator requires an integer",
             Self::DivisionByZero => "legacy script division by zero",
+            Self::RemainderOverflow => "legacy script remainder quotient overflow",
         })
     }
 }

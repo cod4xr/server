@@ -172,6 +172,11 @@ Owned plain-string concatenation now admits checked result lengths and fallible
 growth without the native scratch ceiling. It owns only the result bytes, leaving
 aggregate heap/reference/GC policy to an implemented runtime boundary. Localized
 and mixed-kind coercion remain separate; see ADR 0021.
+Scalar arithmetic and integer-only bitwise/remainder/shift helpers now isolate
+wrapping/count semantics from Rust build profiles and untrusted bytecode. Defined
+original C cases and isolated archival instruction tests remain distinct; a native
+remainder quotient fault becomes a typed error. See ADR 0022. This still owns no
+executable bodies, runtime stacks, heap references, or host services.
 
 ## Future custom client
 

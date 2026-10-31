@@ -91,6 +91,9 @@ The complete server rewrite remains open.
 - Owned plain-string concatenation with checked, fallible, budgeted growth. Tests
   preserve 54 native byte results and deliberately expand 54 native capacity-error
   cases, up to 200,000 bytes. This helper does not implement VM strings or coercion.
+- Scalar addition/subtraction/multiplication, integer bitwise operators, signed
+  remainder, and explicit x86-profile shifts. Another 10,701 defined original C
+  cases and 818 isolated instruction cases cover this kernel; execution stays open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -214,6 +217,7 @@ python tools/generate_script_vectors.py ../cod4x-reference --check
 python tools/generate_identifier_vectors.py ../cod4x-reference --check
 python tools/generate_numeric_vectors.py ../cod4x-reference --check
 python tools/generate_string_operation_vectors.py ../cod4x-reference --check
+python tools/generate_arithmetic_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check

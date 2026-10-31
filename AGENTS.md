@@ -66,6 +66,10 @@ Verify plain-string results/intentional capacity expansion with
 tools/generate_string_operation_vectors.py --check. Its native string/ref services
 are stubs; native capacity-error cases are not parity successes. Owned result-byte
 budgets do not establish aggregate VM heap accounting; see ADR 0021.
+Verify arithmetic with tools/generate_arithmetic_vectors.py --check. Defined C
+cases and isolated archival instruction cases are distinct evidence. Integer
+overflow/shift policy is explicit; MIN%-1 returns a typed error, never a host
+fault. Do not claim full assembly routine/VM execution; see ADR 0022.
 Verify source-derived lexical data with tools/generate_lexical_tables.py --check;
 table replays must not be described as original executable/parser conformance.
 Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;

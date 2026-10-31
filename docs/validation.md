@@ -382,3 +382,14 @@ addition/weaker-string functions with stubbed string/ref services. All twelve
 original-function generators and structural/profile regeneration pass. Result-only
 accounting is not aggregate VM heap accounting; no interning, mixed coercion,
 bytecode/VM, stock-mod, or Linux acceptance is claimed. Normal target reused.
+
+Explicit scalar arithmetic passed full Windows workspace gates. Five new tests
+cover addition/subtraction/multiplication, integer OR/AND/XOR, signed remainder,
+and shift semantics. Of 11,519 fixtures, 10,701 execute original C helpers only
+within defined domains; 818 execute isolated x86 instructions after checking
+hash-pinned archival instruction blocks. Full original assembly routines are not
+executed. GCC O0/O2 output matches with warnings denied. The native trapping
+remainder pair is excluded from oracle execution and tested as a deliberate typed
+Rust error. Overflow/count/sign boundaries and float rejection pass. All thirteen
+original-function/profile generators pass. No host FP-control independence,
+VM/compiler/stock-mod conformance, performance claim, or Linux acceptance follows.

@@ -26,6 +26,7 @@
     "tools/cod4_dasm/src/_scr_main.asm": "3e511b1655596afda3012a2cf89fe77ff61b5a7a23218d0dba7bfd42a7d2d416",
     "src/win32/sys_win32.c": "c471e91d7204a64b044ac474f41e281e1697f8c256499420e7662dfccad9a119",
     "src/cscr_variable.cpp": "3d9d414a44c45a525dfd94d9d966c54920b4d0eff2df79c0909f511d8b2f0e6c",
+    "tools/cod4_dasm/src/_scr_variable.asm": "4a0ca675c644f751a1ae07a0f779f4a0609d969987f8c4f7a6d37a93afa0f683",
     "src/cscr_variable.h": "337c76a0c1dbe9ecaa93c7ff186c7023b0d6db8e1fb9472d4e7b8611f7729544",
     "src/cscr_stringlist.cpp": "0007e5311e8aee5eae2eb98dd204f132dabe2a4881057841bf1c0f1250f4693a",
     "src/cm_local.h": "cd56e3045a2402c6368842f50596bf98af9f2dc3a11aef519d4ecb690aa0e1d1",
