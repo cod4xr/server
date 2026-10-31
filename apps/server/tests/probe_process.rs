@@ -32,6 +32,9 @@ fn send(socket: &UdpSocket, address: SocketAddr, body: &[u8]) {
 #[test]
 fn real_handshake_probe_verifies_a_return_path_and_refuses_gameplay_without_disclosure()
 -> Result<(), String> {
+    // This checks protocol/process behavior rather than response latency. Leave
+    // scheduling headroom for loaded Windows/CI hosts; max-datagrams normally
+    // stops the child immediately after the same three asserted packets.
     let child = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
         .args([
             "--handshake-probe",
@@ -39,7 +42,7 @@ fn real_handshake_probe_verifies_a_return_path_and_refuses_gameplay_without_disc
             "--bind",
             "127.0.0.1:0",
             "--run-for-ms",
-            "3000",
+            "15000",
             "--max-datagrams",
             "3",
         ])
@@ -61,7 +64,7 @@ fn real_handshake_probe_verifies_a_return_path_and_refuses_gameplay_without_disc
         .expect("Address");
     let socket = UdpSocket::bind("127.0.0.1:0").expect("Client");
     socket
-        .set_read_timeout(Some(Duration::from_secs(2)))
+        .set_read_timeout(Some(Duration::from_secs(5)))
         .expect("Timeout");
     send(
         &socket,
@@ -99,7 +102,7 @@ fn real_handshake_probe_verifies_a_return_path_and_refuses_gameplay_without_disc
         "Bad cookies get no reply"
     );
     socket
-        .set_read_timeout(Some(Duration::from_secs(2)))
+        .set_read_timeout(Some(Duration::from_secs(5)))
         .expect("Reply timeout");
     send(&socket, address, connect(challenge).as_bytes());
     let (length, _) = socket.recv_from(&mut response).expect("Explicit refusal");
