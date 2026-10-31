@@ -230,6 +230,12 @@ reduction order without original parser/semantic-action execution. Script and
 fragment trees retain source spans and support configurable deep stacks. No names
 are bound, no complete semantic AST is produced, and no script executes; passing
 structural syntax alone does not imply valid literals or compilable/runnable GSC.
+Local function binding now has explicit developer modes and source-grounded region/
+duplicate checks. It retains inactive definitions and borrows canonical ASCII keys;
+125 original conversion-helper cases cover short folding/long exact-case fallback.
+String/ref services are stubbed in that oracle, and native compiler execution is
+not established. Imports, calls, parameters/locals, builtins, bytecode, and full
+GSC semantics remain open; see ADR 0019.
 
 - Connectionless and sequenced packets in both directions, exact framing,
   sequence handling, NAT qport behavior, fragmentation, and compression.

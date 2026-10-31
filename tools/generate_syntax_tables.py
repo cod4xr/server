@@ -72,6 +72,8 @@ def main() -> None:
         raise ValueError("Script-loader selector differs from pinned source")
     tables = syntax.recover(source)
     syntax.verify_declarations(source, tables)
+    syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
+                          reference.files["src/cscr_variable.h"])
     lex = lexical.recover(source)
     outputs = {}
     for name, keys in (("legacy_actions.rs", ["TRANSLATE", "PACT", "DEFAULT_REDUCE", "ACTION", "CHECK"]),
@@ -95,7 +97,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Verified grammar data and {len(rows) - 2} structural source-table replays")
+    print(f"Verified grammar/declaration/symbol profiles and {len(rows) - 2} structural replays")
 
 
 if __name__ == "__main__":

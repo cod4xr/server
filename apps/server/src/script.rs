@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::path::Path;
 
-use cod4x_script::declaration::{DeclarationBudget, LegacyModuleItem, LegacyModuleSyntax};
+use cod4x_script::binding::{LegacyDeveloperMode, LegacyModuleSymbols, SymbolBudget};
+use cod4x_script::declaration::{DeclarationBudget, LegacyModuleSyntax};
 use cod4x_script::source::{SourceBudget, SourceText};
 use cod4x_script::syntax::{LegacySyntaxBudget, LegacySyntaxMode, LegacySyntaxTree};
 
 use crate::app_error::AppError;
 use crate::content_snapshot;
 
-pub(crate) fn inspect(path: &Path) -> Result<(), AppError> {
+pub(crate) fn inspect(path: &Path, developer_mode: LegacyDeveloperMode) -> Result<(), AppError> {
     tracing::info!(
         event = "script.started",
         mode = "legacy_structure",
@@ -50,12 +51,24 @@ pub(crate) fn inspect(path: &Path) -> Result<(), AppError> {
             "legacy GSC declaration extraction failed");
             AppError::ScriptDeclaration(error)
         })?;
+    let symbols = bind_module(&source, &module, developer_mode)?;
+    report(&source, &tree, &module, &symbols);
+    Ok(())
+}
+
+fn report(
+    source: &SourceText<'_>,
+    tree: &LegacySyntaxTree<'_>,
+    module: &LegacyModuleSyntax<'_, '_>,
+    symbols: &LegacyModuleSymbols<'_, '_, '_>,
+) {
     let declarations = module.usage();
     let usage = tree.usage();
+    let bindings = symbols.usage();
     tracing::info!(
         event = "script.syntax_inspected",
         profile = "legacy",
-        source_bytes = bytes.len(),
+        source_bytes = source.bytes().len(),
         lines = source.line_count(),
         source_tokens = usage.source_tokens,
         nodes = usage.nodes,
@@ -68,15 +81,32 @@ pub(crate) fn inspect(path: &Path) -> Result<(), AppError> {
         source_index_bytes = source.metadata_bytes(),
         items = declarations.items,
         includes = declarations.includes,
-        functions = module
-            .items()
-            .iter()
-            .filter(|item| matches!(item, LegacyModuleItem::Function(_)))
-            .count(),
+        functions = bindings.functions,
         parameters = declarations.parameters,
         declaration_steps = declarations.steps,
         declaration_metadata_bytes = declarations.metadata_bytes,
-        "legacy GSC structure inspected; compilation and execution remain unavailable"
+        developer_scripts = ?symbols.mode(), active_functions = bindings.active_functions,
+        ordinary_functions = bindings.ordinary_functions, developer_functions = bindings.developer_functions,
+        binding_steps = bindings.steps, binding_metadata_bytes = bindings.metadata_bytes,
+        function_name_bytes = bindings.name_bytes,
+        "legacy GSC module inspected; compilation and execution remain unavailable"
     );
-    Ok(())
+}
+
+fn bind_module<'module, 'tree, 'source>(
+    source: &SourceText<'source>,
+    module: &'module LegacyModuleSyntax<'tree, 'source>,
+    mode: LegacyDeveloperMode,
+) -> Result<LegacyModuleSymbols<'module, 'tree, 'source>, AppError> {
+    LegacyModuleSymbols::bind(module, mode, SymbolBudget::default()).map_err(|error| {
+        let location = source.location(error.offset).ok();
+        let previous = error.previous_offset.and_then(|offset| source.location(offset).ok());
+        tracing::error!(event = "script.failed", phase = "binding", kind = ?error.kind,
+            offset = error.offset, line = location.map(|location| location.line),
+            byte_column = location.map(|location| location.byte_column),
+            previous_offset = error.previous_offset, previous_line = previous.map(|location| location.line),
+            previous_byte_column = previous.map(|location| location.byte_column),
+            "legacy GSC local function binding failed");
+        AppError::ScriptBinding(error)
+    })
 }

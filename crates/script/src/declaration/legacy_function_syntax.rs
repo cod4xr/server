@@ -2,6 +2,7 @@
 use std::fmt;
 use std::ops::Range;
 
+use crate::declaration::LegacyAnimTreeSyntax;
 use crate::lexical::LegacyLexeme;
 use crate::syntax::LegacySyntaxNode;
 
@@ -58,8 +59,8 @@ impl fmt::Debug for LegacyFunctionSyntax<'_, '_> {
 pub enum LegacyModuleItem<'tree, 'source> {
     /// Function signature with its original structural body.
     Function(LegacyFunctionSyntax<'tree, 'source>),
-    /// Original animation-tree string lexeme, not a resolved engine asset.
-    UsingAnimTree(LegacyLexeme<'source>),
+    /// Original animation-tree directive, not a resolved engine asset.
+    UsingAnimTree(LegacyAnimTreeSyntax<'source>),
     /// Opening developer-code marker; balancing/filtering belongs to compilation.
     DeveloperBegin {
         /// Original marker's source byte offset.

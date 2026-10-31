@@ -80,6 +80,12 @@ it is now hash-pinned. Structural LALR data from _scr_yacc.asm is recovered with
 signed widths and checked padding. The star entry accepts expressions/statements,
 not only expressions. Table replays and the bounded Rust tree builder do not
 execute native semantic actions or prove compiler/stock-mod conformance.
+SL_ConvertToLowercase now supplies 125 original ASCII/C-locale conversion cases
+with stubbed string/ref services. Its >8191-byte name fallback is identity behavior,
+not a Rust storage cap. Hash-pinned _scr_compiler.asm and cscr_variable.h ground
+local duplicate/developer-region handling and the native developer_script flag.
+Mechanical branch/profile checks do not execute the native compiler; import/call/
+parameter/local binding, bytecode, and complete legacy semantics remain open.
 
 ## Open research
 

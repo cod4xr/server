@@ -2,7 +2,7 @@
 use crate::declaration::declaration_ledger::DeclarationLedger;
 use crate::declaration::{
     DeclarationBudget, DeclarationError, DeclarationErrorKind, DeclarationResource,
-    LegacyFunctionSyntax, LegacyModuleItem, LegacyModuleSyntax,
+    LegacyAnimTreeSyntax, LegacyFunctionSyntax, LegacyModuleItem, LegacyModuleSyntax,
 };
 use crate::lexical::{LegacyLexeme, LegacyLexemeKind};
 use crate::syntax::{LegacySyntaxMode, LegacySyntaxNode, LegacySyntaxNodeKind, LegacySyntaxTree};
@@ -74,7 +74,11 @@ fn item<'tree, 'source>(
 ) -> Result<LegacyModuleItem<'tree, 'source>, DeclarationErrorKind> {
     Ok(match rule {
         125 => LegacyModuleItem::Function(function(node, ledger)?),
-        126 => LegacyModuleItem::UsingAnimTree(lexeme(child(node, 2, 5)?)?),
+        126 => LegacyModuleItem::UsingAnimTree(LegacyAnimTreeSyntax {
+            name: lexeme(child(node, 2, 5)?)?,
+            start: node.span().start,
+            end: node.span().end,
+        }),
         127 => LegacyModuleItem::DeveloperBegin {
             offset: lexeme(child(node, 0, 1)?)?.span().start,
         },

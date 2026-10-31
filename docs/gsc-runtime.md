@@ -102,8 +102,13 @@ GSC. See ADR 0016. This profile does not enable modern keywords implicitly.
 Typed top-level module syntax now exposes ordered includes, function signatures,
 animation-tree directives, and developer markers without interning or binding.
 Synthetic tests retain 66,000 functions and 1,024 ordered parameters, proving only
-frontend representation. Names/duplicates/developer policy remain unresolved and
-bodies retain structural nodes; see ADR 0017.
+frontend representation. That stage leaves name/developer policy to binding and
+retains structural bodies; see ADR 0017.
+Local function binding now validates active name uniqueness and developer-region
+rules under an explicit mode, preserving inactive definition metadata. Borrowed
+ASCII identifier keys match 125 original helper cases, including native long-name
+case fallback without a storage ceiling. This does not bind imports, parameters,
+locals, calls, or builtins and does not lower/execute bodies; see ADR 0019.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

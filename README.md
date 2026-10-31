@@ -79,10 +79,13 @@ The complete server rewrite remains open.
   decodes without the old scratch-buffer ceiling; interning/VM capacity is separate.
 - Bounded flat legacy script/fragment syntax trees with 99 structural grammar
   replays, original terminal spans, explicit budgets, and 12,000-level nesting.
-  Semantic actions, name binding, compilation, and execution remain unimplemented.
+  This stage runs no semantic actions; compilation/execution remain unimplemented.
 - Typed legacy module declarations with ordered includes, functions, parameters,
   animation-tree directives, and developer markers under explicit budgets. Raw
-  spelling/duplicates remain preserved; binding and body lowering remain open.
+  spelling/duplicates remain preserved; body lowering and full semantic binding remain open.
+- Local function binding with original ASCII name identity, source-offset
+  duplicate diagnostics, explicit developer-script modes, retained inactive
+  definitions, and configurable index budgets. Calls/imports/bodies remain unresolved.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -140,10 +143,12 @@ cargo run -p cod4x-server -- --inspect-gsc path/to/script.gsc
 ```
 
 This checks structural syntax and reports counts or the original line/byte column
-on failure. It does not resolve includes/names, validate literal values, compile,
-or execute scripts. Source bytes and file paths stay outside logs. Default source,
-scanner, parser, and declaration budgets apply; typed declaration counts are also
-reported. Command-line budget overrides remain future work.
+on failure. It also checks local function definitions and developer regions.
+Use --gsc-developer enabled to include developer-only definitions in name lookup;
+the default is disabled. All definition metadata remains retained. It does not
+resolve imports/call expressions, validate body literal values, compile, or execute
+scripts. Source bytes/paths stay outside logs. Default source/scanner/parser/
+declaration/binding budgets apply; command-line budget overrides remain future work.
 
 Exercise the legacy challenge/cookie exchange over UDP:
 
@@ -201,6 +206,7 @@ python tools/generate_user_command_vectors.py ../cod4x-reference --check
 python tools/generate_bsp_vectors.py ../cod4x-reference --check
 python tools/generate_zone_pointer_vectors.py ../cod4x-reference --check
 python tools/generate_script_vectors.py ../cod4x-reference --check
+python tools/generate_identifier_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check

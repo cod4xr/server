@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use cod4x_observability::{ConsoleColor, ConsoleFormat, LogConfig};
+use cod4x_script::binding::LegacyDeveloperMode;
 
 use crate::app_error::AppError;
 
@@ -25,6 +26,7 @@ Usage: cod4x-server --query-only [options]
   --inspect-zone-prefix PATH  Inspect IW3 root tables; asset bodies stay unvalidated
   --inspect-rawfiles PATH  Decode raw-file-only collection offline; execute no scripts
   --inspect-gsc PATH       Inspect legacy GSC structure offline; no compilation/execution
+  --gsc-developer MODE     Include developer-only functions: enabled/disabled (default: disabled)
   --bind ADDRESS           UDP address (default: 127.0.0.1:28960)
   --log-dir PATH           Dedicated directory for daily JSON log files
   --log-level DIRECTIVES   Explicit tracing filter (default: info)
@@ -44,6 +46,7 @@ pub(crate) struct Arguments {
     pub(crate) logs: LogConfig,
     pub(crate) duration: Option<Duration>,
     pub(crate) max_datagrams: Option<u64>,
+    pub(crate) developer_scripts: LegacyDeveloperMode,
 }
 
 #[derive(Debug)]
@@ -72,9 +75,11 @@ impl Arguments {
             logs: LogConfig::default(),
             duration: None,
             max_datagrams: None,
+            developer_scripts: LegacyDeveloperMode::Disabled,
         };
         let mut mode = None;
         let mut network_settings = false;
+        let mut script_settings = false;
         let mut arguments = arguments.into_iter();
         while let Some(argument) = arguments.next() {
             let Some(argument) = argument.to_str() else {
@@ -112,7 +117,8 @@ impl Arguments {
                         .ok_or(AppError::Arguments("--log-dir needs a path"))?;
                     options.logs.directory = Some(PathBuf::from(value));
                 }
-                "--bind" | "--log-level" | "--run-for-ms" | "--max-datagrams" | "--color" => {
+                "--bind" | "--log-level" | "--run-for-ms" | "--max-datagrams" | "--color"
+                | "--gsc-developer" => {
                     let value = arguments
                         .next()
                         .ok_or(AppError::Arguments("option requires a value"))?;
@@ -121,6 +127,7 @@ impl Arguments {
                         .map_err(|_| AppError::Arguments("option value must be UTF-8"))?;
                     network_settings |=
                         matches!(argument, "--bind" | "--run-for-ms" | "--max-datagrams");
+                    script_settings |= argument == "--gsc-developer";
                     options.apply_text_option(argument, value)?;
                 }
                 _ => return Err(AppError::Arguments("unknown option; use --help")),
@@ -134,6 +141,11 @@ impl Arguments {
                 "offline content modes cannot use network options",
             ));
         }
+        if script_settings && !matches!(&options.mode, Mode::InspectGsc(_)) {
+            return Err(AppError::Arguments(
+                "GSC developer mode requires --inspect-gsc",
+            ));
+        }
         Ok(Action::Run(options))
     }
 
@@ -145,6 +157,17 @@ impl Arguments {
                     .map_err(|_| AppError::Arguments("invalid UDP bind address"))?;
             }
             "--log-level" => self.logs.filter = value,
+            "--gsc-developer" => {
+                self.developer_scripts = match value.as_str() {
+                    "enabled" => LegacyDeveloperMode::Enabled,
+                    "disabled" => LegacyDeveloperMode::Disabled,
+                    _ => {
+                        return Err(AppError::Arguments(
+                            "GSC developer mode must be enabled or disabled",
+                        ));
+                    }
+                };
+            }
             "--color" => {
                 self.logs.console_color = match value.as_str() {
                     "auto" => ConsoleColor::Auto,

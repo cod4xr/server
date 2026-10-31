@@ -333,3 +333,24 @@ existing libc/windows-sys versions; package/license/build-script review is in AD
 0018. No firewall/machine settings or alternate target directories were changed.
 The observations do not establish a specific OS defect, zero-loss reliability,
 throughput/latency improvements, or Linux success for this new I/O boundary.
+
+Legacy identifier/local binding passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, and policy (288 source files,
+eight crates). Fifteen new tests comprise four identifier tests (including 125
+original-helper cases), seven symbol tests, and four process tests. Source-order
+retention, active/inactive developer mode, canonical duplicates, paired locations,
+region/directive phase checks, all five binding budgets, independent-source/hash
+identity, 66,000 indexed functions, and 100,000-byte names pass. Directive spans
+retain keywords for original placement diagnostics. Inactive definitions remain
+recorded rather than deleted. Lookup does not bind call expressions or execute.
+
+All ten original-function generators and lexical/literal/structural regeneration
+pass after pinning compiler assembly and the variable header. The identifier
+oracle selects C locale/ASCII and stubs native string/ref services; it compares
+canonical-output checksums and the original scratch fallback. Compiler branch/
+layout checks ground interpreted rules but do not execute the original compiler.
+Process checks cover --gsc-developer mode selection, aggregate counts, duplicate
+locations, invalid regions, and exclusion of names/paths from output. No imports,
+body literals, parameter/local scopes, calls, builtins, bytecode, VM, or modern
+language/services are completed by this stage. Linux/stock-mod/compiler acceptance
+remain open. All builds reuse the normal target directory.

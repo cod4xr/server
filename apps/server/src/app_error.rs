@@ -19,6 +19,7 @@ pub(crate) enum AppError {
     ScriptSource(cod4x_script::source::SourceError),
     ScriptSyntax(cod4x_script::syntax::LegacySyntaxError),
     ScriptDeclaration(cod4x_script::declaration::DeclarationError),
+    ScriptBinding(cod4x_script::binding::SymbolError),
     Snapshot(SnapshotError),
     Entropy(getrandom::Error),
     Cookie(cod4x_server_core::CookieKeyError),
@@ -43,6 +44,7 @@ impl fmt::Display for AppError {
             Self::ScriptDeclaration(error) => {
                 write!(formatter, "script inspection failed: {error}")
             }
+            Self::ScriptBinding(error) => write!(formatter, "script inspection failed: {error}"),
             Self::Snapshot(error) => error.fmt(formatter),
             Self::Entropy(error) => write!(formatter, "process entropy failed: {error}"),
             Self::Cookie(error) => write!(formatter, "cookie initialization failed: {error}"),
@@ -65,6 +67,7 @@ impl Error for AppError {
             Self::ScriptSource(error) => Some(error),
             Self::ScriptSyntax(error) => Some(error),
             Self::ScriptDeclaration(error) => Some(error),
+            Self::ScriptBinding(error) => Some(error),
             Self::Snapshot(error) => Some(error),
             Self::Entropy(error) => Some(error),
             Self::Cookie(error) => Some(error),

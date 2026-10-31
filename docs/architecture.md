@@ -158,6 +158,12 @@ Typed module syntax now owns bounded declaration/parameter views over a borrowed
 tree. Includes and names retain raw spelling/order/duplicates. Iterative lowering
 does not intern names, apply developer policy, bind scopes, or lower expressions;
 see ADR 0017. The inspector reports separate declaration work/storage/counts.
+Local function indexes now borrow those declarations and preflight allocation/work
+budgets. Explicit developer mode controls active name lookup while all definition
+metadata remains retained. Legacy ASCII identity is isolated from runtime string
+storage; no engine function IDs are assigned. Import/call/parameter/local binding
+and executable bodies remain open. The inspector reports name/region failures
+with both original locations, never source text. See ADR 0019.
 
 ## Future custom client
 

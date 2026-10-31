@@ -56,6 +56,8 @@ Verify independent zone root tables with tools/generate_zone_fixtures.py --check
 Verify serialized block offsets with tools/generate_zone_pointer_vectors.py --check.
 Verify typed raw files with tools/generate_rawfile_fixtures.py --check.
 Verify script scalar/wait semantics with tools/generate_script_vectors.py --check.
+Verify original ASCII identifier conversion with tools/generate_identifier_vectors.py
+--check. The native string/ref services are stubbed; this is not full interning.
 Verify source-derived lexical data with tools/generate_lexical_tables.py --check;
 table replays must not be described as original executable/parser conformance.
 Verify literal action/CRT replays with tools/generate_literal_vectors.py --check;
@@ -64,6 +66,9 @@ Verify structural grammar tables/replays with tools/generate_syntax_tables.py
 --check; these do not execute original semantic actions or establish compilation.
 That check also guards typed declaration action/production profiles. Preserve raw
 declaration spelling/duplicates until verified name binding; see ADR 0017.
+Local binding uses an explicit developer-script mode, retains inactive definition
+metadata, and validates active duplicate names/regions. Legacy long-name case
+fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
 Development UDP drains nonblocking receives to WouldBlock before readiness waits;
 keep timer/shutdown checks between datagrams. Do not restore blocking socket
 receive-timeout polling; see ADR 0018 and its dependency review.

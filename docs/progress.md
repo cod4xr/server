@@ -273,15 +273,30 @@ crates), including 16 original exchanges per probe test and a queued burst test.
 No further timeout increase, firewall changes, or alternate target directory was
 used. Do not claim a proven OS defect, zero packet loss, or performance gains.
 
-Continue module-level name binding. Source compiler research in
-asmsource/_scr_compiler.asm finds duplicate-function rejection in
-SpecifyThreadPosition and nonnested/matched /# ... #/ regions; #using_animtree
-inside a developer region is rejected. That compiler source is not yet hash-
-pinned and no binding implementation exists. cscr_stringlist.cpp's actual
-SL_ConvertToLowercase uses C tolower only when name length plus NUL <=8192;
-longer names return unchanged. Preserve this as a named legacy compatibility
-quirk without imposing a storage/admission ceiling. Modern naming must remain
-separate. Obtain original-function case vectors before implementing the name key.
+Legacy name/local function binding now passes all Windows workspace gates (288
+source files/eight crates), with fifteen new tests and 125 original ASCII helper
+cases. All ten original-function generators and lexical/literal/structural checks
+pass. See ADR 0019. Borrowed name keys retain native long-name case fallback
+without a capacity ceiling; short names fold under an explicit ASCII/C profile.
+ModuleSymbols preserves every definition, indexes only mode-active definitions,
+rejects active duplicates/invalid developer regions, and keeps original current/
+previous offsets. Disabled developer functions do not participate in duplicate
+checking. Source compiler's conditional registration flag is gScrVarPub+7,
+developer_script; assembly/header are now hash-pinned with mechanical guards.
+Directive placement follows definition/region checks; calls/imports/parameters/
+locals/bodies remain unresolved. No compiler/VM or modern services execute.
+
+Offline --inspect-gsc now binds local definitions with --gsc-developer enabled or
+disabled (default disabled). It reports total/active/visibility counts and both
+duplicate locations, never script names/paths. The flag is rejected outside this
+mode. Linux and original-compiler/stock-mod acceptance remain open.
+
+Next: source-grounded scalar coercion/arithmetic before expression/body lowering
+and verified execution. cscr_variable.cpp has Scr_CastWeakerPair/StringPair and
+Scr_EvalPlus/Minus/Multiply/Divide/Mod. Integer division produces a float; zero
+division reports an error. Helpers also handle strings/vectors; numeric subsets
+must remain explicit. Obtain original-function evidence and define overflow/FP
+profiles before implementing arithmetic; do not infer full native/VM semantics.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

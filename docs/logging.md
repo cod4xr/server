@@ -51,7 +51,7 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `content.failed` | error | sanitized content failure or local I/O category |
 | `script.started` | info | explicit offline legacy structural inspection mode |
 | `script.syntax_inspected` | info | source/tree/declaration counts, scan/grammar/declaration work, separate logical parser/index/declaration metadata |
-| `script.failed` | error | read/index/parse/declarations phase, fixed failure category, source offset and original line/byte column |
+| `script.failed` | error | read/index/parse/declarations/binding phase, fixed category, current/previous source locations |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
 Metrics are emitted every ten seconds and at normal shutdown. Rejected traffic
@@ -94,6 +94,10 @@ structural success only. It emits no runtime-started or script-executed event.
 Parse locations use original source bytes, one-based lines/byte columns, and no
 hidden selector offset. Raw source, names, host paths, and arbitrary OS error
 strings remain outside logs/stderr. Scanner/index/parser budgets fail explicitly.
+Local binding adds explicit developer mode, total/active/ordinary/developer function
+counts, borrowed name bytes, and separate logical index storage/work. Duplicate
+diagnostics expose both source offsets/line/byte columns without function names.
+This is local-definition inspection, not full symbol/call linking or execution.
 
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided

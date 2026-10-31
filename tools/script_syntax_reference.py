@@ -89,6 +89,32 @@ def verify_declarations(source: str, tables: dict[str, list[int]]) -> None:
             raise ValueError(f"Declaration production/action profile changed: {rule}")
 
 
+def verify_symbols(compiler: str, variable_header: str) -> None:
+    """Guard interpreted compiler branches, not execution of the native compiler."""
+    layout = r"const char \*fieldBuffer;\s+uint16_t canonicalStrCount;\s+byte developer;\s+byte developer_script;"
+    if not re.search(layout, variable_header):
+        raise ValueError("Developer flags differ from the recorded native 32-bit layout")
+    profiles = {
+        "SpecifyThreadPosition": ("test eax, eax", "jz SpecifyThreadPosition_10", "jz SpecifyThreadPosition_20"),
+        "SpecifyThreadPosition_20": ("_cstring_function_s_alrea1", "call CompileError"),
+        "ScriptCompile_90": ("cmp eax, 0x45", "jnz ScriptCompile_140", "mov byte [scrCompileGlob+0x1d], 0x1"),
+        "ScriptCompile_130": ("cmp eax, 0x46", "jz ScriptCompile_110", "cmp eax, 0x44", "jz ScriptCompile_120"),
+        "ScriptCompile_110": ("jz ScriptCompile_240", "mov byte [scrCompileGlob+0x1d], 0x0"),
+        "ScriptCompile_120": ("jnz ScriptCompile_260", "mov dword [ebp-0x54], 0x7"),
+        "ScriptCompile_260": ("cmp byte [eax+0x7], 0x0", "jz ScriptCompile_250", "mov dword [ebp-0x54], 0xc"),
+        "ScriptCompile_100": ("cmp byte [scrCompileGlob+0x1d], 0x0", "jnz ScriptCompile_150"),
+        "ScriptCompile_160": ("cmp eax, 0x47", "jnz ScriptCompile_230"),
+        "ScriptCompile_140": ("_cstring_cannot_recurse_", "call CompileError"),
+        "ScriptCompile_240": ("_cstring__has_no_matching", "call CompileError"),
+        "ScriptCompile_150": ("_cstring__has_no_matching1", "call CompileError"),
+        "ScriptCompile_230": ("_cstring_cannot_put_using", "call CompileError"),
+    }
+    for label, instructions in profiles.items():
+        match = re.search(rf"(?ms)^{label}:\n(.*?)(?=^[A-Za-z_][A-Za-z_0-9]*:|\Z)", compiler)
+        if not match or any(instruction not in match[1] for instruction in instructions):
+            raise ValueError(f"Local binding control-flow profile changed: {label}")
+
+
 def goto(tables: dict[str, list[int]], state: int, rule: int) -> int:
     lhs = tables["LHS"][rule] - NONTERMINAL_START
     index = tables["GOTO_OFFSET"][lhs] + state

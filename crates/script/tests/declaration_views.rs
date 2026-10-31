@@ -67,15 +67,20 @@ fn includes_functions_parameters_and_developer_markers_preserve_source_order_and
         module.items()[2],
         LegacyModuleItem::DeveloperEnd { .. }
     ));
-    let LegacyModuleItem::UsingAnimTree(lexeme) = module.items()[3] else {
+    let LegacyModuleItem::UsingAnimTree(directive) = module.items()[3] else {
         return Err("Expected directive".to_owned());
     };
     let LegacyLiteral::String(name) =
-        LegacyLiteral::decode(lexeme, LegacyLiteralBudget::default()).expect("Literal stage")
+        LegacyLiteral::decode(directive.name(), LegacyLiteralBudget::default())
+            .expect("Literal stage")
     else {
         return Err("Expected directive string".to_owned());
     };
     assert_eq!(name.as_bytes(), b"private-tree");
+    assert_eq!(
+        source.span(directive.span()).expect("Directive span"),
+        b"#using_animtree(\"private-tree\");"
+    );
     let LegacyModuleItem::Function(main) = &module.items()[4] else {
         return Err("Expected main".to_owned());
     };
