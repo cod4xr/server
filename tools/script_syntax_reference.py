@@ -60,6 +60,35 @@ def action(tables: dict[str, list[int]], state: int, code: int) -> int:
     return -tables["DEFAULT_REDUCE"][state]
 
 
+def verify_declarations(source: str, tables: dict[str, list[int]]) -> None:
+    """Guard the typed declaration profile; this does not execute semantic actions."""
+    if "jmp dword [ebx*4+yyparse_jumptab_0]" not in source:
+        raise ValueError("Semantic dispatch indexing differs from source")
+    section = source.split("yyparse_jumptab_0:\n", 1)[1].split("yyparse_jumptab_1:", 1)[0]
+    labels = re.findall(r"\bdd (yyparse_\d+)\s*", section)
+    if len(labels) != 134:
+        raise ValueError("Unexpected semantic action table")
+    profiles = {
+        115: (3, ("call SL_ConvertToLowercase", "call append_node")),
+        116: (1, ("call SL_ConvertToLowercase", "call append_node")),
+        117: (1, ("jmp yyparse_420",)),
+        118: (0, ("call node0", "call linked_list_end")),
+        125: (7, ("call SL_ConvertToLowercase", "mov dword [esp], 0x44", "call node6")),
+        126: (5, ("mov dword [esp], 0x47", "call node3")),
+        127: (1, ("mov dword [esp], 0x45", "call node1")),
+        128: (1, ("mov dword [esp], 0x46", "call node1")),
+        129: (2, ("call append_node",)),
+        130: (0, ("call node0", "call linked_list_end")),
+        131: (2, ("mov dword [esp], 0x56", "call node2")),
+        132: (3, ("call append_node",)),
+        133: (0, ("call node0", "call linked_list_end")),
+    }
+    for rule, (length, instructions) in profiles.items():
+        body = source.split(labels[rule] + ":\n", 1)[1].split("\nyyparse_", 1)[0]
+        if tables["LENGTH"][rule] != length or any(text not in body for text in instructions):
+            raise ValueError(f"Declaration production/action profile changed: {rule}")
+
+
 def goto(tables: dict[str, list[int]], state: int, rule: int) -> int:
     lhs = tables["LHS"][rule] - NONTERMINAL_START
     index = tables["GOTO_OFFSET"][lhs] + state

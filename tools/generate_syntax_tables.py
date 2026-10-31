@@ -71,6 +71,7 @@ def main() -> None:
     if 'db "+",0' not in loader or 'mov dword [edx+0x20018], _cstring_' not in loader:
         raise ValueError("Script-loader selector differs from pinned source")
     tables = syntax.recover(source)
+    syntax.verify_declarations(source, tables)
     lex = lexical.recover(source)
     outputs = {}
     for name, keys in (("legacy_actions.rs", ["TRANSLATE", "PACT", "DEFAULT_REDUCE", "ACTION", "CHECK"]),

@@ -78,6 +78,9 @@ The complete server rewrite remains open.
 - Bounded flat legacy script/fragment syntax trees with 99 structural grammar
   replays, original terminal spans, explicit budgets, and 12,000-level nesting.
   Semantic actions, name binding, compilation, and execution remain unimplemented.
+- Typed legacy module declarations with ordered includes, functions, parameters,
+  animation-tree directives, and developer markers under explicit budgets. Raw
+  spelling/duplicates remain preserved; binding and body lowering remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
@@ -137,7 +140,8 @@ cargo run -p cod4x-server -- --inspect-gsc path/to/script.gsc
 This checks structural syntax and reports counts or the original line/byte column
 on failure. It does not resolve includes/names, validate literal values, compile,
 or execute scripts. Source bytes and file paths stay outside logs. Default source,
-scanner, and parser budgets apply; command-line budget overrides remain future work.
+scanner, parser, and declaration budgets apply; typed declaration counts are also
+reported. Command-line budget overrides remain future work.
 
 Exercise the legacy challenge/cookie exchange over UDP:
 

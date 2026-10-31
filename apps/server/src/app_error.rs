@@ -18,6 +18,7 @@ pub(crate) enum AppError {
     RawFile(cod4x_content::zone::rawfiles::RawFileError),
     ScriptSource(cod4x_script::source::SourceError),
     ScriptSyntax(cod4x_script::syntax::LegacySyntaxError),
+    ScriptDeclaration(cod4x_script::declaration::DeclarationError),
     Snapshot(SnapshotError),
     Entropy(getrandom::Error),
     Cookie(cod4x_server_core::CookieKeyError),
@@ -39,6 +40,9 @@ impl fmt::Display for AppError {
             Self::RawFile(error) => write!(formatter, "raw-file inspection failed: {error}"),
             Self::ScriptSource(error) => write!(formatter, "script inspection failed: {error}"),
             Self::ScriptSyntax(error) => write!(formatter, "script inspection failed: {error}"),
+            Self::ScriptDeclaration(error) => {
+                write!(formatter, "script inspection failed: {error}")
+            }
             Self::Snapshot(error) => error.fmt(formatter),
             Self::Entropy(error) => write!(formatter, "process entropy failed: {error}"),
             Self::Cookie(error) => write!(formatter, "cookie initialization failed: {error}"),
@@ -60,6 +64,7 @@ impl Error for AppError {
             Self::RawFile(error) => Some(error),
             Self::ScriptSource(error) => Some(error),
             Self::ScriptSyntax(error) => Some(error),
+            Self::ScriptDeclaration(error) => Some(error),
             Self::Snapshot(error) => Some(error),
             Self::Entropy(error) => Some(error),
             Self::Cookie(error) => Some(error),

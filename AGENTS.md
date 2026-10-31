@@ -62,6 +62,8 @@ Verify literal action/CRT replays with tools/generate_literal_vectors.py --check
 these do not execute the original parser or string interner.
 Verify structural grammar tables/replays with tools/generate_syntax_tables.py
 --check; these do not execute original semantic actions or establish compilation.
+That check also guards typed declaration action/production profiles. Preserve raw
+declaration spelling/duplicates until verified name binding; see ADR 0017.
 Development logs default to readable output; process tests requiring JSON must
 pass --json-logs explicitly. The user requires one normal target directory:
 never use --target-dir, set CARGO_TARGET_DIR, or create separate preview/WSL build

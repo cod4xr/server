@@ -149,6 +149,10 @@ The application now consumes cod4x-script through an explicit offline --inspect-
 mode, using bounded file snapshots and location/count-only events. This approved
 internal dependency adds no third-party packages, build scripts, or FFI; the shared
 script library still owns no filesystem, logging, sockets, or server state.
+Typed module syntax now owns bounded declaration/parameter views over a borrowed
+tree. Includes and names retain raw spelling/order/duplicates. Iterative lowering
+does not intern names, apply developer policy, bind scopes, or lower expressions;
+see ADR 0017. The inspector reports separate declaration work/storage/counts.
 
 ## Future custom client
 

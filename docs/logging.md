@@ -50,8 +50,8 @@ and abrupt termination cannot guarantee delivery. Logs are not durable storage.
 | `content.rawfiles_inspected` | info | root/present slots, inline name/buffer bytes, virtual/temp usage, logical peak metadata |
 | `content.failed` | error | sanitized content failure or local I/O category |
 | `script.started` | info | explicit offline legacy structural inspection mode |
-| `script.syntax_inspected` | info | source/line/token/node/edge counts, scan/grammar work, logical peak parser/index metadata |
-| `script.failed` | error | read/index/parse phase, fixed failure category, parse offset and original line/byte column |
+| `script.syntax_inspected` | info | source/tree/declaration counts, scan/grammar/declaration work, separate logical parser/index/declaration metadata |
+| `script.failed` | error | read/index/parse/declarations phase, fixed failure category, source offset and original line/byte column |
 
 Timestamps, levels, targets, and active span context are included in JSON records.
 Metrics are emitted every ten seconds and at normal shutdown. Rejected traffic

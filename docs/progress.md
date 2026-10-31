@@ -261,6 +261,17 @@ redaction. It uses bounded snapshots and adds only an internal script dependency
 Structural inspection does not validate literal values, resolve includes, bind
 names, compile, or execute GSC. Linux checks remain open.
 
+Typed module syntax is implemented with six tests, 66,000-function/1,024-parameter
+synthetic coverage, raw spelling/order/duplicates, original body views, budgets,
+and privacy. Windows full debug/Clippy/rustdoc, focused script release, policy
+(269 source files/eight crates), and source-profile regeneration pass. See ADR
+0017. The full release probe again timed out; local controlled repetitions found
+missing third datagrams near blocking receive-timeout timing, with no MAC/send
+failure. Do not raise timeouts again or claim a proven OS defect. Fix the process
+I/O loop with reviewed readiness polling, rerun the original probe/counters and
+full release gate, then continue source-grounded module binding. Current runtime
+still uses std UDP with a 50-ms receive timeout; that replacement is not yet done.
+
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.
 Audit found parser/lexer actions and tables in asmsource/_scr_yacc.asm, bytecode

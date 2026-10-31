@@ -298,3 +298,22 @@ The oversize test changes only a disposable test file's length; the reader rejec
 its metadata before loading contents. The internal application-to-script dependency
 adds no external packages. No includes are resolved, literal values validated,
 names bound, code compiled, or scripts executed. Linux checks remain open.
+
+Typed module declarations passed Windows formatting, warnings-denied workspace
+Clippy/rustdoc, all debug tests, focused script release tests, policy (269 source
+files, eight crates), and structural/profile regeneration. Six added tests preserve
+includes, functions, ordered parameters, animation-tree/developer markers, exact
+source spelling/spans/borrows, duplicates, privacy, empty modules, every successful
+structural Script replay, Fragment rejection, and all five exact/one-less budgets.
+Synthetic inputs retain 66,000 functions and 1,024 ordered parameters; this is
+frontend capacity, not executable function/argument support. Source action/profile
+checks cover relevant lengths, semantic jump indexing, and role instructions.
+
+The full release run again failed the existing probe's valid-refusal receive.
+Controlled local repetitions observed missing third datagrams (server received=2,
+invalid_challenge=1, no send errors), rather than failed MAC verification. Failures
+clustered near socket receive-timeout timing; changing payload/sign did not remove
+them. This does not prove an OS-level cause. Full release acceptance is open while
+the blocking receive-timeout loop is replaced with readiness polling and verified.
+No test timeout was raised again. Module binding/body lowering/compiler/VM and
+Linux validation remain open for the new declarations.

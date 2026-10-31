@@ -99,6 +99,11 @@ grammar data, retaining source terminals without native semantic actions. Ninety
 nine structural replays, exact resource limits, and 12,000 nested groups pass the
 focused tests; syntax success does not validate literals, bind names, or execute
 GSC. See ADR 0016. This profile does not enable modern keywords implicitly.
+Typed top-level module syntax now exposes ordered includes, function signatures,
+animation-tree directives, and developer markers without interning or binding.
+Synthetic tests retain 66,000 functions and 1,024 ordered parameters, proving only
+frontend representation. Names/duplicates/developer policy remain unresolved and
+bodies retain structural nodes; see ADR 0017.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

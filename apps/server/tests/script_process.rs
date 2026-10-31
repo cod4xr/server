@@ -43,6 +43,9 @@ fn offline_structure_reports_counts_as_json_and_readable_development_logs() {
             assert_eq!(fields["source_bytes"], bytes.len());
             assert_eq!(fields["lines"], 3);
             assert_eq!(fields["source_tokens"], 10);
+            assert_eq!(fields["functions"], 1);
+            assert_eq!(fields["parameters"], 0);
+            assert_eq!(fields["includes"], 0);
             assert!(fields["peak_stack_entries"].as_u64().expect("Stack") > 0);
             assert!(fields["peak_metadata_bytes"].as_u64().expect("Metadata") > 0);
         } else {
