@@ -225,6 +225,17 @@ indices admit both spine passes, count/address arithmetic, and logical node byte
 before allocation; failures retain actual work/admitted counts. Nested bodies
 stay separate. No local binding, lvalue/scope legality, developer activation,
 general-body execution, or scheduling follows from this layer; see ADR 0031.
+The shared scalar executor now supports immutable parameter-prefix/local layouts
+and checked local load/store operands. Verification admits total locals and checks
+all local indices, including unreachable code; its stack proof does not establish
+source definite assignment. Each invocation separately admits exact internal
+argument count, local count/bytes, and operand-stack storage before local allocation.
+Arguments copy into private initialized slots; others remain uninitialized until
+stored. Initialized Undefined remains a value, while never-initialized reads fail
+at their instruction. Invocations share only immutable code/layouts. Local counts/
+logical bytes and failed admission/work stay visible without source/value leakage.
+Exact arity is an internal contract, not native GSC adaptation. Source local binding,
+call frames/stack, objects and scheduling remain separate; see ADR 0032.
 
 ## Future custom client
 

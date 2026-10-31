@@ -3,28 +3,39 @@ use crate::execution::kernel_error;
 use crate::execution::kernel_flow_state::KernelFlowState;
 use crate::execution::kernel_verification_ledger::KernelVerificationLedger;
 use crate::execution::{
-    KernelError, KernelErrorKind, KernelInstruction, KernelVerificationBudget,
-    VerifiedKernelProgram,
+    KernelError, KernelErrorKind, KernelFunctionLayout, KernelInstruction, KernelResource,
+    KernelVerificationBudget, VerifiedKernelProgram,
 };
 
 pub(super) fn verify(
     input: &[KernelInstruction],
+    layout: KernelFunctionLayout,
     budget: KernelVerificationBudget,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     if input.is_empty() {
         return Err(kernel_error::general(KernelErrorKind::EmptyProgram));
     }
-    let mut ledger = KernelVerificationLedger::new(input.len(), budget)?;
-    verify_flow(input, &mut ledger).map_err(|error| {
-        error.with_usage(
-            ledger.usage.verification_steps,
-            ledger.usage.max_stack_values,
-        )
+    kernel_error::check(
+        KernelResource::LocalValues,
+        layout.local_values(),
+        budget.max_local_values,
+        None,
+    )?;
+    let mut ledger = KernelVerificationLedger::new(input.len(), layout, budget)
+        .map_err(|error| error.with_locals(layout.local_values()))?;
+    verify_flow(input, layout, &mut ledger).map_err(|error| {
+        error
+            .with_usage(
+                ledger.usage.verification_steps,
+                ledger.usage.max_stack_values,
+            )
+            .with_locals(layout.local_values())
     })
 }
 
 fn verify_flow(
     input: &[KernelInstruction],
+    layout: KernelFunctionLayout,
     ledger: &mut KernelVerificationLedger,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     for (pc, instruction) in input.iter().copied().enumerate() {
@@ -37,6 +48,18 @@ fn verify_flow(
                 pc,
                 KernelErrorKind::InvalidTarget {
                     target: target as u64,
+                },
+            ));
+        }
+        if let KernelInstruction::LoadLocal(slot) | KernelInstruction::StoreLocal(slot) =
+            instruction
+            && slot >= layout.local_values
+        {
+            return Err(kernel_error::at(
+                pc,
+                KernelErrorKind::InvalidLocal {
+                    slot: slot as u64,
+                    local_values: layout.local_values(),
                 },
             ));
         }
@@ -68,6 +91,7 @@ fn verify_flow(
         }
     }
     Ok(VerifiedKernelProgram {
+        layout,
         instructions,
         usage: ledger.usage,
     })

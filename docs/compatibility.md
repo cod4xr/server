@@ -299,6 +299,15 @@ trees, deep/wide input, and complete body-list admission. These do not establish
 scope/lvalue legality, event argument semantics, developer/debugger availability,
 general statement compilation/execution, scheduler or stock-mod compatibility.
 The existing restricted compiler reuses return classification; see ADR 0031.
+The scalar executor now additionally handles typed local load/store instructions
+and immutable parameter/local layouts. Runtime uninitialized reads differ from
+initialized Undefined; source binding must still enforce native compile-time
+initialization rules. Ten tests exercise exact internal arity, caller isolation,
+fresh selected-path initialization, operand/header/budget failures, 70,000 internal
+arguments/slots, and another 4,096 hostile streams. These internal capacities do
+not establish source parameter/local support or client-visible expansion. Native
+missing/extra-argument policy, full local binding/definite assignment, call frames,
+source general-body execution, and VM parity remain open; see ADR 0032.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

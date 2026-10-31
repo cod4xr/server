@@ -1,21 +1,38 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
+use crate::execution::kernel_locals::{KernelLocalAdmission, KernelLocals};
 use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
     KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget, KernelInstruction,
-    KernelOutcome, KernelResource, VerifiedKernelProgram,
+    KernelOutcome, KernelResource, KernelValue, VerifiedKernelProgram,
 };
 
 pub(super) fn execute(
     program: &VerifiedKernelProgram,
+    arguments: &[KernelValue],
     budget: KernelExecutionBudget,
 ) -> Result<KernelOutcome, KernelError> {
     if budget.max_steps == 0 {
         kernel_error::check(KernelResource::ExecutionSteps, 1, 0, Some(0))?;
     }
+    let admission = KernelLocalAdmission::admit(program.layout, arguments, budget)?;
+    let local_values = admission.count();
+    execute_admitted(program, arguments, budget, admission)
+        .map_err(|error| error.with_locals(local_values))
+}
+
+fn execute_admitted(
+    program: &VerifiedKernelProgram,
+    arguments: &[KernelValue],
+    budget: KernelExecutionBudget,
+    admission: KernelLocalAdmission,
+) -> Result<KernelOutcome, KernelError> {
+    // Local counts/bytes/arity were admitted before stack allocation; stack
+    // admission/allocation occurs before any local allocation or argument copies.
     let mut machine = KernelMachine {
         stack: KernelStack::new(program.usage.max_stack_values, budget)?,
+        locals: admission.allocate(arguments)?,
         pc: 0,
         steps: 0,
     };
@@ -26,6 +43,7 @@ pub(super) fn execute(
 
 struct KernelMachine {
     stack: KernelStack,
+    locals: KernelLocals,
     pc: usize,
     steps: u64,
 }
@@ -64,6 +82,8 @@ impl KernelMachine {
                         value,
                         steps: self.steps,
                         peak_stack_values: self.stack.peak(),
+                        local_values: self.locals.count(),
+                        local_bytes: self.locals.bytes(),
                     });
                 }
                 KernelInstruction::Jump(target) => self.pc = target,
@@ -76,7 +96,7 @@ impl KernelMachine {
                     self.pc = if take { target } else { advance(pc)? };
                 }
                 _ => {
-                    kernel_operations::apply(instruction, &mut self.stack, pc)?;
+                    kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;
                     self.pc = advance(pc)?;
                 }
             }

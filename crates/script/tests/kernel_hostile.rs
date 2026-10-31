@@ -64,11 +64,14 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
         max_steps: 256,
         max_stack_values: 64,
         max_metadata_bytes: 16 * 1024,
+        max_local_values: 0,
     };
     let execution = KernelExecutionBudget {
         max_steps: 128,
         max_stack_values: 64,
         max_stack_bytes: 64 * size_of::<KernelValue>() as u64,
+        max_local_values: 0,
+        max_local_bytes: 0,
     };
     for _ in 0..4096 {
         let count = usize::try_from(next(&mut state) % 32).expect("Small count");

@@ -134,6 +134,13 @@ preserve event lists 119..124 as opaque distinct payloads, not ordinary argument
 lists. Source-table research finds the bare-semicolon statement outside the
 nonterminal used for a for-loop body; valid empty-body tests therefore use braces.
 These are pinned structural/action profiles, not native compiler/VM execution.
+Scr_CalcLocalVarsVariableExpressionRef compares the registration count against
+0x3f; Scr_FindLocalVarIndex reads/sets initialization bits and reports an
+uninitialised-variable compiler error on invalid reads. The scalar backend now
+uses separate initialized-state/value slots and wide checked indices with budgets,
+without claiming source definite-assignment equivalence. Its exact internal
+argument binding does not infer native missing/extra-argument behavior from the
+EmitThreadInternal parameter walk. That adapter and source binding remain open.
 
 ## Open research
 

@@ -424,9 +424,25 @@ These are typed syntax/body indices, not local binding, lvalue/control-flow scop
 developer activation, debugger/event runtime, general-body execution or scheduling.
 Linux and full compiler/VM/stock-mod acceptance remain open.
 
-Next: admitted local slots/argument storage and local-variable lowering, preserving
-uninitialized-variable errors and wide indices. Full objects, calls, scheduling,
-host services, modern language, and join/gameplay remain required.
+Scalar local storage/arguments now pass full Windows workspace gates. Immutable
+layouts admit parameter/total-local counts; every local operand is checked even
+in unreachable code. Fresh private invocation slots distinguish never-initialized
+from initialized Undefined, and argument/other invocation state stays unchanged.
+Local count/checked bytes, operand-stack storage and instruction fuel remain
+separate scopes. Successful results expose logical local use; failures retain
+actual work/stack peaks/admitted local counts. Ten added tests cover ownership,
+arity/header/operand/stack/admission errors, selected-path initialization, exact
+float data, numeric failures, huge checked overflow/zero fuel, 70,000 internal
+arguments/slots, and 4,096 hostile local streams. Existing scalar/source tests pass.
+Suites now contain 101 frontend and 41 legacy tests; policy checks 401 source
+files/eight crates, largest 287 lines. See ADR 0032. Normal target reused without
+dependencies or alternate caches. Exact internal arity is not native GSC policy;
+source local binding/definite assignment/general-body execution, call frames,
+scheduler, host services, stock-mod acceptance and Linux remain open.
+
+Next: source local binding/lowering and source-grounded native argument adaptation,
+preserving compile-time initialization errors and wide indices. Full objects,
+calls, scheduling, host services, modern language, and join/gameplay remain required.
 The audit also identified 32-value native compiler temporaries and short expression
 jump patches; preserve configurable budgets/wide locations rather than those caps.
 Further pinned source research finds a 64-local registration check in
@@ -436,6 +452,12 @@ Scr_FindLocalVarIndex checks initialization bits and emits an uninitialised-vari
 compiler error on invalid reads; allocating every local as a readable Undefined
 would not preserve that behavior. Runtime initialized Undefined must stay distinct
 from a slot that has never been initialized. Native arity policy needs separate research.
+Research-only Git-blob verification for src/asmsource/_scr_vm.asm records canonical
+SHA256 364d29c723327105116498dd6369ea710d27e00078738f4bb12de97b89c9567e
+at the pinned revision, matching the checkout. That dispatch uses 135 entries/
+opcode <=0x86 versus the header's broader 0x89 inventory; do not assume universal
+VM/profile equivalence. This file is not yet added to upstream.lock.json or used
+as adapter/runtime conformance evidence. Arity investigation remains incomplete.
 
 Next: source-grounded semantic/bytecode/runtime foundations alongside broader
 asset graphs. Read docs/gsc-runtime.md before designing the scripting subsystem.

@@ -90,6 +90,8 @@ fn branch_paths_consume_numeric_truth_with_explicit_fuel_and_one_result() {
                 max_steps: steps,
                 max_stack_values: 1,
                 max_stack_bytes: size_of::<KernelValue>() as u64,
+                max_local_values: 0,
+                max_local_bytes: 0,
             };
             let outcome = program.execute(exact).expect("Exact fuel/stack");
             assert_eq!(

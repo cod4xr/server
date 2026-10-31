@@ -19,6 +19,10 @@ pub enum KernelResource {
     ExecutionSteps,
     /// Logical reserved runtime stack bytes.
     ExecutionStackBytes,
+    /// Complete local count, including parameters/uninitialized slots.
+    LocalValues,
+    /// Logical runtime initialized-state/value slots.
+    ExecutionLocalBytes,
 }
 
 /// Fixed kernel failure category; never contains constants, source, or private names.
@@ -26,6 +30,32 @@ pub enum KernelResource {
 pub enum KernelErrorKind {
     /// There is no entry instruction.
     EmptyProgram,
+    /// Parameter-prefix count exceeds total local slots.
+    InvalidFunctionLayout {
+        /// Requested parameter count.
+        parameters: u64,
+        /// Requested total local slots.
+        local_values: u64,
+    },
+    /// A local operand is outside the immutable function layout.
+    InvalidLocal {
+        /// Rejected local index.
+        slot: u64,
+        /// Complete admitted local count.
+        local_values: u64,
+    },
+    /// This internal function contract requires an exact argument slice.
+    ArgumentCount {
+        /// Layout parameter count; native GSC arity policy is separate.
+        expected: u64,
+        /// Supplied scalar arguments.
+        actual: u64,
+    },
+    /// A local has never been initialized on the selected path.
+    UninitializedLocal {
+        /// Local index, without its source name or value.
+        slot: u64,
+    },
     /// A branch/jump operand points outside this program.
     InvalidTarget {
         /// Invalid instruction index.
@@ -87,9 +117,15 @@ pub struct KernelError {
     pub work_steps: u64,
     /// Admitted verifier maximum or actual execution peak before failure.
     pub peak_stack_values: u64,
+    /// Complete local count admitted before this failure, not allocated bytes/RSS.
+    pub admitted_local_values: u64,
 }
 
 impl KernelError {
+    pub(super) fn with_locals(mut self, count: u64) -> Self {
+        self.admitted_local_values = count;
+        self
+    }
     pub(super) fn with_usage(mut self, work_steps: u64, peak_stack_values: u64) -> Self {
         self.work_steps = work_steps;
         self.peak_stack_values = peak_stack_values;
@@ -122,6 +158,7 @@ pub(super) fn at(pc: usize, kind: KernelErrorKind) -> KernelError {
         kind,
         work_steps: 0,
         peak_stack_values: 0,
+        admitted_local_values: 0,
     }
 }
 
@@ -131,6 +168,7 @@ pub(super) fn general(kind: KernelErrorKind) -> KernelError {
         kind,
         work_steps: 0,
         peak_stack_values: 0,
+        admitted_local_values: 0,
     }
 }
 
@@ -145,6 +183,7 @@ pub(super) fn check(
             instruction,
             work_steps: 0,
             peak_stack_values: 0,
+            admitted_local_values: 0,
             kind: KernelErrorKind::BudgetExceeded {
                 resource,
                 requested,

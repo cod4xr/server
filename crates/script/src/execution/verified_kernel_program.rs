@@ -4,12 +4,17 @@ use std::fmt;
 use crate::execution::kernel_executor;
 use crate::execution::kernel_verifier;
 use crate::execution::{
-    KernelError, KernelExecutionBudget, KernelInstruction, KernelValue, KernelVerificationBudget,
+    KernelError, KernelExecutionBudget, KernelFunctionLayout, KernelInstruction, KernelValue,
+    KernelVerificationBudget,
 };
 
 /// Successful verification accounting, excluding allocator rounding and process RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct KernelProgramUsage {
+    /// Exact internal argument-prefix count, not native GSC arity policy.
+    pub parameters: u64,
+    /// Complete layout slots, including parameters and uninitialized slots.
+    pub local_values: u64,
     /// Complete retained instruction count, including unreachable code.
     pub instructions: u64,
     /// Actual operand scans, reachable-node visits, and propagated edges.
@@ -31,6 +36,10 @@ pub struct KernelOutcome {
     pub steps: u64,
     /// Actual peak live stack values on the selected execution path.
     pub peak_stack_values: u64,
+    /// Admitted complete local slots for this invocation, not touched/initialized count.
+    pub local_values: u64,
+    /// Logical local initialized-state/value bytes, excluding allocator rounding/RSS.
+    pub local_bytes: u64,
 }
 
 /// Independently owned immutable control-flow/stack proof for the scalar profile.
@@ -38,12 +47,14 @@ pub struct KernelOutcome {
 /// Construction stays inside this private execution boundary. No public mutation,
 /// source/host ownership, runtime IDs, native bytecode, or serialized ABI is supplied.
 pub struct VerifiedKernelProgram {
+    pub(super) layout: KernelFunctionLayout,
     pub(super) instructions: Vec<KernelInstruction>,
     pub(super) usage: KernelProgramUsage,
 }
 
 impl VerifiedKernelProgram {
     /// Admits, copies, and iteratively verifies all operands/reachable stack flow.
+    /// This convenience uses a zero-parameter, zero-local layout.
     ///
     /// # Errors
     /// Rejects malformed flow, invalid stack/return shapes, resource/size failures,
@@ -52,16 +63,58 @@ impl VerifiedKernelProgram {
         instructions: &[KernelInstruction],
         budget: KernelVerificationBudget,
     ) -> Result<Self, KernelError> {
-        kernel_verifier::verify(instructions, budget)
+        Self::verify_function(instructions, KernelFunctionLayout::default(), budget)
+    }
+
+    /// Verifies every branch/local operand and reachable stack flow under a layout.
+    ///
+    /// Local initialization is checked at runtime; this proof does not establish
+    /// source definite assignment, name binding, or native argument semantics.
+    ///
+    /// # Errors
+    /// Rejects invalid operands/flow/stack shapes, resource/size failure, and fallible
+    /// allocation failure without changing input or publishing a partial proof.
+    pub fn verify_function(
+        instructions: &[KernelInstruction],
+        layout: KernelFunctionLayout,
+        budget: KernelVerificationBudget,
+    ) -> Result<Self, KernelError> {
+        kernel_verifier::verify(instructions, layout, budget)
     }
 
     /// Executes only this immutable proof under separately admitted stack/fuel budgets.
+    /// Supplies no arguments while retaining this program's local layout.
     ///
     /// # Errors
     /// Returns located resource/numeric/type/state failures without a partial result
-    /// or external mutation. This is not a source compiler, full GSC VM, or scheduler.
+    /// or external mutation, including an arity error for a parameterized layout.
+    /// This is not a source compiler, full GSC VM, or scheduler.
     pub fn execute(&self, budget: KernelExecutionBudget) -> Result<KernelOutcome, KernelError> {
-        kernel_executor::execute(self, budget)
+        self.execute_with_arguments(&[], budget)
+    }
+
+    /// Copies exact internal arguments into fresh private parameter/local storage.
+    ///
+    /// Nonparameter locals start uninitialized; stored Undefined is initialized.
+    /// Count/byte admission bounds initialization independently of instruction fuel.
+    /// Arguments/other invocations remain unchanged on success or failure.
+    ///
+    /// # Errors
+    /// Rejects wrong exact arity, exhausted local/stack/fuel admission, allocation
+    /// failure, uninitialized loads, and numeric/type/state errors. No partial result
+    /// escapes. Native GSC missing/extra-argument adaptation remains separate work.
+    pub fn execute_with_arguments(
+        &self,
+        arguments: &[KernelValue],
+        budget: KernelExecutionBudget,
+    ) -> Result<KernelOutcome, KernelError> {
+        kernel_executor::execute(self, arguments, budget)
+    }
+
+    /// Returns immutable parameter/local counts without names or runtime state.
+    #[must_use]
+    pub fn layout(&self) -> KernelFunctionLayout {
+        self.layout
     }
 
     /// Borrows immutable instructions without permitting changes to the verified proof.

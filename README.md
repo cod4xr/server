@@ -119,6 +119,9 @@ The complete server rewrite remains open.
   blocks/conditionals/loops/switch labels, developer/debugger/profile syntax,
   and empty statements. Ordered immediate body indices admit both passes/count/
   storage before allocation; local binding and general-body execution remain open.
+- Scalar-kernel local loads/stores with immutable parameter/local layouts, exact
+  internal argument binding, uninitialized-read errors, isolated invocations, and
+  local count/byte budgets. Source local binding, native GSC arity, and call frames remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

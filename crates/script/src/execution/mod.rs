@@ -9,7 +9,9 @@ mod kernel_budget;
 mod kernel_error;
 mod kernel_executor;
 mod kernel_flow_state;
+mod kernel_function_layout;
 mod kernel_instruction;
+mod kernel_locals;
 mod kernel_operations;
 mod kernel_stack;
 mod kernel_value;
@@ -19,6 +21,7 @@ mod verified_kernel_program;
 
 pub use kernel_budget::{KernelExecutionBudget, KernelVerificationBudget};
 pub use kernel_error::{KernelError, KernelErrorKind, KernelResource};
+pub use kernel_function_layout::KernelFunctionLayout;
 pub use kernel_instruction::{KernelBranchCondition, KernelInstruction};
 pub use kernel_value::KernelValue;
 pub use verified_kernel_program::{KernelOutcome, KernelProgramUsage, VerifiedKernelProgram};

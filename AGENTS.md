@@ -116,6 +116,13 @@ preflight both passes/count/storage before allocation, retain actual failed work
 and never flatten nested bodies. Syntax does not grant lvalue/control-flow scope,
 developer activation, debugger/host authority, or scheduling. Guard statement/body
 profiles via generate_syntax_tables.py --check; see ADR 0031.
+Scalar kernel layouts now admit parameter/total-local counts and verify every local
+operand, including unreachable code. Invocation uses fresh private slots with
+separate local count/byte limits; uninitialized slots differ from stored Undefined.
+Exact internal argument slices are not native GSC missing/extra-argument policy.
+Retain runtime local checks, failed work/local admission, and caller isolation.
+This adds no source local binding, call stack, definite-assignment proof, scheduler,
+or host authority; the restricted source compiler remains unchanged. See ADR 0032.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

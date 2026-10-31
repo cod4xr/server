@@ -174,6 +174,17 @@ and failed work remains visible. Nested bodies stay separate and flat-owned.
 The scalar compiler reuses typed return handling without broadening its profile.
 Local binding, writable references, control-flow legality/lowering, actual events/
 waits, developer policy, and general-body execution remain required; see ADR 0031.
+Typed scalar execution now owns immutable parameter/local layouts and supports
+checked local loads/stores. Parameter arguments copy into fresh initialized slots;
+others remain uninitialized, independently of a stored Undefined value. Verification
+checks every local operand/count, and execution admits local count/logical bytes
+before allocation, separately from operand-stack/fuel limits. Count bounds cover
+initialization work; instruction fuel is not an aggregate CPU/RSS guarantee.
+Tests retain 70,000 internal arguments/slots without native short/local ceilings.
+The exact internal argument contract still needs a source-grounded legacy arity
+adapter. Source local binding/definite assignment, call frames, general bodies,
+objects, scheduler, and native VM acceptance remain open. The restricted source
+compiler keeps its zero-parameter profile; see ADR 0032.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

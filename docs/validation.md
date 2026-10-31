@@ -494,6 +494,26 @@ Checked signed MIN admission is an explicit domain policy, not native atoi-overf
 evidence. Linux, broader compatibility, and performance gates remain open. The
 normal target directory was reused without dependencies or alternate caches.
 
+Scalar local storage and arguments passed full Windows workspace formatting,
+warnings-denied Clippy/rustdoc, debug/release tests, source policy, and diff checks.
+Ten added tests exercise parameter/local layouts, all local operands including
+unreachable code, exact internal arity, caller/fresh-invocation isolation,
+initialized Undefined versus uninitialized reads, selected-path initialization,
+exact copied float bits, numeric failure/fuel/local accounting, independent local/
+stack admission, huge checked layout/byte overflow and zero fuel before allocation,
+70,000 internal arguments/slots, and 4,096 hostile local/branch streams. Existing
+numeric/source suites remain passing: 101 frontend and 41 legacy tests plus
+doctests. Policy checks 401 source files/eight crates, largest 287 lines. Existing
+scalar-only exact budgets explicitly admit zero local slots/bytes.
+
+Local storage is an internal typed execution facility. It does not establish
+source parameter/local binding, source definite assignment, legacy missing/extra
+arity, call frames/stack, object/host/scheduler behavior, native VM parity, stock
+mods, Linux success, or performance. The restricted source compiler retains its
+existing zero-parameter scalar-return profile. Count admission bounds initialization
+work separately from instruction fuel; logical byte scopes do not establish
+aggregate RSS. Normal target reused without dependencies or alternate caches.
+
 Typed statement views and ordered immediate body lists passed full Windows
 workspace formatting, warnings-denied Clippy/rustdoc, debug/release tests, source
 policy, and diff checks. Fourteen tests cover all 37 direct productions, bounded

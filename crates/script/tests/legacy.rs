@@ -10,6 +10,14 @@ mod kernel_budgets;
 mod kernel_execution;
 #[path = "kernel_hostile.rs"]
 mod kernel_hostile;
+#[path = "kernel_local_budgets.rs"]
+mod kernel_local_budgets;
+#[path = "kernel_local_hostile.rs"]
+mod kernel_local_hostile;
+#[path = "kernel_local_verification.rs"]
+mod kernel_local_verification;
+#[path = "kernel_locals.rs"]
+mod kernel_locals;
 #[path = "kernel_vectors.rs"]
 mod kernel_vectors;
 #[path = "kernel_verification.rs"]

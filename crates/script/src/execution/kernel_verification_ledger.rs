@@ -3,8 +3,8 @@ use std::mem;
 
 use crate::execution::kernel_error;
 use crate::execution::{
-    KernelError, KernelErrorKind, KernelInstruction, KernelProgramUsage, KernelResource,
-    KernelVerificationBudget,
+    KernelError, KernelErrorKind, KernelFunctionLayout, KernelInstruction, KernelProgramUsage,
+    KernelResource, KernelVerificationBudget,
 };
 
 pub(super) struct KernelVerificationLedger {
@@ -13,7 +13,11 @@ pub(super) struct KernelVerificationLedger {
 }
 
 impl KernelVerificationLedger {
-    pub(super) fn new(count: usize, budget: KernelVerificationBudget) -> Result<Self, KernelError> {
+    pub(super) fn new(
+        count: usize,
+        layout: KernelFunctionLayout,
+        budget: KernelVerificationBudget,
+    ) -> Result<Self, KernelError> {
         let count = count as u64;
         kernel_error::check(
             KernelResource::Instructions,
@@ -40,6 +44,8 @@ impl KernelVerificationLedger {
         Ok(Self {
             budget,
             usage: KernelProgramUsage {
+                parameters: layout.parameters(),
+                local_values: layout.local_values(),
                 instructions: count,
                 verification_steps: 0,
                 max_stack_values: 0,

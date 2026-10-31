@@ -24,6 +24,7 @@ fn verifier_exact_and_one_less_budgets_identify_each_complete_resource() {
         max_steps: usage.verification_steps,
         max_stack_values: usage.max_stack_values,
         max_metadata_bytes: usage.verification_metadata_bytes,
+        max_local_values: 0,
     };
     assert_eq!(
         VerifiedKernelProgram::verify(&input, exact)
@@ -109,6 +110,8 @@ fn four_thousand_stack_values_execute_with_exact_limits_and_fail_without_partial
         max_steps: input.len() as u64,
         max_stack_values: count as u64,
         max_stack_bytes: count as u64 * size_of::<KernelValue>() as u64,
+        max_local_values: 0,
+        max_local_bytes: 0,
     };
     let outcome = program.execute(exact).expect("Complete execution");
     assert_eq!(outcome.value, KernelValue::Number(LegacyNumber::Integer(7)));
@@ -164,6 +167,8 @@ fn four_thousand_stack_values_execute_with_exact_limits_and_fail_without_partial
             max_steps: 0,
             max_stack_values: 0,
             max_stack_bytes: 0,
+            max_local_values: 0,
+            max_local_bytes: 0,
         })
         .expect_err("Fuel before stack allocation");
     assert_eq!(
@@ -192,6 +197,8 @@ fn balanced_loops_require_no_return_but_cannot_escape_per_invocation_fuel() {
                 max_steps: steps,
                 max_stack_values: 0,
                 max_stack_bytes: 0,
+                max_local_values: 0,
+                max_local_bytes: 0,
             })
             .expect_err("Loop fuel exhausted");
         assert_eq!(

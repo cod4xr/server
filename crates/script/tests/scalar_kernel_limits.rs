@@ -27,11 +27,14 @@ fn compiler_preserves_independent_kernel_admission_and_failed_work() -> Result<(
             max_steps: proof.verification_steps,
             max_stack_values: proof.max_stack_values,
             max_metadata_bytes: proof.verification_metadata_bytes,
+            max_local_values: 0,
         },
         validation: KernelExecutionBudget {
             max_steps: usage.validation_steps,
             max_stack_values: proof.max_stack_values,
             max_stack_bytes: proof.max_stack_values * size_of::<KernelValue>() as u64,
+            max_local_values: 0,
+            max_local_bytes: 0,
         },
         ..ScalarCompilationBudget::default()
     };

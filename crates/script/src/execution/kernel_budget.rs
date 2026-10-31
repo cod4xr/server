@@ -9,6 +9,8 @@ pub struct KernelVerificationBudget {
     pub max_steps: u64,
     /// Maximum reachable stack depth across the control-flow proof.
     pub max_stack_values: u64,
+    /// Complete local layout count, including parameters; no local slots allocate here.
+    pub max_local_values: u64,
     /// Logical code plus full state/worklist slots admitted before allocation;
     /// excludes input storage, allocator rounding, local fields, and process RSS.
     pub max_metadata_bytes: u64,
@@ -20,6 +22,7 @@ impl Default for KernelVerificationBudget {
             max_instructions: 1_000_000,
             max_steps: 8_000_000,
             max_stack_values: 1_000_000,
+            max_local_values: 1_000_000,
             max_metadata_bytes: 256 * 1024 * 1024,
         }
     }
@@ -34,6 +37,10 @@ pub struct KernelExecutionBudget {
     pub max_stack_values: u64,
     /// Logical reserved value slots; excludes allocator rounding/local fields/RSS.
     pub max_stack_bytes: u64,
+    /// Admitted complete local slots, including parameters and uninitialized slots.
+    pub max_local_values: u64,
+    /// Logical initialized-state/value slots; excludes caller arguments/allocator/RSS.
+    pub max_local_bytes: u64,
 }
 
 impl Default for KernelExecutionBudget {
@@ -42,6 +49,8 @@ impl Default for KernelExecutionBudget {
             max_steps: 1_000_000,
             max_stack_values: 1_000_000,
             max_stack_bytes: 64 * 1024 * 1024,
+            max_local_values: 1_000_000,
+            max_local_bytes: 64 * 1024 * 1024,
         }
     }
 }
