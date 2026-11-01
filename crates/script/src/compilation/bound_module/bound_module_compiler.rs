@@ -14,13 +14,14 @@ use crate::compilation::function_lowering_mode::FunctionLoweringMode;
 
 /// Compiles active local definitions through a complete primitive call inventory.
 ///
-/// Reuses primitive statements with named immediate local calls in expressions and
-/// statements. Arguments lower rightmost-first; runtime checks excess counts.
+/// Reuses primitive statements with immediate local/indirect calls, local function
+/// references and sealed pure predicates. Arguments lower rightmost-first before
+/// indirect target expressions; invocation checks arity.
 /// Ordinary code cannot reference developer-only targets. Disabled declarations
 /// remain metadata, including unsupported bodies that are not compiled. No source/
 /// tree/name/symbol borrow escapes. Empty/all-disabled inventories contain no entry.
-/// This API does not process imports/animation directives, methods/indirect/thread
-/// calls, builtins, host services, activation or full GSC. Existing isolated source
+/// This API does not process imports/animation directives, methods/thread calls,
+/// general builtins, host services, activation or full GSC. Existing isolated source
 /// profiles and restricted statement/for-clause policies remain unchanged.
 ///
 /// # Errors

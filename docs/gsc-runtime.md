@@ -437,7 +437,27 @@ Selected compiler/header/VM roles reject 31 mutations alongside existing argumen
 grammar and visibility guards. These do not execute the native compiler or VM.
 See ADR 0050. Self/receivers, imports/reload, closures, heap values, scheduling,
 builtins/game services, full legacy diagnostics/cleanup/mod and Linux remain open.
-The compiler/VM, expanded standard library, and language features remain required
+Three pure builtin calls now work in bound primitive source:
+isint, isfloat and isvector. Active script definitions shadow them, preserving
+canonical identifiers and developer restrictions; absent names resolve only to
+this sealed subset. No plugin registry, host callback or ambient authority is
+introduced. Builtin references/external/receiver/thread forms remain rejected.
+Arguments evaluate before exact-one runtime arity checks, including skipped-call
+and argument-error timing; proof still admits every reachable operand. Pure
+instructions share global fuel and actual-size stack/code admission without an
+argument array, extra frame or inherited 255-argument cap. New C files were hashed
+against their pinned Git blobs. Actual extracted functions produce 624 O0/O2
+count/tag outcomes: 105 run through verified Rust instructions (15 successes/90
+arity failures), while 519 remain explicit helper-only evidence for unavailable
+native tags and UINT32_MAX declared counts. This does not allocate native values
+or execute the original VM/compiler/error unwinder. Selected registration/type/
+arity/lookup/developer/argument guards reject 36 mutations; 99 structural replays
+stay unchanged. Tests cover source order/arity/shadowing/modes/maps/privacy/quotas,
+256 source and 70,000 typed arguments, exact/one-less proof/execution resources,
+12,000 nested pure calls with one frame, malformed proof and hostile streams.
+See ADR 0051. General builtins, heap/entity lifetime/isdefined, scheduling/game
+services, full diagnostics/mod and Linux acceptance remain open. Further compiler,
+standard-library, language and engine integration remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
 

@@ -6,8 +6,8 @@
 
 use crate::kernel_call_support::{definition, integer};
 use cod4x_script::execution::{
-    KernelCallBudget, KernelErrorKind, KernelInstruction, KernelModuleVerificationBudget,
-    KernelValue, VerifiedKernelModule,
+    KernelBuiltin, KernelCallBudget, KernelErrorKind, KernelInstruction,
+    KernelModuleVerificationBudget, KernelValue, VerifiedKernelModule,
 };
 use cod4x_script::legacy::{LegacyComparison, LegacyNumber, LegacyVector};
 
@@ -112,7 +112,7 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
             code.push(KernelInstruction::CallIndirect { arguments });
         }
     }
-    match next(state) % 6 {
+    match next(state) % 7 {
         0 => code.extend([integer(0), KernelInstruction::Divide]),
         1 => code.extend([
             KernelInstruction::Constant(KernelValue::Undefined),
@@ -124,6 +124,10 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
             code.extend([KernelInstruction::Discard, KernelInstruction::Jump(0)]);
             return code;
         }
+        5 => code.push(KernelInstruction::Builtin {
+            function: KernelBuiltin::IsVector,
+            arguments: 1,
+        }),
         _ => {}
     }
     code.push(KernelInstruction::Return);

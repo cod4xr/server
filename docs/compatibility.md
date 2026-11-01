@@ -490,6 +490,19 @@ Rust references (72 successes/2,592 errors). Selected source-role guards reject
 self/receivers, heap/closures, imports/reload, builtins/scheduler/game services,
 full-mod/native cleanup/diagnostic and Linux gates open.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
+Three pure builtin calls now execute from bound source: isint/isfloat/isvector.
+Active script definitions shadow them; existing developer policy and canonical
+names remain enforced. Exact-one arity checks run after supplied arguments, so
+unselected wrong counts do not fail and argument errors retain precedence. Typed
+instructions share existing resource limits without native 255-count ceilings,
+new host/plugin authority or frames. Of 624 actual C O0/O2 count/tag outcomes, 105
+currently representable/bounded cases execute in Rust; 519 are explicitly helper-
+only, not full native value/VM coverage. Selected source guards reject 36 mutations.
+Source tests reach 256 arguments and 12,000 nested calls; typed fixtures include
+70,000 arguments. Exact count/byte/fuel/proof, unsupported authority, maps/privacy,
+developer/shadowing/order/arity/hostile/recovery checks remain required. See ADR 0051;
+general builtins, heap/isdefined/entity lifetime, scheduler/game services, full-mod
+and Linux gates stay open.
 
 - Connectionless and sequenced packets in both directions, exact framing,
   sequence handling, NAT qport behavior, fragmentation, and compression.

@@ -28,6 +28,11 @@ must remain separately tracked. Expanded GSC is also a core requirement: richer
 language features, built-in services, async I/O, and tooling must not require native
 plugins. See [the GSC runtime contract](gsc-runtime.md); these remain unimplemented.
 
+The primitive GSC subset now includes local/direct/indirect calls and three pure
+type-predicate builtins, with admitted compiler/runtime budgets. S5 remains open:
+heap values, general library/scheduling/game services and recorded stock/mod runs
+are still required. See ADRs 0050/0051 and docs/gsc-runtime.md for exact evidence.
+
 ## Next concrete work
 
 1. Continue remaining delta/user-command/snapshot codecs and legacy/profile

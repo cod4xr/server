@@ -37,9 +37,9 @@ pub enum FunctionCompileErrorKind {
     UnsupportedBody,
     /// Primary syntax outside the selected profile, including strings/objects/calls.
     UnsupportedPrimary,
-    /// A bound-module call requires an immediate local named target without a receiver.
+    /// A call is outside the bound immediate local/indirect/pure-builtin profile.
     UnsupportedCall,
-    /// No active local definition matches the call's legacy identifier.
+    /// No active local definition or permitted pure builtin matches the identifier.
     UnknownFunction,
     /// Ordinary code cannot reference a developer-only function.
     DeveloperFunctionReference,

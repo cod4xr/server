@@ -31,7 +31,7 @@ pub struct KernelProgramUsage {
 /// Completed pure execution result; Debug omits the returned primitive contents.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct KernelOutcome {
-    /// Returned undefined/numeric/vector data, not a full GSC runtime value.
+    /// Returned primitive data, not a full GSC runtime value.
     pub value: KernelValue,
     /// Executed instructions, including return.
     pub steps: u64,
@@ -46,7 +46,7 @@ pub struct KernelOutcome {
 /// Independently owned immutable control-flow/stack proof for the primitive profile.
 ///
 /// Construction stays inside this private execution boundary. No public mutation,
-/// source/host ownership, runtime IDs, native bytecode, or serialized ABI is supplied.
+/// source/host ownership, native bytecode, or serialized ABI is supplied.
 pub struct VerifiedKernelProgram {
     pub(super) layout: KernelFunctionLayout,
     pub(super) instructions: Vec<KernelInstruction>,

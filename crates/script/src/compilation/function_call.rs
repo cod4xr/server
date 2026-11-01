@@ -35,28 +35,23 @@ pub(super) fn queue<'tree, 'source>(
     if call.receiver().is_some() || call.kind() != LegacyInvocationKind::Immediate {
         return Err(error(FunctionCompileErrorKind::UnsupportedCall));
     }
-    let (target, indirect) = match call.callee() {
-        LegacyCalleeKind::Named(callee) => {
-            (Some(function_call_target::resolve(builder, callee)?), None)
-        }
-        LegacyCalleeKind::Indirect { expression } => (None, Some(expression)),
+    let target = match call.callee() {
+        LegacyCalleeKind::Named(callee) => Some(function_call_target::named_call(builder, callee)?),
+        LegacyCalleeKind::Indirect { .. } => None,
     };
     let arguments = call.arguments_syntax();
     let count = function_call_arguments::count(builder, arguments)?;
     builder.push_task(
         FunctionTask::Emit {
             instruction: match target {
-                Some(function) => KernelInstruction::Call {
-                    function,
-                    arguments: count,
-                },
+                Some(target) => target.instruction(count),
                 None => KernelInstruction::CallIndirect { arguments: count },
             },
             span: node.span(),
         },
         node.span(),
     )?;
-    if let Some(expression) = indirect {
+    if let LegacyCalleeKind::Indirect { expression } = call.callee() {
         builder.push_task(FunctionTask::Visit(expression), expression.span())?;
     }
     builder.push_task(

@@ -6,8 +6,9 @@
 )]
 
 use cod4x_script::execution::{
-    KernelBranchCondition, KernelErrorKind, KernelExecutionBudget, KernelInstruction,
-    KernelResource, KernelValue, KernelVerificationBudget, VerifiedKernelProgram,
+    KernelBranchCondition, KernelBuiltin, KernelErrorKind, KernelExecutionBudget,
+    KernelInstruction, KernelResource, KernelValue, KernelVerificationBudget,
+    VerifiedKernelProgram,
 };
 use cod4x_script::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate, LegacyNumber,
@@ -22,7 +23,7 @@ fn next(state: &mut u32) -> u32 {
 }
 
 fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
-    let choice = next(state) % 22;
+    let choice = next(state) % 25;
     let operand = next(state);
     let target = usize::try_from(operand).expect("Supported test host") % (count + 3);
     match choice {
@@ -61,6 +62,14 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
         ]))),
         20 => KernelInstruction::MakeVector,
         21 => KernelInstruction::Index,
+        22..=24 => KernelInstruction::Builtin {
+            function: match choice {
+                22 => KernelBuiltin::IsInt,
+                23 => KernelBuiltin::IsFloat,
+                _ => KernelBuiltin::IsVector,
+            },
+            arguments: usize::try_from(operand % 4).expect("Small builtin count"),
+        },
         _ => KernelInstruction::Return,
     }
 }
@@ -105,14 +114,15 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
                         | KernelErrorKind::ExpectedIndexable
                         | KernelErrorKind::Numeric(_)
                         | KernelErrorKind::Vector(_)
+                        | KernelErrorKind::ArgumentCount { expected: 1, .. }
                         | KernelErrorKind::BudgetExceeded {
                             resource: KernelResource::ExecutionSteps,
                             ..
                         }
                 ) {
-                    return Err(
-                        "A verified hostile program violated its execution contract".to_owned()
-                    );
+                    return Err(format!(
+                        "A verified hostile program violated its execution contract: {error:?}"
+                    ));
                 }
             }
         }

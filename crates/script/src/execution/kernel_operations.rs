@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::execution::kernel_builtin;
 use crate::execution::kernel_comparison_values;
 use crate::execution::kernel_error;
 use crate::execution::kernel_index_values;
@@ -17,6 +18,10 @@ pub(super) fn apply(
     let value = match instruction {
         KernelInstruction::Constant(value) => value,
         KernelInstruction::LoadLocal(slot) => locals.load(slot, pc)?,
+        KernelInstruction::Builtin {
+            function,
+            arguments,
+        } => kernel_builtin::apply(function, arguments, stack, pc)?,
         KernelInstruction::StoreLocal(slot) => {
             locals.store(slot, stack.pop(pc)?, pc)?;
             return Ok(());

@@ -56,6 +56,8 @@ mod arithmetic_boundaries;
 mod arithmetic_vectors;
 #[path = "function_reference_vectors.rs"]
 mod function_reference_vectors;
+#[path = "kernel_builtin_limits.rs"]
+mod kernel_builtin_limits;
 #[path = "kernel_call_arity.rs"]
 mod kernel_call_arity;
 #[path = "kernel_call_execution.rs"]
@@ -83,6 +85,8 @@ mod legacy_vectors;
 mod numeric_boundaries;
 #[path = "numeric_vectors.rs"]
 mod numeric_vectors;
+#[path = "predicate_vectors.rs"]
+mod predicate_vectors;
 #[path = "string_operation_vectors.rs"]
 mod string_operation_vectors;
 #[path = "string_operations.rs"]

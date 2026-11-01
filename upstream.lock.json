@@ -20,6 +20,8 @@
     "src/xassets/rawfile.h": "ee38356af5c28b998bd0f7b1d5fe3088cc7b8f8a3cb07f5f5271ea8c8b8a59b1",
     "src/asmsource/_db_load.asm": "70b95e01e6ba5864c0f30ae67c33168086ab47f8669b1d092c0d6f97b8228290",
     "src/scr_vm.h": "fa681481981b1623549aa021d9a80d9d7e3e2224630a295b0e357ecd1e507bcc",
+    "src/scr_vm_functions.c": "caadd3bfd2ba0d6fcee8aeb2dffc9c0f55c6ce9f973248236a7bdb7e80e5c4f1",
+    "src/scr_vm_main.c": "0c727f72635e9c21c1993547d865cf40dc282ab6ad2f7552155b16747e93aa51",
     "src/cscr_vm.cpp": "8cdf37dda67c830e17690f3477d635e64013777198550035ebcab4b03d8fccbf",
     "src/asmsource/_scr_yacc.asm": "abb859c80e02fe67196277562607412cdd0969f440fea3176a5890fd3375be1a",
     "src/asmsource/_scr_compiler.asm": "c7a7a0f6a613d5527c41a5a941e400297b8767fba85d3e3d6d7972df59d015da",

@@ -10,6 +10,7 @@ from reference_source import ReferenceSource
 import script_argument_reference as arguments
 import script_call_link_reference as call_links
 import script_function_reference as function_references
+import script_predicate_reference as predicates
 import script_expression_reference as expressions
 import script_for_reference as for_loops
 import script_lexer_reference as lexical
@@ -108,6 +109,7 @@ def main() -> None:
     call_links.verify(reference.files["src/asmsource/_scr_compiler.asm"], reference.files["src/scr_vm.h"])
     function_references.verify(reference.files["src/asmsource/_scr_compiler.asm"],
                                reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
+    predicates.verify(*predicates.inputs(reference))
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])
     lex = lexical.recover(source)
@@ -133,7 +135,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print("Verified grammar/declaration/symbol/expression/statement/update/argument/local-call/function-reference/while/transfer/for/vector/index "
+    print("Verified grammar/declaration/symbol/expression/statement/update/argument/local-call/function-reference/predicate/while/transfer/for/vector/index "
           f"profiles and {len(rows) - 2} structural replays")
 
 

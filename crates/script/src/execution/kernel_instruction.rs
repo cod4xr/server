@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::{KernelErrorKind, KernelValue};
+use crate::execution::{KernelBuiltin, KernelErrorKind, KernelValue};
 use crate::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate,
 };
@@ -40,6 +40,14 @@ pub enum KernelInstruction {
     /// The reference must belong to this module; arity checks occur at invocation.
     CallIndirect {
         /// Supplied argument count, excluding the top function reference.
+        arguments: usize,
+    },
+    /// Calls a sealed pure builtin after all supplied arguments have evaluated.
+    /// Runtime arity failures remain located at this instruction; no frame is added.
+    Builtin {
+        /// Statically known pure builtin, without host/plugin dispatch.
+        function: KernelBuiltin,
+        /// Supplied arguments, bottom-to-top last to first.
         arguments: usize,
     },
     /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.
@@ -91,7 +99,7 @@ impl KernelInstruction {
                     .ok_or(KernelErrorKind::SizeOverflow)?,
                 1,
             ),
-            Self::Call { arguments, .. } => (arguments, 1),
+            Self::Call { arguments, .. } | Self::Builtin { arguments, .. } => (arguments, 1),
             Self::MakeVector => (3, 1),
             Self::Constant(_) | Self::LoadLocal(_) | Self::FunctionReference(_) => (0, 1),
             Self::Arithmetic(_)

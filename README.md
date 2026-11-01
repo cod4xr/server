@@ -177,6 +177,10 @@ The complete server rewrite remains open.
   `[[expression]](...)` targets. Opaque references reject foreign/stale owners and
   share existing global runtime limits. All 2,664 actual C identity/type comparison
   cases pass; native compiler/VM, receiver/self, heap and full-mod gates remain open.
+- Bound source calls `isint`, `isfloat`, and `isvector` directly without native
+  plugins. Active script definitions shadow these pure builtins; wrong argument
+  counts fail at invocation after argument evaluation. General builtins/game
+  services, the complete value heap and full-mod compatibility remain open.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

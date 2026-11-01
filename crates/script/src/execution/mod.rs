@@ -8,6 +8,7 @@
 
 mod calls;
 mod kernel_budget;
+mod kernel_builtin;
 mod kernel_comparison_values;
 mod kernel_error;
 mod kernel_executor;
@@ -33,6 +34,7 @@ pub use calls::{
     KernelModuleError, KernelModuleUsage, KernelModuleVerificationBudget, VerifiedKernelModule,
 };
 pub use kernel_budget::{KernelExecutionBudget, KernelVerificationBudget};
+pub use kernel_builtin::KernelBuiltin;
 pub use kernel_error::{KernelError, KernelErrorKind, KernelResource};
 pub use kernel_function_layout::KernelFunctionLayout;
 pub use kernel_function_reference::KernelFunctionReference;

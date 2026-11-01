@@ -783,7 +783,34 @@ No dependency or alternate target directory was added. Full legacy acceptance
 workstreams, native compiler/VM/self/ref/unwind parity, imports/reload, heap/closures,
 receivers/builtins/scheduling/game services/mod and Linux gates remain open.
 
-Next: source-grounded builtin/value ownership implementation and broader source
+Three pure builtins now compile/execute directly from bound source under ADR 0051:
+isint/isfloat/isvector. Active script names shadow this sealed subset, canonical
+case/developer rules stay enforced and disabled developer declarations do not
+shadow. Unknown/external/receiver/thread/builtin-reference authority stays rejected.
+All supplied arguments execute before exact-one runtime arity checking at the caller;
+skipped bad counts remain valid. Proof still requires reachable operands. Pure
+instructions reuse fuel/stack/count/actual-byte admission without argument arrays,
+extra frames, per-call resets or the native compiler's 255-argument ceiling.
+Two new reference files match pinned Git blobs and canonical LF hashes. Original
+C helpers produce 624 O0/O2 count/tag outcomes: 105 bounded representable cases
+execute in Rust (15 successes/90 arity errors), and 519 stay explicitly helper-only
+for unavailable enum tags and UINT32_MAX declared counts. These do not allocate
+all native values or execute the native compiler/VM/error unwinder. Selected C
+signature/registration/type and compiler lookup/developer/argument roles reject
+36 mutations. Existing function-reference/argument/visibility guards and 99 syntax
+replays remain valid. Six new frontend tests cover real source predicates, shadowing,
+case/developer/authority, arity/error order, privacy/maps/quotas and isolated profiles.
+Three new legacy tests replay helpers and cover exact/one-less proof/execution
+resources, huge unreachable operands and recovery. Existing source depth now
+includes 12,000 nested pure calls with one frame; hostile streams include builtins.
+Tests reach 256 source/70,000 typed arguments. Full Windows workspace debug/release
+tests pass (202 frontend/87 legacy plus doctests), along with formatting, denied-
+warning Clippy/rustdoc and repository policy (558 source files/eight crates,
+largest 287 lines). No dependencies or alternate targets. General builtins, heap/
+entity lifetime/isdefined, scheduling/game services, full mod/diagnostic/native
+cleanup and Linux acceptance remain open. No full legacy workstream is closed.
+
+Next: remaining source control flow and value ownership, alongside broader builtin/
 semantic/call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
