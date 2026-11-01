@@ -36,6 +36,11 @@ jobs:
           python tools/test_local_scope_developer_analysis_vectors.py
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
+      - name: Test native scheduling trace admission and harness boundaries
+        run: |
+          python tools/test_vm_resume_vectors.py
+          python tools/test_scheduler_phase_vectors.py
+          python tools/test_native_x86_boundary.py
       - name: Check independent archive fixtures
         run: python tools/generate_archive_fixtures.py --check
       - name: Check independent endpoint cookie fixtures
@@ -83,6 +88,8 @@ jobs:
           python tools/generate_bsp_vectors.py reference --check
           python tools/generate_zone_pointer_vectors.py reference --check
           python tools/generate_script_vectors.py reference --check
+          python tools/generate_vm_resume_vectors.py reference --check
+          python tools/generate_scheduler_phase_vectors.py reference --check
           python tools/generate_identifier_vectors.py reference --check
           python tools/generate_numeric_vectors.py reference --check
           python tools/generate_string_operation_vectors.py reference --check

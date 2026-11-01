@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Native reference tests now establish resume-queue and script-clock phase
+  behavior in 40 selected cases. They guide Rust continuation work; waits,
+  threads and event scheduling remain unimplemented. Assessment 0104 records
+  the exact modeled service boundaries and remaining ordering questions.
+
 - Repeated VM collection now reuses a checked array-location audit within one
   exclusive context. A 100,000-constructor test beside 70,001 host owners fits the
   unchanged work budget and 4 KiB scratch. Host-only graphs survive collection;

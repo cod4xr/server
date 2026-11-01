@@ -34,13 +34,20 @@ def function(source: str, name: str) -> str:
 
 
 def assembly(reference: ReferenceSource, functions: tuple[str, ...] = FUNCTIONS,
-             externals: set[str] = EXTERNALS) -> str:
-    source = reference.files["src/asmsource/_scr_compiler.asm"]
+             externals: set[str] = EXTERNALS, *,
+             source_name: str = "src/asmsource/_scr_compiler.asm",
+             modeled_globals: frozenset[str] = frozenset()) -> str:
+    source = reference.files[source_name]
     body = "\n".join(function(source, name) for name in functions)
     externs = re.findall(r"(?m)^\s*extern (\w+)\s*$", source)
     used = {name for name in externs if re.search(r"\b" + re.escape(name) + r"\b", body)}
     labels = set(re.findall(r"(?m)^(\w+):", body))
     used.update(set(re.findall(r"\bcall (\w+)", body)) - labels)
+    for name in modeled_globals:
+        if not re.search(rf"(?m)^{re.escape(name)}: resb 0x[0-9a-f]+$", source) or not re.search(
+                r"\b" + re.escape(name) + r"\b", body):
+            raise ValueError("Modeled native zero-initialized global boundary changed")
+    used.update(modeled_globals)
     if used != externals:
         raise ValueError("Selected native scope service boundary changed")
     # Tables must retain their actual labels/entries; do not reimplement dispatch.
@@ -49,7 +56,7 @@ def assembly(reference: ReferenceSource, functions: tuple[str, ...] = FUNCTIONS,
     pieces = []
     for index, match in enumerate(boundaries):
         label = re.match(r"(\w+):", match.group())
-        if label and re.search(r"\b" + re.escape(label[1]) + r"\b", body):
+        if label and label[1] not in modeled_globals and re.search(r"\b" + re.escape(label[1]) + r"\b", body):
             end = boundaries[index + 1].start() if index + 1 < len(boundaries) else len(data)
             pieces.append(data[match.start():end])
     return ("BITS 32\nSECTION .text\n"
@@ -66,7 +73,9 @@ def checked(command: list[str], directory: Path) -> None:
 
 def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
         functions: tuple[str, ...] = FUNCTIONS, externals: set[str] = EXTERNALS,
-        drivers: tuple[str, ...] = DRIVERS, extra_sources: tuple[str, ...] = ()) -> bytes:
+        drivers: tuple[str, ...] = DRIVERS, extra_sources: tuple[str, ...] = (),
+        source_name: str = "src/asmsource/_scr_compiler.asm",
+        modeled_globals: frozenset[str] = frozenset()) -> bytes:
     """Build temporary freestanding 32-bit tools; never create Cargo targets/caches."""
     if sys.platform not in ("win32", "linux"):
         raise ValueError("Native scope harness currently supports Windows/Linux x86 hosts")
@@ -74,7 +83,9 @@ def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
         directory = Path(scratch).resolve()
         if directory.parent != Path(tempfile.gettempdir()).resolve() or not directory.name.startswith("cod4x-local-scope-"):
             raise ValueError("Native scope scratch escaped its temporary directory")
-        (directory / "native.asm").write_text(assembly(reference, functions, externals), encoding="utf-8")
+        (directory / "native.asm").write_text(
+            assembly(reference, functions, externals, source_name=source_name,
+                     modeled_globals=modeled_globals), encoding="utf-8")
         driver = "\n\n".join((ROOT / "tools/oracles" / name).read_text(encoding="utf-8") for name in drivers)
         (directory / "driver.c").write_text(driver, encoding="utf-8")
         additional = []

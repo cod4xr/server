@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0104 adds ten actual selected x86 VM_Resume and thirty copied C
+clock-phase cases, 18 trace admissions and five harness-boundary tests. Resume
+rechecks the queue after each modeled body; current-thread processing/entity
+cleanup precede time advancement. Queue direction, archives, bodies, locals,
+references/freeing and C field layouts/services remain modeled as documented.
+Do not infer full wait0/frame-end ordering or native RC from these families.
+The shared native runner's source/BSS selection defaults preserve all seven
+scope fixtures. Keep new generation/admission and old scope gates in CI. Rust
+remains accepted at 0103; source waits, scheduling and full GSC stay open. Own
+flat frames/module lifetime across suspension, retain cumulative budgets and
+complete roots, and review prepaid cleanup on cancellation/drop before activation.
+
 ADR 0103 accepts VM array-location audit reuse under KernelHeapContext's exclusive
 object-store borrow. Mint the private, nonconstructible witness only after a full
 successful initial object collection; check store identity and reset on rebind.

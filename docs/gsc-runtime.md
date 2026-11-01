@@ -1,5 +1,12 @@
 # Expanded GSC runtime contract
 
+Assessment 0104 records ten actual selected native resume and thirty copied
+clock-phase cases. Resume rechecks its modeled queue after every body; current
+thread processing and entity cleanup precede clock advancement. Complete trace
+and harness-boundary tests guard these observations. Native insertion direction,
+wait opcode execution, archive creation, general frames/ownership and Rust
+scheduling remain open. These tests close no full-GSC workstream or S5 gate.
+
 ADR 0103 reuses a complete initial array-location audit during one exclusive VM
 context borrow. Later collections trace owned data records while retaining graph/
 generation/counter/resource/sweep checks. Public collection and cycle analysis
