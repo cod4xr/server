@@ -22,13 +22,22 @@ static Word *assignment(Word id)
     Word *result = node(2); result[1] = (Word)name(id); result[2] = (Word)expression(1);
     return result;
 }
-static Word *pair(Word *first, Word *second)
+static Word *list(Word **statements, Word count)
 {
-    Word *tail = node(0); tail[0] = (Word)second;
-    Word *head = node(0); head[0] = (Word)first; head[1] = (Word)tail;
+    if (count > 32) unexpected("scope AST list bound");
+    Word *head = 0;
+    while (count) {
+        Word *link = node(0); link[0] = (Word)statements[--count]; link[1] = (Word)head;
+        head = link;
+    }
     Word *root = node(0); root[1] = (Word)head;
     Word *handle = node(0); handle[0] = (Word)root;
-    Word *result = node(0x2c); result[1] = (Word)handle;
+    return handle;
+}
+static Word *pair(Word *first, Word *second)
+{
+    Word *statements[] = {first, second};
+    Word *result = node(0x2c); result[1] = (Word)list(statements, 2);
     return result;
 }
 static Word *branch(Word *yes, Word *no)

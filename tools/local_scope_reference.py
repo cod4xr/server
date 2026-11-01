@@ -27,7 +27,7 @@ DRIVERS = ("local_scope_platform.c", "local_scope_services.c", "local_scope_ast.
 def function(source: str, name: str) -> str:
     """Keep the actual complete function and all its local assembly labels."""
     start = source.index(name + ":\n")
-    following = re.search(r"(?m)^;[^\n]+\(", source[start:])
+    following = re.search(r"(?m)^(?:;[^\n]+\(|SECTION )", source[start:])
     if following is None:
         raise ValueError("Native scope function boundary changed")
     return source[start:start + following.start()]

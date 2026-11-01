@@ -15,7 +15,8 @@ void *TempMallocAlign(Word size) { return TempMalloc(size); }
 __attribute__((regparm(3))) void EmitOpcode(Word opcode, Word change, Word call)
 {
     if (event_count == 128 || opcode > 255 || call != 0 ||
-        change != (opcode == 0x5e ? (Word)-1 : 0)) unexpected("scope opcode profile");
+        change != (opcode == 0x5e || opcode == 0x7c ? (Word)-1 : 0))
+        unexpected("scope opcode profile");
     event_offsets[event_count++] = code_size;
     *(unsigned char *)TempMalloc(1) = (unsigned char)opcode;
 }
@@ -49,6 +50,7 @@ __attribute__((regparm(3))) void EmitIfElseStatement(
 __attribute__((regparm(3))) void EmitWhileStatement(Word *, Word *, Word, Word, Word *, Word **);
 __attribute__((regparm(3))) void EmitForStatement(
     Word *, Word *, Word *, Word *, Word, Word, Word *, Word **, Word **);
+__attribute__((regparm(3))) void EmitSwitchStatement(Word *, Word *, Word, Word, Word, Word *);
 __attribute__((regparm(2))) void EmitBreakStatement(Word, Word *);
 __attribute__((regparm(2))) void EmitContinueStatement(Word, Word *);
 
@@ -88,7 +90,13 @@ __attribute__((regparm(3))) void EmitStatement(Word *statement, Word last, Word 
         EmitForStatement((Word *)statement[1], (Word *)statement[2],
             (Word *)statement[3], (Word *)statement[4], 0, 0,
             block, (Word **)&statement[7], (Word **)&statement[8]);
-    } else if (statement[0] == 0x3f) {
+    }
+#if defined(NATIVE_SCOPE_SWITCH)
+    else if (statement[0] == 0x3c) {
+        EmitSwitchStatement((Word *)statement[1], (Word *)statement[2], 0, 0, 0, block);
+    }
+#endif
+    else if (statement[0] == 0x3f) {
         EmitBreakStatement(0, block);
     } else if (statement[0] == 0x40) {
         EmitContinueStatement(0, block);

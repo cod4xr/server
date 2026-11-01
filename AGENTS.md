@@ -1,5 +1,18 @@
 # Project contract
 
+Assessment 0092 adds nine selected executed native integer-switch scope cases
+with independent state/request expectations and six admission tests (25 scope
+admission tests total). Native switch/comparator/slot/branch/loop/transfer helpers
+execute; sorting/integer-key/condition/body/output/allocator services stay modeled.
+Fallthrough can clean a private local before the next case body, without break.
+No-default/disjoint paths differ from common joins; switch break must preserve
+outer loop continue. Do not use one generic initialized-set intersection as a
+physical lifetime rule. Preserve corrected 34/36/10 prior fixtures. Run all four
+scope generators/admission suites and existing local/switch mutations/structural
+guards. Constant conditions and iterative metered Rust scopes remain open.
+Developer statements and source indexed writes stay rejected until their reviewed
+cleanup is implemented. No native parser/VM/freeing or full-GSC claim follows.
+
 Assessment 0091 adds ten executed selected native while/for scope-emission cases
 with independent state/request/condition-count expectations. It CORRECTS the six
 0089 for planning inputs (15/16/17 x later0/1): present optional conditions require

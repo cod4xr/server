@@ -14,6 +14,17 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0092 adds nine selected native integer-switch scope-emission cases
+with independent state/request/condition expectations and six admission tests.
+Fallthrough removes a private local before the next case body; no-default/disjoint
+locals differ from common joins, and switch break preserves an outer loop's
+continue path. Sorting/key/output/body services remain modeled; no native VM/value
+freeing claim. Earlier 34/36/10 scope fixtures stay byte-identical. Windows tools/
+guards/policy pass (1009 sources/eight crates/largest 287); 25 scope-admission
+tests now run. No Rust behavior changes; full Rust gates remain ADR 0088 and
+Linux/hosted CI is unrun. Constant conditions and iterative Rust physical scopes
+remain next; developer statements/source writes remain rejected.
+
 Assessment 0091 executes ten selected native loop-emission cases with independent
 state/request/condition-count checks. It corrects six 0089 for AST inputs that
 omitted the required tag-0x41 present-condition wrapper; the former snapshots took
