@@ -104,8 +104,8 @@ fn invalid_field_receivers_do_not_autovivify_and_errors_retain_private_source_sp
         assert!(!format!("{module:?} {error:?} {context:?}").contains("Private"));
     }
     for source in [
-        b"main(){o=spawnstruct();o.field=1;o.field+=1;return o.field;}".as_slice(),
-        b"main(){o=spawnstruct();o.field=1;o.field++;return o.field;}".as_slice(),
+        b"main(){o=spawnstruct();o.field=1;o.field[0]+=1;return o.field;}".as_slice(),
+        b"main(){o=spawnstruct();o.field=1;o.field[0]++;return o.field;}".as_slice(),
     ] {
         assert!(
             module_compile_support::compile(

@@ -159,6 +159,8 @@ mod kernel_module_verification;
 mod kernel_reference_verification;
 #[path = "kernel_reference_width.rs"]
 mod kernel_reference_width;
+#[path = "kernel_swap.rs"]
+mod kernel_swap;
 #[path = "legacy_vectors.rs"]
 mod legacy_vectors;
 #[path = "localized_roots.rs"]

@@ -5,7 +5,10 @@ The selected field-role guard rejects 99 mutations; 35 actual C helper traces
 agree at O0/O2 with modeled lookup/ref/removal (27 Rust value replays/eight
 helper-only function words). These do not establish native allocator/free/ABI/
 compiler/VM parity. Wide/cyclic/deep/resource/source/process tests cover Rust
-ownership and admission. Compound field writes, arrays and full mods remain open.
+ownership and admission. ADR 0068 adds compound/postfix fields under selected
+compiler/update-role guards (41 mutations), with explicit invalid-postfix behavior,
+deep/exact-budget/pressure/failure/process tests. This does not execute the native
+compiler/VM. Arrays and full mods remain open.
 
 ADR 0066 adds bound-source empty struct construction. A selected-role guard rejects
 22 mutations; 32 actual constructor/type/ref helper traces match O0/O2 with modeled

@@ -13,7 +13,7 @@ pub enum KernelBranchCondition {
     IfTrue,
 }
 
-/// Typed primitive instruction profile, not native/serialized GSC bytecode or a full VM.
+/// Typed checked instruction profile, not native/serialized GSC bytecode or a full VM.
 ///
 /// Jump targets index instructions in this program, independently of old short
 /// offsets. Constants and stack operands do not appear in Debug output.
@@ -91,9 +91,11 @@ pub enum KernelInstruction {
     LogicalNot,
     /// Applies integer-only bitwise complement.
     BitwiseNot,
-    /// Duplicates the top primitive value.
+    /// Duplicates the top copied value; heap snapshots retain their existing identity.
     Duplicate,
-    /// Discards the top primitive value.
+    /// Exchanges the top two copied values without allocation or changing height.
+    Swap,
+    /// Discards the top copied value without collecting its backing storage.
     Discard,
     /// Continues at an absolute instruction index.
     Jump(usize),
@@ -137,6 +139,7 @@ impl KernelInstruction {
             | Self::LoadField(_)
             | Self::RequireInteger => (1, 1),
             Self::Duplicate => (1, 2),
+            Self::Swap => (2, 2),
             Self::StoreField(_) => (2, 0),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),
             Self::Jump(_) => (0, 0),

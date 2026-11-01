@@ -201,6 +201,14 @@ mod source_boundaries;
 mod source_field_collection;
 #[path = "source_field_limits.rs"]
 mod source_field_limits;
+#[path = "source_field_update_depth.rs"]
+mod source_field_update_depth;
+#[path = "source_field_update_failures.rs"]
+mod source_field_update_failures;
+#[path = "source_field_update_limits.rs"]
+mod source_field_update_limits;
+#[path = "source_field_updates.rs"]
+mod source_field_updates;
 #[path = "source_field_width.rs"]
 mod source_field_width;
 #[path = "source_localized_strings.rs"]

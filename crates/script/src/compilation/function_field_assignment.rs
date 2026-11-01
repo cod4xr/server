@@ -15,16 +15,9 @@ pub(super) fn assign<'tree, 'source>(
     target: LegacySyntaxNode<'tree, 'source>,
     value: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<bool, FunctionCompileError> {
-    if !builder.mode.bound() {
-        return Ok(false);
-    }
-    let reference = LegacyReferenceSyntax::from_node(target).map_err(|_| {
-        function_compile_error::at(target.span(), FunctionCompileErrorKind::InvalidStructure)
-    })?;
-    let LegacyReferenceKind::Field { object, name } = reference.kind() else {
+    let Some((object, index)) = field_target(builder, target)? else {
         return Ok(false);
     };
-    let index = function_field_names::retain(builder, name)?;
     let span = function_body::child(statement, 1, 3)?.span();
     builder.push_task(
         FunctionTask::Emit {
@@ -37,4 +30,21 @@ pub(super) fn assign<'tree, 'source>(
     builder.push_task(FunctionTask::Visit(object), object.span())?;
     builder.push_task(FunctionTask::Visit(value), value.span())?;
     Ok(true)
+}
+
+pub(super) fn field_target<'tree, 'source>(
+    builder: &mut FunctionBuilder<'tree, 'source>,
+    target: LegacySyntaxNode<'tree, 'source>,
+) -> Result<Option<(LegacySyntaxNode<'tree, 'source>, usize)>, FunctionCompileError> {
+    if !builder.mode.bound() {
+        return Ok(None);
+    }
+    let reference = LegacyReferenceSyntax::from_node(target).map_err(|_| {
+        function_compile_error::at(target.span(), FunctionCompileErrorKind::InvalidStructure)
+    })?;
+    let LegacyReferenceKind::Field { object, name } = reference.kind() else {
+        return Ok(None);
+    };
+    let index = function_field_names::retain(builder, name)?;
+    Ok(Some((object, index)))
 }

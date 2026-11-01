@@ -38,8 +38,9 @@ Explicit-root shared struct storage is separately implemented and workload-teste
 under ADR 0063. ADR 0064 adds checked host reference transport and pressure roots
 through typed and compiled GSC calls. ADR 0066 adds empty struct construction with
 source/typed/process pressure tests. ADR 0067 adds ordinary struct fields and
-Undefined deletion with wide/deep/cyclic/resource tests. Compound field writes,
-general object operators and the S5 gate remain open;
+Undefined deletion with wide/deep/cyclic/resource tests. ADR 0068 adds ten compound
+field operators and integer-only postfix updates under selected source guards.
+General object operators and the S5 gate remain open;
 arrays need legacy copy-on-write before source activation.
 
 ## Next concrete work

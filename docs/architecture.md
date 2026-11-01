@@ -4,7 +4,9 @@ ADR 0067 adds immutable per-function field-name tables independently of literal
 caches. Bound-source field reads/simple writes use checked shared storage and
 explicit zero/one-value heap dispatch; operands remain rooted through pressure
 retry. Compiler and proof budgets include complete name/string staging. Arrays,
-compound field writes, general object operators and scheduling remain separate.
+general object operators and scheduling remain separate. ADR 0068 lowers compound
+fields with two receiver evaluations, and postfix with one rooted receiver plus
+a checked two-value stack permutation; both reuse existing field/value operations.
 
 ADR 0066 connects bound-source spawnstruct to explicit object-context allocation.
 Constructor operands remain rooted until the empty object is published; admitted

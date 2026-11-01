@@ -21,6 +21,9 @@ The complete server rewrite remains open.
   separate immutable tables without runtime string caches. Source tests retain
   70,000 fields, run 100,000 cyclic updates in four object slots and traverse a
   12,000-edge graph. Native helper evidence stays explicitly scoped; ADR 0067.
+  Ten compound operators and integer postfix updates now preserve the distinct
+  legacy receiver evaluation orders and old values through RHS collection;
+  exact-budget/deep/error/process tests and selected source guards cover ADR 0068.
 
 - Bound GSC `spawnstruct()` creates empty shared structs, evaluates extra arguments
   and preserves roots under allocation pressure. Tests retain 70,000 live values

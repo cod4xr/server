@@ -89,6 +89,15 @@ impl KernelStack {
         self.values.is_empty()
     }
 
+    pub(super) fn swap(&mut self, pc: usize) -> Result<(), KernelError> {
+        let count = self.values.len();
+        let Some(first) = count.checked_sub(2) else {
+            return Err(kernel_error::at(pc, KernelErrorKind::InvalidExecutionState));
+        };
+        self.values.swap(first, count - 1);
+        Ok(())
+    }
+
     pub(super) fn values(&self) -> impl Iterator<Item = KernelValue> + Clone {
         self.values.iter().copied()
     }

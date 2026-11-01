@@ -1,5 +1,14 @@
 # Project contract
 
+ADR 0068 adds ten compound field operators and integer-only postfix updates.
+Compound must read the receiver, evaluate RHS/operator and reevaluate the writable
+receiver; postfix selects once and retains it on the checked stack. Preserve old
+values through caller/RHS collection, operator spans, strict integer wrapping and
+unchanged fields on rejected postfix inputs. Swap is a checked allocation-free
+two-value permutation. Run script_field_update_reference.py (41 mutations), deep/
+exact-budget/failure/pressure tests and the real process test. These are selected
+source roles and Rust checks, not native whole-compiler/VM/error-cleanup parity.
+
 ADR 0067 adds ordinary bound-source field reads/simple writes and Undefined
 deletion. Keep independent owned field-name tables out of runtime string caches;
 admit complete staging/proof rows and bytes with wide per-function operands.
@@ -9,7 +18,7 @@ global work/scratch accounting. Check generate_field_vectors.py --check (35 actu
 helper traces; 27 Rust replays/eight function-word helper-only) and
 script_field_reference.py (99 mutations). Lookup/ref/removal services are modeled;
 do not claim native freeing/ABI/compiler/VM parity. Keep wide/cyclic/deep/exact
-budget/source/process tests. Compound field writes, arrays, methods/self, entity
+budget/source/process tests. Indexed field writes, arrays, methods/self, entity
 lifetimes and scheduling remain open.
 
 ADR 0066 adds sealed SpawnStruct and bound-source spawnstruct through explicit

@@ -65,3 +65,20 @@ fn invalid_field_receivers_keep_private_human_logs_and_empty_result_output() {
     assert!(!logs.contains(file.0.to_string_lossy().as_ref()));
     assert!(!logs.contains('\u{1b}'));
 }
+
+#[test]
+fn offline_compound_and_postfix_field_updates_execute_with_readable_private_logs() {
+    let file = FixtureFile::from_bytes(br"main(){o=spawnstruct();o.PrivateField=35;o.PrivateField*=2;o.PrivateField++;return o.PrivateField;}");
+    let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args(["--color", "never", "--execute-gsc"])
+        .arg(&file.0)
+        .output()
+        .expect("Field updates in real process");
+    assert!(output.status.success());
+    assert_eq!(output.stdout, b"integer 71\n");
+    let logs = String::from_utf8(output.stderr).expect("Readable logs");
+    assert!(logs.contains("script.executed"));
+    assert!(!logs.contains("PrivateField"));
+    assert!(!logs.contains(file.0.to_string_lossy().as_ref()));
+    assert!(!logs.contains('\u{1b}'));
+}

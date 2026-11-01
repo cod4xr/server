@@ -93,6 +93,7 @@ jobs:
           python tools/script_struct_reference.py reference
           python tools/generate_field_vectors.py reference --check
           python tools/script_field_reference.py reference
+          python tools/script_field_update_reference.py reference
           python tools/script_string_access_reference.py reference
           python tools/generate_defined_vectors.py reference --check
           python tools/script_defined_reference.py reference

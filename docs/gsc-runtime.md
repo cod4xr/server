@@ -3,7 +3,9 @@
 Ordinary bound-source struct reads/simple writes now use independent immutable
 field-name tables, preserving aliases, missing Undefined, Undefined deletion and
 RHS-before-receiver order (ADR 0067). Wide/cyclic/deep/resource/source/process
-tests cover the subset. Compound field writes, arrays, entity/method/self behavior,
+tests cover the subset. ADR 0068 adds compound/postfix field updates with guarded
+distinct receiver evaluation orders and retained old values through RHS collection.
+Arrays, entity/method/self behavior,
 scheduling and full stock/mod acceptance remain open.
 
 Bound-source spawnstruct now allocates empty shared structs through an explicit

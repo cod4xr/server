@@ -82,6 +82,7 @@ pub(super) fn apply(
             KernelValue::Number(value)
         }
         KernelInstruction::Duplicate => return stack.duplicate(pc),
+        KernelInstruction::Swap => return stack.swap(pc),
         KernelInstruction::Discard => {
             stack.pop(pc)?;
             return Ok(());

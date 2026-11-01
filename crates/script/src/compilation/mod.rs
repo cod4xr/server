@@ -20,6 +20,7 @@ mod function_conditional;
 mod function_expression_lowering;
 mod function_field_assignment;
 mod function_field_names;
+mod function_field_update;
 mod function_for;
 mod function_for_clause;
 mod function_for_update;
