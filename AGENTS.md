@@ -5,9 +5,13 @@ object/field arenas, owned exact keys, separately admitted index buckets/probes,
 atomic staged growth/collection, nonwrapping generations and nested string roots.
 The object_heap_workload example and wide/churn/deep/cycle/hostile tests assess
 this component; they do not establish native GC or choose array ownership. Raw
-ObjectId copies are not owners. Current immutable constants and primitive entry
-points must reject Object values until complete object-aware VM roots/lifetimes
-are implemented. String-only VM collection cannot silently ignore an object graph.
+ObjectId copies are not owners. Immutable constants and pure/string-only entry
+points reject Object values. ADR 0064 adds checked host reference transport only
+through KernelHeapContext::with_objects, complete frame/caller/cache/external
+object/string roots, shared work/scratch and separately counted object/string
+collections. A completed object collection may persist after a later failure.
+Keep source constructors/fields, object operators, arrays and scheduling distinct.
+String-only VM collection cannot silently ignore an object graph.
 
 The heap string store backs typed execution, bound plain/localized GSC literals
 and escaped offline byte output. Preserve complete-root ownership, stale/foreign/

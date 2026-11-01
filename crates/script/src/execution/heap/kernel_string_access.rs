@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::strings::kernel_heap_error;
-use crate::execution::strings::kernel_string_allocation::KernelStringInput;
+use crate::execution::heap::kernel_heap_error;
+use crate::execution::heap::kernel_string_allocation::KernelStringInput;
 use crate::execution::{KernelErrorKind, KernelHeapContext, KernelValue};
 use crate::heap::StringId;
 use crate::legacy::LegacyNumber;

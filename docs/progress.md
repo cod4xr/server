@@ -21,10 +21,25 @@ external string roots. Fourteen new integration tests plus two private boundary
 tests cover 70,000 objects/fields, 100,000 churn cycles, 12,000-object shared/cyclic
 graphs, 1 MiB keys, exact/one-less retained/work/scratch limits, every insufficient
 growth/collection work prefix, late invalid roots, namespace/generation/lifetime
-checks and an independent 4,096-operation graph model. Script suites are now
-243 frontend/156 legacy tests, six private units and two doctests. Immutable object
-constants and every current primitive invocation path explicitly reject snapshots;
-no object-aware VM/source execution or array implementation is activated.
+checks and an independent 4,096-operation graph model. Immutable object constants
+and pure/string-only invocation paths explicitly reject snapshots. This store
+does not provide source constructors/fields, arrays or general object operators.
+
+ADR 0064 now adds optional object-aware reference transport through standalone,
+direct/indirect and compiled GSC calls. Complete live frame/caller/cache/external
+object/string roots share global work and simultaneous scratch admission. Object
+then composite string collection have separate success counts; a completed object
+collection can persist after a later failure. Seven typed/one source tests cover
+12,000 frames, 1,000 compiled loop/call allocations, caller-stack-only objects,
+cached-only strings, external/nested graph roots, every insufficient work prefix,
+exact/one-less scratch, stale/wrong-bound stores, late stale fields, returned roots
+and context reuse. Current suites are 244 frontend/163 legacy tests, six private
+units and two doctests. Full Windows workspace debug/release, denied-warning Clippy/
+rustdoc, formatting, policy (709 sources/eight crates/largest 287) and diff checks
+pass. Execution heap coordination now lives in execution/heap with separate
+accounting, validation, roots and collection leaves. No new dependency or target
+directory was introduced. Native refcount/GC/operator, Linux/hosted CI, full mods
+and joins remain open.
 
 The runnable object_heap_workload performs 100,000 updates under 64-object/string
 budgets and reports 1,613 paired collection rounds, 8,825,031 logical work steps,
@@ -36,8 +51,8 @@ not native speed/RSS claims. Full Windows workspace debug/release, formatting,
 denied-warning Clippy/rustdoc, policy (699 sources/eight crates/largest 287) and
 diff checks pass. Native array 306/69/141, string-value 3,024 and isolated defined
 351 checks still match. Linux/hosted CI, full GSC/stock mods and joins remain open.
-Next: source-grounded object field semantics and complete object-aware frame,
-temporary, caller, cached-literal, external and result roots before VM activation.
+Next: source-grounded struct constructors/field semantics and object operators,
+followed by the distinct legacy array copy/ownership strategy and broader services.
 No complete GSC workstream is closed; the approximate 10–12-workstream estimate
 has not decreased based on this component's tests or commit.
 

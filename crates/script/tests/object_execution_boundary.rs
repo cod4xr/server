@@ -13,8 +13,7 @@ use cod4x_script::execution::{
 use cod4x_script::heap::{HeapWorkBudget, ObjectHeapBudget};
 
 #[test]
-fn object_constants_and_all_primitive_invocations_reject_before_string_only_frame_or_collection_setup()
- {
+fn object_constants_and_pure_or_string_only_invocations_reject_before_frame_or_collection_setup() {
     let (mut strings, mut objects) = object_heap_support::stores(ObjectHeapBudget::default());
     let value = KernelValue::Object(allocate(&mut objects));
     let code = [

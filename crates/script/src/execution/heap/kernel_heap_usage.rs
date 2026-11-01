@@ -4,8 +4,10 @@
 pub struct KernelHeapUsage {
     /// Admitted root discovery, comparison and storage operation work, including failures.
     pub steps: u64,
-    /// Successfully completed pressure collections, including ones freeing no values.
+    /// Successfully completed string collections, including ones freeing no values.
     pub collections: u64,
+    /// Completed object collections; a subsequent string collection may still fail.
+    pub object_collections: u64,
     /// Peak simultaneous literal cache/indices, temporary root IDs and logical mark flags.
     pub peak_scratch_bytes: u64,
 }

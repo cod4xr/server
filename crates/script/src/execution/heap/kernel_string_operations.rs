@@ -8,9 +8,12 @@ pub(in crate::execution) fn validate_arguments(
     arguments: &[KernelValue],
     context: Option<&mut KernelHeapContext<'_>>,
 ) -> Result<(), KernelErrorKind> {
-    if arguments
-        .iter()
-        .any(|value| matches!(value, KernelValue::Object(_)))
+    if context
+        .as_ref()
+        .is_none_or(|context| context.objects.is_none())
+        && arguments
+            .iter()
+            .any(|value| matches!(value, KernelValue::Object(_)))
     {
         return Err(KernelErrorKind::ObjectExecutionUnsupported);
     }

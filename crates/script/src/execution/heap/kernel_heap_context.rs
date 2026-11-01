@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::fmt;
 
-use crate::execution::strings::KernelHeapUsage;
-use crate::execution::strings::kernel_heap_error;
-use crate::execution::strings::kernel_literal_cache::KernelLiteralCache;
-use crate::execution::{KernelErrorKind, KernelResource, KernelValue};
+use crate::execution::heap::KernelHeapUsage;
+use crate::execution::heap::kernel_heap_error;
+use crate::execution::heap::kernel_literal_cache::KernelLiteralCache;
+use crate::execution::heap::kernel_object_validation;
+use crate::execution::{KernelErrorKind, KernelValue};
 use crate::heap::{
-    HeapError, HeapErrorKind, HeapWorkBudget, HeapWorkUsage, StringHeap, StringHeapUsage, StringId,
+    HeapErrorKind, HeapWorkBudget, ObjectHeap, ObjectHeapUsage, ObjectId, StringHeap,
+    StringHeapUsage, StringId,
 };
 
-/// Caller-owned string execution context shared by the entire iterative call tree.
+/// Caller-owned string and optional shared-object context for the iterative call tree.
 ///
 /// Copied IDs do not own storage. Supply all host handles that must survive VM
 /// overwrites as external roots. Returned IDs stay in this borrowed heap and need
@@ -23,6 +25,8 @@ pub struct KernelHeapContext<'heap> {
     pub(super) literals: KernelLiteralCache,
     pub(super) heap: &'heap mut StringHeap,
     pub(super) external_roots: &'heap [StringId],
+    pub(super) objects: Option<&'heap mut ObjectHeap>,
+    pub(super) external_objects: &'heap [ObjectId],
     pub(super) budget: HeapWorkBudget,
     pub(super) usage: KernelHeapUsage,
 }
@@ -40,9 +44,33 @@ impl<'heap> KernelHeapContext<'heap> {
             literals: KernelLiteralCache::empty(),
             heap,
             external_roots,
+            objects: None,
+            external_objects: &[],
             budget,
             usage: KernelHeapUsage::default(),
         }
+    }
+
+    /// Adds shared struct storage and complete host object roots without allocation.
+    /// Entry validation checks the bound string store and every supplied reference.
+    /// Pressure reclamation traces all frame values and external object graphs,
+    /// then strings; a later failure may retain a completed object collection.
+    /// This transports references, not constructors/fields, array COW or a scheduler.
+    #[must_use]
+    pub fn with_objects(
+        mut self,
+        objects: &'heap mut ObjectHeap,
+        external: &'heap [ObjectId],
+    ) -> Self {
+        self.objects = Some(objects);
+        self.external_objects = external;
+        self
+    }
+
+    /// Returns optional logical object-store usage without identities or payloads.
+    #[must_use]
+    pub fn object_heap_usage(&self) -> Option<ObjectHeapUsage> {
+        self.objects.as_ref().map(|objects| objects.usage())
     }
 
     /// Returns charged global work/collection/scratch accounting, including failures.
@@ -69,11 +97,19 @@ impl<'heap> KernelHeapContext<'heap> {
         &mut self,
         arguments: &[KernelValue],
     ) -> Result<(), KernelErrorKind> {
+        kernel_object_validation::binding(self)?;
         for value in arguments {
             self.charge(1)?;
+            if let KernelValue::Object(id) = value {
+                kernel_object_validation::reference(self, *id)?;
+            }
             if let Some(id) = value.string_id() {
                 self.heap.get(id).map_err(kernel_heap_error::map)?;
             }
+        }
+        for index in 0..self.external_objects.len() {
+            self.charge(1)?;
+            kernel_object_validation::reference(self, self.external_objects[index])?;
         }
         for index in 0..self.external_roots.len() {
             self.charge(1)?;
@@ -82,93 +118,6 @@ impl<'heap> KernelHeapContext<'heap> {
                 .map_err(kernel_heap_error::map)?;
         }
         Ok(())
-    }
-
-    pub(super) fn charge(&mut self, steps: u64) -> Result<(), KernelErrorKind> {
-        let next = self
-            .usage
-            .steps
-            .checked_add(steps)
-            .ok_or(KernelErrorKind::SizeOverflow)?;
-        check(KernelResource::HeapWorkSteps, next, self.budget.max_steps)?;
-        self.usage.steps = next;
-        Ok(())
-    }
-
-    pub(super) fn scratch(&mut self, bytes: u64) -> Result<(), KernelErrorKind> {
-        let bytes = bytes
-            .checked_add(self.literals.bytes)
-            .ok_or(KernelErrorKind::SizeOverflow)?;
-        check(
-            KernelResource::HeapScratchBytes,
-            bytes,
-            self.budget.max_scratch_bytes,
-        )?;
-        self.usage.peak_scratch_bytes = self.usage.peak_scratch_bytes.max(bytes);
-        Ok(())
-    }
-
-    pub(super) fn remaining(&self, root_bytes: u64) -> Result<HeapWorkBudget, KernelErrorKind> {
-        Ok(HeapWorkBudget {
-            max_steps: self
-                .budget
-                .max_steps
-                .checked_sub(self.usage.steps)
-                .ok_or(KernelErrorKind::InvalidExecutionState)?,
-            max_scratch_bytes: self
-                .budget
-                .max_scratch_bytes
-                .checked_sub(root_bytes)
-                .and_then(|bytes| bytes.checked_sub(self.literals.bytes))
-                .ok_or(KernelErrorKind::InvalidExecutionState)?,
-        })
-    }
-
-    pub(super) fn record(
-        &mut self,
-        usage: HeapWorkUsage,
-        root_bytes: u64,
-    ) -> Result<(), KernelErrorKind> {
-        self.charge(usage.steps)?;
-        self.scratch(
-            root_bytes
-                .checked_add(usage.scratch_bytes)
-                .ok_or(KernelErrorKind::SizeOverflow)?,
-        )
-    }
-
-    pub(super) fn record_error(
-        &mut self,
-        error: HeapError,
-        root_bytes: u64,
-    ) -> Result<KernelErrorKind, KernelErrorKind> {
-        let base = self.usage.steps;
-        self.record(error.usage, root_bytes)?;
-        let mut kind = kernel_heap_error::map(error.kind);
-        if let KernelErrorKind::BudgetExceeded {
-            resource,
-            requested,
-            maximum,
-        } = &mut kind
-        {
-            match resource {
-                KernelResource::HeapWorkSteps => {
-                    *requested = base
-                        .checked_add(*requested)
-                        .ok_or(KernelErrorKind::SizeOverflow)?;
-                    *maximum = self.budget.max_steps;
-                }
-                KernelResource::HeapScratchBytes => {
-                    *requested = root_bytes
-                        .checked_add(*requested)
-                        .and_then(|bytes| bytes.checked_add(self.literals.bytes))
-                        .ok_or(KernelErrorKind::SizeOverflow)?;
-                    *maximum = self.budget.max_scratch_bytes;
-                }
-                _ => {}
-            }
-        }
-        Ok(kind)
     }
 
     pub(super) fn equal(
@@ -194,23 +143,13 @@ impl<'heap> KernelHeapContext<'heap> {
     }
 }
 
-fn check(resource: KernelResource, requested: u64, maximum: u64) -> Result<(), KernelErrorKind> {
-    if requested > maximum {
-        return Err(KernelErrorKind::BudgetExceeded {
-            resource,
-            requested,
-            maximum,
-        });
-    }
-    Ok(())
-}
-
 impl fmt::Debug for KernelHeapContext<'_> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("KernelHeapContext")
             .field("usage", &self.usage)
             .field("heap_usage", &self.heap.usage())
+            .field("object_heap_usage", &self.object_heap_usage())
             .finish_non_exhaustive()
     }
 }

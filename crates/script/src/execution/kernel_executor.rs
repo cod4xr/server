@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::execution::heap;
 use crate::execution::kernel_error;
 use crate::execution::kernel_frame::{KernelFrame, KernelFrameStep};
 use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmission};
-use crate::execution::strings;
 use crate::execution::{
     KernelError, KernelErrorKind, KernelExecutionBudget, KernelHeapContext, KernelOutcome,
     KernelResource, KernelValue, VerifiedKernelProgram,
@@ -20,7 +20,7 @@ pub(super) fn execute(
     }
     let admission = KernelLocalAdmission::admit(program.layout, arguments, budget, binding)?;
     let local_values = admission.count();
-    strings::validate_arguments(arguments, heap.as_deref_mut())
+    heap::validate_arguments(arguments, heap.as_deref_mut())
         .map_err(|kind| kernel_error::general(kind).with_locals(local_values))?;
     if let Some(heap) = heap.as_deref_mut() {
         heap.prepare_literals(program.usage.string_literals)

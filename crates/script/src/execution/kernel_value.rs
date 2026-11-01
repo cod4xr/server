@@ -23,8 +23,8 @@ pub enum KernelValue {
     String(StringId),
     /// Distinct legacy localized-string tag; no translation or host lookup occurs.
     LocalizedString(StringId),
-    /// Nonowning shared-object storage snapshot. Current primitive execution rejects
-    /// these values until object-aware frame/root ownership is integrated.
+    /// Nonowning shared struct snapshot requiring an explicit object-aware context.
+    /// Reference transport does not supply source constructors/fields or array COW.
     Object(ObjectId),
 }
 

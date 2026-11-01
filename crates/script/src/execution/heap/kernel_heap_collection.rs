@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::strings::KernelHeapContext;
+use crate::execution::heap::KernelHeapContext;
+use crate::execution::heap::kernel_object_collection;
 use crate::execution::{KernelErrorKind, KernelValue};
 use crate::heap::StringId;
 
@@ -7,6 +8,9 @@ pub(super) fn collect(
     context: &mut KernelHeapContext<'_>,
     values: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<(), KernelErrorKind> {
+    if context.objects.is_some() {
+        return kernel_object_collection::collect(context, values);
+    }
     let mut count = (context.external_roots.len() as u64)
         .checked_add(context.literals.active.len() as u64)
         .ok_or(KernelErrorKind::SizeOverflow)?;

@@ -2,6 +2,7 @@
 use std::error::Error;
 use std::fmt;
 
+use crate::heap::ObjectHeapErrorKind;
 use crate::legacy::{LegacyNumberError, LegacyVectorError};
 
 /// Program/execution resource, independent of native script capacity constants.
@@ -59,8 +60,10 @@ pub enum KernelErrorKind {
     RuntimeStringConstant,
     /// Immutable executable constants cannot root mutable object-store references.
     RuntimeObjectConstant,
-    /// Object-store values are not yet supported by the primitive execution profile.
+    /// Object transport lacks its context, or this object operation is unavailable.
     ObjectExecutionUnsupported,
+    /// Checked shared-object storage rejected a reference, binding or collection.
+    ObjectHeap(ObjectHeapErrorKind),
     /// String arguments/operations require an explicit caller-owned heap context.
     HeapContextRequired,
     /// The string belongs to a different or dropped/recreated heap owner.
@@ -217,6 +220,7 @@ impl Error for KernelError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match &self.kind {
             KernelErrorKind::Numeric(error) => Some(error),
+            KernelErrorKind::ObjectHeap(error) => Some(error),
             _ => None,
         }
     }

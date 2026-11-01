@@ -4,6 +4,14 @@
 mod defined_limits;
 #[path = "defined_vectors.rs"]
 mod defined_vectors;
+#[path = "kernel_object_lifetime.rs"]
+mod kernel_object_lifetime;
+#[path = "kernel_object_limits.rs"]
+mod kernel_object_limits;
+#[path = "kernel_object_roots.rs"]
+mod kernel_object_roots;
+#[path = "kernel_object_values.rs"]
+mod kernel_object_values;
 #[path = "object_execution_boundary.rs"]
 mod object_execution_boundary;
 #[path = "object_heap_budgets.rs"]

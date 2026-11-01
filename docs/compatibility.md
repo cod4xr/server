@@ -4,9 +4,13 @@ ADR 0063 assesses a shared struct storage component with 70,000 objects/fields,
 100,000 churn cycles, deep/cyclic graph reclamation, exact resource failures and
 an independent 4,096-operation graph model. These are Rust storage/ownership tests,
 not native object VM/collector conformance. Copied ObjectId values preserve shared
-identity without owning their store; current executable constants and primitive
-invocations reject them. Arrays, entity subtypes, object-aware VM lifetime handling
-and source object execution remain open.
+identity without owning their store; executable constants and pure/string-only
+invocations reject them. ADR 0064 permits checked host arguments through an explicit
+object context. Seven typed/one source tests cover 12,000 frames, 1,000 compiled
+loop/call allocations, caller/cache/external/nested roots, exact global limits,
+partial completed collections and returned snapshot lifetimes. This does not claim
+native refcount/GC/operator parity, source constructors/fields, arrays, entity
+subtypes or scheduling. Those and full source object execution remain open.
 
 The owned string-store component replays 54 native plain-concatenation successes
 through literal decoding, storage, concatenation and explicit reclamation; another

@@ -7,7 +7,12 @@ after complete admission/preflight; composite string collection retains every
 stored plain/localized field plus supplied external roots. Retained metadata,
 key bytes, work and staging scratch have separate budgets. Wide/churn/deep/cycle/
 hostile workloads assess this storage component. The current VM rejects object
-snapshots; object-aware frame/result ownership and legacy array COW remain open.
+snapshots in pure/string-only invocations. ADR 0064 adds optional object-aware
+reference transport and roots every frame/caller/external object graph plus direct
+and cached strings during pressure. Object then string collection share cumulative
+work and simultaneous cache/root/mark/queue scratch, with separate success counts.
+Returned snapshots need explicit host roots before later invocations. Source object
+constructors/fields, general object operators and legacy array COW remain open.
 
 The script heap now owns immutable byte strings in growable slots with opaque
 store/slot/generation references. Copies do not copy payload or grant ownership.

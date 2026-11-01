@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::execution::heap;
 use crate::execution::kernel_error;
 use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmission, KernelLocals};
 use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
-use crate::execution::strings;
 use crate::execution::{
     KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget,
     KernelFunctionReference, KernelHeapContext, KernelInstruction, KernelResource, KernelValue,
@@ -142,7 +142,7 @@ impl KernelFrame {
             }
             _ => {
                 let roots = self.values().chain(parents);
-                let value = strings::apply(instruction, &self.stack, heap, roots)
+                let value = heap::apply(instruction, &self.stack, heap, roots)
                     .map_err(|kind| kernel_error::at(pc, kind))?;
                 if let Some(value) = value {
                     let (consumed, _) = instruction

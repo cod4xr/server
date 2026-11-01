@@ -168,6 +168,13 @@ impl ObjectHeap {
         }
         Ok(id.slot)
     }
+
+    pub(crate) fn validate_strings(&self, strings: &StringHeap) -> Result<(), ObjectHeapErrorKind> {
+        if self.string_owner != strings.owner {
+            return Err(ObjectHeapErrorKind::ForeignStringHeap);
+        }
+        Ok(())
+    }
 }
 
 impl fmt::Debug for ObjectHeap {

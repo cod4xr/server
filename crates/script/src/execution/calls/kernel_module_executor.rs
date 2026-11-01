@@ -4,10 +4,10 @@ use crate::execution::calls::kernel_call_ledger::KernelCallLedger;
 use crate::execution::calls::{
     KernelCallBudget, KernelCallOutcome, KernelModuleError, VerifiedKernelModule,
 };
+use crate::execution::heap;
 use crate::execution::kernel_error;
 use crate::execution::kernel_frame::{KernelFrame, KernelFrameStep};
 use crate::execution::kernel_locals::KernelArgumentBinding;
-use crate::execution::strings;
 use crate::execution::{
     KernelError, KernelErrorKind, KernelHeapContext, KernelResource, KernelValue,
     VerifiedKernelProgram,
@@ -39,7 +39,7 @@ pub(super) fn execute(
     let admission = ledger
         .admit(proof, arguments.len())
         .map_err(|cause| ledger.error(Some(index), None, cause))?;
-    strings::validate_arguments(arguments, heap.as_deref_mut())
+    heap::validate_arguments(arguments, heap.as_deref_mut())
         .map_err(|kind| ledger.error(Some(index), None, kernel_error::general(kind)))?;
     if let Some(heap) = heap.as_deref_mut() {
         heap.prepare_literals(module.usage.string_literals)

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Source/frontend compatibility suite; leaf files retain focused tests and helpers.
 
+#[path = "bound_object_arguments.rs"]
+mod bound_object_arguments;
 mod expression_list_support;
 mod expression_support;
 mod function_compile_support;
