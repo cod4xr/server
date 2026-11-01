@@ -51,7 +51,7 @@ def main() -> None:
     expected = (
         "# Actual C pointer-size helper and packed declarations on host ABI; O0/O2.\n"
         "# Modeled parent records/ref callbacks, not native pool/cleanup/unwinding/VM or pointer ABI.\n"
-        "# Struct type 18 replays through Rust; other subtypes remain helper-only.\n"
+        "# Struct type 18 and array type 21 replay through Rust; other subtypes remain helper-only.\n"
         "# Union size word is native u16 data, not a struct field count.\n"
         "# O parent_type_word union_size_word result; all rows consume one modeled object ref.\n"
         "# SPDX-License-Identifier: AGPL-3.0-or-later\n"

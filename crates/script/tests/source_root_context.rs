@@ -71,8 +71,6 @@ fn missing_context_fails_only_at_executed_roots_without_fabricating_world_object
 #[test]
 fn unsupported_game_operations_release_read_aliases_and_do_not_change_the_host_binding() {
     for source in [
-        "main(){return game[0];}",
-        "main(){return game.size;}",
         "main(){level.private=game;return 1;}",
         "main(){return game+1;}",
     ] {

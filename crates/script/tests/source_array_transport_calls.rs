@@ -150,8 +150,6 @@ fn rejected_calls_and_array_operations_restore_host_owners_without_enabling_sour
         "main(a){return one(a,a);} one(x){return x;}",
         "main(a){return isint(a,a);}",
         "main(a){return [[a]](a);}",
-        "main(a){return a.size;}",
-        "main(a){return a[0];}",
         "main(a){if(a)return 1;return 0;}",
         "main(a){o=spawnstruct();o.private=a;return 0;}",
         "main(a){return a==a;}",

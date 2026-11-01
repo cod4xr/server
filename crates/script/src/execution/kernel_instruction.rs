@@ -65,10 +65,12 @@ pub enum KernelInstruction {
     RequireInteger,
     /// Consumes bottom-to-top index/object and pushes a copied indexed result.
     /// Vectors use strict integer component indices; plain strings return one byte
-    /// before the first NUL and require an explicit heap context.
+    /// before the first NUL and require an explicit heap context. Managed arrays
+    /// use strict legacy integer/plain-string keys in an object-aware context.
     Index,
     /// Replaces a plain string with its byte length before the first NUL, or a
-    /// checked ordinary struct with integer one. Arrays/other categories reject.
+    /// checked ordinary struct with integer one. A managed host-origin array
+    /// produces its stored count checked into int32, without native u16 truncation.
     Size,
     /// Replaces a checked struct receiver with the named field value or Undefined.
     /// The operand indexes this function's immutable field-name table.

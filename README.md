@@ -16,6 +16,14 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC can read host-managed array entries and size through arguments or
+  explicit game bindings, including direct/indirect/package calls. Reads preserve
+  host owners, shared objects, complete byte keys and wide counts. Tests cover
+  70,000 entries/key bytes, 100,000 bounded reads and exhausted-budget cleanup.
+  Run `cargo run -p cod4x-script --example array_reads --locked` (result 20).
+  ADR 0086 scopes this read-only profile; constructors, indexed writes, nested
+  ownership, scheduling and complete GSC remain open.
+
 - Closed GSC packages now resolve explicitly supplied `#include` dependencies,
   with direct/indirect calls, original file scopes, developer checks and separate
   import budgets. Tests cover 70,000 aliases/edges and full long-name identities.
@@ -51,7 +59,7 @@ The complete server rewrite remains open.
   calls and returns with explicit ownership and prepaid failure cleanup. Tests
   cover 70,000 locals, 12,001 frames, 100,000 overwrites, independent ownership
   models and exact exhausted-budget cleanup. ADR 0081 and
-  `array_transport_workload` scope this transport; source array operations,
+  `array_transport_workload` scope this transport; source constructors/writes,
   nested/ordinary logical lifetimes and scheduling remain open.
 
 - Populated array copies now stage complete keys/entries/index changes before

@@ -1,5 +1,17 @@
 # Expanded GSC runtime contract
 
+ADR 0086 executes read-only entry/size access for checked host-origin arrays.
+Arguments and explicit game bindings retain host ownership through source,
+standalone and package execution. Missing keys yield Undefined, stored Undefined
+counts, ordinary results remain shared and function tokens keep image identity.
+Strict legacy integer keys and complete plain-string byte keys use the existing
+named profile; wide typed keys/storage remain independent. Size checks int32
+conversion without u16 truncation. The array_reads example returns 20. Exact/
+shorter budgets, pressure roots, hostile identities, wide counts/keys and bounded
+churn are tested. Constructors, indexed writes, stored/nested arrays, native
+logical RC/cycle aliases, scheduler ownership and full stock/mod acceptance stay
+open; another independent array origin requires a new lifetime review.
+
 ADR 0083 adds explicit host root bindings for level/self/anim ordinary objects and
 a managed game-array value, shared across bound module/package calls. Root-only
 graphs survive collection, game reads clone VM owners, missing contexts fail only
@@ -12,8 +24,8 @@ ADR 0081 transports host-managed arrays through VM cells and direct/indirect
 calls, with explicit cloning/moves/releases, callee cleanup before caller resume,
 host-owned returns and prepaid failure cleanup. A narrow metered registry admits
 all buckets before allocation and covers pending values. Wide/deep/churn/model/
-resource/hostile/pressure tests assess transport. General source array operations,
-ordinary/nested logical lifetimes, retained cycle aliases, game/self roots,
+resource/hostile/pressure tests assess transport. General source array writes,
+ordinary/nested logical lifetimes and retained cycle aliases,
 scheduling and full stock/mod acceptance remain open.
 
 ADR 0080 links explicit include directives against the supplied closed catalog,

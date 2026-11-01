@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::heap::KernelHeapStep;
+use crate::execution::heap::kernel_array_operations;
 use crate::execution::heap::{
     kernel_object_comparison, kernel_object_validation, kernel_string_operations,
 };
@@ -37,9 +38,13 @@ pub(in crate::execution) fn apply(
     program: &VerifiedKernelProgram,
     instruction: KernelInstruction,
     stack: &KernelStack,
-    context: Option<&mut KernelHeapContext<'_>>,
+    mut context: Option<&mut KernelHeapContext<'_>>,
     roots: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<KernelHeapStep, KernelErrorKind> {
+    if let Some(value) = kernel_array_operations::apply(instruction, stack, context.as_deref_mut())?
+    {
+        return Ok(KernelHeapStep::Applied(Some(value)));
+    }
     if let (KernelInstruction::Compare(comparison), Some((left, right))) =
         (instruction, stack.binary_values())
         && (matches!(left, KernelValue::Object(_)) || matches!(right, KernelValue::Object(_)))

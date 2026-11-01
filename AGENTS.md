@@ -1,5 +1,20 @@
 # Project contract
 
+ADR 0086 adds read-only Index/Size for checked host-origin arrays. Keep every
+array derived from a still-live host argument/game location; no independent
+constructor/returning builtin, stored/nested array, indexed write, game replacement
+or scheduler shortcut. Reads return only current checked field tags, evaluate
+keys before receivers, release VM operands through prepaid cleanup and never
+detach/mutate data or host owners. Use the named strict legacy key converter;
+keep full byte keys and wide storage separate. Check int32 size conversion,
+never u16 truncate. Preserve 81 supported/19 explicit helper-only native read
+rows and 15 populated native-size replays; old outcome rows stay unchanged.
+Keep eleven source tests, exact/every-shorter budgets, pressure/scratch roots,
+hostile/image identity checks, 70k entries/key bytes and 100k reads with two VM
+slots beside 70k host aliases. Run array_reads (20), native/structural/suite
+guards and full Windows gates. General arrays, logical lifetimes, full GSC/S5
+and joins remain open. New array origins require another lifetime review.
+
 Assessment 0085 adds generate_array_read_vectors.py --check (100 actual selected
 O0/O2 read/size/error-entry traces under modeled services) and read-role guards
 (53 mutations), wired into structural checks/CI. Opaque function/nested result

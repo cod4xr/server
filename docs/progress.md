@@ -14,6 +14,24 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0086 executes read-only host-origin array indexing/size through existing
+Index/Size instructions, bound source and explicit package/root contexts. Closed
+origins and forbidden stored arrays keep host backing graphs live as VM operands
+release; construction, writes and mixed/nested logical lifetimes stay gated.
+Eleven source/four replay tests cover 81 native read rows/19 explicit helper-only
+rows, fifteen real populated native-size rows, complete key bytes, shared/function
+identity, stale/foreign errors, exact/every-shorter cleanup, paired pressure roots,
+70k entries/key bytes and 100k reads with two VM slots beside 70k host aliases.
+The example returns 20 (14 VM steps/210 heap work/576 scratch bytes/one host owner).
+Full Windows formatting, all-target denied-warning Clippy, debug/release workspace
+tests, denied-warning rustdoc, policy/diff checks pass. Both profiles preserve all
+prior test names and execute 334 frontend/240 legacy tests plus fifteen private
+script tests/two doctests. Native read/size outcomes, 53 mutations, 99 structural
+replays and twelve suite-policy regressions pass. Policy checks 957 sources/eight
+crates/largest 287 lines. Linux/hosted CI remains unrun; no complete GSC workstream
+or join gate closes. Next: review independent empty-array construction before
+another origin is admitted; general nested/writable lifetime work remains open.
+
 Assessment 0085 records 100 actual selected native read/size/error-entry traces
 with O0/O2 agreement and 53 role mutations. Explicit profiles separate current
 primitive/shared-struct data from opaque function/nested results; host-ABI vector

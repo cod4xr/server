@@ -51,6 +51,10 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// The legacy array read key is not a strict integer or a plain string.
+    ExpectedArrayIndex,
+    /// The integer read key is outside the named legacy script-index domain.
+    ArrayIndexOutOfRange,
     /// Executed special-root access requires explicit caller-supplied bindings.
     ScriptRootContextRequired,
     /// A private managed-array frame ownership or prepaid-cleanup invariant failed.
