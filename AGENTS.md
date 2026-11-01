@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0099 adds twelve actual selected developer-list/slot emission cases
+with independently expected tables/modes/requests/retained output/globals and
+eight admissions. Disabled lists still validate in mode two, then rewind output;
+enabled private slots request removal, and later planned parent names do not keep
+those cells. Nested mode diagnostics precede visits/changes. Body dispatch/abort,
+planned tables, string/temp/output and diagnostic-return services stay modeled:
+no parser/local-analysis/return-emitter/VM/freeing/unwinding claim. Source developer
+statements remain rejected pending separate analysis/control/visibility/budget/
+package/CLI review. Preserve all older five fixture families, run six generators
+and 46 admissions plus existing guards. Latest full Rust acceptance is ADR 0098
+(407 frontend/273 legacy); Linux/hosted CI remain unrun.
+
 ADR 0098 accepts bound-source plain-string/mixed switches using immutable label
 tables separate from runtime literals. Keep unchanged plain literal productions,
 decoded duplicate detection at the second source case, fallible metered heapsort

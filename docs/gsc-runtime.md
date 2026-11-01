@@ -1,5 +1,12 @@
 # Expanded GSC runtime contract
 
+Assessment 0099 executes twelve selected native developer-list/slot cases under
+modeled services and guards them with eight trace-admission tests. Disabled bodies
+still validate before output rewind; enabled private slots clean separately from
+public parent cells. Native local analysis, general body/return emission and error
+unwinding do not run in that family. Source developer blocks remain gated pending
+their separate scope/control/visibility/resource review.
+
 ADR 0098 activates plain-string/mixed switches in bound modules and supplied
 packages. Integer/string domains remain distinct; labels occupy separate immutable
 tables rather than heap strings or literal-cache slots. Metered in-place sorting
