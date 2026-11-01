@@ -36,6 +36,10 @@ pub enum ObjectResource {
 /// Sanitized shared-object failure without keys, values, identities or addresses.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ObjectHeapErrorKind {
+    /// The explicitly empty-only detachment API received populated data.
+    ExpectedEmptyArray,
+    /// Indexed mutation requires a unique managed value; no COW selection occurred.
+    SharedArray,
     /// A field operation or ordinary struct reference received an array data node.
     ExpectedStruct,
     /// An array data operation received an ordinary struct node.

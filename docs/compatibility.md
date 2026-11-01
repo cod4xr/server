@@ -1,5 +1,12 @@
 # Compatibility contract
 
+ADR 0073 adds typed unique-entry storage for current primitives/shared structs.
+Ten integration tests and two private tests cover wide keys, bounded churn, a
+16,384-operation independent model, exact failures, roots and malformed input.
+Three native U/V/F semantic-state replays cover ordering/raw Undefined/removal;
+they do not establish native allocation/free-list/cleanup/VM parity. Shared writes
+reject, and populated/nested COW, nested values and source arrays remain open.
+
 ADR 0072 adds checked host-owned empty-array locations and empty detachment only.
 Four zero-key native alias states replay with explicit host aliases; they do not
 execute retained-cycle topology. Thirteen managed-value tests plus four key and

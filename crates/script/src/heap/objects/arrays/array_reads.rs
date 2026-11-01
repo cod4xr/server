@@ -22,7 +22,7 @@ impl ObjectHeap {
         })
     }
 
-    /// Returns the checked stored array entry count; current arrays are empty.
+    /// Returns the checked stored array entry count.
     /// This is metadata access, not source .size or native packed-size arithmetic.
     /// # Errors
     /// Rejects stale/foreign/wrong-kind data and exhausted work without mutation.

@@ -1,5 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
+#[path = "array_entry_budgets.rs"]
+mod array_entry_budgets;
+#[path = "array_entry_hostile.rs"]
+mod array_entry_hostile;
+#[path = "array_entry_model.rs"]
+mod array_entry_model;
+#[path = "array_entry_roots.rs"]
+mod array_entry_roots;
+#[path = "array_entry_stress.rs"]
+mod array_entry_stress;
+#[path = "array_entry_values.rs"]
+mod array_entry_values;
+#[path = "array_entry_vectors.rs"]
+mod array_entry_vectors;
+#[path = "array_entry_work.rs"]
+mod array_entry_work;
 #[path = "array_value_churn.rs"]
 mod array_value_churn;
 #[path = "array_value_collection.rs"]

@@ -11,7 +11,8 @@ impl ObjectHeap {
     ///
     /// The location is a collection root until [`Self::release_array_value`] is called.
     /// Copying its handle creates no additional owner. This storage component
-    /// does not activate source arrays, indexed storage or the array VM.
+    /// does not activate source arrays or the array VM. Indexed storage uses the
+    /// separate checked unique-entry APIs.
     /// # Errors
     /// Limits, overflow/identity exhaustion and fallible allocation publish no
     /// value/data node. Spare arena capacity may grow outside logical counters.

@@ -45,8 +45,8 @@ operators and the S5 gate remain open;
 arrays need legacy copy-on-write before source activation.
 
 ADR 0072 implements only host-owned empty-array values, snapshots and empty
-detachment. Wide/churn/model/resource tests assess that component; indexed and
-nested COW, cycle-alias markers and frame/field/scheduler ownership still gate
+detachment. ADR 0073 adds checked typed unique entries. Populated/nested COW,
+cycle-alias markers and frame/field/scheduler ownership still gate
 source-array execution. This does not close S5 or a full-GSC workstream.
 
 ## Next concrete work

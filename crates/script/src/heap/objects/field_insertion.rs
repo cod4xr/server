@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::KernelValue;
+use crate::heap::objects::field_key::FieldKey;
 use crate::heap::objects::index_rebuild;
 use crate::heap::objects::object_slot::{Field, FieldSlot, ObjectState};
 use crate::heap::objects::object_work::ObjectWork;
@@ -9,7 +10,7 @@ pub(super) fn insert(
     heap: &mut ObjectHeap,
     owner: usize,
     hash: u64,
-    key: &[u8],
+    key: FieldKey<'_>,
     value: KernelValue,
     bucket: Option<usize>,
     work: &mut ObjectWork,
@@ -42,7 +43,7 @@ pub(super) fn insert(
         .ok_or(ObjectHeapErrorKind::SizeOverflow)?;
     usage.key_bytes = usage
         .key_bytes
-        .checked_add(key.len() as u64)
+        .checked_add(key.len()? as u64)
         .ok_or(ObjectHeapErrorKind::SizeOverflow)?;
     if heap.free_field.is_none() {
         usage.field_slots = usage
@@ -67,7 +68,7 @@ pub(super) fn insert(
     } else {
         bucket.ok_or(ObjectHeapErrorKind::InvalidState)?
     };
-    let bytes = copy_key(key, work)?;
+    let bytes = key.copy(work)?;
     if heap.free_field.is_none() {
         if heap.fields.len() == heap.fields.capacity() {
             work.charge(heap.fields.len() as u64)?;
@@ -112,14 +113,4 @@ pub(super) fn insert(
     }
     heap.usage = usage;
     Ok(())
-}
-
-fn copy_key(key: &[u8], work: &mut ObjectWork) -> Result<Vec<u8>, ObjectHeapErrorKind> {
-    work.charge(key.len() as u64)?;
-    let mut bytes = Vec::new();
-    bytes
-        .try_reserve_exact(key.len())
-        .map_err(|_| ObjectHeapErrorKind::AllocationFailed)?;
-    bytes.extend_from_slice(key);
-    Ok(bytes)
 }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::KernelValue;
+use crate::heap::objects::field_key::FieldKey;
 use crate::heap::objects::object_slot::FieldSlot;
 use crate::heap::objects::object_work::ObjectWork;
 use crate::heap::objects::{
@@ -55,7 +56,15 @@ pub(super) fn put(
             };
             return Ok(Some(std::mem::replace(&mut field.value, value)));
         }
-        field_insertion::insert(heap, owner, hash, key, value, found.bucket, &mut work)?;
+        field_insertion::insert(
+            heap,
+            owner,
+            hash,
+            FieldKey::Bytes(key),
+            value,
+            found.bucket,
+            &mut work,
+        )?;
         Ok(None)
     })();
     result

@@ -3,6 +3,9 @@ mod arrays;
 mod cycles;
 mod field_index;
 mod field_insertion;
+mod field_key;
+#[cfg(test)]
+mod field_key_tests;
 mod field_removal;
 mod index_rebuild;
 mod object_allocation;

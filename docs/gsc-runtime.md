@@ -1,5 +1,11 @@
 # Expanded GSC runtime contract
 
+ADR 0073 adds typed unique-value array entries using existing metered fields/index.
+Reads/enumeration borrow nonowning snapshots; writes/deletes require one owner and
+retain raw Undefined until explicit deletion. Wide/churn/model/resource/native-state
+tests assess storage, not source array execution. Populated/nested COW, nested
+array values, cycle-alias markers and VM ownership still gate source activation.
+
 ADR 0072 implements the managed empty-data portion of proposal 0071: explicit
 host-owned locations, nonowning snapshots and empty detachment under wide quotas.
 Tests retain 70,000 arrays/owners and churn 100,000 times within two data/value

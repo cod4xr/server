@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::heap::objects::ObjectHeapErrorKind;
+use crate::heap::objects::field_key::FieldKey;
 use crate::heap::objects::object_slot::FieldSlot;
 use crate::heap::objects::object_work::ObjectWork;
 
@@ -31,6 +32,18 @@ impl FieldIndex {
         key: &[u8],
         work: &mut ObjectWork,
     ) -> Result<Lookup, ObjectHeapErrorKind> {
+        self.lookup_key(fields, owner, hash, FieldKey::Bytes(key), work)
+    }
+
+    pub(super) fn lookup_key(
+        &self,
+        fields: &[FieldSlot],
+        owner: usize,
+        hash: u64,
+        key: FieldKey<'_>,
+        work: &mut ObjectWork,
+    ) -> Result<Lookup, ObjectHeapErrorKind> {
+        let key_len = key.len()?;
         if self.buckets.is_empty() {
             return Ok(Lookup {
                 field: None,
@@ -55,9 +68,9 @@ impl FieldIndex {
                     let Some(FieldSlot::Occupied(field)) = fields.get(index) else {
                         return Err(ObjectHeapErrorKind::InvalidState);
                     };
-                    if field.owner == owner && field.hash == hash && field.key.len() == key.len() {
-                        work.charge(key.len() as u64)?;
-                        if field.key == key {
+                    if field.owner == owner && field.hash == hash && field.key.len() == key_len {
+                        work.charge(key_len as u64)?;
+                        if key.matches(&field.key) {
                             return Ok(Lookup {
                                 field: Some(index),
                                 bucket: Some(position),

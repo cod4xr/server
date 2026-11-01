@@ -2,7 +2,12 @@
 mod array_allocation;
 pub(super) mod array_collection;
 mod array_cow;
+mod array_entries;
+#[cfg(test)]
+mod array_entry_tests;
 mod array_id;
+mod array_keys;
+mod array_lookup;
 mod array_operation;
 mod array_reads;
 mod array_resolution;

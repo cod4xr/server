@@ -1,5 +1,16 @@
 # Project contract
 
+ADR 0073 adds typed integer/byte-key entries through checked UNIQUE managed values.
+Reads use nonowning data snapshots; shared writes/deletes return SharedArray.
+Reuse the field arena/index/links, preserve complete lossless encodings, prepaid
+hash/probe/copy visits and unique operation atomicity. Keys include owned tag bytes
+in quotas; public APIs never expose encoded buffers. Keep raw Undefined storage
+distinct from future VM assignment deletion. Populated data must reject the empty
+copy API as ExpectedEmptyArray. Retain order/native U/V/F state replays, wide/churn/
+model/hostile/exact-budget tests, forced collisions/malformed-key preflight and
+array_entry_workload. Nested values, populated/nested COW, cycle markers and array
+source activation remain open. Do not turn the unique API into shared mutation.
+
 ADR 0072 implements managed host-owned EMPTY array values and nonowning data
 snapshots, explicit copy/retain/release and empty detachment only. Raw handle
 copies create no owner; live locations root data until release. Preserve checked
@@ -115,8 +126,8 @@ uses checked stack effects. Run generate_string_access_vectors.py --check (896
 actual helper outcomes) and script_string_access_reference.py (46 mutations).
 Returning oracle error callbacks are not native unwinding/interner/GC evidence.
 
-Array semantics are assessed in ADR 0060; ADR 0072 adds an empty managed component,
-but no indexed store or array VM instructions. Preserve native local-slot
+Array semantics are assessed in ADR 0060; ADRs 0072/0073 add managed values and
+typed unique entries, but no array VM instructions. Preserve native local-slot
 copy-on-write, recursive nested-array copies,
 shared struct identity and copy-induced sibling-order reversal. Run
 generate_array_vectors.py --check (306 helper traces at O0/O2 with modeled

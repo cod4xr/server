@@ -1,12 +1,19 @@
 # Architecture and expansion
 
+ADR 0073 reuses the flat field arena/index/links for typed array entries without
+growing struct field records or adding a duplicate collector. Private tagged owned
+keys preserve full u64 indices/binary bytes; borrowed queries allocate no temporary
+encoding. Only checked unique managed locations mutate; snapshots read/enumerate.
+Existing graph/string roots now include populated entries. Populated/nested COW,
+nested array values and VM/frame/scheduler ownership still gate source arrays.
+
 ADR 0072 implements managed host-owned empty-array locations separately from
 nonowning data snapshots. Data shares the parent arena through lazy parallel
 classification/count rows; location identities use an independent full namespace.
 Explicit copy/retain/release and empty detachment preflight work/resources and
 fallible growth before publication. Collection/analysis include owned locations
 as roots and clear classification on parent reuse. Struct-only storage keeps zero
-array rows. Populated/indexed arrays, frame/field/scheduler ownership, cycle-alias
+array rows. Populated/nested COW, frame/field/scheduler ownership, cycle-alias
 markers and source/VM activation remain open under proposal 0071.
 
 ADR 0070 adds a read-only complete-root cycle-boundary probe in objects/cycles.

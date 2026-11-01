@@ -31,13 +31,7 @@ pub(in crate::heap::objects) fn preflight(
     for (index, metadata) in arrays.metadata.iter().enumerate() {
         work.charge(1)?;
         if metadata.is_array {
-            if !matches!(
-                heap.objects[index].state,
-                ObjectState::Occupied {
-                    first: None,
-                    fields: 0
-                }
-            ) {
+            if !matches!(heap.objects[index].state, ObjectState::Occupied { .. }) {
                 return Err(ObjectHeapErrorKind::InvalidState);
             }
             total = total

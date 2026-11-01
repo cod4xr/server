@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Typed array entries now support integer/byte keys, primitives/shared structs,
+  checked reads and unique-value writes/removals. Shared writes reject; populated
+  COW and nested/source arrays remain open. Tests cover 70,000 mixed keys, 100,000
+  updates in one field slot, an independent model, exact failures and nested
+  ordinary struct/string roots. ADR 0073 and `array_entry_workload` record scope.
+
 - Managed empty-array values have explicit checked ownership, copy/retain/release
   and empty-data detachment. Tests exceed 65,535 values/owners and run 100,000
   copy/detach/release cycles within two data/value slots. Logical budgets include

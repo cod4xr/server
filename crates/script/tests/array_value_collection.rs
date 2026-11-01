@@ -6,7 +6,8 @@
 use crate::object_heap_support::{allocate, stores};
 use cod4x_script::execution::KernelValue;
 use cod4x_script::heap::{
-    ArrayId, ArrayValueId, HeapWorkBudget, ObjectHeap, ObjectHeapBudget, ObjectId, StringHeap,
+    ArrayId, ArrayKey, ArrayValueId, HeapWorkBudget, ObjectHeap, ObjectHeapBudget, ObjectId,
+    StringHeap,
 };
 
 fn graph() -> (StringHeap, ObjectHeap, ArrayValueId, ArrayId, ObjectId) {
@@ -18,6 +19,16 @@ fn graph() -> (StringHeap, ObjectHeap, ArrayValueId, ArrayId, ObjectId) {
         .value;
     let garbage = heap.new_array_value(budget).expect("Unowned garbage").value;
     let dead_data = heap.array_data(garbage, budget).expect("Snapshot").value;
+    for target in [value, garbage] {
+        heap.array_put_unique(
+            target,
+            ArrayKey::Index(0),
+            KernelValue::Undefined,
+            &strings,
+            budget,
+        )
+        .expect("Live and garbage indexed entries");
+    }
     heap.release_array_value(garbage, budget)
         .expect("Leave vacant root slot");
     let cycle = allocate(&mut heap);
@@ -50,12 +61,12 @@ fn mixed_array_struct_collection_preflights_every_work_prefix_and_exact_scratch(
                 heap.array_len(dead_data, HeapWorkBudget::default())
                     .expect("No partial sweep")
                     .value,
-                0
+                1
             );
         } else {
             let collection = result.expect("Exact work and scratch");
             assert_eq!(collection.usage, usage);
-            assert_eq!((collection.objects, collection.fields), (2, 1));
+            assert_eq!((collection.objects, collection.fields), (2, 2));
         }
         let data = heap
             .array_data(value, HeapWorkBudget::default())

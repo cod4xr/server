@@ -13,11 +13,13 @@ use crate::heap::objects::{
 use crate::heap::objects::{object_allocation, object_fields, object_reclamation, object_strings};
 use crate::heap::{HeapWorkBudget, HeapWorkUsage, StringHeap};
 
-/// Shared struct graph and managed empty-array data with checked identities.
+/// Shared struct graph and managed array data with checked identities.
 ///
 /// Struct snapshots preserve shared identity and require complete supplied roots.
 /// Managed array value locations remain roots until explicit release; copying a
 /// raw location handle adds no owner. Array data snapshots remain nonowning.
+/// Indexed array writes require unique managed locations; entry values currently
+/// support primitives/shared structs, not nested arrays. Keys retain full bytes/indices.
 /// Empty-data detachment does not provide populated/nested COW, source arrays,
 /// frame/scheduler ownership, cycle-alias markers or native GC/lifetime parity.
 /// The associated string store remains separately owned; use `reclaim_strings` with

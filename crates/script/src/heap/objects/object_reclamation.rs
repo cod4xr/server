@@ -93,6 +93,10 @@ fn preflight(
     for slot in &heap.fields {
         work.charge(1)?;
         if let FieldSlot::Occupied(field) = slot {
+            if heap.arrays.is_array(field.owner) {
+                work.charge(1)?;
+                crate::heap::objects::field_key::FieldKey::decode_array(&field.key)?;
+            }
             if !matches!(
                 heap.objects.get(field.owner).map(|slot| &slot.state),
                 Some(ObjectState::Occupied { .. })

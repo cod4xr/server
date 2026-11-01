@@ -12,10 +12,10 @@ impl ObjectHeap {
     /// Selects unique data for a managed empty-array value, detaching aliases.
     ///
     /// This complete empty-data profile does not implement populated/nested copy,
-    /// cycle-alias markers, indexed storage or source arrays. Raw shared-struct
-    /// field APIs reject array data, so this profile cannot acquire content.
+    /// cycle-alias markers or source arrays. Populated data must use a future
+    /// populated-copy operation; raw shared-struct field APIs still reject arrays.
     /// # Errors
-    /// Invalid references, private nonempty data, limits/overflow or allocation
+    /// Invalid references, nonempty data, limits/overflow or allocation
     /// publish no detachment/counter change. Spare capacity may grow.
     pub fn make_empty_array_unique(
         &mut self,
@@ -31,7 +31,7 @@ impl ObjectHeap {
                     first: None
                 }
             ) {
-                return Err(ObjectHeapErrorKind::InvalidState);
+                return Err(ObjectHeapErrorKind::ExpectedEmptyArray);
             }
             if resolved.owners == 1 {
                 return Ok(ArrayCowOutcome::Unchanged);
