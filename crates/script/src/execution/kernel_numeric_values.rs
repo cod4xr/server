@@ -50,9 +50,10 @@ pub(super) fn construct(values: [KernelValue; 3]) -> Result<KernelValue, KernelE
 fn number(value: KernelValue) -> Result<LegacyNumber, KernelErrorKind> {
     match value {
         KernelValue::Number(value) => Ok(value),
-        KernelValue::Undefined | KernelValue::Vector(_) | KernelValue::Function(_) => {
-            Err(KernelErrorKind::ExpectedNumber)
-        }
+        KernelValue::Undefined
+        | KernelValue::Vector(_)
+        | KernelValue::Function(_)
+        | KernelValue::String(_) => Err(KernelErrorKind::ExpectedNumber),
     }
 }
 
@@ -60,6 +61,8 @@ fn operand(value: KernelValue) -> Result<LegacyVectorOperand, KernelErrorKind> {
     match value {
         KernelValue::Number(value) => Ok(LegacyVectorOperand::Number(value)),
         KernelValue::Vector(value) => Ok(LegacyVectorOperand::Vector(value)),
-        KernelValue::Undefined | KernelValue::Function(_) => Err(KernelErrorKind::ExpectedNumber),
+        KernelValue::Undefined | KernelValue::Function(_) | KernelValue::String(_) => {
+            Err(KernelErrorKind::ExpectedNumber)
+        }
     }
 }

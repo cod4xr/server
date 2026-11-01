@@ -2,6 +2,7 @@
 use std::fmt;
 
 use crate::execution::KernelFunctionReference;
+use crate::heap::StringId;
 use crate::legacy::{LegacyNumber, LegacyVector};
 
 /// Primitive-kernel values only; not the full GSC value/object/heap representation.
@@ -18,6 +19,8 @@ pub enum KernelValue {
     Vector(LegacyVector),
     /// Copied opaque module identity/index, never a native code address or ownership.
     Function(KernelFunctionReference),
+    /// Nonowning immutable string reference, checked through an explicit heap context.
+    String(StringId),
 }
 
 impl fmt::Debug for KernelValue {
@@ -27,6 +30,7 @@ impl fmt::Debug for KernelValue {
             Self::Number(_) => "KernelValue::Number(..)",
             Self::Vector(_) => "KernelValue::Vector(..)",
             Self::Function(_) => "KernelValue::Function(..)",
+            Self::String(_) => "KernelValue::String(..)",
         })
     }
 }

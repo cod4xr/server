@@ -10,6 +10,15 @@ storage component, not automatic VM frame/cache rooting or an object-cycle
 collector. Immutable source literal tables and runtime execution integration stay
 separate ownership boundaries; see ADR 0054.
 
+ADR 0055 now connects typed execution and supplied source arguments to an explicit
+borrowed KernelHeapContext. Immutable code rejects runtime string constants. One
+context shares work across the entire iterative call tree; pressure collection
+scans current/caller locals/stacks and supplied external handles before popping
+operands. Root IDs and mark flags share scratch admission. Failed work remains
+charged and failed invocations can retain completed collection/allocations. Plain
+addition/equality use checked bytes; source literals/cache/CLI output and general
+object/scheduler roots remain open. Results stay in caller-owned storage.
+
 ## Dependency direction
 
 The server and future client are peers above shared engine libraries. Shared

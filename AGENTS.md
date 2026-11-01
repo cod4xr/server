@@ -1,10 +1,12 @@
 # Project contract
 
-The heap string store is an implemented immutable-leaf component, not integrated
-GSC string execution. Preserve complete-root ownership, stale/foreign/generation
+The heap string store now backs explicit typed execution and supplied GSC source
+arguments; source string literals and CLI output remain open. Preserve complete-root
+ownership, stale/foreign/generation
 checks, atomic failed collection and independent retained/work/scratch budgets.
 VM integration must root all live frames, cached literals, external handles and
-pending results and share work across the call tree; see ADR 0054. Never describe
+pending results and share work across the call tree; see ADRs 0054/0055. Immutable
+code rejects runtime StringId constants even when unreachable. Never describe
 the component workload or helper fixtures as native VM/object-collector parity.
 
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.

@@ -4,8 +4,15 @@ The owned string-store component replays 54 native plain-concatenation successes
 through literal decoding, storage, concatenation and explicit reclamation; another
 54 native capacity failures intentionally succeed under larger budgets. These are
 distinct counts, not native interning/reference-cleanup/VM parity. Foreign/stale
-references fail explicitly; 70,000 live strings exceed the old pool width. Source,
-CLI and VM string execution remain unsupported pending integration; see ADR 0054.
+references fail explicitly; 70,000 live strings exceed the old pool width; ADR 0054.
+The same 54 successes/54 expansions now pass typed VM calls and returns under an
+explicit heap context. Source supplied-string arguments additionally exercise
+locals/for/calls under pressure, with located errors. Source literal construction
+and CLI strings remain unsupported. Byte equality is source grounded; binary host
+bytes do not establish native NUL/interner behavior. Runtime/rooting tests cover
+12,000 frames, 100,000 loop allocations in four slots, every pressure resource,
+exact-one-less work/scratch, failures/lifetimes and hostile streams. See ADR 0055;
+localized/mixed coercion, string indexing, objects/scheduling/full mods stay open.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported

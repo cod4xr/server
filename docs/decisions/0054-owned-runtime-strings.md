@@ -2,7 +2,7 @@
 
 Date: 2026-10-31
 
-Status: accepted for the string-store component; automatic VM integration remains proposed.
+Status: accepted for the string-store component; typed VM integration follows in ADR 0055.
 
 ## Context and semantic assessment
 

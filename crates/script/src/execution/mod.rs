@@ -2,8 +2,9 @@
 //! Owned verified primitive execution, not a GSC source compiler or complete VM.
 //!
 //! Instructions are typed internal data, with no serialized/native bytecode ABI.
-//! This kernel owns no objects, strings, scheduler, host services,
-//! filesystem, logging, or server state. Legacy numeric FP assumptions still apply.
+//! An explicit borrowed heap context adds owned plain-string operations/rooting.
+//! This kernel owns no scheduler, host services, filesystem, logging or server state.
+//! Legacy numeric FP assumptions still apply; full objects remain unimplemented.
 //! The separate verified-module API adds iterative primitive calls and opaque references.
 
 mod calls;
@@ -28,6 +29,7 @@ mod kernel_stack;
 mod kernel_value;
 mod kernel_verification_ledger;
 mod kernel_verifier;
+mod strings;
 mod verified_kernel_program;
 
 pub use calls::{
@@ -41,4 +43,5 @@ pub use kernel_function_layout::KernelFunctionLayout;
 pub use kernel_function_reference::KernelFunctionReference;
 pub use kernel_instruction::{KernelBranchCondition, KernelInstruction};
 pub use kernel_value::KernelValue;
+pub use strings::{KernelHeapContext, KernelHeapUsage};
 pub use verified_kernel_program::{KernelOutcome, KernelProgramUsage, VerifiedKernelProgram};

@@ -5,8 +5,8 @@ use crate::execution::kernel_executor;
 use crate::execution::kernel_locals::KernelArgumentBinding;
 use crate::execution::kernel_verifier;
 use crate::execution::{
-    KernelError, KernelExecutionBudget, KernelFunctionLayout, KernelInstruction, KernelValue,
-    KernelVerificationBudget,
+    KernelError, KernelExecutionBudget, KernelFunctionLayout, KernelHeapContext, KernelInstruction,
+    KernelValue, KernelVerificationBudget,
 };
 
 /// Successful verification accounting, excluding allocator rounding and process RSS.
@@ -110,7 +110,7 @@ impl VerifiedKernelProgram {
         arguments: &[KernelValue],
         budget: KernelExecutionBudget,
     ) -> Result<KernelOutcome, KernelError> {
-        kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::Exact)
+        kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::Exact, None)
     }
 
     /// Invokes the primitive legacy script profile with an already parameter-ordered prefix.
@@ -130,7 +130,36 @@ impl VerifiedKernelProgram {
         arguments: &[KernelValue],
         budget: KernelExecutionBudget,
     ) -> Result<KernelOutcome, KernelError> {
-        kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::LegacyScript)
+        kernel_executor::execute(
+            self,
+            arguments,
+            budget,
+            KernelArgumentBinding::LegacyScript,
+            None,
+        )
+    }
+
+    /// Executes with caller-owned strings and legacy missing/extra-argument binding.
+    /// All frame values and supplied external roots survive pressure reclamation.
+    /// Context work accumulates across calls; results borrow no temporary store.
+    ///
+    /// # Errors
+    /// Returns located runtime/resource errors and rejects foreign/stale string
+    /// arguments. Failed invocations can retain allocations or successful collection;
+    /// copied host IDs must be supplied as external roots to survive overwrites.
+    pub fn execute_with_heap(
+        &self,
+        arguments: &[KernelValue],
+        budget: KernelExecutionBudget,
+        heap: &mut KernelHeapContext<'_>,
+    ) -> Result<KernelOutcome, KernelError> {
+        kernel_executor::execute(
+            self,
+            arguments,
+            budget,
+            KernelArgumentBinding::LegacyScript,
+            Some(heap),
+        )
     }
 
     /// Returns immutable parameter/local counts without names or runtime state.

@@ -19,7 +19,8 @@ pub enum KernelBranchCondition {
 /// offsets. Constants and stack operands do not appear in Debug output.
 #[derive(Clone, Copy, Debug)]
 pub enum KernelInstruction {
-    /// Pushes an independently copied primitive value.
+    /// Pushes copied data. Runtime string handles are rejected even when unreachable;
+    /// immutable code cannot silently root references into a mutable heap.
     Constant(KernelValue),
     /// Pushes an initialized local slot; the layout bounds every operand.
     LoadLocal(usize),
@@ -58,7 +59,8 @@ pub enum KernelInstruction {
     /// Consumes bottom-to-top index/object and pushes a copied indexed result.
     /// The current primitive profile indexes vectors only, with strict integer indices.
     Index,
-    /// Pops right then left numeric/vector operands and pushes the coerced result.
+    /// Pops right then left operands. Plain-string addition requires a heap context;
+    /// mixed string coercion and other string arithmetic remain unsupported.
     Arithmetic(LegacyArithmetic),
     /// Pops right then left primitives and pushes the legacy comparison integer.
     /// Two Undefined values support equality only; mixed Undefined pairs fail.

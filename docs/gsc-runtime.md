@@ -507,8 +507,13 @@ and atomic failed complete-root reclamation. Tests cover 70,000 live values,
 exhaustion and native plain-string helper results versus capacity expansion.
 The reproducible string_heap_workload example records logical usage/work and
 elapsed time; it does not measure RSS or full VM performance. ADR 0054 accepts
-this component only. Automatic frame/cache/external roots, string KernelValue,
-source literals/operators and CLI string output remain integration work.
+this component only. ADR 0055 now adds explicit heap-backed typed execution and
+supplied-string source arguments with plain addition/equality. Pressure collection
+preserves current/caller frames and external roots under shared work/scratch limits.
+Tests include 12,000 live frames, 100,000 loop allocations using four slots, failed
+work/fuel/lifetimes, 4,096 hostile inventories and real source maps. Source literal
+tables/cache admission, CLI strings, localization/mixed coercion, string indexing,
+objects/cycles/scheduling and general library/game roots remain integration work.
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of
 small coding tasks or a delivery promise. This working breakdown uses twelve;

@@ -61,9 +61,10 @@ impl KernelStack {
     pub(super) fn number(&mut self, pc: usize) -> Result<LegacyNumber, KernelError> {
         match self.pop(pc)? {
             KernelValue::Number(value) => Ok(value),
-            KernelValue::Undefined | KernelValue::Vector(_) | KernelValue::Function(_) => {
-                Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber))
-            }
+            KernelValue::Undefined
+            | KernelValue::Vector(_)
+            | KernelValue::Function(_)
+            | KernelValue::String(_) => Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber)),
         }
     }
 
@@ -84,6 +85,17 @@ impl KernelStack {
 
     pub(super) fn empty(&self) -> bool {
         self.values.is_empty()
+    }
+
+    pub(super) fn values(&self) -> impl Iterator<Item = KernelValue> + Clone {
+        self.values.iter().copied()
+    }
+
+    pub(super) fn binary_values(&self) -> Option<(KernelValue, KernelValue)> {
+        let [.., left, right] = self.values.as_slice() else {
+            return None;
+        };
+        Some((*left, *right))
     }
 
     pub(super) fn peak(&self) -> u64 {

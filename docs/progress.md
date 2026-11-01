@@ -20,7 +20,11 @@ namespace/generation boundary tests. It admits 70,000 live values and sustains
 1,587 collections, 2,008,131 logical work units, 1,012 peak payload bytes and
 four final payload bytes with 2,048 retained metadata bytes. These are component
 observations, not full VM/RSS/server benchmarks. ADR 0054 records exact evidence
-and open automatic VM/source/CLI string integration; no GSC workstream is closed.
+and its component scope. ADR 0055 now integrates typed heap-backed execution and
+supplied source arguments: 15 kernel tests plus two source tests cover reclamation
+across 12,000 frames, 100,000 loop allocations in four slots, global work/scratch,
+errors/lifetimes, native plain-concat results/expansion and hostile inventories.
+Source literals/cache and CLI output remain open; no GSC workstream is closed.
 
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.

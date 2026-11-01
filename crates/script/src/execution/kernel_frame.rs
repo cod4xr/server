@@ -4,9 +4,11 @@ use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmissio
 use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
+use crate::execution::strings;
 use crate::execution::{
     KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget,
-    KernelFunctionReference, KernelInstruction, KernelResource, KernelValue, VerifiedKernelProgram,
+    KernelFunctionReference, KernelHeapContext, KernelInstruction, KernelResource, KernelValue,
+    VerifiedKernelProgram,
 };
 
 pub(super) struct KernelFrame {
@@ -26,6 +28,10 @@ pub(super) enum KernelFrameStep {
 }
 
 impl KernelFrame {
+    pub(super) fn values(&self) -> impl Iterator<Item = KernelValue> + Clone {
+        self.stack.values().chain(self.locals.values())
+    }
+
     pub(super) fn new(
         program: &VerifiedKernelProgram,
         arguments: &[KernelValue],
@@ -55,6 +61,8 @@ impl KernelFrame {
         steps: &mut u64,
         maximum: u64,
         module: Option<KernelModuleIdentity>,
+        heap: Option<&mut KernelHeapContext<'_>>,
+        parents: impl Iterator<Item = KernelValue> + Clone,
     ) -> Result<KernelFrameStep, KernelError> {
         let pc = self.pc;
         let next = steps
@@ -129,7 +137,16 @@ impl KernelFrame {
                 self.pc = if take { target } else { advance(pc)? };
             }
             _ => {
-                kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;
+                let roots = self.values().chain(parents);
+                let value = strings::apply(instruction, &self.stack, heap, roots)
+                    .map_err(|kind| kernel_error::at(pc, kind))?;
+                if let Some(value) = value {
+                    self.stack.pop(pc)?;
+                    self.stack.pop(pc)?;
+                    self.stack.push(value, pc)?;
+                } else {
+                    kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;
+                }
                 self.pc = advance(pc)?;
             }
         }

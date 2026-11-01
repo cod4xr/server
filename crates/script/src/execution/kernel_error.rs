@@ -7,6 +7,20 @@ use crate::legacy::{LegacyNumberError, LegacyVectorError};
 /// Program/execution resource, independent of native script capacity constants.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelResource {
+    /// Live immutable string values.
+    StringValues,
+    /// Live immutable string payload bytes.
+    StringPayloadBytes,
+    /// Retained string slots, including vacant/retired slots.
+    StringSlots,
+    /// Logical retained string slot records.
+    StringMetadataBytes,
+    /// One complete string payload.
+    SingleStringBytes,
+    /// Shared heap operation/root discovery work across the call tree.
+    HeapWorkSteps,
+    /// Simultaneous logical root IDs and mark flags.
+    HeapScratchBytes,
     /// Complete verified module function inventory.
     Functions,
     /// Simultaneously live direct-call frames.
@@ -36,6 +50,16 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// Immutable code cannot retain nonowning references into a mutable heap.
+    RuntimeStringConstant,
+    /// String arguments/operations require an explicit caller-owned heap context.
+    HeapContextRequired,
+    /// The string belongs to a different or dropped/recreated heap owner.
+    ForeignStringReference,
+    /// The string slot is missing, vacant, retired or has a stale generation.
+    StaleStringReference,
+    /// Fresh heap owner identities are exhausted; they never wrap or reuse.
+    HeapIdentityExhausted,
     /// There is no entry instruction.
     EmptyProgram,
     /// Standalone proof has no inventory with which to resolve a call.

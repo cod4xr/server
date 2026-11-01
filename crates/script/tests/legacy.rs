@@ -71,6 +71,23 @@ mod kernel_call_support;
 mod kernel_call_width;
 #[path = "kernel_function_references.rs"]
 mod kernel_function_references;
+#[path = "kernel_heap_churn.rs"]
+mod kernel_heap_churn;
+#[path = "kernel_heap_hostile.rs"]
+mod kernel_heap_hostile;
+#[path = "kernel_heap_lifetime.rs"]
+mod kernel_heap_lifetime;
+#[path = "kernel_heap_limits.rs"]
+mod kernel_heap_limits;
+#[path = "kernel_heap_pressure.rs"]
+mod kernel_heap_pressure;
+#[path = "kernel_heap_roots.rs"]
+mod kernel_heap_roots;
+mod kernel_heap_support;
+#[path = "kernel_heap_values.rs"]
+mod kernel_heap_values;
+#[path = "kernel_heap_vectors.rs"]
+mod kernel_heap_vectors;
 #[path = "kernel_integer_admission.rs"]
 mod kernel_integer_admission;
 #[path = "kernel_module_hostile.rs"]

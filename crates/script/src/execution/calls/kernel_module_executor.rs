@@ -7,8 +7,10 @@ use crate::execution::calls::{
 use crate::execution::kernel_error;
 use crate::execution::kernel_frame::{KernelFrame, KernelFrameStep};
 use crate::execution::kernel_locals::KernelArgumentBinding;
+use crate::execution::strings;
 use crate::execution::{
-    KernelError, KernelErrorKind, KernelResource, KernelValue, VerifiedKernelProgram,
+    KernelError, KernelErrorKind, KernelHeapContext, KernelResource, KernelValue,
+    VerifiedKernelProgram,
 };
 
 pub(super) fn execute(
@@ -16,6 +18,7 @@ pub(super) fn execute(
     entry: u64,
     arguments: &[KernelValue],
     budget: KernelCallBudget,
+    mut heap: Option<&mut KernelHeapContext<'_>>,
 ) -> Result<KernelCallOutcome, KernelModuleError> {
     let mut ledger = KernelCallLedger::new(budget);
     let index = usize::try_from(entry).ok();
@@ -36,6 +39,8 @@ pub(super) fn execute(
     let admission = ledger
         .admit(proof, arguments.len())
         .map_err(|cause| ledger.error(Some(index), None, cause))?;
+    strings::validate_arguments(arguments, heap.as_deref_mut())
+        .map_err(|kind| ledger.error(Some(index), None, kernel_error::general(kind)))?;
     let mut frames = Vec::new();
     reserve(&mut frames).map_err(|cause| ledger.error(Some(index), None, cause))?;
     let machine = KernelFrame::new(
@@ -49,7 +54,7 @@ pub(super) fn execute(
         function: index,
         machine,
     });
-    run(module, &mut frames, &mut ledger, budget.max_steps)
+    run(module, &mut frames, &mut ledger, budget.max_steps, heap)
 }
 
 fn run(
@@ -57,10 +62,11 @@ fn run(
     frames: &mut Vec<KernelCallFrame>,
     ledger: &mut KernelCallLedger,
     maximum_steps: u64,
+    mut heap: Option<&mut KernelHeapContext<'_>>,
 ) -> Result<KernelCallOutcome, KernelModuleError> {
     loop {
-        let frame = frames
-            .last_mut()
+        let (frame, parents) = frames
+            .split_last_mut()
             .ok_or_else(|| ledger.error(None, None, state()))?;
         let function = frame.function;
         let proof = module
@@ -74,6 +80,8 @@ fn run(
                 &mut ledger.usage.steps,
                 maximum_steps,
                 Some(module.identity),
+                heap.as_deref_mut(),
+                parents.iter().flat_map(|parent| parent.machine.values()),
             )
             .map_err(|cause| {
                 ledger.error(

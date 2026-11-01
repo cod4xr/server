@@ -18,8 +18,12 @@ The complete server rewrite remains open.
 
 - Owned immutable runtime string storage with wide checked references, fallible
   allocation, independent memory/work budgets and explicit complete-root reclamation.
-  Tests cover 70,000 live strings and bounded 100,000-value churn. Source/VM string
-  execution and automatic frame rooting remain separate work; see ADR 0054.
+  Tests cover 70,000 live strings and bounded 100,000-value churn; see ADR 0054.
+- Explicit heap-backed execution copies checked string references through locals,
+  direct/indirect calls and returns, with plain addition and byte equality. Pressure
+  reclamation traces live frames and external roots under global work/scratch limits.
+  Tests cover 12,000 frames, 100,000 VM loop allocations in four slots and supplied
+  strings in compiled GSC. Source literals and CLI string output remain open; ADR 0055.
 
 - Allocation-free, safe Rust message reader and writer, with CoD4X's separate
   byte and bit cursors, little-endian signed integers, and binary32 values.

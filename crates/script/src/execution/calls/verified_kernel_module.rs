@@ -9,8 +9,8 @@ use crate::execution::calls::{
 };
 use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::{
-    KernelFunctionLayout, KernelFunctionReference, KernelInstruction, KernelProgramUsage,
-    KernelValue, VerifiedKernelProgram,
+    KernelFunctionLayout, KernelFunctionReference, KernelHeapContext, KernelInstruction,
+    KernelProgramUsage, KernelValue, VerifiedKernelProgram,
 };
 
 /// Borrowed internal function input, without source names, imports or host authority.
@@ -104,7 +104,24 @@ impl VerifiedKernelModule {
         arguments: &[KernelValue],
         budget: KernelCallBudget,
     ) -> Result<KernelCallOutcome, KernelModuleError> {
-        kernel_module_executor::execute(self, entry, arguments, budget)
+        kernel_module_executor::execute(self, entry, arguments, budget, None)
+    }
+
+    /// Invokes with caller-owned strings, complete external roots and global heap work.
+    /// Legacy argument-prefix binding and all existing call budgets still apply.
+    ///
+    /// # Errors
+    /// Rejects stale/foreign arguments and located runtime/resource failures. Failed
+    /// execution can retain allocations or completed reclamation. Caller IDs must be
+    /// explicitly rooted to survive overwrites; results stay in the borrowed heap.
+    pub fn execute_with_heap(
+        &self,
+        entry: u64,
+        arguments: &[KernelValue],
+        budget: KernelCallBudget,
+        heap: &mut KernelHeapContext<'_>,
+    ) -> Result<KernelCallOutcome, KernelModuleError> {
+        kernel_module_executor::execute(self, entry, arguments, budget, Some(heap))
     }
 }
 

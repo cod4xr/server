@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
 use crate::execution::{
-    KernelError, KernelErrorKind, KernelFunctionDefinition, KernelFunctionLayout, KernelInstruction,
+    KernelError, KernelErrorKind, KernelFunctionDefinition, KernelFunctionLayout,
+    KernelInstruction, KernelValue,
 };
 
 pub(super) fn verify(
@@ -12,6 +13,9 @@ pub(super) fn verify(
     functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::Constant(KernelValue::String(_)) => {
+            Err(kernel_error::at(pc, KernelErrorKind::RuntimeStringConstant))
+        }
         KernelInstruction::Jump(target) | KernelInstruction::Branch { target, .. }
             if target >= count =>
         {

@@ -89,6 +89,12 @@ pub(super) struct KernelLocals {
 }
 
 impl KernelLocals {
+    pub(super) fn values(&self) -> impl Iterator<Item = KernelValue> + Clone {
+        self.values
+            .iter()
+            .map(|value| value.unwrap_or(KernelValue::Undefined))
+    }
+
     pub(super) fn load(&self, slot: usize, pc: usize) -> Result<KernelValue, KernelError> {
         self.values
             .get(slot)

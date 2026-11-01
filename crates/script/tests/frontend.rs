@@ -110,6 +110,8 @@ mod statement_views;
 mod bound_module_depth;
 #[path = "bound_module_execution.rs"]
 mod bound_module_execution;
+#[path = "bound_module_heap.rs"]
+mod bound_module_heap;
 #[path = "bound_module_limits.rs"]
 mod bound_module_limits;
 #[path = "bound_module_names.rs"]

@@ -11,6 +11,7 @@ pub(crate) fn kind(value: KernelValue) -> &'static str {
         KernelValue::Number(LegacyNumber::Float(_)) => "float",
         KernelValue::Vector(_) => "vector",
         KernelValue::Function(_) => "function",
+        KernelValue::String(_) => "string",
     }
 }
 
@@ -29,6 +30,9 @@ fn write_result(output: &mut impl Write, value: KernelValue) -> io::Result<()> {
             writeln!(output, "vector {x} {y} {z}")?;
         }
         KernelValue::Function(_) => writeln!(output, "function")?,
+        KernelValue::String(_) => {
+            return Err(io::Error::other("String output requires a heap context"));
+        }
     }
     output.flush()
 }
