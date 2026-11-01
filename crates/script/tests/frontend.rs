@@ -27,6 +27,8 @@ mod source_developer_package;
 mod source_developer_support;
 mod source_developer_visibility;
 mod source_developer_width;
+mod source_owner_audit;
+mod source_owner_audit_context;
 mod source_root_context;
 mod source_root_depth;
 mod source_root_execution;

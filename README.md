@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Repeated VM collection now reuses a checked array-location audit within one
+  exclusive context. A 100,000-constructor test beside 70,001 host owners fits the
+  unchanged work budget and 4 KiB scratch. Host-only graphs survive collection;
+  rebinding and public full audits keep their checks. Runtime logs report audit
+  and reuse counts. ADR 0103 scopes this optimization.
+
 - Bound GSC now supports developer blocks with explicit per-module modes,
   private-scope cleanup and checked validation of discarded code. Disabled blocks
   retain no code/string/field/label rows or executable dummy targets. Compiler

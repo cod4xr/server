@@ -9,6 +9,10 @@ pub struct KernelHeapUsage {
     pub collections: u64,
     /// Completed object collections; a subsequent string collection may still fail.
     pub object_collections: u64,
+    /// Completed object collections that fully checked all retained array locations.
+    pub array_owner_audits: u64,
+    /// Completed object collections reusing a sealed audit in this exclusive context.
+    pub array_owner_audit_reuses: u64,
     /// Peak simultaneous cache, owned-array registries, temporary roots and marks.
     pub peak_scratch_bytes: u64,
 }

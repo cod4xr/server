@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::heap::HeapWorkBudget;
+use crate::heap::heap_identity::HeapIdentity;
 use crate::heap::objects::arrays::array_collection;
 use crate::heap::objects::field_index::{Bucket, FieldIndex};
+use crate::heap::objects::object_array_roots;
 use crate::heap::objects::object_mark;
 use crate::heap::objects::object_slot::{FieldSlot, ObjectState};
 use crate::heap::objects::object_work::ObjectWork;
@@ -9,22 +11,58 @@ use crate::heap::objects::{
     ObjectCollection, ObjectHeap, ObjectHeapError, ObjectHeapErrorKind, ObjectHeapUsage, ObjectId,
 };
 
+/// Sealed witness for owner-location invariants in an exclusive VM context.
+/// Only this module's successfully audited collection may mint one.
+pub(crate) struct ObjectArrayOwnerAudit {
+    owner: HeapIdentity,
+}
+
+impl ObjectArrayOwnerAudit {
+    pub(crate) fn belongs_to(&self, heap: &ObjectHeap) -> bool {
+        self.owner == heap.owner
+    }
+}
+
 pub(super) fn reclaim(
     heap: &mut ObjectHeap,
     roots: &[ObjectId],
     budget: HeapWorkBudget,
 ) -> Result<ObjectCollection, ObjectHeapError> {
     let mut work = ObjectWork::new(budget);
-    collect(heap, roots, &mut work).map_err(|kind| work.error(kind))
+    collect(heap, roots, false, &mut work).map_err(|kind| work.error(kind))
+}
+
+pub(super) fn reclaim_for_vm(
+    heap: &mut ObjectHeap,
+    roots: &[ObjectId],
+    audit: &mut Option<ObjectArrayOwnerAudit>,
+    budget: HeapWorkBudget,
+) -> Result<ObjectCollection, ObjectHeapError> {
+    let mut work = ObjectWork::new(budget);
+    let reusable = audit.as_ref().is_some_and(|proof| proof.belongs_to(heap));
+    let result = collect(heap, roots, reusable, &mut work).map_err(|kind| work.error(kind))?;
+    if !reusable {
+        *audit = Some(ObjectArrayOwnerAudit { owner: heap.owner });
+    }
+    Ok(result)
 }
 
 fn collect(
     heap: &mut ObjectHeap,
     roots: &[ObjectId],
+    reusable: bool,
     work: &mut ObjectWork,
 ) -> Result<ObjectCollection, ObjectHeapErrorKind> {
-    let flags = object_mark::trace(heap, heap.arrays.roots(roots), work)?;
-    let next = preflight(heap, &flags, work)?;
+    let flags = if reusable {
+        object_mark::trace(
+            heap,
+            object_array_roots::owned_data_roots(heap, roots),
+            work,
+        )?
+    } else {
+        object_mark::trace(heap, heap.arrays.roots(roots), work)?
+    };
+    let next = preflight(heap, &flags, reusable, work)?;
     let sweep = heap
         .objects
         .len()
@@ -49,7 +87,8 @@ fn collect(
         .ok_or(ObjectHeapErrorKind::InvalidState)?;
     let live_fields =
         usize::try_from(next.live_fields).map_err(|_| ObjectHeapErrorKind::SizeOverflow)?;
-    // All references, links, counter changes and sweep work preflight above.
+    // Location invariants come from the full scan or sealed exclusive-borrow
+    // witness. Graph references, links, counters and sweep work preflight above.
     // Flat field values/slots have no user callbacks or recursively owned objects.
     apply(heap, &flags, next, live_fields);
     Ok(ObjectCollection {
@@ -63,13 +102,14 @@ fn collect(
 fn preflight(
     heap: &ObjectHeap,
     flags: &[bool],
+    reusable: bool,
     work: &mut ObjectWork,
 ) -> Result<ObjectHeapUsage, ObjectHeapErrorKind> {
     if flags.len() != heap.objects.len() || heap.index.live as u64 != heap.usage.live_fields {
         return Err(ObjectHeapErrorKind::InvalidState);
     }
     let mut next = heap.usage;
-    next.live_arrays = array_collection::preflight(heap, flags, work)?;
+    next.live_arrays = array_collection::preflight(heap, flags, reusable, work)?;
     let (mut objects, mut fields, mut bytes) = (0_u64, 0_u64, 0_u64);
     next.live_objects = 0;
     next.live_fields = 0;

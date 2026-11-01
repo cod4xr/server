@@ -1,5 +1,21 @@
 # Project contract
 
+ADR 0103 accepts VM array-location audit reuse under KernelHeapContext's exclusive
+object-store borrow. Mint the private, nonconstructible witness only after a full
+successful initial object collection; check store identity and reset on rebind.
+Checked allocation/copy/release/empty/populated COW preserve location/data/counter
+relations atomically. New mutators, raw imports, nested ownership or mutable host
+escapes need renewed review/invalidation. Cached collections trace owned data
+records and still validate generations/graphs/metadata/counters/marks/sweep work;
+public collection and cycle-analysis paths stay unchanged. Preserve first-audit
+failure, every-prefix atomicity, same-context/string-failure repair, host-only
+cycle/string graphs and 100k constructors beside 70,001 host owners (one audit,
+4 KiB scratch, unchanged work budget). Keep five private/four source tests and
+audit/reuse log counts. Complete Windows gates pass 428 frontend/273 legacy/22
+private; native 306/20/210/100 traces and 141/61/39 mutations pass. Public full
+audit cost and graph/inventory costs remain; no general constant-time GC, logical
+RC/nested Array or full-GSC claim. Linux/hosted CI remain unrun.
+
 ADR 0102 accepts bound-source developer lists with explicit per-module modes,
 private child scopes, inherited developer visibility and validation-only discard.
 Off regions validate arguments/literals/initialization/control and drop temporary

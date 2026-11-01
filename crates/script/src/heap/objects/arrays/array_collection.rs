@@ -7,6 +7,7 @@ use crate::heap::{ObjectHeap, ObjectHeapErrorKind};
 pub(in crate::heap::objects) fn preflight(
     heap: &ObjectHeap,
     flags: &[bool],
+    reusable: bool,
     work: &mut ObjectWork,
 ) -> Result<u64, ObjectHeapErrorKind> {
     let arrays = &heap.arrays;
@@ -51,6 +52,24 @@ pub(in crate::heap::objects) fn preflight(
             return Err(ObjectHeapErrorKind::InvalidState);
         }
     }
+    let values = if reusable {
+        heap.usage.live_array_values
+    } else {
+        validate_values(heap, flags, work)?
+    };
+    if total != heap.usage.live_arrays || values != heap.usage.live_array_values || owners != values
+    {
+        return Err(ObjectHeapErrorKind::InvalidState);
+    }
+    Ok(live)
+}
+
+fn validate_values(
+    heap: &ObjectHeap,
+    flags: &[bool],
+    work: &mut ObjectWork,
+) -> Result<u64, ObjectHeapErrorKind> {
+    let arrays = &heap.arrays;
     let mut values = 0_u64;
     for slot in &arrays.values {
         work.charge(1)?;
@@ -65,9 +84,5 @@ pub(in crate::heap::objects) fn preflight(
                 .ok_or(ObjectHeapErrorKind::SizeOverflow)?;
         }
     }
-    if total != heap.usage.live_arrays || values != heap.usage.live_array_values || owners != values
-    {
-        return Err(ObjectHeapErrorKind::InvalidState);
-    }
-    Ok(live)
+    Ok(values)
 }

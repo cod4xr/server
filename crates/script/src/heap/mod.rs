@@ -22,6 +22,7 @@ pub use arrays::{ArrayKey, LegacyArrayKeyError};
 pub use heap_budget::{HeapWorkBudget, StringHeapBudget};
 pub use heap_error::{HeapError, HeapErrorKind, HeapResource};
 pub use heap_usage::{HeapAllocation, HeapWorkUsage, StringCollection, StringHeapUsage};
+pub(crate) use objects::ObjectArrayOwnerAudit;
 pub use objects::{
     ArrayCowOutcome, ArrayId, ArrayResult, ArrayValueId, ObjectAllocation, ObjectCollection,
     ObjectCycleAnalysis, ObjectFieldResult, ObjectHeap, ObjectHeapBudget, ObjectHeapError,

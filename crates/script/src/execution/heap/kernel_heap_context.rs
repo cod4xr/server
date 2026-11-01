@@ -38,7 +38,11 @@ use crate::heap::{
 /// Fixed script roots are opt-in through [`Self::with_script_roots`]. Ordinary
 /// root-only graphs survive collection; game reads borrow the host binding and
 /// create separately owned VM copies. Missing roots never fabricate world state.
+/// A completed full owner-location audit can be reused while this context holds
+/// its exclusive object-store borrow. Rebinding discards that witness. Public
+/// object collection and cycle analysis retain their complete audit contracts.
 pub struct KernelHeapContext<'heap> {
+    pub(super) array_owner_audit: Option<crate::heap::ObjectArrayOwnerAudit>,
     pub(super) script_roots: Option<KernelScriptRoots>,
     pub(super) array_owners: KernelArrayOwners,
     pub(super) literals: KernelLiteralCache,
@@ -60,6 +64,7 @@ impl<'heap> KernelHeapContext<'heap> {
         budget: HeapWorkBudget,
     ) -> Self {
         Self {
+            array_owner_audit: None,
             script_roots: None,
             array_owners: KernelArrayOwners::default(),
             literals: KernelLiteralCache::empty(),
@@ -86,6 +91,7 @@ impl<'heap> KernelHeapContext<'heap> {
         external: &'heap [ObjectId],
     ) -> Self {
         self.objects = Some(objects);
+        self.array_owner_audit = None;
         self.external_objects = external;
         self
     }

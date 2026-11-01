@@ -1,13 +1,22 @@
 # Expanded GSC runtime contract
 
+ADR 0103 reuses a complete initial array-location audit during one exclusive VM
+context borrow. Later collections trace owned data records while retaining graph/
+generation/counter/resource/sweep checks. Public collection and cycle analysis
+keep their original paths. Tests cover 100k constructors beside 70,001 host owners
+with unchanged work and 4 KiB scratch, transitive cycles/uncached strings, every-
+prefix failures, rebinding and repair after string-collection failure. Runtime
+logs report audit/reuse counts. Collection still scales with graph/inventory size;
+general logical lifetimes, scheduling and full GSC remain open.
+
 ADR 0102 activates bound-source developer lists using explicit per-module modes.
 Disabled lists validate and discard code/literal/field/label rows without linked
 placeholder targets; enabled lists preserve private cleanup and developer-call
 visibility. Parent validation, returns, outer transfers, peak temporary instruction
 admission, mixed package modes, wide/deep/churn/failure and private process paths
 are tested. The developer_blocks.gsc example returns 20 by default and 42 when
-enabled. Stable local layouts retain planned private declarations. Full collection
-still audits all retained array-owner slots; that separate performance issue and
+enabled. Stable local layouts retain planned private declarations. ADR 0103
+separately addresses repeated VM owner audits; public full audits and
 general scheduling/engine/full-GSC acceptance remain open.
 
 Assessment 0100 adds twenty selected native developer local-analysis cases with

@@ -165,6 +165,17 @@ impl ObjectHeap {
         object_strings::reclaim(self, strings, extra, budget)
     }
 
+    /// Internal reuse is valid only under the VM context's exclusive borrow.
+    /// Rebinding must discard the witness. No public caller can mint one.
+    pub(crate) fn reclaim_for_vm(
+        &mut self,
+        roots: &[ObjectId],
+        audit: &mut Option<crate::heap::ObjectArrayOwnerAudit>,
+        budget: HeapWorkBudget,
+    ) -> Result<ObjectCollection, ObjectHeapError> {
+        object_reclamation::reclaim_for_vm(self, roots, audit, budget)
+    }
+
     pub(super) fn resolve(&self, id: ObjectId) -> Result<usize, ObjectHeapErrorKind> {
         if id.owner != self.owner {
             return Err(ObjectHeapErrorKind::ForeignReference);

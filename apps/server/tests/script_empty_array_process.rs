@@ -141,6 +141,8 @@ fn offline_empty_arrays_report_opaque_results_and_managed_counts_without_implici
         assert_eq!(fields["array_metadata_rows"], 1);
         assert!(fields["array_value_slots"].as_u64().expect("Value slots") >= 1);
         assert_eq!(fields["live_fields"], 0);
+        assert_eq!(fields["array_owner_audits"], 0);
+        assert_eq!(fields["array_owner_audit_reuses"], 0);
     }
 }
 

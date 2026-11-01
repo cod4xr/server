@@ -18,15 +18,34 @@ pub(super) fn collect(
         .checked_add(1)
         .ok_or(KernelErrorKind::SizeOverflow)?;
     let budget = context.remaining(roots.bytes)?;
+    let reusable = context.objects.as_ref().is_some_and(|heap| {
+        context
+            .array_owner_audit
+            .as_ref()
+            .is_some_and(|audit| audit.belongs_to(heap))
+    });
+    let counter = if reusable {
+        context.usage.array_owner_audit_reuses
+    } else {
+        context.usage.array_owner_audits
+    };
+    let next_counter = counter
+        .checked_add(1)
+        .ok_or(KernelErrorKind::SizeOverflow)?;
     let result = context
         .objects
         .as_mut()
         .ok_or(KernelErrorKind::InvalidExecutionState)?
-        .reclaim(&roots.objects, budget);
+        .reclaim_for_vm(&roots.objects, &mut context.array_owner_audit, budget);
     match result {
         Ok(result) => {
             context.record(result.usage, roots.bytes)?;
             context.usage.object_collections = object_collections;
+            if reusable {
+                context.usage.array_owner_audit_reuses = next_counter;
+            } else {
+                context.usage.array_owner_audits = next_counter;
+            }
         }
         Err(error) => return Err(kernel_object_error::record(context, error, roots.bytes)?),
     }

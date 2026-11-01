@@ -10,6 +10,9 @@ mod field_removal;
 mod index_rebuild;
 mod object_allocation;
 mod object_allocation_plan;
+#[cfg(test)]
+mod object_array_audit_tests;
+mod object_array_roots;
 mod object_budget;
 mod object_error;
 mod object_fields;
@@ -31,6 +34,7 @@ pub use object_budget::ObjectHeapBudget;
 pub use object_error::{ObjectHeapError, ObjectHeapErrorKind, ObjectResource};
 pub use object_heap::ObjectHeap;
 pub use object_id::ObjectId;
+pub(crate) use object_reclamation::ObjectArrayOwnerAudit;
 pub use object_usage::{
     ObjectAllocation, ObjectCollection, ObjectFieldResult, ObjectHeapUsage, ObjectStringCollection,
 };
