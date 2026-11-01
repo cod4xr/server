@@ -57,7 +57,10 @@ fn loop_slots_remain_stable_but_later_assignment_must_initialize_them_again() {
             KernelValue::Number(LegacyNumber::Integer(12))
         );
     }
-    for text in ["main(){while(false){PrivateCall();}}", "main(){for(;;){}}"] {
+    for text in [
+        "main(){while(false){PrivateCall();}}",
+        "main(){switch(1){}}",
+    ] {
         assert_eq!(
             scalar_compile_support::compile_local(
                 text.as_bytes(),

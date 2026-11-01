@@ -9,7 +9,7 @@ use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::KernelInstruction;
 
 impl ScalarBuilder<'_, '_> {
-    pub(super) fn bind_breaks(
+    pub(super) fn bind_transfers(
         &mut self,
         mut chain: Option<ScalarPatchSite>,
         span: Range<u64>,
@@ -27,7 +27,7 @@ impl ScalarBuilder<'_, '_> {
                 scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::InvalidBranchBinding)
             })?;
             match &mut instruction.kind {
-                PendingScalarKind::Break { target: slot, next }
+                PendingScalarKind::Transfer { target: slot, next }
                     if slot.is_none() && next.as_ref().is_none_or(|next| next.0 < site.0) =>
                 {
                     *slot = Some(target);
@@ -99,13 +99,13 @@ impl ScalarBuilder<'_, '_> {
                 PendingScalarKind::Jump {
                     target: Some(target),
                 }
-                | PendingScalarKind::Break {
+                | PendingScalarKind::Transfer {
                     target: Some(target),
                     next: None,
                 } => KernelInstruction::Jump(target),
                 PendingScalarKind::Branch { target: None, .. }
                 | PendingScalarKind::Jump { target: None }
-                | PendingScalarKind::Break { .. } => {
+                | PendingScalarKind::Transfer { .. } => {
                     return Err(scalar_compile_error::at(
                         pending.span,
                         ScalarCompileErrorKind::InvalidBranchBinding,

@@ -6,6 +6,18 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_for_budgets.rs"]
+mod local_for_budgets;
+#[path = "local_for_errors.rs"]
+mod local_for_errors;
+#[path = "local_for_stress.rs"]
+mod local_for_stress;
+
+#[path = "local_for_execution.rs"]
+mod local_for_execution;
+#[path = "local_for_initialization.rs"]
+mod local_for_initialization;
+
 #[path = "local_transfer_budgets.rs"]
 mod local_transfer_budgets;
 #[path = "local_transfer_stress.rs"]

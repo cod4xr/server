@@ -2,6 +2,7 @@
 use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
+use crate::compilation::scalar_for;
 use crate::compilation::scalar_local_assignment;
 use crate::compilation::scalar_loop_transfer::{self, ScalarLoopTransfer};
 use crate::compilation::scalar_statement_body;
@@ -81,6 +82,15 @@ pub(super) fn lower<'tree, 'source>(
         LegacyStatementKind::While { condition, body } => {
             let span = scalar_body::child(view.statement_syntax(), 0, 5)?.span();
             scalar_while::queue(builder, condition, body, span)
+        }
+        LegacyStatementKind::For {
+            initializer,
+            condition,
+            update,
+            body,
+        } => {
+            let span = scalar_body::child(view.statement_syntax(), 0, 8)?.span();
+            scalar_for::queue(builder, initializer, condition, update, body, span)
         }
         LegacyStatementKind::Break => scalar_loop_transfer::lower(
             builder,

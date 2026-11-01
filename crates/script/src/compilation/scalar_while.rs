@@ -4,7 +4,9 @@ use std::ops::Range;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_initialization::{self, ScalarInitializationSnapshot};
-use crate::compilation::scalar_loop_transfer::{self, ScalarWhileContext};
+use crate::compilation::scalar_loop_transfer::{
+    self, ScalarContinueDestination, ScalarLoopContext,
+};
 use crate::compilation::scalar_task::{ScalarLoopHead, ScalarPatchSite, ScalarTask};
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -36,7 +38,8 @@ pub(super) fn begin_body<'tree, 'source>(
 ) -> Result<(), ScalarCompileError> {
     let incoming = scalar_initialization::capture(builder, span.clone())?;
     let exit_site = builder.branch(KernelBranchCondition::IfFalse, span.clone())?;
-    let outer_loop = scalar_loop_transfer::enter(builder, head);
+    let outer_loop =
+        scalar_loop_transfer::enter(builder, head, ScalarContinueDestination::Condition);
     builder.push_task(
         ScalarTask::AfterWhileBody {
             head,
@@ -61,7 +64,7 @@ pub(super) fn after_body(
     head: ScalarLoopHead,
     exit_site: ScalarPatchSite,
     incoming: ScalarInitializationSnapshot,
-    outer_loop: Option<ScalarWhileContext>,
+    outer_loop: Option<ScalarLoopContext>,
     span: Range<u64>,
 ) -> Result<(), ScalarCompileError> {
     if head.0 >= builder.instruction_position() {

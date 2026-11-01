@@ -62,6 +62,14 @@ pub(super) fn restore(
     release(builder, snapshot, span)
 }
 
+pub(super) fn restore_from(
+    builder: &mut ScalarBuilder<'_, '_>,
+    snapshot: &ScalarInitializationSnapshot,
+    span: Range<u64>,
+) -> Result<(), ScalarCompileError> {
+    apply(builder, snapshot, SnapshotAction::Restore, span)
+}
+
 pub(super) fn merge(
     builder: &mut ScalarBuilder<'_, '_>,
     snapshot: ScalarInitializationSnapshot,

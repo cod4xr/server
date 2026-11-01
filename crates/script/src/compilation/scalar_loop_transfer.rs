@@ -3,13 +3,24 @@ use std::ops::Range;
 
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
+use crate::compilation::scalar_for_update;
+use crate::compilation::scalar_initialization::ScalarInitializationSnapshot;
 use crate::compilation::scalar_task::{ScalarLoopHead, ScalarPatchSite};
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::KernelInstruction;
 
-pub(super) struct ScalarWhileContext {
-    head: ScalarLoopHead,
-    breaks: Option<ScalarPatchSite>,
+pub(super) struct ScalarLoopContext {
+    pub(super) head: ScalarLoopHead,
+    pub(super) breaks: Option<ScalarPatchSite>,
+    pub(super) continuation: ScalarContinueDestination,
+}
+
+pub(super) enum ScalarContinueDestination {
+    Condition,
+    Update {
+        sites: Option<ScalarPatchSite>,
+        facts: Option<ScalarInitializationSnapshot>,
+    },
 }
 
 #[derive(Clone, Copy)]
@@ -21,16 +32,19 @@ pub(super) enum ScalarLoopTransfer {
 pub(super) fn enter(
     builder: &mut ScalarBuilder<'_, '_>,
     head: ScalarLoopHead,
-) -> Option<ScalarWhileContext> {
-    builder
-        .active_loop
-        .replace(ScalarWhileContext { head, breaks: None })
+    continuation: ScalarContinueDestination,
+) -> Option<ScalarLoopContext> {
+    builder.active_loop.replace(ScalarLoopContext {
+        head,
+        breaks: None,
+        continuation,
+    })
 }
 
 pub(super) fn leave(
     builder: &mut ScalarBuilder<'_, '_>,
     head: ScalarLoopHead,
-    outer_loop: Option<ScalarWhileContext>,
+    outer_loop: Option<ScalarLoopContext>,
     span: Range<u64>,
 ) -> Result<(), ScalarCompileError> {
     let context = builder
@@ -40,7 +54,14 @@ pub(super) fn leave(
     if context.head != head {
         return Err(invalid(span));
     }
-    builder.bind_breaks(context.breaks, span)?;
+    if matches!(
+        context.continuation,
+        ScalarContinueDestination::Update { sites: Some(_), .. }
+            | ScalarContinueDestination::Update { facts: Some(_), .. }
+    ) {
+        return Err(invalid(span));
+    }
+    builder.bind_transfers(context.breaks, span)?;
     builder.active_loop = outer_loop;
     Ok(())
 }
@@ -58,9 +79,14 @@ pub(super) fn lower(
         return Err(scalar_compile_error::at(span, kind));
     };
     match kind {
-        ScalarLoopTransfer::Continue => {
-            builder.emit(KernelInstruction::Jump(context.head.0), span)?;
-        }
+        ScalarLoopTransfer::Continue => match &context.continuation {
+            ScalarContinueDestination::Condition => {
+                builder.emit(KernelInstruction::Jump(context.head.0), span)?;
+            }
+            ScalarContinueDestination::Update { .. } => {
+                scalar_for_update::record_continue(builder, span)?;
+            }
+        },
         ScalarLoopTransfer::Break => {
             let chain = builder
                 .active_loop
@@ -68,7 +94,7 @@ pub(super) fn lower(
                 .ok_or_else(|| invalid(span.clone()))?
                 .breaks
                 .take();
-            let site = builder.break_jump(chain, span.clone())?;
+            let site = builder.transfer_jump(chain, span.clone())?;
             builder
                 .active_loop
                 .as_mut()

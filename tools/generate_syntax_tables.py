@@ -9,6 +9,7 @@ import subprocess
 from reference_source import ReferenceSource
 import script_argument_reference as arguments
 import script_expression_reference as expressions
+import script_for_reference as for_loops
 import script_lexer_reference as lexical
 import script_statement_reference as statements
 import script_syntax_reference as syntax
@@ -77,6 +78,7 @@ def main() -> None:
     if 'db "+",0' not in loader or 'mov dword [edx+0x20018], _cstring_' not in loader:
         raise ValueError("Script-loader selector differs from pinned source")
     tables = syntax.recover(source)
+    for_loops.verify(source, tables, reference.files["src/asmsource/_scr_compiler.asm"])
     syntax.verify_declarations(source, tables)
     expressions.verify(source, tables, reference.files["src/scr_vm.h"])
     statements.verify(source, tables, reference.files["src/scr_vm.h"])
@@ -115,7 +117,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print("Verified grammar/declaration/symbol/expression/statement/update/argument/while/transfer "
+    print("Verified grammar/declaration/symbol/expression/statement/update/argument/while/transfer/for "
           f"profiles and {len(rows) - 2} structural replays")
 
 

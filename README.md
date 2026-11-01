@@ -147,6 +147,9 @@ The complete server rewrite remains open.
 - Scoped scalar while `break`/`continue` preserve nearest-loop targets and
   terminating-path initialization joins. Break links share admitted instruction
   records; tests resolve 20,000 fixups and lower 12,000 nested contexts.
+- Staged scalar `for` supports optional clauses and sends `continue` through the
+  update. Update initialization merges continuing paths under existing quotas.
+  Clause/constant-folding restrictions remain explicit; switch/general GSC remains open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

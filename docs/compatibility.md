@@ -376,6 +376,16 @@ compiler context/legality/fixup/restore and VM jump roles are guarded; 38 in-mem
 profile mutations are rejected. This does not execute native compiler/VM routines
 or establish native block cleanup/scope/watchdog/error-order parity. For/switch
 contexts and full GSC/mod acceptance remain open; see ADR 0039.
+Scalar for now lowers optional phases and directs continue through the update.
+Update initialization intersects reaching continue/fallthrough paths, excluding
+break/return. Clauses accept scalar assignment/update/empty forms. Unreachable
+updates check incoming facts; exit initialization conservatively allows zero
+iterations. Tests cover optional combinations, actual phase/transfer behavior,
+joins/errors/maps/fuel/caller isolation, exact compiler admission, wide deferred
+fixups and deep contexts/failed cleanup. Selected grammar/compiler phase guards
+reject 35 in-memory mutations. Native compiler/VM routines are not executed;
+scope/constant folding/error ordering, switch, richer values and whole GSC/mod
+parity remain open. See ADR 0040 for the restricted diagnostic policy.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

@@ -17,7 +17,7 @@ pub enum ScalarCompilationResource {
     Instructions,
     /// Live iterative lowering frames.
     TaskFrames,
-    /// Logical compiler-owned pending/task/code/map metadata.
+    /// Logical compiler-owned code/task/map/binding/snapshot payload.
     MetadataBytes,
     /// Complete bound names, including parameters.
     LocalBindings,
@@ -40,6 +40,8 @@ pub enum ScalarCompileErrorKind {
     UnsupportedGroupArity,
     /// This profile permits only plain-name local assignment targets.
     UnsupportedLocalTarget,
+    /// Initializer/update clauses accept only scalar assignment/update or empty syntax.
+    UnsupportedForClause,
     /// This restricted profile rejects repeated canonical parameter names.
     DuplicateParameter,
     /// A name is not initialized on every structural path reaching this read.

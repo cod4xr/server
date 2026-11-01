@@ -263,6 +263,21 @@ failed cleanup with saved pending outer fixups. Source guards reject 38 in-memor
 compiler-profile mutations without executing original routines. For/switch contexts,
 native block cleanup/scope/watchdog/diagnostic order, richer values/calls and full
 GSC acceptance remain open; see ADR 0039.
+Scalar for now lowers initializer/condition/body/update/backward phases through
+flat tasks. All optional clause combinations are supported; clauses accept only
+scalar assignment/compound/postfix/empty forms. Deferred continue fixups reach the
+actual update, with admitted snapshots merging every continuing body path and
+excluding break/return. An unreachable syntactic update still checks incoming
+facts; exits conservatively allow zero iterations even for absent/constant true
+conditions. This restricted policy may reject body-only names in unreachable
+updates and does not establish native scope/constant-folding/error-order parity.
+Generalized loop contexts and instruction-record transfer chains retain shared
+metadata/work/fuel admission. Nine tests cover phases/joins/returns/errors and
+maps, all eight optional combinations, mixed loops, exact limits, 20,000 deferred
+continues with wide destinations and 12,000 nested for contexts/failed cleanup.
+Selected grammar/compiler phase profiles reject 35 in-memory mutations without
+executing original routines. Switch, richer values/calls/scheduling and full GSC
+acceptance remain open; see ADR 0040.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

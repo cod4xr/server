@@ -12,9 +12,9 @@ pub struct ScalarCompilationBudget {
     pub max_instructions: u64,
     /// Maximum live iterative lowering frames.
     pub max_task_frames: u64,
-    /// Logical pending/task/binding-pair/snapshot payload and overlapping resolved code/map
-    /// bytes; excludes source/CST, hash/vector capacity/control overhead,
-    /// allocator overhead, body-index storage, and kernel scopes.
+    /// Logical pending/task/binding-pair/snapshot payload and overlapping resolved code/maps.
+    /// Excludes source/CST, spare vector/hash capacity, hash control bytes, fixed
+    /// local-field/allocator overhead, body-index storage and kernel scopes.
     pub max_metadata_bytes: u64,
     /// Bound local names, including parameters; no native local-count ceiling.
     pub max_local_bindings: u64,

@@ -2,8 +2,9 @@
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifier;
+use crate::compilation::scalar_for::{ScalarForEnd, ScalarForPlan};
 use crate::compilation::scalar_initialization::ScalarInitializationSnapshot;
-use crate::compilation::scalar_loop_transfer::ScalarWhileContext;
+use crate::compilation::scalar_loop_transfer::ScalarLoopContext;
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::LegacyLogicalOperator;
 use crate::syntax::LegacySyntaxNode;
@@ -64,9 +65,19 @@ pub(super) enum ScalarTask<'tree, 'source> {
         head: ScalarLoopHead,
         exit_site: ScalarPatchSite,
         incoming: ScalarInitializationSnapshot,
-        outer_loop: Option<ScalarWhileContext>,
+        outer_loop: Option<ScalarLoopContext>,
         span: Range<u64>,
     },
+    AfterForInit(ScalarForPlan<'tree, 'source>),
+    BeginForBody {
+        head: ScalarLoopHead,
+        plan: ScalarForPlan<'tree, 'source>,
+    },
+    AfterForBody {
+        end: ScalarForEnd,
+        update: Option<LegacySyntaxNode<'tree, 'source>>,
+    },
+    AfterForUpdate(ScalarForEnd),
 }
 
 impl ScalarTask<'_, '_> {
@@ -74,6 +85,8 @@ impl ScalarTask<'_, '_> {
         match self {
             Self::Visit(node) => node.span(),
             Self::Statement { syntax, .. } => syntax.span(),
+            Self::AfterForInit(plan) | Self::BeginForBody { plan, .. } => plan.span.clone(),
+            Self::AfterForBody { end, .. } | Self::AfterForUpdate(end) => end.span.clone(),
             Self::Emit { span, .. }
             | Self::FinishAssignment { span, .. }
             | Self::BeginLogical { span, .. }
@@ -96,7 +109,7 @@ pub(super) enum PendingScalarKind {
     Jump {
         target: Option<usize>,
     },
-    Break {
+    Transfer {
         target: Option<usize>,
         next: Option<ScalarPatchSite>,
     },

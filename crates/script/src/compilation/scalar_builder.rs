@@ -4,7 +4,7 @@ use std::ops::Range;
 use crate::compilation::scalar_compilation_ledger::ScalarCompilationLedger;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_local_bindings::ScalarLocalBindings;
-use crate::compilation::scalar_loop_transfer::ScalarWhileContext;
+use crate::compilation::scalar_loop_transfer::ScalarLoopContext;
 use crate::compilation::scalar_task::{
     PendingScalarInstruction, PendingScalarKind, ScalarPatchSite, ScalarTask,
 };
@@ -15,7 +15,7 @@ pub(super) struct ScalarBuilder<'tree, 'source> {
     pub(super) ledger: ScalarCompilationLedger,
     pub(super) locals: Option<ScalarLocalBindings<'source>>,
     pub(super) reachable: bool,
-    pub(super) active_loop: Option<ScalarWhileContext>,
+    pub(super) active_loop: Option<ScalarLoopContext>,
     tasks: Vec<ScalarTask<'tree, 'source>>,
     pub(super) instructions: Vec<PendingScalarInstruction>,
     active_task: bool,
@@ -128,12 +128,12 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
             .map(ScalarPatchSite)
     }
 
-    pub(super) fn break_jump(
+    pub(super) fn transfer_jump(
         &mut self,
         next: Option<ScalarPatchSite>,
         span: Range<u64>,
     ) -> Result<ScalarPatchSite, ScalarCompileError> {
-        self.append(PendingScalarKind::Break { target: None, next }, span)
+        self.append(PendingScalarKind::Transfer { target: None, next }, span)
             .map(ScalarPatchSite)
     }
 

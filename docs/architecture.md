@@ -311,6 +311,19 @@ requires independent kernel verification. Function-wide scalar slots imply no
 native block-variable cleanup; full scope/for/switch/runtime parity remains open.
 See ADR 0039.
 
+Scalar for now shares generalized loop contexts and transfer records. Flat tasks
+separate once-only initializer, condition, body, update and backward jump. Deferred
+continue sites bind to update start (or the real backward jump for empty updates).
+Admitted snapshots intersect continuing body paths with fallthrough before update
+reads; break/return paths are excluded. First/merged continue facts are consumed
+and released through existing global snapshot/work quotas. An unreachable update
+checks incoming facts, and exit facts conservatively permit zero iterations.
+Initializer/update syntax is restricted to scalar assignment/update/empty forms.
+Stable slot allocation follows deterministic lowering order, without promising
+native local ordering or a bytecode ABI. Selected grammar/compiler guards and
+source tests do not establish full native scope/constant folding/unwinding parity;
+see ADR 0040. No additional fixup allocation or recursive owner is introduced.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

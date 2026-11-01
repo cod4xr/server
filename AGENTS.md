@@ -179,6 +179,15 @@ and global work charging. Reject illegal/unreachable source and retain keyword
 maps/fuel; no unresolved link may publish. Keep emission/admission and relocation
 binding/resolution in separate leaf modules. Guard selected native context/fixup/
 restore roles without claiming native block cleanup/for/switch/VM parity; see ADR 0039.
+Scalar for now lowers optional clauses in explicit phases through generalized
+loop contexts. Deferred continue fixups target update start, with initialization
+snapshots intersecting continuing body/fallthrough paths and excluding break/return.
+Use existing snapshot/work/metadata admission, release facts once, and check
+unreachable updates against incoming facts. Exits conservatively allow zero
+iterations; clauses accept only scalar assignment/update/empty forms. Preserve
+explicit restrictions rather than claiming native scope/constant-folding parity.
+Guard selected optional grammar/compiler phases and retain wide flat ownership;
+see ADR 0040. Switch/general values/calls/scheduling remain separate work.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

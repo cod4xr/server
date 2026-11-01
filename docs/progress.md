@@ -564,7 +564,26 @@ No dependencies or alternate target directories added. Native routines/block
 cleanup/scope/watchdog/error order, for/switch, full GSC/mod acceptance and Linux
 validation remain open.
 
-Next: staged scalar for loops with continue-to-update initialization joins,
+Scalar for now passes full Windows workspace gates. Flat phases run initializer
+once, reevaluate condition, execute body/update, and jump back. Optional clauses
+are explicit; initializer/update accept scalar assignment/compound/postfix/empty
+syntax. Deferred continue fixups reach update, with admitted initialization facts
+intersecting continuing body/fallthrough paths and excluding break/return. An
+unreachable update checks incoming facts, and exit facts conservatively allow
+zero iterations. Shared generalized contexts/transfer records introduce no extra
+fixup array; all snapshots/task/code work and metadata remain admitted. Nine new
+tests cover all eight optional combinations, mixed loops/transfers, returns and
+update joins, explicit rejection policy, clause maps/fuel/caller isolation, exact
+compiler limits, 20,000 wide deferred continues, and 12,000 nested for contexts
+with bounded failed cleanup. All 155 frontend/48 legacy tests and doctests pass;
+formatting, warnings-denied Clippy/rustdoc and repository policy pass (450 sources,
+eight crates, largest 287 lines). Selected optional grammar/compiler phase guards
+and 99 structural replays regenerate; 35 in-memory mutations are rejected. See
+ADR 0040. No new dependencies/alternate target directories. Native compiler/VM,
+scope/constant folding/watchdog/error order, switch, richer values, full GSC/mod
+acceptance and Linux remain open.
+
+Next: source-grounded richer value semantics, starting with legacy vector rules,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
