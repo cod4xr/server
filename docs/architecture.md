@@ -1,5 +1,15 @@
 # Architecture and expansion
 
+The script heap now owns immutable byte strings in growable slots with opaque
+store/slot/generation references. Copies do not copy payload or grant ownership.
+Explicit complete-root reclamation validates references and preflights resources
+before deleting anything; exhausted generations retire without reuse. Live bytes,
+retained slots/metadata, single values, logical work and scratch have separate
+budgets. Counters exclude allocator rounding/spare capacity/RSS. This is a tested
+storage component, not automatic VM frame/cache rooting or an object-cycle
+collector. Immutable source literal tables and runtime execution integration stay
+separate ownership boundaries; see ADR 0054.
+
 ## Dependency direction
 
 The server and future client are peers above shared engine libraries. Shared

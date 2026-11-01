@@ -14,6 +14,14 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+The owned string-store component now has 11 integration tests plus private
+namespace/generation boundary tests. It admits 70,000 live values and sustains
+100,000 temporary values under 64 slots. One local release workload observed
+1,587 collections, 2,008,131 logical work units, 1,012 peak payload bytes and
+four final payload bytes with 2,048 retained metadata bytes. These are component
+observations, not full VM/RSS/server benchmarks. ADR 0054 records exact evidence
+and open automatic VM/source/CLI string integration; no GSC workstream is closed.
+
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.
   Keyed legacy player-command decoding is now implemented as a separate module.

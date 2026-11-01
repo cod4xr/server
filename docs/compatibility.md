@@ -1,5 +1,12 @@
 # Compatibility contract
 
+The owned string-store component replays 54 native plain-concatenation successes
+through literal decoding, storage, concatenation and explicit reclamation; another
+54 native capacity failures intentionally succeed under larger budgets. These are
+distinct counts, not native interning/reference-cleanup/VM parity. Foreign/stale
+references fail explicitly; 70,000 live strings exceed the old pool width. Source,
+CLI and VM string execution remain unsupported pending integration; see ADR 0054.
+
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported
 releases must be recorded individually. There is currently no demonstrated live

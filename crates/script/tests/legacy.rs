@@ -89,6 +89,18 @@ mod numeric_boundaries;
 mod numeric_vectors;
 #[path = "predicate_vectors.rs"]
 mod predicate_vectors;
+#[path = "string_heap_budgets.rs"]
+mod string_heap_budgets;
+#[path = "string_heap_hostile.rs"]
+mod string_heap_hostile;
+#[path = "string_heap_ownership.rs"]
+mod string_heap_ownership;
+#[path = "string_heap_reclamation.rs"]
+mod string_heap_reclamation;
+#[path = "string_heap_stress.rs"]
+mod string_heap_stress;
+#[path = "string_heap_vectors.rs"]
+mod string_heap_vectors;
 #[path = "string_operation_vectors.rs"]
 mod string_operation_vectors;
 #[path = "string_operations.rs"]

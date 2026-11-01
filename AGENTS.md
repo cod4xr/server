@@ -1,5 +1,12 @@
 # Project contract
 
+The heap string store is an implemented immutable-leaf component, not integrated
+GSC string execution. Preserve complete-root ownership, stale/foreign/generation
+checks, atomic failed collection and independent retained/work/scratch budgets.
+VM integration must root all live frames, cached literals, external handles and
+pending results and share work across the call tree; see ADR 0054. Never describe
+the component workload or helper fixtures as native VM/object-collector parity.
+
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a
 future consumer, not a core dependency. Do not read or modify the Deathrun

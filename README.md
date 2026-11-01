@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Owned immutable runtime string storage with wide checked references, fallible
+  allocation, independent memory/work budgets and explicit complete-root reclamation.
+  Tests cover 70,000 live strings and bounded 100,000-value churn. Source/VM string
+  execution and automatic frame rooting remain separate work; see ADR 0054.
+
 - Allocation-free, safe Rust message reader and writer, with CoD4X's separate
   byte and bit cursors, little-endian signed integers, and binary32 values.
 - Split-buffer reads, a 128 KiB logical message limit, typed errors, and atomic

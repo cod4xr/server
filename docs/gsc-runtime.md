@@ -500,6 +500,16 @@ heap/builtin/scheduling/game-service or joinable-server acceptance.
 
 ## Remaining legacy acceptance workstreams
 
+An immutable string-store component now owns exact bytes behind wide checked
+references, with separately admitted live/payload/retained metadata/work/scratch
+and atomic failed complete-root reclamation. Tests cover 70,000 live values,
+100,000 temporary values under 64 slots, hostile operations, namespace/generation
+exhaustion and native plain-string helper results versus capacity expansion.
+The reproducible string_heap_workload example records logical usage/work and
+elapsed time; it does not measure RSS or full VM performance. ADR 0054 accepts
+this component only. Automatic frame/cache/external roots, string KernelValue,
+source literals/operators and CLI string output remain integration work.
+
 The current planning estimate is roughly 10–12 major workstreams, not a count of
 small coding tasks or a delivery promise. This working breakdown uses twelve;
 several interact and each requires multiple implementation/validation changes.

@@ -13,6 +13,7 @@ pub mod compilation;
 pub mod declaration;
 pub mod execution;
 pub mod expression;
+pub mod heap;
 pub mod legacy;
 pub mod lexical;
 pub mod literal;
