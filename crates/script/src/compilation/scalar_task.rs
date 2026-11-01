@@ -10,6 +10,10 @@ use crate::syntax::LegacySyntaxNode;
 /// Private relocation identity, never a published instruction target or runtime ID.
 pub(super) struct ScalarPatchSite(pub(super) usize);
 
+/// Compiler-private loop destination, distinct from an unresolved forward site.
+#[derive(Clone, Copy)]
+pub(super) struct ScalarLoopHead(pub(super) usize);
+
 pub(super) enum ScalarTask<'tree, 'source> {
     Visit(LegacySyntaxNode<'tree, 'source>),
     Statement {
@@ -50,6 +54,17 @@ pub(super) enum ScalarTask<'tree, 'source> {
         then_facts: ScalarInitializationSnapshot,
         span: Range<u64>,
     },
+    BeginWhileBody {
+        head: ScalarLoopHead,
+        body: LegacySyntaxNode<'tree, 'source>,
+        span: Range<u64>,
+    },
+    AfterWhileBody {
+        head: ScalarLoopHead,
+        exit_site: ScalarPatchSite,
+        incoming: ScalarInitializationSnapshot,
+        span: Range<u64>,
+    },
 }
 
 impl ScalarTask<'_, '_> {
@@ -63,6 +78,8 @@ impl ScalarTask<'_, '_> {
             | Self::BeginIf { span, .. }
             | Self::AfterThen { span, .. }
             | Self::AfterElse { span, .. }
+            | Self::BeginWhileBody { span, .. }
+            | Self::AfterWhileBody { span, .. }
             | Self::EndLogical { span, .. } => span.clone(),
         }
     }

@@ -6,6 +6,7 @@ use crate::compilation::scalar_expression_lowering;
 use crate::compilation::scalar_local_names;
 use crate::compilation::scalar_local_statements;
 use crate::compilation::scalar_task::ScalarTask;
+use crate::compilation::scalar_while;
 use crate::execution::KernelInstruction;
 
 pub(super) fn drain(builder: &mut ScalarBuilder<'_, '_>) -> Result<(), ScalarCompileError> {
@@ -48,6 +49,17 @@ pub(super) fn drain(builder: &mut ScalarBuilder<'_, '_>) -> Result<(), ScalarCom
                 span,
             } => {
                 scalar_conditional::after_else(builder, end_site, then_facts, span)?;
+            }
+            ScalarTask::BeginWhileBody { head, body, span } => {
+                scalar_while::begin_body(builder, head, body, span)?;
+            }
+            ScalarTask::AfterWhileBody {
+                head,
+                exit_site,
+                incoming,
+                span,
+            } => {
+                scalar_while::after_body(builder, head, exit_site, incoming, span)?;
             }
         }
     }

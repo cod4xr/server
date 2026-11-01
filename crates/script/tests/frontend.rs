@@ -6,6 +6,16 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_while_budgets.rs"]
+mod local_while_budgets;
+#[path = "local_while_stress.rs"]
+mod local_while_stress;
+
+#[path = "local_while_execution.rs"]
+mod local_while_execution;
+#[path = "local_while_initialization.rs"]
+mod local_while_initialization;
+
 #[path = "local_conditional_budgets.rs"]
 mod local_conditional_budgets;
 #[path = "local_conditional_stress.rs"]

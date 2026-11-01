@@ -526,7 +526,25 @@ no dependencies or alternate caches added. Native compiler execution/full scope,
 constant folding/diagnostic order, loops/switch, full GSC/mod acceptance and Linux
 validation remain open.
 
-Next: bounded scalar loop lowering with conservative initialization exits,
+Scalar while compilation now passes full Windows workspace gates. Conditions
+reevaluate through consuming numeric branches and verified absolute backward
+jumps; execution fuel bounds endless loops. Incoming initialization snapshots
+restore at the exit for zero-iteration safety; body-only writes never authorize
+later reads. Existing flat lowering, name/task/code/snapshot quotas and source
+maps remain shared. Nine added tests cover repeated/nested/lazy loops, returns,
+condition/operator locations, illegal initialization/unsupported source, exact
+compiler/fuel admission, 70,000 local snapshots with long backward jumps and
+12,000 nested loops with bounded failed cleanup. The combined wide source
+explicitly raises only its test frontend node admission to two million; default
+production budgets remain unchanged. All 140 frontend/48 legacy tests and doctests
+pass, alongside formatting, warnings-denied Clippy/rustdoc and repository policy;
+largest source remains 287 lines. Selected pinned while compiler/header/VM guards
+and 99 structural replays regenerate, and nineteen in-memory source mutations
+are rejected. See ADR 0038. No dependencies or alternate target directories added.
+Native routines/watchdog timing, scopes/constant folding/diagnostic order,
+for/break/continue/switch, richer values, full GSC/mod acceptance and Linux remain open.
+
+Next: scoped while break/continue transfers with bounded fixup ownership,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

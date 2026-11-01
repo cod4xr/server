@@ -25,6 +25,7 @@ mod scalar_program;
 mod scalar_statement_body;
 mod scalar_task;
 mod scalar_task_lowering;
+mod scalar_while;
 
 pub use compiled_scalar_function::{
     CompiledScalarFunction, ScalarCompilationUsage, ScalarSourceProfile,

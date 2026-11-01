@@ -93,6 +93,10 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         task
     }
 
+    pub(super) fn instruction_position(&self) -> usize {
+        self.instructions.len()
+    }
+
     pub(super) fn emit(
         &mut self,
         instruction: KernelInstruction,

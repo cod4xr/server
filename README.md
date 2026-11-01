@@ -139,7 +139,11 @@ The complete server rewrite remains open.
 - Ordinary scalar blocks and `if`/`else` lower with wide checked branch targets.
   Initialization joins include only paths reaching each read; both source branches
   are checked. Snapshot storage/work is bounded. Tests cover 70,000 local snapshots
-  and 12,000 nested branches; loops/switch and native scope/constant-folding parity remain open.
+  and 12,000 nested branches; full loop/switch and native scope/constant-folding parity remain open.
+- Scalar `while` now reevaluates conditions through verified backward jumps and
+  bounded execution fuel. Exit initialization conservatively permits zero
+  iterations. Tests cover 70,000 local snapshots, long backward jumps and 12,000
+  nested loops. `for`, `break`/`continue`, switch and native watchdog timing remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

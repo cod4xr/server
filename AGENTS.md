@@ -164,6 +164,13 @@ initialization/copy/restore/merge visits globally, and release exactly once. Bin
 private conditional/unconditional relocations once and verify real targets before
 publication. This restricted structural policy does not establish native scopes,
 constant folding, diagnostic order, loops/switch or full compilation; see ADR 0037.
+Scalar while now uses private backward labels and existing verified jumps/fuel.
+Reevaluate conditions each iteration and check body source without constant
+folding. Restore incoming initialization at the exit for zero-iteration safety;
+reuse snapshot/task/work admission and original operation/keyword spans. Guard
+selected while/compiler/VM roles via generate_syntax_tables.py --check, without
+claiming native routine/watchdog timing/scope parity. For, break/continue, switch
+and general runtime behavior remain separate work; see ADR 0038.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

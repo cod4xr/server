@@ -289,6 +289,16 @@ capacity iteration, allocator/RSS or aggregate CPU. Constant-condition folding,
 full native scope/error-order parity, loops/switch and richer values remain open;
 see ADR 0037. Original pure-return validation remains unchanged.
 
+Scalar while lowering uses flat condition/body/end tasks and a private loop label
+for an already emitted real condition instruction. Consuming numeric false
+branches exit; absolute verified jumps reevaluate the condition. Execution fuel
+bounds endless loops, independently of compiler/snapshot admission. The body is
+checked against first-iteration incoming facts; restoring those facts at the exit
+keeps body-only assignments from initializing a zero-iteration path. This
+conservative structural policy does not implement native constant folding or loop
+watchdog timing. All snapshot/name/metadata scopes remain shared. For, break/
+continue, switch and full native scope/runtime parity remain open; see ADR 0038.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

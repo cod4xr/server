@@ -5,6 +5,7 @@ use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_local_assignment;
 use crate::compilation::scalar_statement_body;
 use crate::compilation::scalar_task::ScalarTask;
+use crate::compilation::scalar_while;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelInstruction, KernelValue};
 use crate::statement::{LegacyStatementKind, LegacyStatementSyntax};
@@ -75,6 +76,10 @@ pub(super) fn lower<'tree, 'source>(
                 span,
             )?;
             builder.push_task(ScalarTask::Visit(condition), condition.span())
+        }
+        LegacyStatementKind::While { condition, body } => {
+            let span = scalar_body::child(view.statement_syntax(), 0, 5)?.span();
+            scalar_while::queue(builder, condition, body, span)
         }
         _ => Err(scalar_compile_error::at(
             view.span(),

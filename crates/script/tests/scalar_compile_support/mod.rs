@@ -17,28 +17,43 @@ pub fn compile(
     bytes: &[u8],
     budget: ScalarCompilationBudget,
 ) -> Result<CompiledScalarFunction, ScalarCompileError> {
-    compile_profile(bytes, budget, ScalarSourceProfile::PureReturn)
+    compile_profile(
+        bytes,
+        budget,
+        ScalarSourceProfile::PureReturn,
+        LegacySyntaxBudget::default(),
+    )
 }
 
 pub fn compile_local(
     bytes: &[u8],
     budget: ScalarCompilationBudget,
 ) -> Result<CompiledScalarFunction, ScalarCompileError> {
-    compile_profile(bytes, budget, ScalarSourceProfile::LocalStatements)
+    compile_local_with_syntax_budget(bytes, budget, LegacySyntaxBudget::default())
+}
+
+pub fn compile_local_with_syntax_budget(
+    bytes: &[u8],
+    budget: ScalarCompilationBudget,
+    syntax_budget: LegacySyntaxBudget,
+) -> Result<CompiledScalarFunction, ScalarCompileError> {
+    compile_profile(
+        bytes,
+        budget,
+        ScalarSourceProfile::LocalStatements,
+        syntax_budget,
+    )
 }
 
 fn compile_profile(
     bytes: &[u8],
     budget: ScalarCompilationBudget,
     profile: ScalarSourceProfile,
+    syntax_budget: LegacySyntaxBudget,
 ) -> Result<CompiledScalarFunction, ScalarCompileError> {
     let source = SourceText::index(bytes, SourceBudget::default()).expect("Source");
-    let tree = LegacySyntaxTree::parse_structure(
-        &source,
-        LegacySyntaxMode::Script,
-        LegacySyntaxBudget::default(),
-    )
-    .expect("Tree");
+    let tree = LegacySyntaxTree::parse_structure(&source, LegacySyntaxMode::Script, syntax_budget)
+        .expect("Tree");
     let module =
         LegacyModuleSyntax::lower(&tree, DeclarationBudget::default()).expect("Declarations");
     let _symbols = LegacyModuleSymbols::bind(

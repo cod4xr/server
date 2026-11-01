@@ -236,6 +236,20 @@ and 12,000 nested branches with successful and failed flat cleanup. This restric
 policy does not prove native scope/constant-folding/diagnostic order or whole
 compiler execution. Loops, switch, developer blocks and general values/calls remain
 open; see ADR 0037. Pure-return compilation keeps its narrower validation contract.
+Scalar while statements now reevaluate numeric/lazy conditions through existing
+verified instructions and backward jumps under execution fuel. Flat body stages
+use existing task/work/metadata scopes; incoming initialization facts are restored
+at the exit because zero iterations remain possible in this conservative source
+policy. Body-only writes do not authorize later reads, and both condition/body
+syntax is checked without constant folding. Nine tests cover real loop results,
+returns, condition/operator maps, fuel exhaustion/exact admission, compiler quota
+boundaries, 70,000 local snapshots with a long backward jump, and 12,000 nested
+loops with bounded failed cleanup. The combined large fixture explicitly admits
+two million syntax nodes in its separate frontend scope; production defaults
+remain unchanged. Source guards tie selected compiler/header/VM branch/backward
+roles to the pinned source without executing original routines. Native loop
+watchdog timing, scopes/constant folding/error-order parity, for/break/continue,
+switch, richer values/calls and scheduling remain open; see ADR 0038.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -358,6 +358,15 @@ exact resource boundaries, 70,000 local snapshots, long forward jumps and 12,000
 nested branches with bounded failure cleanup. Flag payload/work is explicitly
 admitted. This is not original compiler execution or full native scope/constant
 folding/diagnostic-order parity; loops/switch and richer values remain open. See ADR 0037.
+Scalar while now uses consuming numeric conditions, verified absolute backward
+jumps and deterministic instruction fuel. Snapshot exits conservatively restore
+incoming initialization; body-only writes never authorize later reads. Nine
+tests cover execution/returns/errors, exact compiler/fuel admission, wide/deep
+loops and failed cleanup. A selected pinned source guard connects while emission
+and native branch/backward opcode roles; nineteen in-memory mutations are rejected.
+Original compiler/VM routines and the native timing watchdog are not executed.
+Constant folding/scope/diagnostic order, for/break/continue/switch, general values
+and full GSC/mod compatibility remain open; see ADR 0038.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,
