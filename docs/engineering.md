@@ -30,6 +30,9 @@ grouping and lowercase hexadecimal spelling where stable rustfmt cannot.
   module declarations only. Leaf files and fixtures retain separate ownership.
   Repository policy requires every plain #[test] file to be registered exactly
   once without gating, including leaves added in subfolders; see ADR 0026.
+  Use ordinary same-name module declarations for root leaves and explicit paths
+  for nested leaves; helpers stay in module folders. Run the registration-guard
+  regression tests after harness/policy changes; see ADR 0084.
 - Each crate inherits package metadata and workspace lints. New dependencies
   require an explicit allowed dependency entry, rationale, license review,
   maintenance review, and consideration of build scripts and transitive costs.

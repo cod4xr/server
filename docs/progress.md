@@ -14,6 +14,14 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0084 compacts the two script suite roots from 303/275 to 164/147 lines while
+preserving all 139/128 leaf registrations and exactly the same 323/236 executed
+test names in debug and release. A stricter bounded registration guard and twelve
+disposable regressions reject missing/hidden/gated/duplicate/invalid registrations,
+including portable path and Cargo-target checks. Full Windows gates pass; policy
+checks 942 sources/eight crates/largest 287. No new Cargo target/cache or runtime
+behavior is added, and Linux/hosted CI remains unrun.
+
 ADR 0083 implements explicit host level/self/anim ordinary roots and a managed
 game binding for bound source/typed execution. It validates complete inventories,
 roots otherwise unused graphs, clones game owners and reports missing context

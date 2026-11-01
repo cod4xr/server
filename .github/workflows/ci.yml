@@ -23,6 +23,8 @@ jobs:
           persist-credentials: false
       - name: Install pinned toolchain
         run: rustup show
+      - name: Test script suite registration policy
+        run: python tools/test_script_test_targets.py
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
       - name: Check independent archive fixtures

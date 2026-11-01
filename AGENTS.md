@@ -1,5 +1,14 @@
 # Project contract
 
+ADR 0084 keeps the two explicit script suites compact with ordinary same-name
+mod declarations and explicit paths only where needed for nested leaves. The
+bounded registration guard must reject hidden/gated/missing/extra/duplicate tests,
+duplicate module/target identities, ambiguous modules, unexpected root code and
+noncanonical/absolute/traversing paths on every host. Helpers remain separate
+folders without hidden tests. Run test_script_test_targets.py (12 regressions)
+and repository policy after suite changes; preserve complete leaf/test inventories,
+the same two Cargo binaries, normal target directory and small source files.
+
 ADR 0083 adds LoadScriptRoot and explicit KernelScriptRoots for bound source and
 typed execution. Keep level/current receiver/anim as checked ordinary objects and
 game as a borrowed host-managed location whose reads clone ADR 0081 VM owners.

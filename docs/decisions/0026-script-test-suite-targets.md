@@ -4,6 +4,10 @@ Date: 2026-10-31
 
 Status: accepted; validation tracked separately.
 
+ADR 0084 later compacts redundant same-name path attributes into ordinary Rust
+module declarations and strengthens registration-policy regression coverage,
+while preserving these two targets and complete explicit leaf inventories.
+
 ## Context
 
 The script crate had thirty Cargo integration-test targets, one per leaf file.
