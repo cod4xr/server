@@ -83,30 +83,36 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
             continue;
         };
         admitted += 1;
-        match program.execute_with_arguments(&arguments, execution) {
-            Ok(outcome) => {
-                assert!(outcome.steps <= execution.max_steps);
-                assert!(outcome.peak_stack_values <= program.usage().max_stack_values);
-                assert_eq!(outcome.local_values, 8);
-            }
-            Err(error) => {
-                assert!(error.work_steps <= execution.max_steps);
-                assert!(error.peak_stack_values <= program.usage().max_stack_values);
-                assert_eq!(error.admitted_local_values, 8);
-                if !matches!(
-                    error.kind,
-                    KernelErrorKind::UninitializedLocal { .. }
-                        | KernelErrorKind::ExpectedNumber
-                        | KernelErrorKind::Numeric(_)
-                        | KernelErrorKind::BudgetExceeded {
-                            resource: KernelResource::ExecutionSteps,
-                            ..
-                        }
-                ) {
-                    return Err(format!(
-                        "Verified local stream violated execution contract: {:?}",
-                        error.kind
-                    ));
+        let invocations = [
+            program.execute_with_arguments(&arguments, execution),
+            program.execute_legacy_script_arguments(&arguments[..iteration % 3], execution),
+        ];
+        for invocation in invocations {
+            match invocation {
+                Ok(outcome) => {
+                    assert!(outcome.steps <= execution.max_steps);
+                    assert!(outcome.peak_stack_values <= program.usage().max_stack_values);
+                    assert_eq!(outcome.local_values, 8);
+                }
+                Err(error) => {
+                    assert!(error.work_steps <= execution.max_steps);
+                    assert!(error.peak_stack_values <= program.usage().max_stack_values);
+                    assert_eq!(error.admitted_local_values, 8);
+                    if !matches!(
+                        error.kind,
+                        KernelErrorKind::UninitializedLocal { .. }
+                            | KernelErrorKind::ExpectedNumber
+                            | KernelErrorKind::Numeric(_)
+                            | KernelErrorKind::BudgetExceeded {
+                                resource: KernelResource::ExecutionSteps,
+                                ..
+                            }
+                    ) {
+                        return Err(format!(
+                            "Verified local stream violated execution contract: {:?}",
+                            error.kind
+                        ));
+                    }
                 }
             }
         }

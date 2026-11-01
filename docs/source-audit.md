@@ -163,6 +163,13 @@ connected to unary typed execution and initialized plain-name source statements.
 Source guards do not execute the native handlers or establish object-reference/
 error-unwinding equivalence. VM direct dispatch covers 135 entries through 0x86;
 the header's extra debugger opcodes through 0x89 remain a distinct inventory.
+Selected argument guards now connect EmitThreadInternal parameter creation/safe
+setters/checkclearparams, create-local GetNewVariable calls, PRECODEPOS skip versus
+provided-value consumption, marker transition and excess-argument diagnostics.
+GetNewVariableIndexInternal3's Undefined invariant and child status/type mask
+evidence ground missing parameter defaults. The scalar adapter takes an already
+source-ordered array; these checks do not infer native expression/push order,
+builtin signatures, receiver/frame ownership or full native error cleanup.
 
 ## Open research
 

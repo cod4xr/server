@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 from reference_source import ReferenceSource
+import script_argument_reference as arguments
 import script_expression_reference as expressions
 import script_lexer_reference as lexical
 import script_statement_reference as statements
@@ -79,6 +80,10 @@ def main() -> None:
     statements.verify(source, tables, reference.files["src/scr_vm.h"])
     updates.verify(reference.files["src/asmsource/_scr_compiler.asm"],
                    reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
+    arguments.verify(reference.files["src/asmsource/_scr_compiler.asm"],
+                     reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"],
+                     reference.files["src/cscr_variable.cpp"],
+                     reference.function("src/cscr_variable.cpp", "GetNewVariableIndexInternal3"))
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])
     lex = lexical.recover(source)
@@ -104,7 +109,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Verified grammar/declaration/symbol/expression/statement/update profiles and {len(rows) - 2} structural replays")
+    print(f"Verified grammar/declaration/symbol/expression/statement/update/argument profiles and {len(rows) - 2} structural replays")
 
 
 if __name__ == "__main__":

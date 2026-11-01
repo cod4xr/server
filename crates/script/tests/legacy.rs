@@ -20,6 +20,10 @@ mod kernel_local_hostile;
 mod kernel_local_verification;
 #[path = "kernel_locals.rs"]
 mod kernel_locals;
+#[path = "kernel_script_argument_budgets.rs"]
+mod kernel_script_argument_budgets;
+#[path = "kernel_script_arguments.rs"]
+mod kernel_script_arguments;
 #[path = "kernel_vectors.rs"]
 mod kernel_vectors;
 #[path = "kernel_verification.rs"]

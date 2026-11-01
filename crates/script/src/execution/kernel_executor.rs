@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
-use crate::execution::kernel_locals::{KernelLocalAdmission, KernelLocals};
+use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmission, KernelLocals};
 use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
@@ -12,11 +12,12 @@ pub(super) fn execute(
     program: &VerifiedKernelProgram,
     arguments: &[KernelValue],
     budget: KernelExecutionBudget,
+    binding: KernelArgumentBinding,
 ) -> Result<KernelOutcome, KernelError> {
     if budget.max_steps == 0 {
         kernel_error::check(KernelResource::ExecutionSteps, 1, 0, Some(0))?;
     }
-    let admission = KernelLocalAdmission::admit(program.layout, arguments, budget)?;
+    let admission = KernelLocalAdmission::admit(program.layout, arguments, budget, binding)?;
     let local_values = admission.count();
     execute_admitted(program, arguments, budget, admission)
         .map_err(|error| error.with_locals(local_values))

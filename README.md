@@ -133,6 +133,9 @@ The complete server rewrite remains open.
 - Integer-only plain-name postfix increment/decrement, with guarded native
   grammar/compiler/VM type and word-operation profiles. Float updates fail;
   overflow wraps and runtime errors map to the original update token.
+- Explicit scalar legacy script-argument invocation fills missing parameter
+  slots with initialized `undefined` and rejects extras under the guarded source
+  profile. Call frames, builtin signatures and native unwinding remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

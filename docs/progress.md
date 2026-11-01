@@ -491,7 +491,23 @@ dependency/cache. No native interpreter execution, whole reference/unwind/VM
 equivalence, postfix expressions, object/index updates, modern numeric rules,
 control flow, full GSC/stock-mod acceptance or Linux success is claimed.
 
-Next: source-grounded script argument adaptation and structured control-flow/local facts,
+The explicit scalar legacy script-argument path now passes full Windows workspace
+gates. It accepts a supplied prefix in source parameter order, initializes only
+missing parameters to Undefined, rejects extras and leaves other locals
+uninitialized. Direct single-vector filling uses existing local/stack/fuel
+admission, without padded argument temporaries. Exact/empty internal entry points
+retain their own contracts. Seven added tests cover every supplied prefix,
+source functions/error maps, default versus uninitialized slots, caller/float-bit
+isolation, 70,000 missing parameters, quota boundaries and huge checked failures.
+The 4,096-stream local hostile corpus now invokes both exact and legacy binding.
+All 120 frontend/48 legacy tests plus doctests pass; policy checks 421 source
+files/eight crates, largest 287 lines. Selected compiler/VM/header/factory argument
+guards and 99 structural replays regenerate; the new guard rejects 17 in-memory
+mutations. See ADR 0036. Normal target reused, no dependency/cache additions.
+Builtin signatures, native evaluation/push order, receivers/frames, stack markers,
+full cleanup/unwinding/GSC/mod conformance and Linux remain open.
+
+Next: structured conditional/block compilation and control-flow local initialization facts,
 plus source-grounded native argument adaptation. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
@@ -511,8 +527,9 @@ SHA256 364d29c723327105116498dd6369ea710d27e00078738f4bb12de97b89c9567e
 at the pinned revision, matching the checkout. That dispatch uses 135 entries/
 opcode <=0x86 versus the header's broader 0x89 inventory; do not assume universal
 VM/profile equivalence. The file is now added to upstream.lock.json for selected
-update-profile guards, not whole native runtime/adapter conformance. Arity
-investigation remains incomplete.
+update/argument-profile guards, not whole native runtime/adapter conformance.
+Selected missing-Undefined/excess-error behavior is implemented; native evaluation/
+push order, builtin signatures, receivers/frames and error cleanup remain incomplete.
 Research in that same verified VM blob finds ++/-- dispatches require native type
 6 (int), then add/subtract one 32-bit word at labels 690/740. Treating postfix
 updates as arbitrary float-capable addition would be incorrect for this profile.

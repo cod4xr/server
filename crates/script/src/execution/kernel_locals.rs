@@ -7,7 +7,14 @@ use crate::execution::{
 
 pub(super) struct KernelLocalAdmission {
     count: usize,
+    parameters: usize,
     bytes: u64,
+}
+
+#[derive(Clone, Copy)]
+pub(super) enum KernelArgumentBinding {
+    Exact,
+    LegacyScript,
 }
 
 impl KernelLocalAdmission {
@@ -15,8 +22,13 @@ impl KernelLocalAdmission {
         layout: KernelFunctionLayout,
         arguments: &[KernelValue],
         budget: KernelExecutionBudget,
+        binding: KernelArgumentBinding,
     ) -> Result<Self, KernelError> {
-        if arguments.len() != layout.parameters {
+        let admitted = match binding {
+            KernelArgumentBinding::Exact => arguments.len() == layout.parameters,
+            KernelArgumentBinding::LegacyScript => arguments.len() <= layout.parameters,
+        };
+        if !admitted {
             return Err(kernel_error::general(KernelErrorKind::ArgumentCount {
                 expected: layout.parameters(),
                 actual: arguments.len() as u64,
@@ -40,6 +52,7 @@ impl KernelLocalAdmission {
         )?;
         Ok(Self {
             count: layout.local_values,
+            parameters: layout.parameters,
             bytes,
         })
     }
@@ -49,17 +62,20 @@ impl KernelLocalAdmission {
     }
 
     pub(super) fn allocate(self, arguments: &[KernelValue]) -> Result<KernelLocals, KernelError> {
+        if arguments.len() > self.parameters || self.parameters > self.count {
+            return Err(kernel_error::general(
+                KernelErrorKind::InvalidExecutionState,
+            ));
+        }
         let mut values = Vec::new();
         values
             .try_reserve_exact(self.count)
             .map_err(|_| kernel_error::general(KernelErrorKind::AllocationFailed))?;
+        // The admitted prefix and total count bound all three phases. There is
+        // no padded temporary argument vector; each reserved slot is filled once.
+        values.extend(arguments.iter().copied().map(Some));
+        values.resize(self.parameters, Some(KernelValue::Undefined));
         values.resize(self.count, None);
-        for (index, value) in arguments.iter().copied().enumerate() {
-            let slot = values
-                .get_mut(index)
-                .ok_or_else(|| kernel_error::general(KernelErrorKind::InvalidExecutionState))?;
-            *slot = Some(value);
-        }
         Ok(KernelLocals {
             values,
             bytes: self.bytes,

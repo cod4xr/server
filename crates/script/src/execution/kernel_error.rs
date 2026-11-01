@@ -44,9 +44,9 @@ pub enum KernelErrorKind {
         /// Complete admitted local count.
         local_values: u64,
     },
-    /// This internal function contract requires an exact argument slice.
+    /// Argument count does not satisfy the selected scalar invocation profile.
     ArgumentCount {
-        /// Layout parameter count; native GSC arity policy is separate.
+        /// Layout parameters: exact internal count or legacy script maximum.
         expected: u64,
         /// Supplied scalar arguments.
         actual: u64,

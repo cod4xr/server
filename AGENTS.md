@@ -147,6 +147,14 @@ it does not execute native handlers or establish full reference/error/VM parity.
 Keep the 0x86 VM dispatch versus 0x89 header debugger inventory distinction.
 Regenerate source profiles and arithmetic vectors; see ADR 0035. Modern update
 rules, postfix expressions/object references and control flow remain separate.
+An explicit scalar legacy script-argument entry point now fills missing parameter
+slots with initialized Undefined and rejects extras. Preserve source-parameter
+order at this API, nonparameter uninitialized slots, exact/empty internal entry
+point contracts, caller isolation and all existing local/stack/fuel limits. Fill
+the admitted local vector directly without an unaccounted padded argument array.
+Guard parameter walks, safe-set markers/consumption/checks and Undefined creation
+through generate_syntax_tables.py --check. This is not builtin validation, native
+evaluation/push order, call frames or full unwind/VM parity; see ADR 0036.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

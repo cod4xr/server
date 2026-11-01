@@ -593,3 +593,24 @@ through 0x86 and header debugger entries through 0x89 remain distinct inventorie
 Postfix expressions, object/index updates, modern numeric rules, native argument
 adaptation, control-flow binding, full GSC/stock-mod acceptance, Linux and
 performance remain open.
+
+Explicit scalar legacy script-argument adaptation passed full Windows workspace
+formatting, warnings-denied Clippy/rustdoc, debug/release tests, source policy and
+diff checks. Seven new tests exercise all supplied-prefix lengths, initialized
+missing Undefined versus nonparameter uninitialized slots, excess rejection,
+exact-entry regression, float bits/caller isolation, fresh invocations, 70,000
+missing parameters, source functions/operator maps, local/stack/fuel quotas and
+huge checked failures before storage. The 4,096-stream local hostile corpus now
+invokes both exact and legacy binding. All 120 frontend/48 legacy tests and
+doctests pass. Policy checks 421 source files/eight crates, largest 287 lines.
+No new dependency or alternate target/cache was introduced.
+
+The new selected source guard covers parameter walks, safe-set skip/consume,
+marker/checkclearparams/excess diagnostics and Undefined child-creation evidence.
+It accepts the baseline and rejects 17 in-memory compiler/VM/header/factory
+mutations; all 99 structural replays regenerate. No original compiler/VM routine
+is executed by these source profiles. Supplied arrays are already in source
+parameter order. Builtin argument signatures, native expression evaluation/push
+order, receivers, call frames/stack markers, full cleanup/unwinding/VM/mod parity,
+Linux and performance remain open. Source activation/control flow and richer
+values/services remain required work.

@@ -338,6 +338,16 @@ execution or complete reference/unwinding behavior. The native VM dispatch ends
 at 0x86 while the header also lists debugger opcodes through 0x89; this is not
 complete profile equivalence. Postfix expressions, object/index references, modern
 numeric updates and full GSC/VM/stock-mod acceptance remain open; see ADR 0035.
+An explicit scalar legacy script-argument profile now initializes missing parameter
+suffixes to Undefined and rejects excess values. Supplied arrays are already in
+source parameter order; nonparameter locals remain uninitialized. Seven tests
+cover prefixes/defaults/strict-API regression, float bits/caller isolation, wide
+prefixes, source functions/maps, resource limits and huge checked failures. The
+hostile local corpus additionally invokes both binding profiles. Source guards
+tie selected parameter/safe-set/checkclearparams/creation roles to the pinned
+code without executing original compiler/VM routines. Builtin arity, native
+argument evaluation/push order, frames/receivers, cleanup/unwinding and whole
+GSC/mod compatibility remain open; see ADR 0036.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

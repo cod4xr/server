@@ -214,6 +214,15 @@ the VM assembly and connect grammar/compiler tags/opcodes with integer type chec
 and 32-bit word updates. These do not execute original handlers or establish full
 native variable-reference/unwinding/VM behavior. Postfix expressions, object/index
 updates, modern numeric rules and general control flow remain open; see ADR 0035.
+Scalar script invocation additionally exposes a guarded legacy argument profile:
+already parameter-ordered supplied values fill a prefix, missing parameters become
+initialized Undefined, and extras fail. Nonparameter locals remain uninitialized.
+The admitted local vector fills directly without a temporary padded argument
+array; count/byte/stack/fuel quotas and caller isolation remain shared. Existing
+exact/empty internal entry points retain their own contracts. Source-compiled
+scalar parameter functions use this profile in tests, but function-call linking,
+builtin validation, native evaluation/push order, receivers/frames/scheduling and
+whole error-unwinding/VM compatibility remain open; see ADR 0036.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

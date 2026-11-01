@@ -35,7 +35,7 @@ impl KernelFunctionLayout {
         })
     }
 
-    /// Returns the exact internal invocation argument count; native arity is separate.
+    /// Returns declared parameter slots; invocation entry points select binding policy.
     #[must_use]
     pub fn parameters(self) -> u64 {
         self.parameters as u64

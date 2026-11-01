@@ -10,6 +10,8 @@ mod statement_support;
 mod local_compound_source;
 #[path = "local_postfix_source.rs"]
 mod local_postfix_source;
+#[path = "local_script_arguments.rs"]
+mod local_script_arguments;
 #[path = "local_source_budgets.rs"]
 mod local_source_budgets;
 #[path = "local_source_execution.rs"]

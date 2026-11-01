@@ -2,6 +2,7 @@
 use std::fmt;
 
 use crate::execution::kernel_executor;
+use crate::execution::kernel_locals::KernelArgumentBinding;
 use crate::execution::kernel_verifier;
 use crate::execution::{
     KernelError, KernelExecutionBudget, KernelFunctionLayout, KernelInstruction, KernelValue,
@@ -11,7 +12,7 @@ use crate::execution::{
 /// Successful verification accounting, excluding allocator rounding and process RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct KernelProgramUsage {
-    /// Exact internal argument-prefix count, not native GSC arity policy.
+    /// Declared parameter-prefix count; invocation entry points select binding policy.
     pub parameters: u64,
     /// Complete layout slots, including parameters and uninitialized slots.
     pub local_values: u64,
@@ -102,13 +103,33 @@ impl VerifiedKernelProgram {
     /// # Errors
     /// Rejects wrong exact arity, exhausted local/stack/fuel admission, allocation
     /// failure, uninitialized loads, and numeric/type/state errors. No partial result
-    /// escapes. Native GSC missing/extra-argument adaptation remains separate work.
+    /// escapes. Legacy script-argument adaptation uses its explicit entry point.
     pub fn execute_with_arguments(
         &self,
         arguments: &[KernelValue],
         budget: KernelExecutionBudget,
     ) -> Result<KernelOutcome, KernelError> {
-        kernel_executor::execute(self, arguments, budget)
+        kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::Exact)
+    }
+
+    /// Invokes the scalar legacy script profile with an already parameter-ordered prefix.
+    ///
+    /// Missing parameter slots receive initialized Undefined; supplied values are
+    /// copied, and nonparameter locals remain uninitialized. Excess values fail.
+    /// Direct local initialization uses existing count/byte/stack/fuel admission
+    /// without a temporary padded argument array. Caller state remains unchanged.
+    /// This is not builtin validation, native stack/push order, frames or unwind parity.
+    ///
+    /// # Errors
+    /// Rejects excess arguments, exhausted admission/fuel, allocation failure and
+    /// located runtime type/numeric/uninitialized/state errors. No partial result
+    /// or external mutation escapes; native markers/pointers are never accepted.
+    pub fn execute_legacy_script_arguments(
+        &self,
+        arguments: &[KernelValue],
+        budget: KernelExecutionBudget,
+    ) -> Result<KernelOutcome, KernelError> {
+        kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::LegacyScript)
     }
 
     /// Returns immutable parameter/local counts without names or runtime state.

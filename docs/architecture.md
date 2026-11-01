@@ -264,6 +264,15 @@ shared. Guarded source profiles tie grammar tags/compiler emission to native VM
 integer checks/word operations without executing that interpreter. No object/index
 reference, postfix-expression, native unwind, modern numeric or control-flow
 semantics is inferred; see ADR 0035.
+Scalar invocation now has an explicit legacy script-argument entry point alongside
+the internal exact binding contract. Already parameter-ordered supplied values
+fill the prefix; only missing parameters receive initialized Undefined, while
+other locals remain uninitialized. Excess arguments fail. The existing admission
+plan bounds the single local vector before allocation; no temporary padded
+argument vector is created. Source guards cover selected compiler/VM setter/
+marker/check roles and undefined child-variable creation evidence. These policies
+do not define builtin signatures, expression evaluation/push order, native stack
+markers, receivers/frames or error unwinding; see ADR 0036.
 
 ## Future custom client
 
