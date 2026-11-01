@@ -6,7 +6,7 @@ use crate::statement::StatementListBudget;
 /// Independent resource scopes for the restricted function compilers.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FunctionCompilationBudget {
-    /// Body/queue/task actions, literal/name bytes, snapshot flag visits and resolution.
+    /// Body/task/group probes, literal/name bytes, snapshot visits and resolution.
     pub max_steps: u64,
     /// Complete emitted primitive instruction count.
     pub max_instructions: u64,

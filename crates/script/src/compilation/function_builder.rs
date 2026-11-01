@@ -10,11 +10,13 @@ use crate::compilation::function_task::{
 };
 use crate::compilation::{
     FunctionCompilationBudget, FunctionCompileError, FunctionCompileErrorKind,
+    FunctionSourceProfile,
 };
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 
 pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) ledger: FunctionCompilationLedger,
+    pub(super) profile: FunctionSourceProfile,
     pub(super) locals: Option<FunctionLocalBindings<'source>>,
     pub(super) reachable: bool,
     pub(super) active_loop: Option<FunctionLoopContext>,
@@ -24,10 +26,14 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
 }
 
 impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
-    pub(super) fn new(budget: FunctionCompilationBudget) -> Self {
+    pub(super) fn new(budget: FunctionCompilationBudget, profile: FunctionSourceProfile) -> Self {
         Self {
             ledger: FunctionCompilationLedger::new(budget),
-            locals: None,
+            profile,
+            locals: match profile {
+                FunctionSourceProfile::PureScalarReturn => None,
+                FunctionSourceProfile::PrimitiveStatements => Some(FunctionLocalBindings::new()),
+            },
             reachable: true,
             active_loop: None,
             tasks: Vec::new(),

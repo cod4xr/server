@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
-use crate::compilation::function_local_bindings::{
-    FunctionLocalBindings, FunctionLocalDeclaration,
-};
+use crate::compilation::function_local_bindings::FunctionLocalDeclaration;
 use crate::compilation::function_local_names;
 use crate::compilation::function_local_statements;
 use crate::compilation::function_program;
@@ -22,6 +20,8 @@ use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacySta
 /// Accepts parameters, ordinary/compound assignments and integer-only postfix
 /// statements for plain names, empty statements, blocks, conditionals, while,
 /// scoped break/continue, primitive for clauses and returns.
+/// Numeric/vector expressions include singleton grouping and three-component
+/// construction in explicit right-to-left component order. Types check at invocation.
 /// Fallthrough returns Undefined. Names use legacy identity;
 /// Reads require initialization on every reaching structural path. Duplicate
 /// parameters, unreachable statements and nonfinal immediate returns fail.
@@ -41,8 +41,7 @@ pub fn compile_primitive_function(
     function: &LegacyFunctionSyntax<'_, '_>,
     budget: FunctionCompilationBudget,
 ) -> Result<CompiledFunction, FunctionCompileError> {
-    let mut builder = FunctionBuilder::new(budget);
-    builder.locals = Some(FunctionLocalBindings::new());
+    let mut builder = FunctionBuilder::new(budget, FunctionSourceProfile::PrimitiveStatements);
     let result = compile(&mut builder, function);
     result.map_err(|mut error| {
         error.work_steps = builder.ledger.usage.compiler_steps;
@@ -96,10 +95,5 @@ fn compile<'tree, 'source>(
         KernelFunctionLayout::new(function.parameters().len() as u64, count).map_err(|error| {
             function_compile_error::at(function.span(), FunctionCompileErrorKind::Kernel(error))
         })?;
-    function_program::finish(
-        builder,
-        layout,
-        function.body().span(),
-        FunctionSourceProfile::PrimitiveStatements,
-    )
+    function_program::finish(builder, layout, function.body().span())
 }

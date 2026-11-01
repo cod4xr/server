@@ -156,7 +156,10 @@ The complete server rewrite remains open.
 - Verified primitive-kernel vectors now support construction, numeric/vector
   operators and copied locals/arguments under actual payload byte limits and fuel.
   18,116 native construction/operator cases execute through owned programs;
-  source three-element groups remain unsupported pending component-order work.
+  source construction now uses the explicitly guarded primitive profile below.
+- Primitive source vector triples evaluate components in explicit z/y/x order,
+  with singleton grouping, original spans and existing quotas. Tests retain 70,000
+  vector locals and 12,000-deep expressions. Pure scalar-return syntax stays narrower.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

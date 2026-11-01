@@ -26,7 +26,7 @@ pub fn compile_scalar_return_function(
     function: &LegacyFunctionSyntax<'_, '_>,
     budget: FunctionCompilationBudget,
 ) -> Result<CompiledFunction, FunctionCompileError> {
-    let mut builder = FunctionBuilder::new(budget);
+    let mut builder = FunctionBuilder::new(budget, FunctionSourceProfile::PureScalarReturn);
     let result = compile(&mut builder, function);
     result.map_err(|mut error| {
         error.work_steps = builder.ledger.usage.compiler_steps;
@@ -64,6 +64,5 @@ fn compile<'tree, 'source>(
         builder,
         KernelFunctionLayout::default(),
         function.body().span(),
-        FunctionSourceProfile::PureScalarReturn,
     )
 }

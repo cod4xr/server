@@ -38,6 +38,7 @@
     "src/sv_client.c": "49ef45af60b095dbbc5b3f14b08a78fb8af4161815728cefbb3b8c5d13c9a034",
     "tools/cod4_dasm/src/_cl_main_mp.asm": "c970e0c6ab2fc244e93a3a1d35e37621c569280af2ab07ef8330b792ec8827f3",
     "src/com_bsp_load_obj.c": "685f4dd35a44db3e79678bebc59b83ad3ea8ed47fcb0607ede4cb732af456a83",
-    "src/q_math.c": "5601c38a82b0f7200beaffebf79a26a13ade36759cffd3c4412c619479027c74"
+    "src/q_math.c": "5601c38a82b0f7200beaffebf79a26a13ade36759cffd3c4412c619479027c74",
+    "src/asmsource/_scr_parsetree.asm": "efca4fa2b3fc5eabf5f8f5bea644425da1610f1a40293c16f126b252312feacf"
   }
 }

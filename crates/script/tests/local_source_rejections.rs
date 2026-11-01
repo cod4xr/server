@@ -96,7 +96,7 @@ fn general_control_flow_richer_values_and_calls_remain_explicitly_unsupported() 
         "main(){return self;}",
         "main(){x=\"PrivateString\";return x;}",
         "main(){return true || PrivateCall();}",
-        "main(){return (1,2,3);}",
+        "main(){return (1,2);}",
     ] {
         let error = function_compile_support::compile_primitive(
             text.as_bytes(),

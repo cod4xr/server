@@ -9,7 +9,7 @@ use crate::execution::VerifiedKernelProgram;
 pub enum FunctionSourceProfile {
     /// Zero parameters and empty/single-return body, validated by bounded pure execution.
     PureScalarReturn,
-    /// Primitive locals, assignments/updates, blocks, conditionals, while/for/transfers and returns.
+    /// Numeric/vector expressions, locals, updates, blocks, branches, loops/transfers and returns.
     /// Publication verifies code without executing fabricated argument values.
     PrimitiveStatements,
 }

@@ -213,6 +213,16 @@ PureScalarReturn separate from compile_primitive_function with PrimitiveStatemen
 Compiler leaf/private data and function_compile_support imports follow those names;
 do not recreate obsolete scalar aliases/wrappers or imply full GSC from a rename.
 Preserve behavior/quota/proof/map coverage and explicit suite registration; see ADR 0043.
+PrimitiveStatements now lowers exact source vector triples with explicit z/y/x
+component visits into MakeVector; singleton grouping and PureScalarReturn remain
+separate. The builder owns one profile for syntax permission, publication/validation
+and result metadata. Charge fixed shape probes/tasks globally; retain whole group
+and operator spans, runtime type checks and initialized-name ordering. No recursive
+IR/native temporary array or unaccounted list allocation is introduced. Guard
+pinned prepend/grammar/compiler/VM/helper roles with generate_syntax_tables.py;
+source-shape guards do not prove native execution/side effects/constant folding/
+error-index/ref cleanup. Preserve wide/deep/failed-budget tests and unsupported
+value/index/call/scheduler/mod gates; see ADR 0044.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

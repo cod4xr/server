@@ -34,9 +34,9 @@ pub enum FunctionCompileErrorKind {
     UnsupportedParameters,
     /// A statement is outside the selected restricted source profile.
     UnsupportedBody,
-    /// Strings, vectors, objects, references, calls, and other primaries are unsupported.
+    /// Primary syntax outside the selected profile, including strings/objects/calls.
     UnsupportedPrimary,
-    /// Parentheses must contain exactly one scalar expression in this profile.
+    /// Parentheses require a singleton; the primitive profile additionally accepts triples.
     UnsupportedGroupArity,
     /// This profile permits only plain-name local assignment targets.
     UnsupportedLocalTarget,

@@ -12,14 +12,13 @@ pub(super) fn finish(
     builder: &mut FunctionBuilder<'_, '_>,
     layout: KernelFunctionLayout,
     fallback: Range<u64>,
-    profile: FunctionSourceProfile,
 ) -> Result<CompiledFunction, FunctionCompileError> {
     let (code, spans) = builder.resolve(fallback.clone())?;
     let program =
         VerifiedKernelProgram::verify_function(&code, layout, builder.ledger.budget.verification)
             .map_err(|error| kernel_error(error, &spans, fallback.clone()))?;
     drop(code);
-    if profile == FunctionSourceProfile::PureScalarReturn {
+    if builder.profile == FunctionSourceProfile::PureScalarReturn {
         let validation = program
             .execute(builder.ledger.budget.validation)
             .map_err(|error| kernel_error(error, &spans, fallback))?;
@@ -27,7 +26,7 @@ pub(super) fn finish(
     }
     builder.ledger.usage.verification_steps = program.usage().verification_steps;
     Ok(CompiledFunction {
-        profile,
+        profile: builder.profile,
         program,
         spans,
         usage: builder.ledger.usage,

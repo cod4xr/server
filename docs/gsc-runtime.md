@@ -319,6 +319,24 @@ test helper use matching names. This is an unreleased Rust API cleanup with no
 syntax/runtime/quota/proof/source-map change or additional profile/implementation.
 Diagnostic labels follow the new names; historical ADRs retain earlier naming.
 No full GSC/compiler/module acceptance follows from this cleanup; see ADR 0043.
+PrimitiveStatements now accepts source vector triples alongside singleton grouping.
+The builder owns one explicit profile used for permission, validation and result
+tagging; PureScalarReturn retains its narrower syntax. A focused group leaf probes
+only the exact bounded list shape, charges visits globally, and queues flat tasks
+to evaluate z/y/x before MakeVector. Construction maps to the whole original group;
+component/operator failures keep their own spans. Empty/two/four-or-more groups
+and unsupported skipped source fail explicitly. Primitive compilation still does
+not pre-execute invented arguments or emulate native constant folding/error order.
+Eight added tests cover real source vector values/operations/loops, float bits,
+rightmost failing component and initialization order, maps/privacy/profile guards,
+exact compiler and separate literal/proof/runtime limits, 70,000 vector locals and
+12,000-deep vector expressions with bounded failed cleanup. The wide fixture
+explicitly admits 3M syntax nodes/4M edges/512MiB frontend metadata; production
+defaults stay unchanged. The verified parse-tree helper and selected grammar/
+compiler/VM/constructor roles now have source guards rejecting 33 in-memory
+mutations. These do not execute native parser/compiler/VM routines. Full component
+side effects/constant folding/error indices/ref cleanup, vector indexing, richer
+values/calls/scheduling and GSC/mod acceptance remain open; see ADR 0044.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

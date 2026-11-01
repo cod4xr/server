@@ -6,6 +6,16 @@ mod expression_support;
 mod function_compile_support;
 mod statement_support;
 
+#[path = "local_vector_source_limits.rs"]
+mod local_vector_source_limits;
+#[path = "local_vector_source_stress.rs"]
+mod local_vector_source_stress;
+
+#[path = "local_vector_source_errors.rs"]
+mod local_vector_source_errors;
+#[path = "local_vector_source_execution.rs"]
+mod local_vector_source_execution;
+
 #[path = "local_vector_arguments.rs"]
 mod local_vector_arguments;
 

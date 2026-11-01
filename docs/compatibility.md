@@ -416,6 +416,16 @@ PrimitiveStatements profile names, with no accepted-syntax/runtime/quota/proof/
 map change. This is an unreleased API rename, without compatibility wrappers or
 a wire/content/serialized-bytecode change; see ADR 0043. Existing suites retain
 their coverage and unsupported GSC gates.
+Primitive source vector triples now lower with explicit z/y/x evaluation and
+reversed constructor slots, under one builder-owned source profile. Singleton
+groups and PureScalarReturn restrictions remain. Tests execute vectors/locals/
+operations/loops, retain boundary bits, check rightmost component errors, source
+maps and skipped/invalid syntax, exact quotas, wide locals and deep flat cleanup.
+The parse-tree helper was verified against pinned Git before hashing; selected
+grammar/prepend/compiler/VM/constructor roles reject 33 in-memory mutations.
+These do not execute original parser/compiler/VM code or prove full side-effect/
+constant-folding/error-index/ref-cleanup parity. Richer values, vector indexing,
+calls/scheduling and whole GSC/mod acceptance remain open; see ADR 0044.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

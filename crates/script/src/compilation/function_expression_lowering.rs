@@ -4,10 +4,11 @@ use std::ops::Range;
 use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
+use crate::compilation::function_group;
 use crate::compilation::function_literal;
 use crate::compilation::function_local_names;
 use crate::compilation::function_task::FunctionTask;
-use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind, FunctionSourceProfile};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::{
     LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator, LegacyLogicalOperator,
@@ -83,7 +84,9 @@ fn primary<'tree, 'source>(
         function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
-        LegacyPrimaryKind::Reference { syntax } if builder.locals.is_some() => {
+        LegacyPrimaryKind::Reference { syntax }
+            if builder.profile == FunctionSourceProfile::PrimitiveStatements =>
+        {
             function_local_names::read(builder, syntax)
         }
         LegacyPrimaryKind::Literal { token, polarity } => {
@@ -94,21 +97,7 @@ fn primary<'tree, 'source>(
             builder.emit(KernelInstruction::Constant(value), node.span())
         }
         LegacyPrimaryKind::Parenthesized { expressions } => {
-            if function_body::production(expressions) != Some(113) {
-                return Err(function_compile_error::at(
-                    node.span(),
-                    FunctionCompileErrorKind::UnsupportedGroupArity,
-                ));
-            }
-            let list = function_body::child(expressions, 0, 1)?;
-            if function_body::production(list) != Some(112) {
-                return Err(function_compile_error::at(
-                    node.span(),
-                    FunctionCompileErrorKind::UnsupportedGroupArity,
-                ));
-            }
-            let inner = function_body::child(list, 0, 1)?;
-            builder.push_task(FunctionTask::Visit(inner), inner.span())
+            function_group::lower(builder, node, expressions)
         }
         _ => Err(function_compile_error::at(
             node.span(),

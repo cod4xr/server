@@ -355,6 +355,17 @@ test helper names follow the same function terminology. No compatibility alias,
 duplicate implementation, profile, language/runtime behavior or wire/bytecode
 format is added by this unreleased API cleanup. See ADR 0043.
 
+Primitive source vector construction now lives in a focused function_group leaf.
+The builder stores the explicit source profile once; the same value controls
+accepted groups, publication validation and returned profile metadata. Exact
+three-element shapes use fixed charged child probes and existing admitted flat
+tasks, evaluating z/y/x into reversed MakeVector slots. Singleton groups remain
+unchanged; PureScalarReturn rejects triples. No list allocation/native temporary
+array or recursive owned tree is introduced. Source maps retain whole groups and
+component/operator spans. Selected pinned prepend/grammar/compiler/VM roles are
+guarded, without native execution/constant-folding/cleanup claims. Primitive source
+still verifies without fabricated invocation arguments; see ADR 0044.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

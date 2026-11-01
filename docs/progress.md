@@ -642,7 +642,30 @@ Stale Rust compiler/helper symbols were checked. See ADR 0043. No dependency,
 alternate target, wire/content/bytecode format or full-GSC claim is introduced.
 Source constructors, native/full-GSC/mod conformance and Linux remain open.
 
-Next: primitive source vector construction with explicit profile/component-order guards,
+Primitive source vector construction now passes full Windows workspace gates.
+The builder owns one explicit source profile for permission, validation and
+published metadata. PureScalarReturn retains singleton/scalar syntax;
+PrimitiveStatements accepts triples through fixed charged child probes and flat
+tasks, evaluating z/y/x into MakeVector's reversed slots. Whole group and operator
+maps remain available, with runtime type checks and no fabricated-argument/native
+constant-folding execution. Eight added tests cover actual vector source values,
+locals/operators/loops, float boundaries, rightmost component failure and name
+order, maps/privacy/profile/shape rejection, exact and separate nested quotas,
+70,000 vector locals and 12,000-deep vector expressions with flat failed cleanup.
+The wide fixture explicitly admits 3M nodes/4M edges/512MiB frontend metadata;
+production defaults remain unchanged. All 165 frontend/56 legacy tests and
+doctests pass, with formatting, warnings-denied Clippy/rustdoc and repository
+policy (475 sources/eight crates, largest 287 lines). Parse-tree helper bytes
+matched the pinned Git blob before adding SHA-256
+efca4fa2b3fc5eabf5f8f5bea644425da1610f1a40293c16f126b252312feacf.
+All seventeen pinned helper/source-profile checks pass; existing fixture bytes
+remain unchanged. Selected prepend/grammar/compiler/VM/helper guards now reject
+33 in-memory grammar/tree/compiler mutations, including combined prepend call
+argument roles. See ADR 0044. No dependencies or alternate targets added. Native
+parser/compiler/VM execution, full side-effect/constant-folding/error-index/ref
+cleanup, richer values/indexing/calls/scheduling, mod conformance and Linux remain open.
+
+Next: source-grounded vector indexing/read semantics before general heap values,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

@@ -16,6 +16,7 @@ mod function_expression_lowering;
 mod function_for;
 mod function_for_clause;
 mod function_for_update;
+mod function_group;
 mod function_initialization;
 mod function_literal;
 mod function_local_assignment;

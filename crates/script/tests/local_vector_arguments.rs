@@ -12,7 +12,7 @@ use cod4x_script::legacy::{LegacyNumber, LegacyVector, LegacyVectorError};
 use cod4x_script::source::{SourceBudget, SourceText};
 
 #[test]
-fn parameterized_source_reuses_vector_operations_without_source_constructor_claims() {
+fn parameterized_source_reuses_vector_operations_and_retains_the_pure_scalar_contract() {
     let source = b"PrivateMain(vec,scale){x=vec;x*=scale;return x;}";
     let compiled =
         function_compile_support::compile_primitive(source, FunctionCompilationBudget::default())
@@ -37,21 +37,12 @@ fn parameterized_source_reuses_vector_operations_without_source_constructor_clai
         KernelValue::Vector(LegacyVector::from_components([1.0, 2.0, 3.0]))
     );
     assert_eq!(compiled.usage().validation_steps, None);
-    for pure in [false, true] {
-        let error = if pure {
-            function_compile_support::compile_scalar(
-                b"main(){return(1,2,3);}",
-                FunctionCompilationBudget::default(),
-            )
-        } else {
-            function_compile_support::compile_primitive(
-                b"main(){return(1,2,3);}",
-                FunctionCompilationBudget::default(),
-            )
-        }
-        .expect_err("Source vector construction remains separate work");
-        assert_eq!(error.kind, FunctionCompileErrorKind::UnsupportedGroupArity);
-    }
+    let error = function_compile_support::compile_scalar(
+        b"main(){return(1,2,3);}",
+        FunctionCompilationBudget::default(),
+    )
+    .expect_err("Pure scalar-return syntax remains restricted");
+    assert_eq!(error.kind, FunctionCompileErrorKind::UnsupportedGroupArity);
 }
 
 #[test]
