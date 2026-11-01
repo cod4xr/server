@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::heap::HeapWorkBudget;
+use crate::heap::objects::arrays::array_collection;
 use crate::heap::objects::field_index::{Bucket, FieldIndex};
 use crate::heap::objects::object_mark;
 use crate::heap::objects::object_slot::{FieldSlot, ObjectState};
@@ -22,7 +23,7 @@ fn collect(
     roots: &[ObjectId],
     work: &mut ObjectWork,
 ) -> Result<ObjectCollection, ObjectHeapErrorKind> {
-    let flags = object_mark::trace(heap, roots, work)?;
+    let flags = object_mark::trace(heap, heap.arrays.roots(roots), work)?;
     let next = preflight(heap, &flags, work)?;
     let sweep = heap
         .objects
@@ -68,6 +69,7 @@ fn preflight(
         return Err(ObjectHeapErrorKind::InvalidState);
     }
     let mut next = heap.usage;
+    next.live_arrays = array_collection::preflight(heap, flags, work)?;
     let (mut objects, mut fields, mut bytes) = (0_u64, 0_u64, 0_u64);
     next.live_objects = 0;
     next.live_fields = 0;
@@ -159,6 +161,9 @@ fn apply(heap: &mut ObjectHeap, flags: &[bool], next: ObjectHeapUsage, live_fiel
     }
     for (index, slot) in heap.objects.iter_mut().enumerate() {
         if matches!(slot.state, ObjectState::Occupied { .. }) && !flags[index] {
+            if let Some(metadata) = heap.arrays.metadata.get_mut(index) {
+                *metadata = crate::heap::objects::arrays::ArrayMetadata::default();
+            }
             if let Some(generation) = slot.generation.checked_add(1) {
                 slot.generation = generation;
                 slot.state = ObjectState::Vacant {

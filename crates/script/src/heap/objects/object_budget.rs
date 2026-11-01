@@ -11,6 +11,10 @@ pub struct ObjectHeapBudget {
     pub max_key_bytes: u64,
     /// Retained object slots, including vacant/retired generations.
     pub max_object_slots: u64,
+    /// Explicitly owned array value locations, independent of array data count.
+    pub max_array_values: u64,
+    /// Retained array value slots, including vacant/retired generations.
+    pub max_array_value_slots: u64,
     /// Retained field slots, including vacant slots.
     pub max_field_slots: u64,
     /// Retained field-index bucket records.
@@ -28,6 +32,8 @@ impl Default for ObjectHeapBudget {
             max_live_fields: 1_000_000,
             max_key_bytes: 64 * 1024 * 1024,
             max_object_slots: 1_000_000,
+            max_array_values: 1_000_000,
+            max_array_value_slots: 1_000_000,
             max_field_slots: 1_000_000,
             max_index_buckets: 4 * 1024 * 1024,
             max_metadata_bytes: 256 * 1024 * 1024,

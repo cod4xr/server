@@ -15,6 +15,10 @@ pub enum ObjectResource {
     KeyBytes,
     /// Retained object slots.
     ObjectSlots,
+    /// Live explicitly owned array value locations.
+    ArrayValues,
+    /// Retained array value arena slots.
+    ArrayValueSlots,
     /// Retained field slots.
     FieldSlots,
     /// Retained field-index buckets.
@@ -32,6 +36,14 @@ pub enum ObjectResource {
 /// Sanitized shared-object failure without keys, values, identities or addresses.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ObjectHeapErrorKind {
+    /// A field operation or ordinary struct reference received an array data node.
+    ExpectedStruct,
+    /// An array data operation received an ordinary struct node.
+    ExpectedArray,
+    /// The managed array value belongs to a different value-location arena.
+    ForeignArrayValue,
+    /// The managed array value location is missing, vacant, retired or reused.
+    StaleArrayValue,
     /// The object belongs to a different or dropped/recreated store.
     ForeignReference,
     /// The object slot is absent, vacant, retired or has a stale generation.

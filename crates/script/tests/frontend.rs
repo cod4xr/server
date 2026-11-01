@@ -195,6 +195,8 @@ mod primary_forms;
 mod primary_literals;
 #[path = "reference_views.rs"]
 mod reference_views;
+#[path = "source_array_gate.rs"]
+mod source_array_gate;
 #[path = "source_boundaries.rs"]
 mod source_boundaries;
 #[path = "source_field_collection.rs"]

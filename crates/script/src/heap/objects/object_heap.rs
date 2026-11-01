@@ -3,6 +3,7 @@ use std::fmt;
 
 use crate::execution::KernelValue;
 use crate::heap::heap_identity::HeapIdentity;
+use crate::heap::objects::arrays::ArrayStorage;
 use crate::heap::objects::field_index::FieldIndex;
 use crate::heap::objects::object_slot::{FieldSlot, ObjectSlot, ObjectState};
 use crate::heap::objects::{
@@ -12,10 +13,13 @@ use crate::heap::objects::{
 use crate::heap::objects::{object_allocation, object_fields, object_reclamation, object_strings};
 use crate::heap::{HeapWorkBudget, HeapWorkUsage, StringHeap};
 
-/// Prototype shared struct graph with checked nonowning identities and explicit roots.
+/// Shared struct graph and managed empty-array data with checked identities.
 ///
-/// Copies preserve object identity. No array COW, VM/source execution, native GC or
-/// game lifetime policy is implied. Supply every live object root to reclamation.
+/// Struct snapshots preserve shared identity and require complete supplied roots.
+/// Managed array value locations remain roots until explicit release; copying a
+/// raw location handle adds no owner. Array data snapshots remain nonowning.
+/// Empty-data detachment does not provide populated/nested COW, source arrays,
+/// frame/scheduler ownership, cycle-alias markers or native GC/lifetime parity.
 /// The associated string store remains separately owned; use `reclaim_strings` with
 /// every additional string root, after object collection when cycles should release
 /// strings. Logical quotas exclude allocator/spare capacity/fixed fields and RSS.
@@ -29,6 +33,7 @@ pub struct ObjectHeap {
     pub(super) free_field: Option<usize>,
     pub(super) index: FieldIndex,
     pub(super) usage: ObjectHeapUsage,
+    pub(super) arrays: ArrayStorage,
 }
 
 impl ObjectHeap {
@@ -50,6 +55,7 @@ impl ObjectHeap {
             free_field: None,
             index: FieldIndex::default(),
             usage: ObjectHeapUsage::default(),
+            arrays: ArrayStorage::default(),
         })
     }
 
@@ -78,9 +84,9 @@ impl ObjectHeap {
 
     /// Returns stored field count, distinct from the legacy script .size operation.
     /// # Errors
-    /// Rejects foreign/stale/vacant/retired references without mutation.
+    /// Rejects foreign/stale/vacant/retired and array references without mutation.
     pub fn field_count(&self, id: ObjectId) -> Result<u64, ObjectHeapErrorKind> {
-        let index = self.resolve(id)?;
+        let index = self.resolve_struct(id)?;
         match self.objects[index].state {
             ObjectState::Occupied { fields, .. } => Ok(fields as u64),
             _ => Err(ObjectHeapErrorKind::InvalidState),
@@ -130,7 +136,8 @@ impl ObjectHeap {
         object_fields::remove(self, id, key, strings, budget)
     }
 
-    /// Iteratively traces the complete supplied object roots, reclaiming unreachable cycles.
+    /// Traces complete supplied struct roots and all live managed array locations.
+    /// Unreachable data and cycles are reclaimed; array snapshots alone are not roots.
     /// # Errors
     /// All validation/admission/allocation preflights before deletion. Failures
     /// preserve values, identities and usage, retaining charged work/scratch.
@@ -167,6 +174,14 @@ impl ObjectHeap {
             return Err(ObjectHeapErrorKind::StaleReference);
         }
         Ok(id.slot)
+    }
+
+    pub(super) fn resolve_struct(&self, id: ObjectId) -> Result<usize, ObjectHeapErrorKind> {
+        let index = self.resolve(id)?;
+        if self.arrays.is_array(index) {
+            return Err(ObjectHeapErrorKind::ExpectedStruct);
+        }
+        Ok(index)
     }
 
     pub(crate) fn validate_strings(&self, strings: &StringHeap) -> Result<(), ObjectHeapErrorKind> {

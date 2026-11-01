@@ -17,7 +17,7 @@ pub(super) fn find(
     work: &mut ObjectWork,
 ) -> Result<(usize, u64, Lookup), ObjectHeapErrorKind> {
     work.charge(2)?;
-    let owner = heap.resolve(id)?;
+    let owner = heap.resolve_struct(id)?;
     if strings.owner != heap.string_owner {
         return Err(ObjectHeapErrorKind::ForeignStringHeap);
     }
@@ -46,7 +46,7 @@ pub(super) fn validate_value(
     work.charge(1)?;
     match value {
         KernelValue::Object(id) => {
-            heap.resolve(id)?;
+            heap.resolve_struct(id)?;
         }
         KernelValue::String(id) | KernelValue::LocalizedString(id) => {
             strings.get(id).map_err(ObjectHeapErrorKind::StringHeap)?;

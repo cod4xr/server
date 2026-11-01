@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+mod arrays;
 mod cycles;
 mod field_index;
 mod field_insertion;
 mod field_removal;
 mod index_rebuild;
 mod object_allocation;
+mod object_allocation_plan;
 mod object_budget;
 mod object_error;
 mod object_fields;
@@ -20,6 +22,7 @@ mod object_tests;
 mod object_usage;
 mod object_work;
 
+pub use arrays::{ArrayCowOutcome, ArrayId, ArrayResult, ArrayValueId};
 pub use cycles::ObjectCycleAnalysis;
 pub use object_budget::ObjectHeapBudget;
 pub use object_error::{ObjectHeapError, ObjectHeapErrorKind, ObjectResource};

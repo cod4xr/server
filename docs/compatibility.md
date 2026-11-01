@@ -1,5 +1,12 @@
 # Compatibility contract
 
+ADR 0072 adds checked host-owned empty-array locations and empty detachment only.
+Four zero-key native alias states replay with explicit host aliases; they do not
+execute retained-cycle topology. Thirteen managed-value tests plus four key and
+three private tests cover wide counts, bounded churn, an independent model and
+atomic failures. Complete array source/VM behavior and native allocation/cleanup/
+GC parity remain open. Binary host keys are not native interner conformance.
+
 ADR 0069 adds ordinary struct identity equality/inequality. All 108 actual C
 ordinary-pointer outcomes agree at O0/O2 with modeled records/ref callbacks;
 36 source-role mutations reject. Selected C and archival marker reads use CHILD

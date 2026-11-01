@@ -1,9 +1,16 @@
 # Expanded GSC runtime contract
 
+ADR 0072 implements the managed empty-data portion of proposal 0071: explicit
+host-owned locations, nonowning snapshots and empty detachment under wide quotas.
+Tests retain 70,000 arrays/owners and churn 100,000 times within two data/value
+slots; an independent model checks 16,384 mixed operations. Source arrays remain
+rejected until indexed/nested COW, cycle-alias markers and frame/field/scheduler
+ownership are implemented. No complete GSC workstream closes from this component.
+
 ADR 0070 implements opt-in budgeted reference-cycle boundary analysis, validated
 against native trace topologies, 4,096 independent graph models and wide/churn/
-resource workloads. It does not change ordinary collection, implement alias
-markers or activate arrays; managed ownership and array COW remain open.
+resource workloads. Struct-only collection is unchanged; ADR 0072 adds managed
+empty-array roots. Alias markers, populated COW and source arrays remain open.
 
 Array ownership assessment now includes 20 selected native cycle-alias traces:
 root release can retain aliases that still trigger COW/key-order reversal. A

@@ -2,8 +2,9 @@
 
 Date: 2026-11-01
 
-Status: proposal under implementation assessment; no array store, managed-value
-arena, alias-marker publication or source/VM activation is claimed here.
+Status: proposal for complete ownership/COW. ADR 0072 implements only managed
+host-owned empty data, snapshots and empty detachment. Populated/nested storage,
+frame/scheduler ownership, alias-marker publication and source/VM activation remain open.
 
 ## Required behavior
 

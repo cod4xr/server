@@ -1,13 +1,25 @@
 # Project contract
 
+ADR 0072 implements managed host-owned EMPTY array values and nonowning data
+snapshots, explicit copy/retain/release and empty detachment only. Raw handle
+copies create no owner; live locations root data until release. Preserve checked
+namespaces/generations, wide counts, fallible atomic admission, optional per-parent
+metadata and metered root scans including vacancies. Shared struct APIs and VM
+wrong tags must reject array data. Keep key/domain, wide, 100k bounded churn,
+independent ownership-model, exact-failure, mixed collection and private tests,
+plus array_value_workload. Source arrays remain rejected. Populated/nested COW,
+retained-cycle markers and frame/field/scheduler ownership remain proposal 0071
+work. The four empty native state replays use host aliases, not native cycle
+ownership; keep that scope distinct from 16 populated helper-only alias traces.
+
 ADR 0070 adds opt-in read-only ObjectHeap::analyze_cycles. Preserve complete-root
 reachability, garbage-only indegree peeling, downstream cycle closure and unique
 live boundary snapshots. Prepay all graph/output work and simultaneous flags/
 degree/queue/output scratch; results are nonowning and Debug redacts IDs/payloads.
 Keep topology/native-model, 4096 independent RC-model graphs, wide, failed-prefix/
-exact-scratch tests and object_cycle_workload. Ordinary collection is unchanged.
-This does not implement array COW, managed ownership or logical alias pinning;
-those and array source activation remain open.
+exact-scratch tests and object_cycle_workload. Struct-only collection is unchanged.
+Managed empty-array roots follow ADR 0072; this probe does not implement populated
+COW or logical alias pinning. Array source activation remains open.
 
 Array ownership assessment now includes generate_array_alias_vectors.py --check
 (20 actual selected nonfreeing ref-drop/COW/key traces with modeled graph setup)
@@ -103,8 +115,9 @@ uses checked stack effects. Run generate_string_access_vectors.py --check (896
 actual helper outcomes) and script_string_access_reference.py (46 mutations).
 Returning oracle error callbacks are not native unwinding/interner/GC evidence.
 
-Array semantics are assessed in ADR 0060; no Rust array store or VM instructions
-exist yet. Preserve native local-slot copy-on-write, recursive nested-array copies,
+Array semantics are assessed in ADR 0060; ADR 0072 adds an empty managed component,
+but no indexed store or array VM instructions. Preserve native local-slot
+copy-on-write, recursive nested-array copies,
 shared struct identity and copy-induced sibling-order reversal. Run
 generate_array_vectors.py --check (306 helper traces at O0/O2 with modeled
 pool/ref/output services and selected native unlink/free paths),

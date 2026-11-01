@@ -1,9 +1,18 @@
 # Architecture and expansion
 
+ADR 0072 implements managed host-owned empty-array locations separately from
+nonowning data snapshots. Data shares the parent arena through lazy parallel
+classification/count rows; location identities use an independent full namespace.
+Explicit copy/retain/release and empty detachment preflight work/resources and
+fallible growth before publication. Collection/analysis include owned locations
+as roots and clear classification on parent reuse. Struct-only storage keeps zero
+array rows. Populated/indexed arrays, frame/field/scheduler ownership, cycle-alias
+markers and source/VM activation remain open under proposal 0071.
+
 ADR 0070 adds a read-only complete-root cycle-boundary probe in objects/cycles.
 Iterative garbage indegree peeling identifies cycle-retained closure and unique
-live targets with admitted work/flags/counts/queue/output scratch. Normal collection
-is unchanged; managed array ownership and alias-marker integration remain separate.
+live targets with admitted work/flags/counts/queue/output scratch. Struct-only
+collection is unchanged; populated-array ownership and alias markers remain open.
 
 ADR 0069 dispatches ordinary struct equality/inequality through checked object
 references with fixed work and no graph traversal. Pure/string-only ownership
@@ -81,7 +90,8 @@ mixed coercion, general objects and host/scheduling integration remain open.
 ADR 0061 adds plain-string byte indexing and unary Size through the explicit heap
 context. Both use the legacy first-NUL prefix; result allocation/collection retains
 all operand roots until success, and global work admits scans. Bound source keeps
-index-first evaluation and operator maps. Arrays and object execution remain unimplemented.
+index-first evaluation and operator maps. Source arrays remain unimplemented;
+ordinary struct execution follows ADRs 0064–0069.
 
 ADR 0062 adds primitive definedness with a required first argument and evaluated,
 discarded extras. Exhaustive value/arity policies require explicit decisions for

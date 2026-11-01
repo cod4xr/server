@@ -17,6 +17,8 @@ fn exact_budget(usage: cod4x_script::heap::ObjectHeapUsage) -> ObjectHeapBudget 
         max_live_fields: usage.live_fields,
         max_key_bytes: usage.key_bytes,
         max_object_slots: usage.object_slots,
+        max_array_values: usage.live_array_values,
+        max_array_value_slots: usage.array_value_slots,
         max_field_slots: usage.field_slots,
         max_index_buckets: usage.index_buckets,
         max_metadata_bytes: usage.metadata_bytes,

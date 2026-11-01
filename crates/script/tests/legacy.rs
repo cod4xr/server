@@ -1,5 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
+#[path = "array_value_churn.rs"]
+mod array_value_churn;
+#[path = "array_value_collection.rs"]
+mod array_value_collection;
+#[path = "array_value_model.rs"]
+mod array_value_model;
+#[path = "array_value_vectors.rs"]
+mod array_value_vectors;
 #[path = "defined_limits.rs"]
 mod defined_limits;
 #[path = "defined_vectors.rs"]
@@ -99,6 +107,18 @@ mod kernel_verification;
 mod arithmetic_boundaries;
 #[path = "arithmetic_vectors.rs"]
 mod arithmetic_vectors;
+#[path = "array_key_strings.rs"]
+mod array_key_strings;
+#[path = "array_key_vectors.rs"]
+mod array_key_vectors;
+#[path = "array_value_budgets.rs"]
+mod array_value_budgets;
+#[path = "array_value_ownership.rs"]
+mod array_value_ownership;
+#[path = "array_value_width.rs"]
+mod array_value_width;
+#[path = "array_value_work.rs"]
+mod array_value_work;
 #[path = "field_pressure.rs"]
 mod field_pressure;
 #[path = "field_vectors.rs"]

@@ -16,10 +16,18 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Managed empty-array values have explicit checked ownership, copy/retain/release
+  and empty-data detachment. Tests exceed 65,535 values/owners and run 100,000
+  copy/detach/release cycles within two data/value slots. Logical budgets include
+  retained metadata and work; ordinary field APIs cannot bypass COW. ADR 0072 and
+  `array_value_workload` record the component boundary. Populated/nested arrays,
+  frame/scheduler ownership, cycle-alias markers and source arrays remain open.
+
 - An opt-in reference-cycle graph probe reports cycle-retained garbage and unique
   live boundary targets under explicit work/scratch budgets. It matches 4,096
   independent model graphs and runs reproducible wide/churn workloads; ADR 0070.
-  Normal collection is unchanged; this is array-ownership assessment support.
+  Struct-only collection is unchanged; managed empty-array locations also root
+  data under ADR 0072. This probe supports further array-ownership assessment.
 
 - Bound GSC ordinary struct fields support reads, simple writes and Undefined
   deletion with shared aliases and original RHS-before-receiver order. Names use

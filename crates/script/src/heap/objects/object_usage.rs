@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::KernelValue;
 use crate::heap::HeapWorkUsage;
+use crate::heap::objects::arrays::{ArrayMetadata, ArrayValueSlot};
 use crate::heap::objects::field_index::Bucket;
 use crate::heap::objects::object_error;
 use crate::heap::objects::object_slot::{FieldSlot, ObjectSlot};
@@ -9,8 +10,16 @@ use crate::heap::objects::{ObjectHeapBudget, ObjectHeapErrorKind, ObjectId, Obje
 /// Retained logical object storage, excluding allocator rounding/spare capacity/RSS.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct ObjectHeapUsage {
-    /// Live shared objects.
+    /// Live parent data nodes, including shared structs and arrays.
     pub live_objects: u64,
+    /// Live array data nodes, included in `live_objects`.
+    pub live_arrays: u64,
+    /// Live explicitly owned array value locations.
+    pub live_array_values: u64,
+    /// Retained array value slots, including vacant/retired generations.
+    pub array_value_slots: u64,
+    /// Retained optional per-parent array classification/owner-count rows.
+    pub array_metadata_rows: u64,
     /// Live fields.
     pub live_fields: u64,
     /// Owned live field-key bytes.
@@ -74,14 +83,35 @@ impl ObjectHeapUsage {
             .checked_mul(size_of::<ObjectSlot>() as u64);
         let fields = self.field_slots.checked_mul(size_of::<FieldSlot>() as u64);
         let buckets = self.index_buckets.checked_mul(size_of::<Bucket>() as u64);
+        let array_values = self
+            .array_value_slots
+            .checked_mul(size_of::<ArrayValueSlot>() as u64);
+        let array_metadata = self
+            .array_metadata_rows
+            .checked_mul(size_of::<ArrayMetadata>() as u64);
         self.metadata_bytes = objects
             .zip(fields)
             .zip(buckets)
             .and_then(|((objects, fields), buckets)| {
                 objects.checked_add(fields)?.checked_add(buckets)
             })
+            .zip(array_values)
+            .zip(array_metadata)
+            .and_then(|((bytes, values), metadata)| {
+                bytes.checked_add(values)?.checked_add(metadata)
+            })
             .ok_or(ObjectHeapErrorKind::SizeOverflow)?;
         for (resource, requested, maximum) in [
+            (
+                ObjectResource::ArrayValues,
+                self.live_array_values,
+                budget.max_array_values,
+            ),
+            (
+                ObjectResource::ArrayValueSlots,
+                self.array_value_slots,
+                budget.max_array_value_slots,
+            ),
             (
                 ObjectResource::LiveObjects,
                 self.live_objects,

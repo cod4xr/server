@@ -10,7 +10,8 @@ use crate::heap::{
 impl ObjectHeap {
     /// Analyzes unreachable reference-cycle closure and its unique live targets.
     ///
-    /// Read-only and iterative. Complete roots determine reachability; native ref
+    /// Read-only and iterative. Complete supplied roots plus live managed array
+    /// locations determine reachability. Array snapshots alone are not roots. Native ref
     /// counts, array behavior and native GC are not inferred. All node/edge visits,
     /// checked references and logical flag/count/queue/output payload are admitted.
     /// Keys/payloads are not read, normalized or exposed. Ordinary reclamation is unchanged.

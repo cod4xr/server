@@ -18,7 +18,7 @@ impl CycleWorkspace {
         roots: &[ObjectId],
         work: &mut ObjectWork,
     ) -> Result<Self, ObjectHeapErrorKind> {
-        let live = object_mark::trace(heap, roots, work)?;
+        let live = object_mark::trace(heap, heap.arrays.roots(roots), work)?;
         let count = heap.objects.len();
         let maximum = usize::try_from(heap.usage.live_objects)
             .map_err(|_| ObjectHeapErrorKind::SizeOverflow)?;

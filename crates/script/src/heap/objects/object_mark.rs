@@ -6,12 +6,14 @@ use crate::heap::objects::{ObjectHeap, ObjectHeapErrorKind, ObjectId};
 
 pub(super) fn trace(
     heap: &ObjectHeap,
-    roots: &[ObjectId],
+    roots: impl Iterator<Item = Option<ObjectId>> + Clone,
     work: &mut ObjectWork,
 ) -> Result<Vec<bool>, ObjectHeapErrorKind> {
-    for id in roots {
+    for id in roots.clone() {
         work.charge(1)?;
-        heap.resolve(*id)?;
+        if let Some(id) = id {
+            heap.resolve(id)?;
+        }
     }
     let count = heap.objects.len();
     let live =
@@ -33,7 +35,9 @@ pub(super) fn trace(
         .map_err(|_| ObjectHeapErrorKind::AllocationFailed)?;
     for id in roots {
         work.charge(1)?;
-        enqueue(heap.resolve(*id)?, &mut flags, &mut queue, live)?;
+        if let Some(id) = id {
+            enqueue(heap.resolve(id)?, &mut flags, &mut queue, live)?;
+        }
     }
     let mut cursor = 0;
     while cursor < queue.len() {
