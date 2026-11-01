@@ -126,6 +126,13 @@ impl ModuleCompilationLedger {
         self.usage.staged_field_bytes = add(
             self.usage.staged_field_bytes,
             usage.retained_field_bytes,
+            span.clone(),
+        )?;
+        self.usage.switch_labels =
+            add(self.usage.switch_labels, usage.switch_labels, span.clone())?;
+        self.usage.staged_switch_bytes = add(
+            self.usage.staged_switch_bytes,
+            usage.retained_switch_bytes,
             span,
         )?;
         Ok(())
@@ -215,7 +222,11 @@ impl ModuleCompilationLedger {
                 self.base_bytes,
                 add(
                     self.usage.staged_string_bytes,
-                    self.usage.staged_field_bytes,
+                    add(
+                        self.usage.staged_field_bytes,
+                        self.usage.staged_switch_bytes,
+                        span.clone(),
+                    )?,
                     span.clone(),
                 )?,
                 span.clone(),

@@ -5,6 +5,8 @@
     reason = "Tests execute real offline source strings through owned temporary fixtures."
 )]
 mod content_support;
+#[path = "script_string_switch/mod.rs"]
+mod script_string_switch;
 
 use std::process::Command;
 

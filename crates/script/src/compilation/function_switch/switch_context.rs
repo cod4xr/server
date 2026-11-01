@@ -5,9 +5,10 @@ use crate::compilation::function_initialization::FunctionInitializationSnapshot;
 use crate::compilation::function_loop_transfer::FunctionBreakOwner;
 use crate::compilation::function_scopes::ScopeId;
 use crate::compilation::function_task::FunctionPatchSite;
+use crate::execution::KernelSwitchKey;
 
 pub(super) struct SwitchCase {
-    pub(super) key: i32,
+    pub(super) key: KernelSwitchKey,
     pub(super) target: Option<usize>,
     pub(super) span: Range<u64>,
 }

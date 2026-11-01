@@ -4,8 +4,11 @@ mod switch_dispatch;
 mod switch_error;
 mod switch_exit;
 mod switch_inventory;
+mod switch_labels;
+mod switch_nodes;
 mod switch_queue;
 mod switch_sections;
+mod switch_sort;
 mod switch_task;
 
 pub(super) use switch_context::FunctionSwitchContext;

@@ -1,12 +1,21 @@
 # Expanded GSC runtime contract
 
+ADR 0098 activates plain-string/mixed switches in bound modules and supplied
+packages. Integer/string domains remain distinct; labels occupy separate immutable
+tables rather than heap strings or literal-cache slots. Metered in-place sorting
+detects decoded duplicates at their second source case; balanced dispatch preserves
+source-order bodies and physical cleanup. Standalone PrimitiveStatements remains
+integer-only. Tests cover exact/failure budgets, private locations, package/CLI
+paths, 66k cases, 70,001-byte labels and bounded 100k dispatches beside 70k host
+aliases. `examples/gsc/string_switches.gsc` returns integer 42. Full GSC remains open.
+
 ADR 0097 adds typed switch-key validation/comparison and separately owned label
 bytes. Labels neither allocate runtime strings nor occupy invocation cache slots.
 Integer and plain-string domains remain distinct; normalized order is an internal
 search contract rather than native global-ID ordering. Complete proof, private
 errors, explicit heaps, cleanup, exact/failure budgets and wide/pressure/churn
-tests cover this typed component. Source string switches remain rejected until
-their separate compiler and dispatch acceptance.
+tests cover this typed component. ADR 0098 separately accepts the bound compiler
+and dispatch profile; the standalone source profile remains integer-only.
 
 ADR 0095 adds source indexed assignment/clear through initialized plain local
 cells, using ADR 0088's checked instructions and ADR 0094's physical lifetimes.
@@ -626,7 +635,7 @@ standard-library, language and engine integration remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
 
-PrimitiveStatements and bound source now lower integer switch, case and default
+At ADR 0052, PrimitiveStatements and bound source lower integer switch, case and default
 with once-only key evaluation, strict integer typing, adjacent labels, source-order
 fallthrough, default anywhere and nearest-break ownership separate from continue.
 Exit initialization includes actual break/fallthrough paths and an unmatched path
@@ -645,8 +654,9 @@ fallthrough/duplicates/types/maps/privacy/isolated profiles and exact-one-less q
 typed tests preserve complete word boundaries and reject other primitive categories.
 Selected native scope/type/sort/duplicate/domain roles reject 39 mutations; 99 syntax
 replays stay unchanged. These do not execute native switch routines. See ADR 0052;
-string switch, full heap/native scope/diagnostics/cleanup/mod and Linux gates remain
-open. No complete legacy workstream is closed by this subset.
+string switch remained open at that checkpoint. ADR 0098 adds bound-source
+plain-string/mixed switches; full heap/native diagnostics/cleanup/mod and Linux
+gates remain open. No complete legacy workstream is closed by either subset.
 
 The CLI now exposes --execute-gsc PATH for this implemented primitive subset.
 It reuses bounded source loading/binding, rejects unresolved include/animation-tree

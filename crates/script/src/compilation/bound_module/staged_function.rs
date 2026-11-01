@@ -10,6 +10,7 @@ use crate::execution::{KernelFunctionLayout, KernelInstruction};
 pub(super) struct StagedFunctionCode {
     pub(super) string_literals: Vec<Vec<u8>>,
     pub(super) field_names: Vec<Vec<u8>>,
+    pub(super) switch_labels: Vec<Vec<u8>>,
     pub(super) instructions: Vec<KernelInstruction>,
     pub(super) layout: KernelFunctionLayout,
 }
@@ -27,6 +28,7 @@ pub(super) fn lower<'tree, 'source>(
             StagedFunctionCode {
                 string_literals: std::mem::take(&mut builder.string_literals),
                 field_names: std::mem::take(&mut builder.field_names),
+                switch_labels: std::mem::take(&mut builder.switch_labels),
                 instructions,
                 layout,
             },

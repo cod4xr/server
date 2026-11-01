@@ -16,6 +16,10 @@ pub struct ModuleCompilationUsage {
     pub field_names: u64,
     /// Logical staged field-name rows/payload before separate proof copying.
     pub staged_field_bytes: u64,
+    /// Complete decoded switch-label rows, independent of runtime literal caches.
+    pub switch_labels: u64,
+    /// Logical staged switch-label rows/payload before separate kernel proof copying.
+    pub staged_switch_bytes: u64,
     /// All retained declaration records, including disabled developer code.
     pub declarations: u64,
     /// Active executable functions.

@@ -36,7 +36,14 @@ pub(super) fn begin<'tree, 'source>(
     syntax: LegacySyntaxNode<'tree, 'source>,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
-    builder.emit(KernelInstruction::RequireInteger, span.clone())?;
+    builder.emit(
+        if builder.mode.bound() {
+            KernelInstruction::RequireSwitchKey
+        } else {
+            KernelInstruction::RequireInteger
+        },
+        span.clone(),
+    )?;
     let dispatch = builder.jump(span.clone())?;
     let head = dispatch.0;
     let incoming = function_initialization::capture(builder, span.clone())?;

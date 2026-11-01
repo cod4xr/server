@@ -31,6 +31,7 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) instructions: Vec<PendingFunctionInstruction>,
     pub(super) string_literals: Vec<Vec<u8>>,
     pub(super) field_names: Vec<Vec<u8>>,
+    pub(super) switch_labels: Vec<Vec<u8>>,
     active_task: bool,
 }
 
@@ -64,6 +65,7 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             instructions: Vec::new(),
             string_literals: Vec::new(),
             field_names: Vec::new(),
+            switch_labels: Vec::new(),
             active_task: false,
         }
     }

@@ -25,6 +25,10 @@ pub struct FunctionCompilationUsage {
     pub field_names: u64,
     /// Logical field-name rows and canonical byte payload during lowering.
     pub retained_field_bytes: u64,
+    /// Immutable switch-label rows, separate from runtime string literals.
+    pub switch_labels: u64,
+    /// Logical label Vec rows and complete decoded payload during lowering.
+    pub retained_switch_bytes: u64,
     /// Body/task/literal/name/snapshot/resolution work charged to the compiler.
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.

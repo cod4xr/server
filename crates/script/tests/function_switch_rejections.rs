@@ -56,7 +56,9 @@ fn duplicate_misplaced_unsupported_and_unreachable_switch_source_fails_explicitl
             FunctionCompileErrorKind::UnsupportedCase,
         ),
         (
-            "main(n){switch(n){case \"PrivateLabel\":break;}}",
+            // Bound plain-string labels are admitted separately; localized
+            // labels preserve this historical unsupported-label gate.
+            "main(n){switch(n){case &\"PrivateLabel\":break;}}",
             FunctionCompileErrorKind::UnsupportedCase,
         ),
         (
@@ -126,7 +128,7 @@ fn switch_key_type_errors_preserve_caller_source_maps_and_failed_work() {
             .program()
             .execute(0, &[value], KernelCallBudget::default())
             .expect_err("Strict integer key");
-        assert_eq!(error.cause.kind, KernelErrorKind::ExpectedInteger);
+        assert_eq!(error.cause.kind, KernelErrorKind::ExpectedSwitchKey);
         assert_eq!(error.function, Some(0));
         assert_eq!(error.cause.work_steps, 2);
         assert_eq!(

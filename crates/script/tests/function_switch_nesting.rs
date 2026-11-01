@@ -75,7 +75,8 @@ fn switch_expressions_evaluate_once_and_can_call_scripts_indirectly_and_builtins
         .expect("Single expression result");
     assert_eq!(result.value, KernelValue::Number(LegacyNumber::Integer(22)));
     assert_eq!(result.usage.peak_frames, 2);
-    assert_eq!(result.usage.steps, 19);
+    // Bound typed dispatch compares the key directly with the immutable case row.
+    assert_eq!(result.usage.steps, 18);
 }
 
 #[test]

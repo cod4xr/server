@@ -142,6 +142,8 @@ fn report(compiled: &compilation::CompiledScriptPackage, ledger: &ScriptPackageF
         staged_string_bytes = usage.staged_string_bytes,
         field_names = usage.field_names,
         staged_field_bytes = usage.staged_field_bytes,
+        switch_labels = usage.switch_labels,
+        staged_switch_bytes = usage.staged_switch_bytes,
         compiler_steps = usage.compiler_steps,
         peak_metadata_bytes = usage.peak_metadata_bytes,
         retained_metadata_bytes = package.retained_metadata_bytes,

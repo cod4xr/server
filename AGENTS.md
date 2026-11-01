@@ -1,5 +1,18 @@
 # Project contract
 
+ADR 0098 accepts bound-source plain-string/mixed switches using immutable label
+tables separate from runtime literals. Keep unchanged plain literal productions,
+decoded duplicate detection at the second source case, fallible metered heapsort
+including long byte comparisons, normalized int-before-string order and checked
+nine-instruction dispatch nodes. Standalone source stays integer-only with its
+eleven-instruction nodes; bound key errors now use ExpectedSwitchKey. Preserve
+seventeen new source/three process tests, old test identities, exact/global/function/
+package/proof overlap, every-prefix cleanup, private locations, wide labels/cases
+and bounded source churn beside host owners. Labels reserve no runtime cache slots.
+Full Windows gates pass 407 frontend/273 legacy; five scope generators, 38 admissions,
+59/98 mutations, 99 structural and suite/policy checks pass. Developer statements,
+scheduling, engine services, general ownership and full GSC remain open.
+
 ADR 0097 accepts typed RequireSwitchKey/SwitchCompare and a separately owned
 immutable switch-label table. Labels must not allocate heap strings or reserve
 runtime literal-cache slots. Admit complete descriptors/payload/copies and global

@@ -6,8 +6,8 @@ use crate::compilation::function_compile_error;
 use crate::compilation::function_literal;
 use crate::compilation::function_switch::switch_context::SwitchCase;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
-use crate::execution::KernelValue;
-use crate::expression::{LegacyPrimaryKind, LegacyPrimarySyntax};
+use crate::execution::{KernelSwitchKey, KernelValue};
+use crate::expression::{LegacyLiteralPolarity, LegacyPrimaryKind, LegacyPrimarySyntax};
 use crate::legacy::LegacyNumber;
 use crate::lexical::LegacyLexemeKind;
 use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacyStatementSyntax};
@@ -84,13 +84,19 @@ pub(super) fn classify<'tree, 'source>(
 fn key(
     builder: &mut FunctionBuilder<'_, '_>,
     node: LegacySyntaxNode<'_, '_>,
-) -> Result<i32, FunctionCompileError> {
+) -> Result<KernelSwitchKey, FunctionCompileError> {
     let error = |kind| function_compile_error::at(node.span(), kind);
     let primary = LegacyPrimarySyntax::from_node(node)
         .map_err(|_| error(FunctionCompileErrorKind::InvalidStructure))?;
     let LegacyPrimaryKind::Literal { token, polarity } = primary.kind() else {
         return Err(error(FunctionCompileErrorKind::UnsupportedCase));
     };
+    if builder.mode.bound()
+        && polarity == LegacyLiteralPolarity::Unchanged
+        && matches!(token.kind(), LegacyLexemeKind::Token(code) if code.as_u16() == 0x103)
+    {
+        return super::switch_labels::retain(builder, token);
+    }
     // Literal booleans decode to integers as values, but they are different
     // source productions from integer case labels in the pinned compiler.
     if !matches!(token.kind(), LegacyLexemeKind::Token(code) if code.as_u16() == 0x11f) {
@@ -101,7 +107,7 @@ fn key(
         .charge(token.as_bytes().len() as u64, token.span())?;
     let value = function_literal::decode(token, polarity, builder.ledger.budget.literal)?;
     match value {
-        KernelValue::Number(LegacyNumber::Integer(key)) => Ok(key),
+        KernelValue::Number(LegacyNumber::Integer(key)) => Ok(KernelSwitchKey::Integer(key)),
         _ => Err(error(FunctionCompileErrorKind::UnsupportedCase)),
     }
 }

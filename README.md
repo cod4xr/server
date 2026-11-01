@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC modules/packages now compile and execute plain-string and mixed
+  integer/string switches with separately owned label bytes and no runtime label
+  cache. Tests cover decoded duplicates, cleanup, 66,000 string cases, 70,001-byte
+  labels and bounded 100,000 dispatches. `examples/gsc/string_switches.gsc` returns
+  integer 42; ADR 0098 scopes this component. Complete GSC remains open.
+
 - Bound GSC now writes and clears entries through initialized plain local array
   cells. Source tests cover observable COW order, literal/computed Undefined,
   pressure roots, 70,000 entries/key bytes, 100,000 bounded updates and populated
@@ -342,7 +348,8 @@ The complete server rewrite remains open.
 - Integer `switch` preserves default placement, adjacent labels, fallthrough,
   nearest break/continue ownership and initialization joins. Tests cover 66,000
   cases with balanced dispatch and 12,000 nested switches. Full int32 keys are an
-  intentional expansion beyond native encoded-ID bounds; string switch remains open.
+  intentional expansion beyond native encoded-ID bounds. ADR 0098 adds bound-source
+  plain-string/mixed switches; standalone PrimitiveStatements stays integer-only.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded
@@ -434,8 +441,9 @@ compiles all active local bodies, uses canonical `main` lookup and the selected
 developer mode, and applies default compiler/proof/global execution budgets.
 Missing main parameters receive `undefined`. Includes and animation-tree directives
 fail explicitly until resolution exists. Plain string bytes are escaped on stdout;
-translation/mixed coercion, string indexing/switches, objects, general builtins/game
-services and full-mod support remain open. This command opens no server listener.
+translation/mixed coercion, general object/entity services, general builtins/game
+services and full-mod support remain open. The bounded string/index/switch and
+ordinary struct/array profiles above are implemented. This command opens no server listener.
 `--inspect-gsc` remains structural inspection without compilation/execution.
 
 Exercise the legacy challenge/cookie exchange over UDP:

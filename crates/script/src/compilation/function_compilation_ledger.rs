@@ -28,6 +28,8 @@ impl FunctionCompilationLedger {
                 retained_string_bytes: 0,
                 field_names: 0,
                 retained_field_bytes: 0,
+                switch_labels: 0,
+                retained_switch_bytes: 0,
                 compiler_steps: 0,
                 instructions: 0,
                 peak_task_frames: 0,
@@ -219,6 +221,7 @@ impl FunctionCompilationLedger {
             .and_then(|bytes| bytes.checked_add(self.control_bytes))
             .and_then(|bytes| bytes.checked_add(self.usage.retained_string_bytes))
             .and_then(|bytes| bytes.checked_add(self.usage.retained_field_bytes))
+            .and_then(|bytes| bytes.checked_add(self.usage.retained_switch_bytes))
             .ok_or_else(|| {
                 function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;

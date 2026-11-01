@@ -33,6 +33,14 @@ mod source_scope_loops;
 mod source_scope_support;
 mod source_scope_switches;
 mod source_scope_width_depth;
+mod source_string_switch;
+mod source_string_switch_limits;
+mod source_string_switch_order;
+mod source_string_switch_package;
+mod source_string_switch_pressure;
+mod source_string_switch_rejections;
+mod source_string_switch_scope;
+mod source_string_switch_width;
 
 mod bound_object_arguments;
 mod expression_list_support;
