@@ -8,7 +8,7 @@ references fail explicitly; 70,000 live strings exceed the old pool width; ADR 0
 The same 54 successes/54 expansions now pass typed VM calls and returns under an
 explicit heap context. Source supplied-string arguments additionally exercise
 locals/for/calls under pressure, with located errors. Source literal construction
-and CLI strings remain unsupported. Byte equality is source grounded; binary host
+and CLI strings follow in ADR 0057. Byte equality is source grounded; binary host
 bytes do not establish native NUL/interner behavior. Runtime/rooting tests cover
 12,000 frames, 100,000 loop allocations in four slots, every pressure resource,
 exact-one-less work/scratch, failures/lifetimes and hostile streams. See ADR 0055;
@@ -17,7 +17,13 @@ Typed code literals/cache now pass 13 further tests, including owned binary byte
 70,000 rows, cached-only roots, complete standalone/module overlap, exact-one-less
 proof/runtime limits, independent heaps and repeated large values; see ADR 0056.
 These are Rust ownership/resource tests, not native compiler/interner execution.
-Source literal lowering and CLI output remain unsupported pending integration.
+ADR 0057 now adds bound source plain literals and offline escaped byte output.
+Nine source tests cover ownership, 70,000 distinct rows, 100,000-byte values, actual
+calls/loops/maps, developer policy and exact compiler/proof budgets. Three process
+tests cover JSON/human privacy, byte output, located failures and complete large
+results. This is not native interning/ref cleanup, localized/mixed coercion, full
+mods or client-visible capacity expansion. Isolated scalar source profiles stay
+restricted; the complete GSC and server gates remain open.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported

@@ -24,11 +24,16 @@ and its component scope. ADR 0055 now integrates typed heap-backed execution and
 supplied source arguments: 15 kernel tests plus two source tests cover reclamation
 across 12,000 frames, 100,000 loop allocations in four slots, global work/scratch,
 errors/lifetimes, native plain-concat results/expansion and hostile inventories.
-Source literal lowering and CLI output remain open; no GSC workstream is closed.
+Source literal lowering and CLI output follow in ADR 0057; no GSC workstream is closed.
 ADR 0056 now adds owned typed literal tables/cache with 13 tests, including
 70,000 rows, 1,001 evaluations of one 1 MiB value without repeated payload copying,
 cached-only roots, independent heaps and exact complete proof/runtime resources.
-Source lowering still supplies empty tables; source and CLI strings remain open.
+ADR 0057 now implements bound source plain literals and offline escaped output.
+Nine source tests cover 70,000 rows, 100,000-byte values, calls/loops/ownership,
+exact compiler/proof resources and maps. Three real process tests cover byte output,
+JSON/human privacy and failures. The normal target strings_demo.gsc command prints
+string b"[[[Rust]]]". Localized/mixed coercion, string indexing/switches, objects/
+scheduling/library/game services and full mod acceptance remain open.
 
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.

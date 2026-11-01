@@ -109,9 +109,19 @@ impl ModuleCompilationLedger {
             ModuleCompilationResource::Instructions,
             instructions,
             self.budget.max_instructions,
-            span,
+            span.clone(),
         )?;
         self.usage.instructions = instructions;
+        self.usage.string_literals = add(
+            self.usage.string_literals,
+            usage.string_literals,
+            span.clone(),
+        )?;
+        self.usage.staged_string_bytes = add(
+            self.usage.staged_string_bytes,
+            usage.retained_string_bytes,
+            span,
+        )?;
         Ok(())
     }
 
@@ -195,7 +205,11 @@ impl ModuleCompilationLedger {
 
     fn prefix(&self, span: Range<u64>) -> Result<u64, FunctionCompileError> {
         add(
-            self.base_bytes,
+            add(
+                self.base_bytes,
+                self.usage.staged_string_bytes,
+                span.clone(),
+            )?,
             module_metadata::staged(self.usage.instructions, span.clone())?,
             span,
         )

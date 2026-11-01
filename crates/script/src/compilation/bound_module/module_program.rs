@@ -35,7 +35,7 @@ pub(super) fn verify(
             .map_err(|cause| ModuleCompileError::at(None, cause))?;
         definitions.push(KernelFunctionDefinition {
             instructions: &function.instructions,
-            string_literals: &[],
+            string_literals: &function.string_literals,
             layout: function.layout,
         });
     }

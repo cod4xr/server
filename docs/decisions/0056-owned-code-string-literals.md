@@ -2,7 +2,7 @@
 
 Date: 2026-10-31
 
-Status: accepted for typed code literals/cache; source lowering and CLI output remain open.
+Status: accepted for typed code literals/cache; source lowering and CLI output follow in ADR 0057.
 
 ## Ownership and decision
 

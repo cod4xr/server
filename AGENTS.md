@@ -1,7 +1,7 @@
 # Project contract
 
-The heap string store now backs explicit typed execution and supplied GSC source
-arguments; source string literals and CLI output remain open. Preserve complete-root
+The heap string store now backs typed execution, bound plain GSC literals and
+escaped offline byte output. Preserve complete-root
 ownership, stale/foreign/generation
 checks, atomic failed collection and independent retained/work/scratch budgets.
 VM integration must root all live frames, cached literals, external handles and
@@ -12,8 +12,11 @@ Typed immutable literal tables/cache now follow ADR 0056. Admit owned rows/paylo
 and all proof work, check unreachable operands, and keep runtime handles out of
 code constants. Cache initialization/active indices, root IDs and mark flags share
 scratch admission; root every active cached literal. Reset cache per invocation
-without resetting global work or coupling code to one heap. Source literal lowering
-and CLI string output remain open until separately implemented and validated.
+without resetting global work or coupling code to one heap. Bound plain source
+lowering and CLI strings now follow ADR 0057: preflight exact decoded bytes before
+allocation, account staging/proof copies, preserve source maps and keep payloads
+out of logs. Keep isolated scalar profiles distinct. Localized/mixed coercion,
+string indexing/switches and full arrays/objects/scheduling remain open.
 
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a

@@ -81,16 +81,8 @@ impl LegacyString {
         kind: LegacyStringKind,
         maximum: u64,
     ) -> Result<Self, LegacyLiteralError> {
-        let prefix = match kind {
-            LegacyStringKind::Plain => b"\"".as_slice(),
-            LegacyStringKind::Localized => b"&\"".as_slice(),
-        };
-        let body = encoded
-            .strip_prefix(prefix)
-            .and_then(|bytes| bytes.strip_suffix(b"\""))
-            .ok_or(LegacyLiteralError::InvalidSpelling)?;
-        let length = decoded(body).count();
-        legacy_literal_error::check(LegacyLiteralResource::StringBytes, length as u64, maximum)?;
+        let length = Self::decoded_length(encoded, kind, maximum)?;
+        let body = body(encoded, kind)?;
         let mut bytes = Vec::new();
         bytes
             .try_reserve_exact(length)
@@ -98,6 +90,28 @@ impl LegacyString {
         bytes.extend(decoded(body));
         Ok(Self { kind, bytes })
     }
+
+    // Exact shared preflight for compiler admission before adopting decoded bytes.
+    pub(crate) fn decoded_length(
+        encoded: &[u8],
+        kind: LegacyStringKind,
+        maximum: u64,
+    ) -> Result<usize, LegacyLiteralError> {
+        let length = decoded(body(encoded, kind)?).count();
+        legacy_literal_error::check(LegacyLiteralResource::StringBytes, length as u64, maximum)?;
+        Ok(length)
+    }
+}
+
+fn body(encoded: &[u8], kind: LegacyStringKind) -> Result<&[u8], LegacyLiteralError> {
+    let prefix = match kind {
+        LegacyStringKind::Plain => b"\"".as_slice(),
+        LegacyStringKind::Localized => b"&\"".as_slice(),
+    };
+    encoded
+        .strip_prefix(prefix)
+        .and_then(|bytes| bytes.strip_suffix(b"\""))
+        .ok_or(LegacyLiteralError::InvalidSpelling)
 }
 
 fn decoded(bytes: &[u8]) -> impl Iterator<Item = u8> + '_ {

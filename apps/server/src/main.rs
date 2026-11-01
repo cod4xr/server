@@ -12,6 +12,7 @@ mod runtime;
 mod script;
 mod script_execution;
 mod script_result;
+mod script_runtime;
 mod service;
 
 use std::process::ExitCode;

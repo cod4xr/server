@@ -23,11 +23,15 @@ The complete server rewrite remains open.
   direct/indirect calls and returns, with plain addition and byte equality. Pressure
   reclamation traces live frames and external roots under global work/scratch limits.
   Tests cover 12,000 frames, 100,000 VM loop allocations in four slots and supplied
-  strings in compiled GSC. Source literals and CLI string output remain open; ADR 0055.
+  strings in compiled GSC; ADR 0055.
 - Verified code owns plain-string literal tables independently of runtime heaps.
   Per-invocation caches admit initialization/work/metadata and preserve cached-only
   roots during collection. Tests cover 70,000 rows, repeated 1 MiB values, independent
-  heaps, module reuse and exact resource limits. Source lowering/CLI remain open; ADR 0056.
+  heaps, module reuse and exact resource limits; ADR 0056.
+- Bound GSC plain-string literals now compile into owned tables and execute through
+  locals, calls, loops and byte equality. Source tests reach 70,000 rows and large
+  binary payloads; offline output escapes bytes and keeps contents out of logs.
+  Isolated scalar profiles, localized/mixed coercion and full GSC remain distinct; ADR 0057.
 
 - Allocation-free, safe Rust message reader and writer, with CoD4X's separate
   byte and bit cursors, little-endian signed integers, and binary32 values.
@@ -275,16 +279,19 @@ Compile the supported primitive subset and execute its local `main` offline:
 
 ```sh
 cargo run -p cod4x-server -- --execute-gsc examples/gsc/primitive_demo.gsc
+cargo run -p cod4x-server -- --execute-gsc examples/gsc/strings_demo.gsc
 ```
 
-The example prints `integer 18` to stdout. Readable development logs report compiler
+The examples print `integer 18` and `string b"[[[Rust]]]"` to stdout. Readable
+development logs report compiler
 and runtime resources on stderr; `--json-logs` selects structured stderr. Results
 stay outside logs, and function results reveal only their category. The command
 compiles all active local bodies, uses canonical `main` lookup and the selected
 developer mode, and applies default compiler/proof/global execution budgets.
 Missing main parameters receive `undefined`. Includes and animation-tree directives
-fail explicitly until resolution exists. Strings/objects/general builtins/game
-services and full-mod support remain open; this command opens no server listener.
+fail explicitly until resolution exists. Plain string bytes are escaped on stdout;
+localized/mixed coercion, string indexing/switches, objects, general builtins/game
+services and full-mod support remain open. This command opens no server listener.
 `--inspect-gsc` remains structural inspection without compilation/execution.
 
 Exercise the legacy challenge/cookie exchange over UDP:

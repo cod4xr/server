@@ -513,8 +513,10 @@ preserves current/caller frames and external roots under shared work/scratch lim
 Tests include 12,000 live frames, 100,000 loop allocations using four slots, failed
 work/fuel/lifetimes, 4,096 hostile inventories and real source maps. ADR 0056 now
 adds owned typed literal tables and invocation caches with complete proof/work/
-scratch admission, 70,000-row and repeated-large-value tests. Source literal
-lowering, CLI strings, localization/mixed coercion, string indexing,
+scratch admission, 70,000-row and repeated-large-value tests. ADR 0057 now adds
+bound plain-source literals and offline escaped output, with source-level wide/
+large/pressure/resource/map tests and process privacy/output checks. Localization/
+mixed coercion, string indexing,
 objects/cycles/scheduling and general library/game roots remain integration work.
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of

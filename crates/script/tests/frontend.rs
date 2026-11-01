@@ -183,6 +183,14 @@ mod reference_views;
 mod source_boundaries;
 #[path = "source_locations.rs"]
 mod source_locations;
+#[path = "source_strings_diagnostics.rs"]
+mod source_strings_diagnostics;
+#[path = "source_strings_execution.rs"]
+mod source_strings_execution;
+#[path = "source_strings_limits.rs"]
+mod source_strings_limits;
+#[path = "source_strings_width.rs"]
+mod source_strings_width;
 #[path = "symbol_budgets.rs"]
 mod symbol_budgets;
 #[path = "symbol_semantics.rs"]

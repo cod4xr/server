@@ -25,7 +25,13 @@ descriptor arrays; payload/records and proof work are admitted globally. Context
 cache initialization and active-index capacity share scratch with root IDs/flags.
 Lazy loads publish one checked heap ID per used row and retain cached-only roots.
 Reusing a context discards its previous invocation cache without resetting work.
-Source lowering still supplies empty literal tables; CLI strings remain open.
+ADR 0057 now lets bound source adopt exact decoded plain-string bytes after work/
+metadata admission and carry tables through staged code into proof. Compiler scopes
+include prior staged tables while lowering later bodies; kernel proof copies have
+separate explicit admission. Isolated scalar profiles remain unchanged. The offline
+application owns its heap through result resolution, borrowing escaped result bytes
+for stdout and logging only categories/counts. String indexing/switches, localization/
+mixed coercion, general objects and host/scheduling integration remain open.
 
 ## Dependency direction
 

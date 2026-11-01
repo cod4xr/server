@@ -36,6 +36,7 @@ mod function_reference;
 mod function_reference_value;
 mod function_relocations;
 mod function_statement_body;
+mod function_string_literal;
 mod function_switch;
 mod function_task;
 mod function_task_lowering;

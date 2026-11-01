@@ -24,6 +24,8 @@ pub(crate) enum AppError {
     ScriptExecution(cod4x_script::execution::KernelModuleError),
     ScriptFeature(&'static str),
     ScriptOutput(io::Error),
+    ScriptHeap(cod4x_script::heap::HeapError),
+    ScriptString(cod4x_script::heap::HeapErrorKind),
     Snapshot(SnapshotError),
     Entropy(getrandom::Error),
     Cookie(cod4x_server_core::CookieKeyError),
@@ -57,6 +59,10 @@ impl fmt::Display for AppError {
                 write!(formatter, "primitive script execution: {message}")
             }
             Self::ScriptOutput(error) => write!(formatter, "script result output failed: {error}"),
+            Self::ScriptHeap(error) => write!(formatter, "script heap setup failed: {error}"),
+            Self::ScriptString(error) => {
+                write!(formatter, "script result reference failed: {error}")
+            }
             Self::Snapshot(error) => error.fmt(formatter),
             Self::Entropy(error) => write!(formatter, "process entropy failed: {error}"),
             Self::Cookie(error) => write!(formatter, "cookie initialization failed: {error}"),
@@ -82,6 +88,8 @@ impl Error for AppError {
             Self::ScriptBinding(error) => Some(error),
             Self::ScriptCompilation(error) => Some(error),
             Self::ScriptExecution(error) => Some(error),
+            Self::ScriptHeap(error) => Some(error),
+            Self::ScriptString(error) => Some(error),
             Self::Snapshot(error) => Some(error),
             Self::Entropy(error) => Some(error),
             Self::Cookie(error) => Some(error),

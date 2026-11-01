@@ -24,6 +24,8 @@ impl FunctionCompilationLedger {
             binding_bytes: 0,
             control_bytes: 0,
             usage: FunctionCompilationUsage {
+                string_literals: 0,
+                retained_string_bytes: 0,
                 compiler_steps: 0,
                 instructions: 0,
                 peak_task_frames: 0,
@@ -196,6 +198,7 @@ impl FunctionCompilationLedger {
         let bytes = bytes
             .checked_add(self.binding_bytes)
             .and_then(|bytes| bytes.checked_add(self.control_bytes))
+            .and_then(|bytes| bytes.checked_add(self.usage.retained_string_bytes))
             .ok_or_else(|| {
                 function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;

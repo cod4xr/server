@@ -26,6 +26,7 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) active_switch: Option<FunctionSwitchContext>,
     tasks: Vec<FunctionTask<'tree, 'source>>,
     pub(super) instructions: Vec<PendingFunctionInstruction>,
+    pub(super) string_literals: Vec<Vec<u8>>,
     active_task: bool,
 }
 
@@ -55,6 +56,7 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             active_switch: None,
             tasks: Vec::new(),
             instructions: Vec::new(),
+            string_literals: Vec::new(),
             active_task: false,
         }
     }
@@ -66,6 +68,38 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
         span: Range<u64>,
     ) -> Result<(), FunctionCompileError> {
         self.ledger.bindings(count, bytes, span.clone())?;
+        let live = self
+            .tasks
+            .len()
+            .checked_add(usize::from(self.active_task))
+            .ok_or_else(|| {
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
+            })?;
+        self.ledger.admit(self.instructions.len(), live, span)
+    }
+
+    pub(super) fn admit_literal(
+        &mut self,
+        length: u64,
+        span: Range<u64>,
+    ) -> Result<(), FunctionCompileError> {
+        self.ledger.usage.string_literals = self
+            .ledger
+            .usage
+            .string_literals
+            .checked_add(1)
+            .ok_or_else(|| {
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
+            })?;
+        self.ledger.usage.retained_string_bytes = self
+            .ledger
+            .usage
+            .retained_string_bytes
+            .checked_add(length)
+            .and_then(|bytes| bytes.checked_add(size_of::<Vec<u8>>() as u64))
+            .ok_or_else(|| {
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
+            })?;
         let live = self
             .tasks
             .len()

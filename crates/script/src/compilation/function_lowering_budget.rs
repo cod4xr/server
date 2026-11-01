@@ -15,7 +15,7 @@ pub struct FunctionLoweringBudget {
     pub max_instructions: u64,
     /// Maximum live iterative lowering tasks.
     pub max_task_frames: u64,
-    /// Logical pending/task/binding/control and overlapping resolved code/map payload.
+    /// Logical pending/task/binding/control/literals and overlapping resolved code/map payload.
     /// Excludes source/CST, body-index/kernel scopes, hash controls/spare capacity,
     /// allocator rounding, fixed fields and process RSS.
     pub max_metadata_bytes: u64,

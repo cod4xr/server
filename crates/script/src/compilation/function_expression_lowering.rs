@@ -9,6 +9,7 @@ use crate::compilation::function_group;
 use crate::compilation::function_literal;
 use crate::compilation::function_reference;
 use crate::compilation::function_reference_value;
+use crate::compilation::function_string_literal;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -99,6 +100,9 @@ fn primary<'tree, 'source>(
             builder
                 .ledger
                 .charge(token.as_bytes().len() as u64, token.span())?;
+            if function_string_literal::emit(builder, token, polarity, node.span())? {
+                return Ok(());
+            }
             let value = function_literal::decode(token, polarity, builder.ledger.budget.literal)?;
             builder.emit(KernelInstruction::Constant(value), node.span())
         }

@@ -8,6 +8,7 @@ use crate::declaration::LegacyFunctionSyntax;
 use crate::execution::{KernelFunctionLayout, KernelInstruction};
 
 pub(super) struct StagedFunctionCode {
+    pub(super) string_literals: Vec<Vec<u8>>,
     pub(super) instructions: Vec<KernelInstruction>,
     pub(super) layout: KernelFunctionLayout,
 }
@@ -23,6 +24,7 @@ pub(super) fn lower<'tree, 'source>(
         let (instructions, spans) = builder.resolve(function.body().span())?;
         Ok((
             StagedFunctionCode {
+                string_literals: std::mem::take(&mut builder.string_literals),
                 instructions,
                 layout,
             },
