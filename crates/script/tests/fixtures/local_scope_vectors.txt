@@ -1,0 +1,170 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+# Actual selected x86-32 CalcLocalVars helpers; O0/O2 C drivers agree.
+# Synthetic AST/name IDs, bounded modeled allocator/globals; no parser/VM/freeing claim.
+# C case later_direct_b; R parent, B allocated block, A auxiliary allocation bytes.
+# Block: abort created public total init_bits_lo init_bits_hi then n:name IDs.
+# Names: 1 inherited_a, 3 condition, 2 b, 4 c, 5 for_initializer.
+# Cases 0 one-sided if; 1 common if/else; 2 disjoint; 3 returning then; 4 returning else;
+# 5 ordinary block; 6 nested common branches; 7 different declaration orders;
+# 10 while fallthrough; 11 break; 12 continue; 13 common branches; 14 mixed exits;
+# 15 for fallthrough; 16 for continue; 17 for break; 18 nested while break.
+# Later declarations are separate analysis calls; these are planning snapshots, not emitted cleanup.
+C 0 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+C 1 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 2 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:4
+C 3 0
+R 0 2 2 3 3 0 n:1 n:3 n:4
+B 3 2 0 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:4
+C 4 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 3 2 0 3 3 0 n:1 n:3 n:4
+C 5 0
+R 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+C 6 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 7 0
+R 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+C 0 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+C 1 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 2 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:4
+C 3 1
+R 0 2 2 4 3 0 n:1 n:3 n:4 n:2
+B 3 2 0 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:4
+C 4 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 3 2 0 3 3 0 n:1 n:3 n:4
+C 5 1
+R 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+C 6 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 7 1
+R 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+C 10 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 11 0
+R 0 2 2 2 3 0 n:1 n:3
+A 4096
+B 2 2 2 3 3 0 n:1 n:3 n:2
+C 12 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 13 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 14 0
+R 0 2 2 3 3 0 n:1 n:3 n:4
+A 4096
+B 1 2 3 3 3 0 n:1 n:3 n:4
+B 2 2 0 3 3 0 n:1 n:3 n:2
+B 0 2 0 3 3 0 n:1 n:3 n:4
+C 15 0
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+C 16 0
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+C 17 0
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:4 n:2
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+C 18 0
+R 0 2 2 2 3 0 n:1 n:3
+A 4096
+B 0 2 2 2 3 0 n:1 n:3
+A 4096
+B 2 2 2 3 3 0 n:1 n:3 n:2
+C 10 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 11 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 2 2 2 3 3 0 n:1 n:3 n:2
+C 12 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 13 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+C 14 1
+R 0 2 2 4 3 0 n:1 n:3 n:4 n:2
+A 4096
+B 1 2 3 3 3 0 n:1 n:3 n:4
+B 2 2 0 3 3 0 n:1 n:3 n:2
+B 0 2 0 3 3 0 n:1 n:3 n:4
+C 15 1
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+C 16 1
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+C 17 1
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+A 4096
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:4 n:2
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+C 18 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 2 2 3 0 n:1 n:3
+A 4096
+B 2 2 2 3 3 0 n:1 n:3 n:2

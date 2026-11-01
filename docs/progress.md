@@ -14,6 +14,16 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0089 adds 34 actual selected x86 local-name planning cases with
+identical O0/O2 C driver traces, 98 scoped local-removal source mutations and six
+trace-admission regressions. Windows native execution, structural replays and
+repository policy pass. Native analysis distinguishes branch joins/returning
+paths and loop break/continue/fallthrough; cleanup cannot follow braces alone.
+The modeled harness does not execute the parser/emitter/VM or native lifetimes.
+Rust scope planning/emission-time removal remain next; source writes stay rejected.
+No Rust code changes here; complete workspace acceptance remains ADR 0088.
+Linux/hosted CI remains unrun. One normal Cargo target is preserved.
+
 ADR 0088 accepts typed local-cell mutation only; source indexed assignment remains
 proposed/rejected pending native local-scope lifetime cleanup. Runtime cells borrow
 the owning location, stage COW before key validation, distinguish literal versus
@@ -28,10 +38,8 @@ fifteen private script tests/two doctests, preserving prior names. Native 306
 O0/O2 traces, write/lifetime 141/61 mutations, 99 structural replays and twelve
 suite-policy tests pass; old outcome rows are unchanged. Policy: 981 sources/
 eight crates/largest 287. Linux/hosted CI is unrun; no complete GSC/S5/join gate closes.
-Next: native scope assessment/cleanup. Ephemeral Windows probes successfully
-linked/executed selected 32-bit NASM code through a freestanding modeled driver,
-then actual Scr_CalcLocalVarsVariableExpressionRef (duplicate-name/count behavior).
-These exploratory probes are not yet repository/CI evidence or native scope parity.
+Next: native scope assessment/cleanup; assessment 0089 now records selected
+planning traces in the repository without claiming emitted lifetime parity.
 
 ADR 0087 admits independently constructed EMPTY data through typed EmptyArray and
 bound [] source/package lowering. Every population path stays closed. A shared

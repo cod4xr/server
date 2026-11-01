@@ -25,6 +25,8 @@ jobs:
         run: rustup show
       - name: Test script suite registration policy
         run: python tools/test_script_test_targets.py
+      - name: Test native local-scope trace admission
+        run: python tools/test_local_scope_vectors.py
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
       - name: Check independent archive fixtures
@@ -61,6 +63,8 @@ jobs:
           git -C reference checkout --detach ddd65fce1a1093017bad2dbb6840d75d11c0d56f
       - name: Install pinned formatter for generated data
         run: rustup show
+      - name: Install x86 assembly fixture tool
+        run: sudo apt-get update && sudo apt-get install --yes nasm
       - name: Verify source-grounded compatibility fixtures
         run: |
           python tools/generate_message_vectors.py reference --check
@@ -101,6 +105,8 @@ jobs:
           python tools/script_include_reference.py reference
           python tools/script_root_reference.py reference
           python tools/script_empty_array_reference.py reference
+          python tools/script_local_scope_reference.py reference
+          python tools/generate_local_scope_vectors.py reference --check
           python tools/generate_string_access_vectors.py reference --check
           python tools/generate_object_size_vectors.py reference --check
           python tools/generate_struct_vectors.py reference --check

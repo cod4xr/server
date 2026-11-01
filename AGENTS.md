@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0089 records 34 executed selected x86 local-name planning cases,
+98 scoped removal-emission/VM source mutations and six trace-admission regressions.
+The driver models ASTs/allocations/globals and executes actual pinned analysis;
+it does not execute native parser/emitter/VM/lifetimes. Branch joins/returning
+paths and loop break/continue/fallthrough differ. Do not infer cleanup from braces
+or clear every new branch name: whole-function and emission-time transfer matter.
+Source indexed writes remain rejected pending iterative metered Rust scope
+planning/physical owner cleanup. Native 64-local/byte counts are not Rust limits.
+Keep the freestanding x86 tools temporary, bounded, hash-pinned and separate from
+Cargo. Run generator --check, source mutations, admission regressions and structural
+guards for scope changes; Windows passes, Linux/hosted CI is unrun.
+
 ADR 0088 accepts typed initialized-local nonnested mutation, with fifteen tests
 and complete Windows gates (345 frontend/257 legacy). Source writes remain rejected
 until native block/loop-local lifetime cleanup and source acceptance are complete.
