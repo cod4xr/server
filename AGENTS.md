@@ -1,5 +1,16 @@
 # Project contract
 
+ADR 0075 adds generate_array_lifetime_vectors.py --check (210 O0/O2 actual selected
+ref/clear/child-free/parent-free/COW traces with modeled monotonic allocation/setup)
+and script_array_lifetime_reference.py (61 mutations), also wired into syntax/CI.
+Keep original 306/20 fixtures byte-identical. Immediate acyclic-holder alias release
+differs from cycle/downstream retention and changes later COW/key order. Deferred
+payload GC must not retain logically dead acyclic aliases. Nested/source ownership
+must account ordinary object frame/field lifetimes too; array counters alone do
+not close that gate. Host snapshot retention is an extension, not native freeing.
+Allocator reuse/entities/string/vector cleanup/native VM/GC remain outside this
+corpus. Read proposal 0071/ADR 0075 before enabling mixed/nested owned values.
+
 ADR 0074 adds atomic staged make_array_unique for current primitive/shared-struct
 entries. Copy only the selected location; preserve values/shared identity and
 reverse sibling order. Preflight links/references/final quotas, every copy/hash/

@@ -1,5 +1,11 @@
 # Expanded GSC runtime contract
 
+ADR 0075 establishes the next ownership requirement: native acyclic holder release
+removes array aliases before a later COW decision; cycles retain them. The 210-trace
+helper corpus/model does not implement this in nested/source execution. Ordinary
+object frame/field owners and array owners need a combined logical-lifetime policy
+separate from deferred payload collection before source arrays activate.
+
 ADR 0074 adds staged populated copying for current primitive/shared-struct entries,
 preserving legacy key reversal and shared identities with complete admission before
 publication. Wide/churn/model/resource/native-state tests cover the component.

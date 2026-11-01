@@ -7,6 +7,13 @@ unsigned int AllocVariable(void)
     VariableValueInternal *entry = &variable_pool[id + VARIABLELIST_PARENT_BEGIN];
     assert(entry->w.status == 0);
     entry->v.next = (uint16_t)id;
+#ifdef ARRAY_ORACLE_PARENT_ACCOUNTING
+    /* Modeled parent allocation records/counters for the actual freeing profile.
+       The allocator stays monotonic; native free-list allocation is not executed. */
+    entry->hash.id = (uint16_t)id;
+    ++gScrVarPub.numScriptObjects;
+    ++gScrVarPub.totalObjectRefCount;
+#endif
     return id;
 }
 

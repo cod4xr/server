@@ -5,7 +5,7 @@ static VariableValueInternal variable_pool[VARIABLELIST_CHILD_BEGIN + VARIABLELI
 static struct { VariableValueInternal *variableList; } gScrVarGlob = { variable_pool };
 static struct {
     const char *varUsagePos;
-    unsigned int totalObjectRefCount, numScriptValues, entId, entFieldName;
+    unsigned int totalObjectRefCount, numScriptValues, numScriptObjects, entId, entFieldName;
     int error_index;
 } gScrVarPub;
 static struct {

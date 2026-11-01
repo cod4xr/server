@@ -1,5 +1,11 @@
 # Architecture and expansion
 
+ADR 0075 adds native lifetime evidence, without a runtime change. Logical acyclic
+holder release must update outgoing array ownership before later COW, independently
+of deferred payload reclamation. Ordinary frame/field lifetimes affect that count;
+current array-only host locations do not supply full source ownership. A combined
+policy and cycle-alias preservation remain requirements in proposal 0071.
+
 ADR 0074 stages current-value populated copies before switching the selected
 managed location. Flat owned field records, precomputed free slots and sparse
 index patches preserve atomic failures without duplicating unrelated storage.

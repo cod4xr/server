@@ -48,6 +48,14 @@ copying a handle cannot accidentally create a second native value owner.
 
 ## Frame, scheduler and failure lifecycle
 
+ADR 0075 now establishes immediate native acyclic-holder release versus retained
+cycle/downstream aliases in 210 actual helper traces. Logical field owners cannot
+simply survive until deferred payload GC: that changes subsequent COW/key reversal.
+Ordinary object frame/field lifetimes also determine array ownership. Choose and
+validate a combined semantic ownership/payload policy before nested values activate;
+array counters alone are insufficient while ordinary ownership events are absent.
+Existing host snapshot retention/resurrection is an extension, not native GSC freeing.
+
 Value-location creation must charge allocation, managed-reference changes and
 bounded unwind cleanup before publication. Successful frame exit releases its
 remaining locations; moving a return value must preserve it for the caller.

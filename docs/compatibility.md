@@ -1,5 +1,11 @@
 # Compatibility contract
 
+ADR 0075 adds 210 actual selected native lifetime/COW traces at O0/O2, an independent
+owner-release model and 61 source-role mutations. Acyclic holder release clears
+outgoing aliases immediately; cycles/downstream holders retain them, affecting
+copy/key order. Selected clear/free-list publication executes with modeled monotonic
+allocation/setup. This is not allocator reuse, VM/GC or nested-source ownership parity.
+
 ADR 0074 adds staged populated copies for current primitives/shared structs.
 All 20 native alias/COW states now replay with explicit host-owned aliases;
 retained-cycle topology/markers remain unimplemented. Thirteen integration/two
