@@ -93,6 +93,8 @@ jobs:
           python tools/script_array_alias_reference.py reference
           python tools/generate_array_lifetime_vectors.py reference --check
           python tools/script_array_lifetime_reference.py reference
+          python tools/generate_array_read_vectors.py reference --check
+          python tools/script_array_read_reference.py reference
           python tools/generate_script_path_vectors.py reference --check
           python tools/script_path_reference.py reference
           python tools/script_package_reference.py reference

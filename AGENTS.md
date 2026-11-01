@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0085 adds generate_array_read_vectors.py --check (100 actual selected
+O0/O2 read/size/error-entry traces under modeled services) and read-role guards
+(53 mutations), wired into structural checks/CI. Opaque function/nested result
+profiles remain helper-only; vector payload reads are excluded on host pointer
+ABI, without reading uninitialized spare pointer bits. Keep old 306/210/180
+array/lifetime/size outcome corpora unchanged. The proposed read-only host-origin
+profile relies on every array deriving from a still-live host location and on
+stored Array values remaining forbidden. It authorizes no independent constructor,
+array-returning builtin, nested storage, writes or scheduler ownership shortcut.
+Before Rust reads activate, check supported native replays, all helper-only rows,
+wide/no-truncation/resource/pressure/ownership tests and complete Windows gates.
+
 ADR 0084 keeps the two explicit script suites compact with ordinary same-name
 mod declarations and explicit paths only where needed for nested leaves. The
 bounded registration guard must reject hidden/gated/missing/extra/duplicate tests,

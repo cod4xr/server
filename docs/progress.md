@@ -14,6 +14,15 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0085 records 100 actual selected native read/size/error-entry traces
+with O0/O2 agreement and 53 role mutations. Explicit profiles separate current
+primitive/shared-struct data from opaque function/nested results; host-ABI vector
+payload reads are excluded. A host-origin/non-nested lifetime argument scopes a
+proposed read-only Rust step, without constructors/writes/ordinary logical-RC
+shortcuts. Native/structural/registration/policy checks pass (946 sources/eight
+crates/largest 287); Rust indexing/size is not activated yet. Last full Windows
+Rust gates remain 40c5455. Complete GSC and join gates remain open.
+
 ADR 0084 compacts the two script suite roots from 303/275 to 164/147 lines while
 preserving all 139/128 leaf registrations and exactly the same 323/236 executed
 test names in debug and release. A stricter bounded registration guard and twelve
