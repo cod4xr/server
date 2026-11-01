@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::execution::kernel_comparison_values;
 use crate::execution::kernel_error;
 use crate::execution::kernel_index_values;
 use crate::execution::kernel_locals::KernelLocals;
@@ -20,9 +21,13 @@ pub(super) fn apply(
             locals.store(slot, stack.pop(pc)?, pc)?;
             return Ok(());
         }
-        KernelInstruction::Arithmetic(_)
-        | KernelInstruction::Compare(_)
-        | KernelInstruction::Divide => {
+        KernelInstruction::Compare(comparison) => {
+            let right = stack.pop(pc)?;
+            let left = stack.pop(pc)?;
+            kernel_comparison_values::compare(comparison, left, right)
+                .map_err(|kind| kernel_error::at(pc, kind))?
+        }
+        KernelInstruction::Arithmetic(_) | KernelInstruction::Divide => {
             let right = stack.pop(pc)?;
             let left = stack.pop(pc)?;
             kernel_numeric_values::binary(instruction, left, right)

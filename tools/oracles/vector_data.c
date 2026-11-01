@@ -17,8 +17,16 @@ static VariableValue operand(Operand input)
     return result;
 }
 
+static void print_vector(const float *value, int arithmetic);
+
 static void print_operand(Operand input)
 {
+    if (input.kind == 'V') {
+        float value[3];
+        memcpy(value, input.bits, sizeof(value));
+        printf(" V"); print_vector(value, 0);
+        return;
+    }
     printf(" %c %08" PRIx32 " %08" PRIx32 " %08" PRIx32,
            input.kind, input.bits[0], input.bits[1], input.bits[2]);
 }

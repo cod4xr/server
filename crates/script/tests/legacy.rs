@@ -64,5 +64,7 @@ mod numeric_vectors;
 mod string_operation_vectors;
 #[path = "string_operations.rs"]
 mod string_operations;
+#[path = "undefined_vectors.rs"]
+mod undefined_vectors;
 #[path = "wait_boundaries.rs"]
 mod wait_boundaries;

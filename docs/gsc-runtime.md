@@ -355,6 +355,16 @@ corpora include Index. Selected parser/compiler/VM/helper/read-only roles reject
 27 mutations; these do not execute original parser/compiler/VM or native service/
 error-cleanup code. Arrays/strings/heap, calls/scheduling/host services and full
 GSC/mod acceptance remain open; see ADR 0045.
+Primitive comparisons now allow equality/not-equality of two Undefined values;
+all mixed Undefined pairs and Undefined ordering fail with fixed UnmatchingTypes.
+The focused comparison dispatch preserves numeric tolerance and vector equality
+without using derived Rust data equality. Four added tests replay 402 actual
+O0/O2 C-helper outcomes (two successes/400 errors) through verified instructions
+and cover both source profiles, lazy branches, missing/stored Undefined, rejected
+uninitialized locals, operator locations and error privacy. Existing instruction,
+proof, byte/local/fuel budgets remain in force; there is no new allocation or
+value category. This is not object/string/builtin/native cleanup/full-VM parity;
+see ADR 0046.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

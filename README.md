@@ -163,6 +163,8 @@ The complete server rewrite remains open.
 - Primitive vector indexing reads integer coordinates 0–2 with exact float bits,
   index-before-object evaluation and redacted type/range failures. Individual
   component writes stay unsupported under legacy rules; general indexable heaps remain open.
+- Both source profiles preserve equality between two Undefined values and reject
+  mixed/ordered Undefined pairs, checked against 402 actual C-helper outcomes.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

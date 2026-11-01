@@ -6,6 +6,7 @@
 //! filesystem, logging, or server state. Legacy numeric FP assumptions still apply.
 
 mod kernel_budget;
+mod kernel_comparison_values;
 mod kernel_error;
 mod kernel_executor;
 mod kernel_flow_state;

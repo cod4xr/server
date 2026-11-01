@@ -681,7 +681,19 @@ remain unchanged; vector, index and syntax generators pass. See ADR 0045. No new
 dependencies or build targets. General indexable heap values, calls, native/full
 GSC, mods and Linux acceptance remain open.
 
-Next: general value ownership and primitive semantic gaps before general heap values,
+Undefined comparison dispatch now has its own focused leaf, preserving existing
+numeric/vector rules while admitting two-Undefined equality and rejecting every
+mixed/ordered Undefined pair. The actual pinned coercion/comparison helpers yield
+402 O0/O2 outcomes (two successes/400 errors), all replayed through verified code.
+Source tests cover both profiles, lazy evaluation, missing/stored Undefined,
+uninitialized rejection, operator maps and privacy. Existing vector/index fixture
+bytes and syntax profiles remain unchanged. All 173 frontend/60 legacy tests and
+doctests pass in workspace Windows debug/release, with formatting, warnings-denied
+Clippy/rustdoc and repository policy (491 sources/eight crates, largest 287 lines).
+See ADR 0046; no dependency/target/storage changes. Full value/native VM/mod/Linux
+acceptance remains open.
+
+Next: bounded owned direct-call frames and general value ownership,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

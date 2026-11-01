@@ -101,6 +101,7 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
                 if !matches!(
                     error.kind,
                     KernelErrorKind::ExpectedNumber
+                        | KernelErrorKind::UnmatchingTypes
                         | KernelErrorKind::ExpectedIndexable
                         | KernelErrorKind::Numeric(_)
                         | KernelErrorKind::Vector(_)

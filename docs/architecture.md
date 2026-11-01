@@ -378,6 +378,13 @@ pool/ref/error services; helper and kernel coverage are counted separately. The
 common vector oracle builder preserves older fixture bytes. See ADR 0045; this
 does not implement general arrays/strings/heap or native cleanup/unwinding.
 
+Primitive comparison dispatch now has a separate kernel_comparison_values leaf.
+It preserves numeric/vector helpers and admits only equality/not-equality for two
+Undefined values; mixed/ordered Undefined pairs fail with redacted UnmatchingTypes.
+Arithmetic, truth, instruction proof, source maps and memory/fuel admission retain
+their existing contracts. Actual C-helper outcomes cover both operand orders;
+the stubbed native service boundaries remain explicit. See ADR 0046.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

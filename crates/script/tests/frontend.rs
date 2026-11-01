@@ -156,3 +156,5 @@ mod syntax_budgets;
 mod syntax_structure;
 #[path = "syntax_vectors.rs"]
 mod syntax_vectors;
+#[path = "undefined_source.rs"]
+mod undefined_source;

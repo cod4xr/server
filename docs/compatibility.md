@@ -438,6 +438,13 @@ quotas, wide reconstruction and deep flat failure. Both hostile corpora include
 Index. Selected grammar/tree/compiler/VM/helper/write-rejection roles reject 27
 mutations. Native parser/compiler/VM, service/ref/error cleanup and general
 indexable heaps/mod parity remain open. See ADR 0045.
+Undefined comparison dispatch now matches 402 actual pinned C-helper outcomes at
+O0/O2: two equality/inequality successes and 400 mixed/ordering errors. Every row
+runs through an owned verified program. Source tests cover both profiles, lazy
+branches, missing arguments, stored Undefined versus uninitialized locals,
+operator maps and private errors. Existing numeric/vector corpora retain their
+distinct language rules. Native object/string/ref/error services remain stubbed;
+this does not prove native cleanup/VM execution or complete value parity. ADR 0046.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

@@ -114,6 +114,7 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
                         error.kind,
                         KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
+                            | KernelErrorKind::UnmatchingTypes
                             | KernelErrorKind::ExpectedIndexable
                             | KernelErrorKind::Numeric(_)
                             | KernelErrorKind::Vector(_)

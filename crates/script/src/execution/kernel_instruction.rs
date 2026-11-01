@@ -33,7 +33,8 @@ pub enum KernelInstruction {
     Index,
     /// Pops right then left numeric/vector operands and pushes the coerced result.
     Arithmetic(LegacyArithmetic),
-    /// Pops right then left numeric/vector operands and pushes the comparison integer.
+    /// Pops right then left primitives and pushes the legacy comparison integer.
+    /// Two Undefined values support equality only; mixed Undefined pairs fail.
     Compare(LegacyComparison),
     /// Pops right then left numbers and applies an integer-only operator.
     Integer(LegacyIntegerOperator),

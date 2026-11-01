@@ -14,7 +14,6 @@ pub(super) fn binary(
         let pair = LegacyNumericPair::coerce(left, right);
         let value = match instruction {
             KernelInstruction::Arithmetic(operator) => operator.evaluate(pair),
-            KernelInstruction::Compare(comparison) => pair.compare(comparison),
             KernelInstruction::Divide => pair.divide().map_err(KernelErrorKind::Numeric)?,
             _ => return Err(KernelErrorKind::InvalidExecutionState),
         };
@@ -31,10 +30,6 @@ pub(super) fn binary(
             LegacyVectorOperation::Multiply
         }
         KernelInstruction::Divide => LegacyVectorOperation::Divide,
-        KernelInstruction::Compare(comparison) => {
-            let equal = pair.compare(comparison).map_err(KernelErrorKind::Vector)?;
-            return Ok(KernelValue::Number(LegacyNumber::Integer(i32::from(equal))));
-        }
         _ => return Err(KernelErrorKind::InvalidExecutionState),
     };
     operation

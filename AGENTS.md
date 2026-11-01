@@ -233,6 +233,12 @@ selected source roles through generate_syntax_tables.py. Its object/array/string
 pool/ref/error stubs are not native service/cleanup execution; count 299 kernel
 outcomes versus 286 numeric-helper rows separately. Preserve hostile/wide/deep
 and quota tests; general indexables/heap/VM/mod acceptance remain open. See ADR 0045.
+Undefined comparison dispatch must preserve two-Undefined equality and reject
+mixed/ordered Undefined pairs; never use derived Rust equality for language rules.
+Keep comparison and arithmetic leaves separate, numeric/vector rules unchanged,
+and errors fixed/redacted. Verify generate_undefined_vectors.py --check alongside
+vector/index corpora; service stubs are not native VM/cleanup proof. Preserve both
+source profiles, lazy flow and initialized-Undefined distinctions; see ADR 0046.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
