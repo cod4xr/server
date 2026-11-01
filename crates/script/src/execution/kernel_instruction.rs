@@ -28,6 +28,9 @@ pub enum KernelInstruction {
     /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.
     /// Components must be numbers; this does not specify source evaluation order.
     MakeVector,
+    /// Consumes bottom-to-top index/object and pushes a copied indexed result.
+    /// The current primitive profile indexes vectors only, with strict integer indices.
+    Index,
     /// Pops right then left numeric/vector operands and pushes the coerced result.
     Arithmetic(LegacyArithmetic),
     /// Pops right then left numeric/vector operands and pushes the comparison integer.
@@ -66,7 +69,11 @@ impl KernelInstruction {
         match self {
             Self::MakeVector => (3, 1),
             Self::Constant(_) | Self::LoadLocal(_) => (0, 1),
-            Self::Arithmetic(_) | Self::Compare(_) | Self::Integer(_) | Self::Divide => (2, 1),
+            Self::Arithmetic(_)
+            | Self::Compare(_)
+            | Self::Integer(_)
+            | Self::Divide
+            | Self::Index => (2, 1),
             Self::CastBool | Self::LogicalNot | Self::BitwiseNot | Self::IntegerUpdate(_) => (1, 1),
             Self::Duplicate => (1, 2),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),

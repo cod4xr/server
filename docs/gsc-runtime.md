@@ -337,6 +337,24 @@ compiler/VM/constructor roles now have source guards rejecting 33 in-memory
 mutations. These do not execute native parser/compiler/VM routines. Full component
 side effects/constant folding/error indices/ref cleanup, vector indexing, richer
 values/calls/scheduling and GSC/mod acceptance remain open; see ADR 0044.
+Legacy vector reads now expose strict integer indexing with copied float results
+and fixed type/range errors that retain neither coordinates nor attempted indices.
+The primitive kernel's Index consumes bottom-to-top index/object under existing
+proof/byte/fuel admission; other objects are not yet indexable. Primitive source
+reference reads schedule index, then object, retain bracket/descendant spans and
+initialized-name/identifier budgets. PureScalarReturn and indexed-write rejection
+remain explicit. Original Scr_EvalArray produces 299 O0/O2 outcomes: 39 successful
+exact-bit reads and 260 intercepted errors. All run through verified programs;
+the numeric-only helper API covers 286 rows, excluding 13 vector-index type cases.
+Shared oracle source building preserves the prior 19,852 vector fixture bytes.
+Eight added tests cover that corpus, stack/type/fuel/byte limits, caller/default
+isolation, source loops/reconstruction/maps/order/profile/write rejection, exact
+compiler admission and 12,000-deep reference reads/failed cleanup. The wide vector
+source fixture also reconstructs coordinates from wide local slots. Both hostile
+corpora include Index. Selected parser/compiler/VM/helper/read-only roles reject
+27 mutations; these do not execute original parser/compiler/VM or native service/
+error-cleanup code. Arrays/strings/heap, calls/scheduling/host services and full
+GSC/mod acceptance remain open; see ADR 0045.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

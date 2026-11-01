@@ -10,6 +10,7 @@ mod kernel_error;
 mod kernel_executor;
 mod kernel_flow_state;
 mod kernel_function_layout;
+mod kernel_index_values;
 mod kernel_instruction;
 mod kernel_locals;
 mod kernel_numeric_values;

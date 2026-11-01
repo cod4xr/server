@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::fmt;
 
-use crate::legacy::LegacyNumber;
+use crate::legacy::{LegacyNumber, LegacyVectorError};
 
 /// Owned legacy binary32 triple, without native vector pools, references or VM IDs.
 ///
@@ -35,6 +35,23 @@ impl LegacyVector {
     #[must_use]
     pub const fn components(self) -> [f32; 3] {
         self.0
+    }
+
+    /// Reads one coordinate as a float copy, preserving its exact input bits.
+    ///
+    /// # Errors
+    /// Returns `ExpectedIntegerIndex` for floats and `IndexOutOfRange` outside 0..3.
+    /// Errors never retain the attempted index or coordinates; callers stay unchanged.
+    pub fn index(self, index: LegacyNumber) -> Result<LegacyNumber, LegacyVectorError> {
+        let LegacyNumber::Integer(index) = index else {
+            return Err(LegacyVectorError::ExpectedIntegerIndex);
+        };
+        let index = usize::try_from(index).map_err(|_| LegacyVectorError::IndexOutOfRange)?;
+        self.0
+            .get(index)
+            .copied()
+            .map(LegacyNumber::Float)
+            .ok_or(LegacyVectorError::IndexOutOfRange)
     }
 }
 

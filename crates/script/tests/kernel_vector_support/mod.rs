@@ -13,6 +13,20 @@ use crate::vector_support::evaluator::{EvaluationFailure, VectorEvaluator};
 pub struct KernelEvaluator;
 
 impl VectorEvaluator for KernelEvaluator {
+    fn index(
+        object: LegacyVector,
+        index: LegacyVectorOperand,
+    ) -> Result<LegacyNumber, EvaluationFailure> {
+        match execute(&[
+            constant(index),
+            KernelInstruction::Constant(KernelValue::Vector(object)),
+            KernelInstruction::Index,
+            KernelInstruction::Return,
+        ])? {
+            KernelValue::Number(value @ LegacyNumber::Float(_)) => Ok(value),
+            _ => Err(unexpected("Kernel index returned another type")),
+        }
+    }
     fn construct(values: [LegacyNumber; 3]) -> Result<LegacyVector, EvaluationFailure> {
         vector(execute(&[
             KernelInstruction::Constant(KernelValue::Number(values[2])),

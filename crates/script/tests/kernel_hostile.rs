@@ -22,7 +22,7 @@ fn next(state: &mut u32) -> u32 {
 }
 
 fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
-    let choice = next(state) % 21;
+    let choice = next(state) % 22;
     let operand = next(state);
     let target = usize::try_from(operand).expect("Supported test host") % (count + 3);
     match choice {
@@ -60,6 +60,7 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
             f32::from_bits(operand.rotate_right(11)),
         ]))),
         20 => KernelInstruction::MakeVector,
+        21 => KernelInstruction::Index,
         _ => KernelInstruction::Return,
     }
 }
@@ -100,6 +101,7 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
                 if !matches!(
                     error.kind,
                     KernelErrorKind::ExpectedNumber
+                        | KernelErrorKind::ExpectedIndexable
                         | KernelErrorKind::Numeric(_)
                         | KernelErrorKind::Vector(_)
                         | KernelErrorKind::BudgetExceeded {

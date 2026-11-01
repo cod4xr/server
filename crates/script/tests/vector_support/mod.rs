@@ -12,6 +12,38 @@ pub fn validate(line: &str) -> Result<&str, String> {
     validate_with::<HelperEvaluator>(line)
 }
 
+pub fn validate_index<E: VectorEvaluator>(line: &str) -> Result<bool, String> {
+    let mut fields = line.split_whitespace();
+    if word(&mut fields)? != "I" {
+        return Err("Expected index fixture row".into());
+    }
+    let object = LegacyVector::from_components([
+        f32::from_bits(hex(&mut fields)?),
+        f32::from_bits(hex(&mut fields)?),
+        f32::from_bits(hex(&mut fields)?),
+    ]);
+    let index = operand(&mut fields)?;
+    let expected_error = match index {
+        LegacyVectorOperand::Number(LegacyNumber::Integer(_)) => LegacyVectorError::IndexOutOfRange,
+        LegacyVectorOperand::Number(LegacyNumber::Float(_)) | LegacyVectorOperand::Vector(_) => {
+            LegacyVectorError::ExpectedIntegerIndex
+        }
+    };
+    let success = match (word(&mut fields)?, E::index(object, index)) {
+        ("ok", Ok(LegacyNumber::Float(value))) => {
+            assert_eq!(value.to_bits(), hex(&mut fields)?);
+            true
+        }
+        ("E2", Err(EvaluationFailure::Domain(error))) if error == expected_error => false,
+        (_, Err(EvaluationFailure::Unexpected(message))) => return Err(message),
+        _ => return Err("Original vector index outcome differs".into()),
+    };
+    if fields.next().is_some() {
+        return Err("Unexpected index fixture suffix".into());
+    }
+    Ok(success)
+}
+
 pub fn validate_with<E: VectorEvaluator>(line: &str) -> Result<&str, String> {
     let mut fields = line.split_whitespace();
     let kind = word(&mut fields)?;

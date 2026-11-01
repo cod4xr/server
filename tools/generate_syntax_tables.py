@@ -17,6 +17,7 @@ import script_update_reference as updates
 import script_loop_transfer_reference as transfers
 import script_while_reference as loops
 import script_vector_constructor_reference as vectors
+import script_vector_index_reference as vector_indices
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -84,6 +85,11 @@ def main() -> None:
                    reference.files["src/asmsource/_scr_compiler.asm"],
                    reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"],
                    reference.function("src/cscr_variable.cpp", "Scr_CastVector"))
+    vector_indices.verify(source, reference.files["src/asmsource/_scr_parsetree.asm"],
+                          reference.files["src/asmsource/_scr_compiler.asm"],
+                          reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"],
+                          reference.function("src/cscr_variable.cpp", "Scr_EvalArray"),
+                          reference.function("src/cscr_variable.cpp", "Scr_EvalArrayRef"))
     syntax.verify_declarations(source, tables)
     expressions.verify(source, tables, reference.files["src/scr_vm.h"])
     statements.verify(source, tables, reference.files["src/scr_vm.h"])
@@ -122,7 +128,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print("Verified grammar/declaration/symbol/expression/statement/update/argument/while/transfer/for/vector "
+    print("Verified grammar/declaration/symbol/expression/statement/update/argument/while/transfer/for/vector/index "
           f"profiles and {len(rows) - 2} structural replays")
 
 

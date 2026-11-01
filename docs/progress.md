@@ -665,7 +665,23 @@ argument roles. See ADR 0044. No dependencies or alternate targets added. Native
 parser/compiler/VM execution, full side-effect/constant-folding/error-index/ref
 cleanup, richer values/indexing/calls/scheduling, mod conformance and Linux remain open.
 
-Next: source-grounded vector indexing/read semantics before general heap values,
+Vector index reads now compile and execute under the primitive source profile.
+The actual pinned Scr_EvalArray vector branch supplies 299 O0/O2 outcomes: 39
+exact-bit successes and 260 type/range errors. All replay through verified kernel
+instructions; the numeric-only helper replays 286 rows and excludes 13 vector
+indices its API cannot express. Selected parser/compiler/VM/helper source guards
+reject 27 mutations; bounded object/string/ref/error harness services do not prove
+native cleanup or VM execution. Source tests retain index-before-object error
+order, redacted bracket maps, immutable reconstruction, 70,000 locals, 12,000-deep
+reads and exact/one-less resource admission. Hostile streams include Index.
+All 170 frontend/59 legacy tests and doctests pass in workspace debug and release
+on Windows, alongside formatting, warnings-denied Clippy/rustdoc and repository
+policy (486 source files/eight crates, largest 287 lines). Original vector fixtures
+remain unchanged; vector, index and syntax generators pass. See ADR 0045. No new
+dependencies or build targets. General indexable heap values, calls, native/full
+GSC, mods and Linux acceptance remain open.
+
+Next: general value ownership and primitive semantic gaps before general heap values,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

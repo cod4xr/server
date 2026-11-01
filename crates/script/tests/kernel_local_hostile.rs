@@ -25,7 +25,7 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
     let choice = next(state);
     let slot = usize::try_from(next(state) % 12).expect("Small local");
     let target = usize::try_from(next(state)).expect("Supported test host") % (count + 3);
-    match choice % 14 {
+    match choice % 15 {
         0 => KernelInstruction::LoadLocal(slot),
         1 => KernelInstruction::StoreLocal(slot),
         2 => kernel_support::integer(choice.cast_signed()),
@@ -46,7 +46,8 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
             -0.0,
             1.0,
         ]))),
-        _ => KernelInstruction::MakeVector,
+        13 => KernelInstruction::MakeVector,
+        _ => KernelInstruction::Index,
     }
 }
 
@@ -113,6 +114,7 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
                         error.kind,
                         KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
+                            | KernelErrorKind::ExpectedIndexable
                             | KernelErrorKind::Numeric(_)
                             | KernelErrorKind::Vector(_)
                             | KernelErrorKind::BudgetExceeded {

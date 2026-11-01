@@ -20,6 +20,10 @@ impl std::fmt::Display for EvaluationFailure {
 }
 
 pub trait VectorEvaluator {
+    fn index(
+        object: LegacyVector,
+        index: LegacyVectorOperand,
+    ) -> Result<LegacyNumber, EvaluationFailure>;
     fn construct(values: [LegacyNumber; 3]) -> Result<LegacyVector, EvaluationFailure>;
     fn arithmetic(
         operation: LegacyVectorOperation,
@@ -36,6 +40,19 @@ pub trait VectorEvaluator {
 pub struct HelperEvaluator;
 
 impl VectorEvaluator for HelperEvaluator {
+    fn index(
+        object: LegacyVector,
+        index: LegacyVectorOperand,
+    ) -> Result<LegacyNumber, EvaluationFailure> {
+        match index {
+            LegacyVectorOperand::Number(index) => {
+                object.index(index).map_err(EvaluationFailure::Domain)
+            }
+            LegacyVectorOperand::Vector(_) => Err(EvaluationFailure::Unexpected(
+                "Standalone index helper accepts numeric index inputs only".into(),
+            )),
+        }
+    }
     fn construct(values: [LegacyNumber; 3]) -> Result<LegacyVector, EvaluationFailure> {
         Ok(LegacyVector::from_numbers(values))
     }

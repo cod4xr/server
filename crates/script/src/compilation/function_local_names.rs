@@ -5,9 +5,7 @@ use crate::compilation::function_compile_error;
 use crate::compilation::function_local_bindings::{FunctionLocalDeclaration, FunctionLocalSlot};
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
-use crate::expression::{LegacyReferenceKind, LegacyReferenceSyntax};
 use crate::lexical::LegacyLexeme;
-use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn declare<'source>(
     builder: &mut FunctionBuilder<'_, 'source>,
@@ -57,19 +55,10 @@ pub(super) fn declare<'source>(
     Ok((name, index))
 }
 
-pub(super) fn read<'tree, 'source>(
-    builder: &mut FunctionBuilder<'tree, 'source>,
-    syntax: LegacySyntaxNode<'tree, 'source>,
+pub(super) fn read<'source>(
+    builder: &mut FunctionBuilder<'_, 'source>,
+    token: LegacyLexeme<'source>,
 ) -> Result<(), FunctionCompileError> {
-    let reference = LegacyReferenceSyntax::from_node(syntax).map_err(|_| {
-        function_compile_error::at(syntax.span(), FunctionCompileErrorKind::InvalidStructure)
-    })?;
-    let LegacyReferenceKind::Name { name: token } = reference.kind() else {
-        return Err(function_compile_error::at(
-            syntax.span(),
-            FunctionCompileErrorKind::UnsupportedPrimary,
-        ));
-    };
     let (_, slot) = lookup(builder, token)?;
     builder.emit(KernelInstruction::LoadLocal(slot), token.span())
 }

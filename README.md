@@ -160,6 +160,9 @@ The complete server rewrite remains open.
 - Primitive source vector triples evaluate components in explicit z/y/x order,
   with singleton grouping, original spans and existing quotas. Tests retain 70,000
   vector locals and 12,000-deep expressions. Pure scalar-return syntax stays narrower.
+- Primitive vector indexing reads integer coordinates 0–2 with exact float bits,
+  index-before-object evaluation and redacted type/range failures. Individual
+  component writes stay unsupported under legacy rules; general indexable heaps remain open.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

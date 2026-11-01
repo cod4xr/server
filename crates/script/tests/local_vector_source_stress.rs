@@ -20,7 +20,7 @@ fn seventy_thousand_vector_source_locals_use_wide_slots_and_complete_inline_valu
     for index in 0..70_000 {
         write!(source, "v{index}=(a,2,3);").expect("Generated vector source");
     }
-    source.push_str("return v69999;}");
+    source.push_str("last=v69999;return(last[0],last[1],last[2]);}");
     let compiled = function_compile_support::compile_primitive_with_syntax_budget(
         source.as_bytes(),
         FunctionCompilationBudget::default(),
@@ -32,7 +32,7 @@ fn seventy_thousand_vector_source_locals_use_wide_slots_and_complete_inline_valu
         },
     )
     .expect("Separately admitted wide frontend");
-    assert_eq!(compiled.usage().local_bindings, 70_001);
+    assert_eq!(compiled.usage().local_bindings, 70_002);
     let args = [KernelValue::Number(LegacyNumber::Integer(3))];
     let result = compiled
         .program()
@@ -42,10 +42,10 @@ fn seventy_thousand_vector_source_locals_use_wide_slots_and_complete_inline_valu
         result.value,
         KernelValue::Vector(LegacyVector::from_components([3.0, 2.0, 3.0]))
     );
-    assert_eq!(result.local_values, 70_001);
+    assert_eq!(result.local_values, 70_002);
     assert_eq!(
         result.local_bytes,
-        70_001 * size_of::<Option<KernelValue>>() as u64
+        70_002 * size_of::<Option<KernelValue>>() as u64
     );
 }
 

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
+use crate::execution::kernel_index_values;
 use crate::execution::kernel_locals::KernelLocals;
 use crate::execution::kernel_numeric_values;
 use crate::execution::kernel_stack::KernelStack;
@@ -33,6 +34,11 @@ pub(super) fn apply(
             let z = stack.pop(pc)?;
             kernel_numeric_values::construct([x, y, z])
                 .map_err(|kind| kernel_error::at(pc, kind))?
+        }
+        KernelInstruction::Index => {
+            let object = stack.pop(pc)?;
+            let index = stack.pop(pc)?;
+            kernel_index_values::read(object, index).map_err(|kind| kernel_error::at(pc, kind))?
         }
         KernelInstruction::Integer(operator) => {
             let (left, right) = stack.pair(pc)?;

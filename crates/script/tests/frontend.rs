@@ -6,6 +6,12 @@ mod expression_support;
 mod function_compile_support;
 mod statement_support;
 
+#[path = "local_vector_index_limits.rs"]
+mod local_vector_index_limits;
+
+#[path = "local_vector_index.rs"]
+mod local_vector_index;
+
 #[path = "local_vector_source_limits.rs"]
 mod local_vector_source_limits;
 #[path = "local_vector_source_stress.rs"]

@@ -1,7 +1,8 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Bounded harness services, not the native pool/refcount/string/error runtime. */
 typedef struct { union VariableUnion u; int type; } VariableValue;
-static struct { struct { struct { unsigned int type; } w; } variableList[1]; } gScrVarGlob;
+typedef struct { union { unsigned int type; unsigned int status; } w; } VariableValueInternal;
+static struct { VariableValueInternal variableList[1]; } gScrVarGlob;
 static struct { int evaluate; int error_index; } gScrVarPub;
 static float vector_pool[32][3];
 static unsigned int vector_used;
@@ -9,6 +10,10 @@ static int script_error;
 static jmp_buf error_target;
 /* Invalid constructor types are outside the numeric-only construction corpus. */
 static const char *const var_typename[32] = {0};
+
+static unsigned int Scr_FindArrayIndex(unsigned int parent, VariableValue *index)
+{ (void)parent; (void)index; abort(); }
+static VariableValue Scr_EvalVariable(unsigned int id) { (void)id; abort(); }
 
 static float *Scr_AllocVectorInternal(void)
 {

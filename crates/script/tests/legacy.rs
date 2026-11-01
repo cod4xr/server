@@ -4,6 +4,12 @@
 mod kernel_support;
 mod kernel_vector_support;
 
+#[path = "kernel_vector_index.rs"]
+mod kernel_vector_index;
+
+#[path = "vector_index_vectors.rs"]
+mod vector_index_vectors;
+
 #[path = "kernel_vector_execution.rs"]
 mod kernel_vector_execution;
 #[path = "kernel_vector_limits.rs"]

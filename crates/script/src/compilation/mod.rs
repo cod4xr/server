@@ -25,6 +25,7 @@ mod function_local_names;
 mod function_local_statements;
 mod function_loop_transfer;
 mod function_program;
+mod function_reference;
 mod function_relocations;
 mod function_statement_body;
 mod function_task;

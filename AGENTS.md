@@ -223,6 +223,16 @@ pinned prepend/grammar/compiler/VM/helper roles with generate_syntax_tables.py;
 source-shape guards do not prove native execution/side effects/constant folding/
 error-index/ref cleanup. Preserve wide/deep/failed-budget tests and unsupported
 value/index/call/scheduler/mod gates; see ADR 0044.
+Vector index reads now require strict integer 0..2 indices and return exact float
+copies. Never retain attempted index/coordinate values in errors. Index consumes
+bottom-to-top index/object and shares proof/byte/local/fuel admission. Source
+reference reads evaluate index before object and retain bracket/descendant maps;
+PureScalarReturn and indexed-write rejection stay explicit. Verify the actual
+Scr_EvalArray vector corpus with generate_vector_index_vectors.py --check and
+selected source roles through generate_syntax_tables.py. Its object/array/string/
+pool/ref/error stubs are not native service/cleanup execution; count 299 kernel
+outcomes versus 286 numeric-helper rows separately. Preserve hostile/wide/deep
+and quota tests; general indexables/heap/VM/mod acceptance remain open. See ADR 0045.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

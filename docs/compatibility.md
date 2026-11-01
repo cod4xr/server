@@ -426,6 +426,18 @@ grammar/prepend/compiler/VM/constructor roles reject 33 in-memory mutations.
 These do not execute original parser/compiler/VM code or prove full side-effect/
 constant-folding/error-index/ref-cleanup parity. Richer values, vector indexing,
 calls/scheduling and whole GSC/mod acceptance remain open; see ADR 0044.
+Vector index reads now preserve strict integer 0..2 bounds and exact returned
+float bits through helper, primitive kernel and source. Kernel operand order and
+source index-before-object traversal follow selected guarded roles; invalid
+objects/types/ranges fail without retaining data. 299 actual Scr_EvalArray vector
+outcomes execute at O0/O2 with bounded stubbed runtime services: 39 reads/260 errors.
+All replay through owned verified programs; the numeric-only helper covers 286
+rows, with 13 nonnumeric vector-index cases outside its typed domain. Source and
+typed tests cover maps/order/default/caller isolation, proof/byte/fuel/compiler
+quotas, wide reconstruction and deep flat failure. Both hostile corpora include
+Index. Selected grammar/tree/compiler/VM/helper/write-rejection roles reject 27
+mutations. Native parser/compiler/VM, service/ref/error cleanup and general
+indexable heaps/mod parity remain open. See ADR 0045.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

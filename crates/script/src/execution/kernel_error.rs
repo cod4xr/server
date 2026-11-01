@@ -99,6 +99,8 @@ pub enum KernelErrorKind {
     AllocationFailed,
     /// This operation requires a number; Undefined/vector data is unsupported here.
     ExpectedNumber,
+    /// The current primitive profile requires a vector for an indexed object.
+    ExpectedIndexable,
     /// Defined legacy numeric operation failure, without operand values.
     Numeric(LegacyNumberError),
     /// Defined legacy vector-domain operation failure, without coordinate data.

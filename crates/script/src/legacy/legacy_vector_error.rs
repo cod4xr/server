@@ -13,6 +13,10 @@ pub enum LegacyVectorError {
     UnsupportedOrdering,
     /// At least one denominator coordinate is either signed zero.
     DivisionByZero,
+    /// A vector index must retain the integer type; floats are not coerced.
+    ExpectedIntegerIndex,
+    /// An integer index falls outside the three-coordinate domain; its value is redacted.
+    IndexOutOfRange,
 }
 
 impl fmt::Display for LegacyVectorError {

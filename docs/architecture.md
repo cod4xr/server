@@ -366,6 +366,18 @@ component/operator spans. Selected pinned prepend/grammar/compiler/VM roles are
 guarded, without native execution/constant-folding/cleanup claims. Primitive source
 still verifies without fabricated invocation arguments; see ADR 0044.
 
+Vector reads now share an immutable helper and primitive Index dispatch leaf.
+Index consumes the prior index and top object, copies a float coordinate and
+retains fixed redacted errors. Actual code/stack/local sizing and fuel stay shared;
+there is no indexed heap or new side allocation. A focused source reference leaf
+handles names/index reads with index-first tasks and original bracket/operation
+maps. Named lookup still uses existing legacy identity/admission. Indexed lvalues
+remain unsupported, preserving the selected legacy vector write rejection.
+Actual Scr_EvalArray vector-branch fixtures use bounded stubbed object/array/string/
+pool/ref/error services; helper and kernel coverage are counted separately. The
+common vector oracle builder preserves older fixture bytes. See ADR 0045; this
+does not implement general arrays/strings/heap or native cleanup/unwinding.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

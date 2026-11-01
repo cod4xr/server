@@ -6,7 +6,7 @@ use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_group;
 use crate::compilation::function_literal;
-use crate::compilation::function_local_names;
+use crate::compilation::function_reference;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind, FunctionSourceProfile};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -87,7 +87,7 @@ fn primary<'tree, 'source>(
         LegacyPrimaryKind::Reference { syntax }
             if builder.profile == FunctionSourceProfile::PrimitiveStatements =>
         {
-            function_local_names::read(builder, syntax)
+            function_reference::read(builder, syntax)
         }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder
