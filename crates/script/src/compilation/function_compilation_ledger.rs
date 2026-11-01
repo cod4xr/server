@@ -5,20 +5,20 @@ use std::ops::Range;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_task::{FunctionTask, PendingFunctionInstruction};
 use crate::compilation::{
-    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompilationUsage,
-    FunctionCompileError, FunctionCompileErrorKind,
+    FunctionCompilationResource, FunctionCompilationUsage, FunctionCompileError,
+    FunctionCompileErrorKind, FunctionLoweringBudget,
 };
 use crate::execution::KernelInstruction;
 
 pub(super) struct FunctionCompilationLedger {
-    pub(super) budget: FunctionCompilationBudget,
+    pub(super) budget: FunctionLoweringBudget,
     pub(super) usage: FunctionCompilationUsage,
     binding_bytes: u64,
     control_bytes: u64,
 }
 
 impl FunctionCompilationLedger {
-    pub(super) fn new(budget: FunctionCompilationBudget) -> Self {
+    pub(super) fn new(budget: FunctionLoweringBudget) -> Self {
         Self {
             budget,
             binding_bytes: 0,

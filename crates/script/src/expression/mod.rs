@@ -23,6 +23,7 @@ mod legacy_reference_syntax;
 mod legacy_syntax_profile;
 
 pub use expression_list_budget::ExpressionListBudget;
+pub(crate) use expression_list_cursor::ExpressionListCursor;
 pub use expression_list_error::{
     ExpressionListError, ExpressionListErrorKind, ExpressionListResource,
 };

@@ -7,6 +7,9 @@ Status: accepted; implementation and validation tracked separately.
 The static excess-argument rejection below is superseded by
 [ADR 0048](0048-call-argument-error-timing.md). Targets/stack/flow still verify;
 excess arguments now fail at invocation after caller argument evaluation.
+Empty-inventory rejection is superseded by
+[ADR 0049](0049-bound-primitive-source-modules.md); empty inventories contain no
+entry and require no fabricated function. Individual empty code still fails proof.
 
 ## Context
 

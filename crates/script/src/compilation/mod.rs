@@ -5,9 +5,13 @@
 //! validation contracts. General statements/values, native argument adaptation,
 //! module activation, host services, scheduler, and full GSC compilation remain open.
 
+mod bound_module;
 mod compiled_function;
 mod function_body;
 mod function_builder;
+mod function_call;
+mod function_call_arguments;
+mod function_call_scope;
 mod function_compilation_budget;
 mod function_compilation_ledger;
 mod function_compile_error;
@@ -24,6 +28,8 @@ mod function_local_bindings;
 mod function_local_names;
 mod function_local_statements;
 mod function_loop_transfer;
+mod function_lowering_budget;
+mod function_lowering_mode;
 mod function_program;
 mod function_reference;
 mod function_relocations;
@@ -34,10 +40,16 @@ mod function_while;
 mod primitive_function_compiler;
 mod scalar_return_compiler;
 
+pub use bound_module::{
+    CompiledModule, CompiledModuleDeclaration, CompiledModuleFunction, ModuleCompilationBudget,
+    ModuleCompilationResource, ModuleCompilationUsage, ModuleCompileError,
+    compile_bound_primitive_module,
+};
 pub use compiled_function::{CompiledFunction, FunctionCompilationUsage, FunctionSourceProfile};
 pub use function_compilation_budget::FunctionCompilationBudget;
 pub use function_compile_error::{
     FunctionCompilationResource, FunctionCompileError, FunctionCompileErrorKind,
 };
+pub use function_lowering_budget::FunctionLoweringBudget;
 pub use primitive_function_compiler::compile_primitive_function;
 pub use scalar_return_compiler::compile_scalar_return_function;

@@ -731,7 +731,32 @@ See ADR 0048, superseding ADR 0047's static excess rejection. No dependencies or
 alternate targets. Native parser/compiler/VM execution, parameter safe-set/ref/
 error-index/cleanup parity, full GSC/mod and Linux gates remain open.
 
-Next: source-grounded local call compilation/linking and general value ownership,
+Bound primitive source modules now compile/execute local named forward, recursive
+and mutual calls through one shared target scope. Arguments lower rightmost-first
+via the existing expression cursor and admitted flat tasks, without temporary
+argument arrays. One private mode owns standalone proof/validation or bound caller
+visibility/context; shared FunctionLoweringBudget avoids irrelevant module settings.
+Complete staged code/layout/maps verify before publication; declaration metadata
+retains developer-disabled definitions and maps original rows to active entries.
+Source/tree/symbol/name borrows do not escape. Ordinary-to-developer references
+fail separately from inclusion, while inactive unsupported bodies remain metadata.
+Empty/all-disabled modules contain no fabricated code; empty individual instruction
+streams remain invalid. Global declaration/function/work/instruction/logical
+metadata budgets include scope/table/staging/current lowering overlap, with distinct
+per-function and body/literal/kernel scopes. Fifteen source tests pass real calls,
+loops/branches/vector results, defaults/arity/error/name order, privacy/maps/source
+drop, developer modes, unsupported forms, exact/one-less scopes, 70,000 arguments/
+parameters, 66,000 linked functions and 12,000 nested call expressions/failed cleanup.
+Selected resolved/deferred visibility guards reject 11 mutations; argument timing
+guards reject 38; 99 structural fixture replays remain unchanged. Full workspace
+Windows debug/release tests pass (188 frontend/77 legacy plus doctests), with
+formatting, warnings-denied Clippy/rustdoc and repository policy (537 sources/eight
+crates, largest 287 lines). See ADR 0049, including empty-inventory supersession.
+No dependencies or alternate targets. Native compiler/VM/linker/error/ref cleanup,
+imports/animation resolution, heap/receivers/indirect/builtins/scheduling/host/mod
+and Linux gates remain open. No full legacy acceptance workstream is closed.
+
+Next: source-grounded function references/indirect calls and general value ownership,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

@@ -169,12 +169,19 @@ The complete server rewrite remains open.
   using owned frames and global instruction/setup/memory budgets. Tests cover
   12,001 frames and 66,000 functions. Source calls/linking/methods/threads remain open.
   Excess arguments fail at executed calls; skipped call sites remain valid.
+- Bound primitive source modules now compile local forward/recursive calls and
+  preserve developer inclusion/visibility, source maps and whole-module budgets.
+  Source tests cover 70,000 arguments/parameters, 66,000 functions and 12,000 nested
+  call expressions. Imports, heap values, methods, builtins and scheduling remain open.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded
 `PureScalarReturn` contract; `compile_primitive_function` selects
 `PrimitiveStatements` without fabricated-argument execution. These restricted
 profiles do not establish full GSC/module/mod support.
+`compile_bound_primitive_module` separately consumes a validated local symbol index
+and returns owned `CompiledModule` code/maps, with explicit declaration-to-entry
+mapping. It processes local definitions without resolving imports or activating game state.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

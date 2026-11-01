@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::compilation::FunctionCompileError;
 use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_call_arguments;
 use crate::compilation::function_conditional;
 use crate::compilation::function_expression_lowering;
 use crate::compilation::function_for;
@@ -15,6 +16,9 @@ pub(super) fn drain(builder: &mut FunctionBuilder<'_, '_>) -> Result<(), Functio
         builder.ledger.charge(1, task.span())?;
         match task {
             FunctionTask::Visit(node) => function_expression_lowering::visit(builder, node)?,
+            FunctionTask::CallArguments { cursor, span } => {
+                function_call_arguments::next(builder, cursor, span)?;
+            }
             FunctionTask::Statement { syntax, last } => {
                 function_local_statements::lower(builder, syntax, last)?;
             }

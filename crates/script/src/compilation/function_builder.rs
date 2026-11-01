@@ -5,18 +5,19 @@ use crate::compilation::function_compilation_ledger::FunctionCompilationLedger;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_local_bindings::FunctionLocalBindings;
 use crate::compilation::function_loop_transfer::FunctionLoopContext;
+use crate::compilation::function_lowering_mode::{FunctionLoweringMode, StandaloneFunctionMode};
 use crate::compilation::function_task::{
     FunctionPatchSite, FunctionTask, PendingFunctionInstruction, PendingFunctionKind,
 };
 use crate::compilation::{
     FunctionCompilationBudget, FunctionCompileError, FunctionCompileErrorKind,
-    FunctionSourceProfile,
+    FunctionLoweringBudget, FunctionSourceProfile,
 };
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 
 pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) ledger: FunctionCompilationLedger,
-    pub(super) profile: FunctionSourceProfile,
+    pub(super) mode: FunctionLoweringMode<'tree, 'source>,
     pub(super) locals: Option<FunctionLocalBindings<'source>>,
     pub(super) reachable: bool,
     pub(super) active_loop: Option<FunctionLoopContext>,
@@ -27,13 +28,24 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
 
 impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
     pub(super) fn new(budget: FunctionCompilationBudget, profile: FunctionSourceProfile) -> Self {
+        Self::with_mode(
+            budget.into(),
+            FunctionLoweringMode::Standalone(StandaloneFunctionMode {
+                profile,
+                verification: budget.verification,
+                validation: budget.validation,
+            }),
+        )
+    }
+
+    pub(super) fn with_mode(
+        budget: FunctionLoweringBudget,
+        mode: FunctionLoweringMode<'tree, 'source>,
+    ) -> Self {
         Self {
             ledger: FunctionCompilationLedger::new(budget),
-            profile,
-            locals: match profile {
-                FunctionSourceProfile::PureScalarReturn => None,
-                FunctionSourceProfile::PrimitiveStatements => Some(FunctionLocalBindings::new()),
-            },
+            mode,
+            locals: mode.primitive().then(FunctionLocalBindings::new),
             reachable: true,
             active_loop: None,
             tasks: Vec::new(),

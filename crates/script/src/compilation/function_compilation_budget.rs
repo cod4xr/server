@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::compilation::FunctionLoweringBudget;
 use crate::execution::{KernelExecutionBudget, KernelVerificationBudget};
 use crate::literal::LegacyLiteralBudget;
 use crate::statement::StatementListBudget;
@@ -35,16 +36,17 @@ pub struct FunctionCompilationBudget {
 
 impl Default for FunctionCompilationBudget {
     fn default() -> Self {
+        let lowering = FunctionLoweringBudget::default();
         Self {
-            max_steps: 16_000_000,
-            max_instructions: 1_000_000,
-            max_task_frames: 1_000_000,
-            max_metadata_bytes: 256 * 1024 * 1024,
-            max_local_bindings: 1_000_000,
-            max_identifier_bytes: 128 * 1024 * 1024,
-            max_control_bytes: 128 * 1024 * 1024,
-            body: StatementListBudget::default(),
-            literal: LegacyLiteralBudget::default(),
+            max_steps: lowering.max_steps,
+            max_instructions: lowering.max_instructions,
+            max_task_frames: lowering.max_task_frames,
+            max_metadata_bytes: lowering.max_metadata_bytes,
+            max_local_bindings: lowering.max_local_bindings,
+            max_identifier_bytes: lowering.max_identifier_bytes,
+            max_control_bytes: lowering.max_control_bytes,
+            body: lowering.body,
+            literal: lowering.literal,
             verification: KernelVerificationBudget::default(),
             validation: KernelExecutionBudget::default(),
         }

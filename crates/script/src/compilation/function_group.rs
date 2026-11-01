@@ -3,7 +3,7 @@ use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_task::FunctionTask;
-use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind, FunctionSourceProfile};
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
 use crate::syntax::LegacySyntaxNode;
 
@@ -20,7 +20,7 @@ pub(super) fn lower<'tree, 'source>(
         let inner = function_body::child(list, 0, 1)?;
         return builder.push_task(FunctionTask::Visit(inner), inner.span());
     }
-    if builder.profile != FunctionSourceProfile::PrimitiveStatements {
+    if !builder.mode.primitive() {
         return Err(arity(group));
     }
     let coordinates = triple(builder, group, list)?;

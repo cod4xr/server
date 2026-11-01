@@ -462,6 +462,22 @@ Selected original argument source roles do not prove complete native diagnostic/
 evaluation/error-index/ref-cleanup parity; see ADR 0048.
 Source linking/calls, methods/receivers, indirect calls, scheduling/native cleanup
 and whole-GSC/mod acceptance remain open. See ADR 0047.
+Local bound source calls now compile into complete primitive inventories under
+shared canonical name resolution, explicit developer inclusion/caller visibility
+and atomic code/layout/map publication. Fifteen source tests cover real forward/
+mutual/recursive calls, discarded results, loops/vector values, rightmost argument
+error/name order, missing/excess values, privacy/ownership/maps, disabled/empty
+metadata, unsupported forms and exact/one-less global/individual/nested scopes.
+Source expansion tests reach 70,000 arguments/parameters, 66,000 functions and
+12,000 nested call expressions. Selected resolved/deferred developer reference
+roles reject 11 mutations; argument roles reject 38 without executing native code.
+Existing 99 structural fixtures remain unchanged. Original compiler/VM/linker,
+native constant folding/scope/diagnostic/ref/unwind parity, imports/animation
+resolution, richer heap values, receivers/indirect/builtin/thread/host behavior,
+whole mods and Linux remain open. ADR 0049 preserves isolated profile rejection
+and allows empty inventories without fabricated functions; individual empty
+instruction streams still fail. No source-role or Rust subset test closes full
+GSC compatibility by itself.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

@@ -18,9 +18,6 @@ impl KernelModuleAdmission {
         definitions: &[KernelFunctionDefinition<'_>],
         budget: KernelModuleVerificationBudget,
     ) -> Result<Self, KernelError> {
-        if definitions.is_empty() {
-            return Err(kernel_error::general(KernelErrorKind::EmptyModule));
-        }
         let count = definitions.len() as u64;
         kernel_error::check(KernelResource::Functions, count, budget.max_functions, None)?;
         kernel_error::check(

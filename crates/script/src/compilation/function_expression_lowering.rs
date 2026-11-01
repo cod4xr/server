@@ -3,12 +3,13 @@ use std::ops::Range;
 
 use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_call;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_group;
 use crate::compilation::function_literal;
 use crate::compilation::function_reference;
 use crate::compilation::function_task::FunctionTask;
-use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind, FunctionSourceProfile};
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::{
     LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator, LegacyLogicalOperator,
@@ -84,10 +85,11 @@ fn primary<'tree, 'source>(
         function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
-        LegacyPrimaryKind::Reference { syntax }
-            if builder.profile == FunctionSourceProfile::PrimitiveStatements =>
-        {
+        LegacyPrimaryKind::Reference { syntax } if builder.mode.primitive() => {
             function_reference::read(builder, syntax)
+        }
+        LegacyPrimaryKind::Call { syntax } if builder.mode.bound() => {
+            function_call::queue(builder, syntax)
         }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder

@@ -8,7 +8,7 @@ use crate::execution::calls::{
     KernelModuleVerificationBudget,
 };
 use crate::execution::{
-    KernelFunctionLayout, KernelInstruction, KernelValue, VerifiedKernelProgram,
+    KernelFunctionLayout, KernelInstruction, KernelProgramUsage, KernelValue, VerifiedKernelProgram,
 };
 
 /// Borrowed internal function input, without source names, imports or host authority.
@@ -49,9 +49,10 @@ pub struct VerifiedKernelModule {
 impl VerifiedKernelModule {
     /// Verifies every function, call target and reachable stack/flow shape.
     /// Supports forward calls and recursion without host recursion.
+    /// Empty inventories contain no entry and need no fabricated function code.
     ///
     /// # Errors
-    /// Rejects empty inventories, malformed/unresolved operands,
+    /// Rejects malformed/unresolved operands,
     /// invalid flow, global/per-function budget exhaustion and allocation failure.
     /// No partial module escapes; borrowed input remains unchanged.
     pub fn verify(
@@ -65,6 +66,14 @@ impl VerifiedKernelModule {
     #[must_use]
     pub fn usage(&self) -> KernelModuleUsage {
         self.usage
+    }
+
+    /// Returns one function's proof accounting without exposing mutable code/constants.
+    #[must_use]
+    pub fn function_usage(&self, function: u64) -> Option<KernelProgramUsage> {
+        self.functions
+            .get(usize::try_from(function).ok()?)
+            .map(VerifiedKernelProgram::usage)
     }
 
     /// Invokes an entry with a source-parameter-ordered primitive argument prefix.

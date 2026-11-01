@@ -215,7 +215,7 @@ do not recreate obsolete scalar aliases/wrappers or imply full GSC from a rename
 Preserve behavior/quota/proof/map coverage and explicit suite registration; see ADR 0043.
 PrimitiveStatements now lowers exact source vector triples with explicit z/y/x
 component visits into MakeVector; singleton grouping and PureScalarReturn remain
-separate. The builder owns one profile for syntax permission, publication/validation
+separate. The builder owns one mode for syntax permission, publication/validation
 and result metadata. Charge fixed shape probes/tasks globally; retain whole group
 and operator spans, runtime type checks and initialized-name ordering. No recursive
 IR/native temporary array or unaccounted list allocation is introduced. Guard
@@ -255,6 +255,27 @@ evaluation/push/cleanup parity. Source linking, methods/indirect calls, heap and
 scheduling stay separate. Retain wide/deep/hostile/quota/order tests; see ADRs 0047/0048.
 Run tools/script_argument_reference.py against the pinned reference to exercise
 timing/marker/Undefined role fault injection, including preserved-needle reorderings.
+Bound primitive-module compilation shares one immutable active target scope across
+bodies, with explicit
+caller visibility. Keep isolated public profiles unchanged; a single private mode
+owns standalone proof/validation settings or bound-call context. Shared lowering
+budgets must not expose ignored standalone settings in module configuration.
+Lower call arguments rightmost-first through admitted cursor tasks, with preflight
+count/work and a configurable per-call quota; never allocate an unaccounted
+argument array or clone the full target scope per function. Ordinary callers cannot
+reference developer-only targets; disabled declarations remain explicit metadata.
+Reject external/receiver/indirect/thread/builtin fallback rather than granting host
+authority. Resolve owned code/layout/maps for all active bodies, verify once and
+publish atomically. Global declaration/function/work/instruction/metadata admission
+includes tables/staging/current lowering overlap; source/CST/symbol/body/literal/
+kernel scopes remain separate and logical counters are not RSS. Preserve original
+declaration-to-active-entry mapping and function/PC spans after source drops.
+Empty/all-disabled inventories must not fabricate functions; empty individual typed
+code remains invalid. Run script_call_link_reference.py and argument/syntax guards;
+these selected source roles do not execute native compiler/VM/linking. Retain
+wide/deep/budget/privacy/mode/unsupported/isolated regressions. Source imports,
+heap/receivers/indirect calls/builtins/scheduling/full-GSC/mod/Linux gates remain
+open. See ADR 0049, including empty-inventory supersession of ADR 0047.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

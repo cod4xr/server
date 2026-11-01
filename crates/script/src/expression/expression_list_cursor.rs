@@ -3,22 +3,22 @@ use crate::expression::ExpressionListErrorKind;
 use crate::expression::legacy_syntax_profile;
 use crate::syntax::LegacySyntaxNode;
 
-pub(super) struct ExpressionListCursor<'tree, 'source> {
+pub(crate) struct ExpressionListCursor<'tree, 'source> {
     current: Option<LegacySyntaxNode<'tree, 'source>>,
 }
 
 impl<'tree, 'source> ExpressionListCursor<'tree, 'source> {
-    pub(super) fn new(node: LegacySyntaxNode<'tree, 'source>) -> Self {
+    pub(crate) fn new(node: LegacySyntaxNode<'tree, 'source>) -> Self {
         Self {
             current: Some(node),
         }
     }
 
-    pub(super) fn pending(&self) -> bool {
+    pub(crate) fn pending(&self) -> bool {
         self.current.is_some()
     }
 
-    pub(super) fn advance(
+    pub(crate) fn advance(
         &mut self,
     ) -> Result<Option<LegacySyntaxNode<'tree, 'source>>, ExpressionListErrorKind> {
         let node = self

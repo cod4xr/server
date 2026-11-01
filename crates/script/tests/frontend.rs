@@ -106,6 +106,20 @@ mod statement_lists;
 #[path = "statement_views.rs"]
 mod statement_views;
 
+#[path = "bound_module_depth.rs"]
+mod bound_module_depth;
+#[path = "bound_module_execution.rs"]
+mod bound_module_execution;
+#[path = "bound_module_limits.rs"]
+mod bound_module_limits;
+#[path = "bound_module_names.rs"]
+mod bound_module_names;
+#[path = "bound_module_order.rs"]
+mod bound_module_order;
+#[path = "bound_module_visibility.rs"]
+mod bound_module_visibility;
+#[path = "bound_module_width.rs"]
+mod bound_module_width;
 #[path = "call_views.rs"]
 mod call_views;
 #[path = "declaration_budgets.rs"]
@@ -136,6 +150,7 @@ mod lexical_vectors;
 mod literal_boundaries;
 #[path = "literal_vectors.rs"]
 mod literal_vectors;
+mod module_compile_support;
 #[path = "primary_forms.rs"]
 mod primary_forms;
 #[path = "primary_literals.rs"]

@@ -38,8 +38,6 @@ pub enum KernelResource {
 pub enum KernelErrorKind {
     /// There is no entry instruction.
     EmptyProgram,
-    /// There is no function in the module inventory.
-    EmptyModule,
     /// Standalone proof has no inventory with which to resolve a call.
     UnlinkedCall,
     /// A call or entry function index lies outside the complete module inventory.

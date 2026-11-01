@@ -402,6 +402,20 @@ executed caller location after argument instructions and before callee allocatio
 body, preserving skipped calls. Stack operand proof remains mandatory and parameter
 count is distinct from total locals. See ADRs 0047/0048.
 
+Bound primitive source modules now share the existing function lowering pipeline
+through one private mode. Isolated modes own their separate proof/validation
+settings; bound mode borrows one local target scope and caller visibility. A shared
+FunctionLoweringBudget supplies only code-generation limits. The internal expression
+list cursor now serves both structural indexing and admitted flat call lowering.
+No complete target-table clone or temporary argument array is allocated per call.
+The bound_module subfolder separates inventory, staging, metadata formulas, global
+admission, source maps/errors and complete proof publication. Declaration metadata
+retains disabled definitions and explicitly maps original indices to active entries.
+Kernel proof remains a separately admitted owned-code/verifier scope overlapping
+staged compiler input. No aggregate RSS or host authorization is implied. Empty
+inventories preserve metadata without fabricated code. See ADR 0049; imports,
+runtime module ownership/reload, heap values, builtins and scheduling remain open.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

@@ -4,6 +4,7 @@ use std::fmt;
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifierError;
+use crate::compilation::ModuleCompilationResource;
 use crate::execution::KernelError;
 use crate::literal::LegacyLiteralError;
 use crate::statement::StatementListError;
@@ -36,6 +37,12 @@ pub enum FunctionCompileErrorKind {
     UnsupportedBody,
     /// Primary syntax outside the selected profile, including strings/objects/calls.
     UnsupportedPrimary,
+    /// A bound-module call requires an immediate local named target without a receiver.
+    UnsupportedCall,
+    /// No active local definition matches the call's legacy identifier.
+    UnknownFunction,
+    /// Ordinary code cannot reference a developer-only function.
+    DeveloperFunctionReference,
     /// Parentheses require a singleton; the primitive profile additionally accepts triples.
     UnsupportedGroupArity,
     /// This profile permits only plain-name local assignment targets.
@@ -83,6 +90,15 @@ pub enum FunctionCompileErrorKind {
         /// Requested count or bytes at this check.
         requested: u64,
         /// Configured admission budget.
+        maximum: u64,
+    },
+    /// The bound-module compiler exhausted the selected admission scope.
+    ModuleBudgetExceeded {
+        /// Complete module resource.
+        resource: ModuleCompilationResource,
+        /// Requested count/bytes in the resource's documented scope.
+        requested: u64,
+        /// Complete configured module admission.
         maximum: u64,
     },
 }

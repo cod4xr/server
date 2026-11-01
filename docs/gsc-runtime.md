@@ -391,6 +391,32 @@ include dynamically failing excess counts. Selected locked compiler/VM argument
 roles and mutation guards supply evidence without executing the native routines;
 source/native cleanup/error-index/full-VM parity stays open. See ADR 0048, which
 supersedes ADR 0047's static excess rejection.
+Bound primitive source compilation now connects local validated symbol indices to
+owned executable modules. Named immediate calls resolve against one complete shared
+active inventory before body lowering; forward/mutual/recursive expression and
+statement calls retain rightmost argument evaluation and runtime excess checks.
+Existing isolated profiles stay narrower. Caller visibility is distinct from
+developer inclusion: ordinary references to developer-only targets fail, disabled
+unsupported bodies remain metadata, and empty/all-disabled modules fabricate no
+entry. Code/maps/layouts stage privately and the complete kernel inventory verifies
+before publication, preserving original declaration-to-active-function mapping and
+function/instruction spans after source/tree/symbol ownership drops.
+Global declaration/function/compiler-work/instruction/logical metadata budgets
+include scope/records/staging/current lowering overlap; individual function limits
+remain separately enforced and clamped to remaining global admission. Body/literal/
+source/CST/symbol/kernel scopes and allocator/hash/spare-capacity overhead stay
+explicitly outside that counter; it is not RSS. Fifteen source tests exercise real
+calls, branches/loops/vector results, error/name order, arity/maps/privacy/ownership,
+case identity including native long-name fallback, developer modes/unsupported
+forms, exact/one-less scopes, 70,000 arguments/parameters, 66,000 functions and
+12,000 nested calls with flat failed cleanup. Selected direct/deferred developer
+reference guards reject 11 mutations; argument timing guards reject 38, while 99
+structural fixture replays stay unchanged. These are source-role guards plus Rust
+execution tests, not original compiler/VM/linker execution. Imports/animation
+resolution, strings/arrays/objects/receivers/indirect calls, builtins/threads/waits/
+host services, full native diagnostics/cleanup/mod and Linux gates remain open.
+See ADR 0049. Its empty-inventory decision supersedes ADR 0047; empty individual
+instruction streams still fail proof.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

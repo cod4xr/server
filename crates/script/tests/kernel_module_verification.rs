@@ -80,10 +80,10 @@ fn all_call_targets_need_complete_inventory_and_reachable_calls_need_stack_opera
     );
     assert_eq!(
         VerifiedKernelModule::verify(&[], KernelModuleVerificationBudget::default())
-            .expect_err("Empty inventory")
-            .cause
-            .kind,
-        KernelErrorKind::EmptyModule
+            .expect("Empty inventory retains no fabricated functions")
+            .usage()
+            .functions,
+        0
     );
     let error = VerifiedKernelModule::verify(
         &[definition(&leaf, 0, 0), definition(&[], 0, 0)],

@@ -6,6 +6,7 @@ use crate::compilation::function_for::{FunctionForEnd, FunctionForPlan};
 use crate::compilation::function_initialization::FunctionInitializationSnapshot;
 use crate::compilation::function_loop_transfer::FunctionLoopContext;
 use crate::execution::{KernelBranchCondition, KernelInstruction};
+use crate::expression::ExpressionListCursor;
 use crate::expression::LegacyLogicalOperator;
 use crate::syntax::LegacySyntaxNode;
 
@@ -18,6 +19,10 @@ pub(super) struct FunctionLoopHead(pub(super) usize);
 
 pub(super) enum FunctionTask<'tree, 'source> {
     Visit(LegacySyntaxNode<'tree, 'source>),
+    CallArguments {
+        cursor: ExpressionListCursor<'tree, 'source>,
+        span: Range<u64>,
+    },
     Statement {
         syntax: LegacySyntaxNode<'tree, 'source>,
         last: bool,
@@ -87,7 +92,8 @@ impl FunctionTask<'_, '_> {
             Self::Statement { syntax, .. } => syntax.span(),
             Self::AfterForInit(plan) | Self::BeginForBody { plan, .. } => plan.span.clone(),
             Self::AfterForBody { end, .. } | Self::AfterForUpdate(end) => end.span.clone(),
-            Self::Emit { span, .. }
+            Self::CallArguments { span, .. }
+            | Self::Emit { span, .. }
             | Self::FinishAssignment { span, .. }
             | Self::BeginLogical { span, .. }
             | Self::BeginIf { span, .. }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_call;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_for;
 use crate::compilation::function_local_assignment;
@@ -29,6 +30,9 @@ pub(super) fn lower<'tree, 'source>(
     })?;
     match view.kind() {
         LegacyStatementKind::Empty => Ok(()),
+        LegacyStatementKind::Call { invocation } if builder.mode.bound() => {
+            function_call::statement(builder, invocation)
+        }
         LegacyStatementKind::Assignment { target, value } => {
             function_local_assignment::assign(builder, view.statement_syntax(), target, value)
         }

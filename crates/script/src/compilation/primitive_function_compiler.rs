@@ -42,7 +42,8 @@ pub fn compile_primitive_function(
     budget: FunctionCompilationBudget,
 ) -> Result<CompiledFunction, FunctionCompileError> {
     let mut builder = FunctionBuilder::new(budget, FunctionSourceProfile::PrimitiveStatements);
-    let result = compile(&mut builder, function);
+    let result = lower(&mut builder, function)
+        .and_then(|layout| function_program::finish(&mut builder, layout, function.body().span()));
     result.map_err(|mut error| {
         error.work_steps = builder.ledger.usage.compiler_steps;
         error.peak_metadata_bytes = builder.ledger.usage.peak_metadata_bytes;
@@ -50,10 +51,10 @@ pub fn compile_primitive_function(
     })
 }
 
-fn compile<'tree, 'source>(
+pub(super) fn lower<'tree, 'source>(
     builder: &mut FunctionBuilder<'tree, 'source>,
     function: &LegacyFunctionSyntax<'tree, 'source>,
-) -> Result<CompiledFunction, FunctionCompileError> {
+) -> Result<KernelFunctionLayout, FunctionCompileError> {
     builder.ledger.charge(1, function.span())?;
     for parameter in function.parameters().iter().copied() {
         builder.ledger.charge(1, parameter.span())?;
@@ -91,9 +92,7 @@ fn compile<'tree, 'source>(
     drop(body);
     function_task_lowering::drain(builder)?;
     let count = builder.ledger.usage.local_bindings;
-    let layout =
-        KernelFunctionLayout::new(function.parameters().len() as u64, count).map_err(|error| {
-            function_compile_error::at(function.span(), FunctionCompileErrorKind::Kernel(error))
-        })?;
-    function_program::finish(builder, layout, function.body().span())
+    KernelFunctionLayout::new(function.parameters().len() as u64, count).map_err(|error| {
+        function_compile_error::at(function.span(), FunctionCompileErrorKind::Kernel(error))
+    })
 }

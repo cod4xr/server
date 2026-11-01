@@ -13,20 +13,22 @@ pub(super) fn finish(
     layout: KernelFunctionLayout,
     fallback: Range<u64>,
 ) -> Result<CompiledFunction, FunctionCompileError> {
+    let mode = builder.mode.standalone().ok_or_else(|| {
+        function_compile_error::at(fallback.clone(), FunctionCompileErrorKind::InvalidStructure)
+    })?;
     let (code, spans) = builder.resolve(fallback.clone())?;
-    let program =
-        VerifiedKernelProgram::verify_function(&code, layout, builder.ledger.budget.verification)
-            .map_err(|error| kernel_error(error, &spans, fallback.clone()))?;
+    let program = VerifiedKernelProgram::verify_function(&code, layout, mode.verification)
+        .map_err(|error| kernel_error(error, &spans, fallback.clone()))?;
     drop(code);
-    if builder.profile == FunctionSourceProfile::PureScalarReturn {
+    if mode.profile == FunctionSourceProfile::PureScalarReturn {
         let validation = program
-            .execute(builder.ledger.budget.validation)
+            .execute(mode.validation)
             .map_err(|error| kernel_error(error, &spans, fallback))?;
         builder.ledger.usage.validation_steps = Some(validation.steps);
     }
     builder.ledger.usage.verification_steps = program.usage().verification_steps;
     Ok(CompiledFunction {
-        profile: builder.profile,
+        profile: mode.profile,
         program,
         spans,
         usage: builder.ledger.usage,
