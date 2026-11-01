@@ -19,7 +19,9 @@ ROLES = {
         'Scr_Error(va("%s is not a string index", var_typename[index->type]));',
     ),
     "size": (
-        "if ( value->type == VAR_POINTER )", "if ( VAR_TYPE(entryValue) == VAR_ARRAY )",
+        "if ( value->type == VAR_POINTER )",
+        "entryValue = &gScrVarGlob.variableList[value->u.intValue + VARIABLELIST_PARENT_BEGIN];",
+        "if ( VAR_TYPE(entryValue) == VAR_ARRAY )",
         "value->u.intValue = entryValue->u.o.u.size;", "value->u.intValue = 1;",
         "RemoveRefToObject(id);", "else if ( value->type == VAR_STRING ) { value->type = VAR_INTEGER;",
         "stringValue = value->u.intValue;",

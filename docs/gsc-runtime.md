@@ -456,8 +456,8 @@ and argument-error timing; proof still admits every reachable operand. Pure
 instructions share global fuel and actual-size stack/code admission without an
 argument array, extra frame or inherited 255-argument cap. New C files were hashed
 against their pinned Git blobs. Actual extracted functions produce 832 O0/O2
-count/tag outcomes: 196 run through verified Rust instructions (28 successes/168
-arity failures), while 636 remain explicit helper-only evidence for unavailable
+count/tag outcomes: 224 run through verified Rust instructions (32 successes/192
+arity failures), while 608 remain explicit helper-only evidence for unavailable
 native tags and UINT32_MAX declared counts. This does not allocate native values
 or execute the original VM/compiler/error unwinder. Selected registration/type/
 arity/lookup/developer/argument guards reject 46 mutations; 99 structural replays

@@ -44,15 +44,18 @@ restricted; the complete GSC and server gates remain open.
 
 Plain-string indexing and Size now replay all 896 native helper outcomes (36
 results/860 errors) with synthetic byte/ref/error services, not native interning/
-cleanup/unwinding. Selected source guards reject 45 mutations. Rust/source/process
+cleanup/unwinding. Selected source guards now reject 46 mutations. Rust/source/process
 tests cover first-NUL semantics, raw bytes, wide input, exact work, complete roots
-and private located failures; see ADR 0061. General array/object size stays open.
+and private located failures; see ADR 0061. ADR 0065 adds ordinary-struct Size=1
+with 15 Rust replays from 180 actual pointer-size outcomes; 165 other-subtype rows
+remain helper-only. Array/other-object size stays open.
 
 Primitive isdefined follows tag-based definedness and required-first/evaluated-
 extra rules. Its 351-row corpus executes isolated archival comparisons with
 modeled parameter admission, not the native function/VM/lifetime/error services.
-56 rows execute in Rust and 295 stay helper-only. Wide source/typed count tests
-are capacity expansion. See ADR 0062; entity/thread definedness stays open.
+64 rows execute in Rust (56 results/eight missing errors), including ordinary
+structs, and 287 stay helper-only. Wide source/typed count tests are capacity
+expansion. See ADRs 0062/0065; entity/thread definedness stays open.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported
@@ -569,8 +572,8 @@ Active script definitions shadow them; existing developer policy and canonical
 names remain enforced. Exact-one arity checks run after supplied arguments, so
 unselected wrong counts do not fail and argument errors retain precedence. Typed
 instructions share existing resource limits without native 255-count ceilings,
-new host/plugin authority or frames. Of 832 actual C O0/O2 count/tag outcomes, 196
-currently representable/bounded cases execute in Rust; 636 are explicitly helper-
+new host/plugin authority or frames. Of 832 actual C O0/O2 count/tag outcomes, 224
+currently representable/bounded cases execute in Rust; 608 are explicitly helper-
 only, not full native value/VM coverage. Selected source guards reject 46 mutations.
 Source tests reach 256 arguments and 12,000 nested calls; typed fixtures include
 70,000 arguments. Exact count/byte/fuel/proof, unsupported authority, maps/privacy,

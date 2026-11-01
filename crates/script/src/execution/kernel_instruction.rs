@@ -64,8 +64,8 @@ pub enum KernelInstruction {
     /// Vectors use strict integer component indices; plain strings return one byte
     /// before the first NUL and require an explicit heap context.
     Index,
-    /// Replaces a plain string with its byte length before the first NUL.
-    /// Other implemented primitive categories reject; arrays/objects remain unsupported.
+    /// Replaces a plain string with its byte length before the first NUL, or a
+    /// checked ordinary struct with integer one. Arrays/other categories reject.
     Size,
     /// Pops right then left operands. Plain-string addition requires a heap context;
     /// mixed string coercion and other string arithmetic remain unsupported.

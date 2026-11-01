@@ -10,7 +10,9 @@ use cod4x_script::execution::{
     KernelBuiltin, KernelErrorKind, KernelExecutionBudget, KernelFunctionLayout, KernelHeapContext,
     KernelInstruction, KernelValue, KernelVerificationBudget, VerifiedKernelProgram,
 };
-use cod4x_script::heap::{HeapWorkBudget, StringHeap, StringHeapBudget, StringId};
+use cod4x_script::heap::{
+    HeapWorkBudget, ObjectHeap, ObjectHeapBudget, ObjectId, StringHeap, StringHeapBudget, StringId,
+};
 use cod4x_script::legacy::{LegacyNumber, LegacyVector};
 
 #[test]
@@ -21,7 +23,13 @@ fn archived_definedness_primitive_subset_and_first_parameter_admission_replay() 
     let function = KernelValue::Function(owner.function_reference(0).expect("Function"));
     let mut heap = StringHeap::new(StringHeapBudget::default()).expect("Heap");
     let string = allocate(&mut heap, b"");
-    let mut context = KernelHeapContext::new(&mut heap, &[], HeapWorkBudget::default());
+    let mut objects = ObjectHeap::new(&heap, ObjectHeapBudget::default()).expect("Objects");
+    let object = objects
+        .allocate(HeapWorkBudget::default())
+        .expect("Shared struct")
+        .id;
+    let mut context = KernelHeapContext::new(&mut heap, &[], HeapWorkBudget::default())
+        .with_objects(&mut objects, &[]);
     let (mut rows, mut successes, mut failures, mut helper_only) = (0, 0, 0, 0);
     for row in include_str!("fixtures/defined_vectors.txt")
         .lines()
@@ -47,7 +55,9 @@ fn archived_definedness_primitive_subset_and_first_parameter_admission_replay() 
             assert!(["0", "1"].contains(&fields[5]));
         }
         rows += 1;
-        let Some(value) = value(tag, string, function).filter(|_| count != u32::MAX) else {
+        let Some(value) =
+            value(tag, parent, object, string, function).filter(|_| count != u32::MAX)
+        else {
             helper_only += 1;
             continue;
         };
@@ -94,14 +104,21 @@ fn archived_definedness_primitive_subset_and_first_parameter_admission_replay() 
             successes += 1;
         }
     }
-    assert_eq!((rows, successes, failures, helper_only), (351, 49, 7, 295));
+    assert_eq!((rows, successes, failures, helper_only), (351, 56, 8, 287));
     assert_eq!(context.heap_usage().live_strings, 1);
     Ok(())
 }
 
-fn value(tag: u8, string: StringId, function: KernelValue) -> Option<KernelValue> {
+fn value(
+    tag: u8,
+    parent: u32,
+    object: ObjectId,
+    string: StringId,
+    function: KernelValue,
+) -> Option<KernelValue> {
     match tag {
         0 => Some(KernelValue::Undefined),
+        1 if parent == 18 => Some(KernelValue::Object(object)),
         2 => Some(KernelValue::String(string)),
         3 => Some(KernelValue::LocalizedString(string)),
         4 => Some(KernelValue::Vector(LegacyVector::from_components([0.0; 3]))),

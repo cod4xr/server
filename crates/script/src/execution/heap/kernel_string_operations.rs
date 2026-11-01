@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::execution::heap::kernel_object_validation;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelErrorKind, KernelHeapContext, KernelInstruction, KernelValue};
 use crate::heap::StringId;
@@ -38,6 +39,12 @@ pub(in crate::execution) fn apply(
                 .ok_or(KernelErrorKind::HeapContextRequired)?
                 .size(id)
                 .map(Some),
+            Some(KernelValue::Object(id)) => {
+                let context = context.ok_or(KernelErrorKind::ObjectExecutionUnsupported)?;
+                context.charge(1)?;
+                kernel_object_validation::reference(context, id)?;
+                Ok(Some(KernelValue::Number(LegacyNumber::Integer(1))))
+            }
             _ => Err(KernelErrorKind::ExpectedSized),
         };
     }

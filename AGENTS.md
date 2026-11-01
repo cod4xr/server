@@ -40,7 +40,7 @@ ADR 0061 adds plain-string byte indexing and bound-source Size. Both stop at the
 first NUL; localized/noninteger/domain errors stay fixed/private. Prepay scans and
 allocate indexed bytes before collapsing rooted operands; unary/binary publication
 uses checked stack effects. Run generate_string_access_vectors.py --check (896
-actual helper outcomes) and script_string_access_reference.py (45 mutations).
+actual helper outcomes) and script_string_access_reference.py (46 mutations).
 Returning oracle error callbacks are not native unwinding/interner/GC evidence.
 
 Array semantics are assessed in ADR 0060; no Rust array store or VM instructions
@@ -366,7 +366,7 @@ instruction, including errors; skipped wrong counts remain valid. Proof still
 requires reachable supplied operands. Share existing fuel/stack/count/byte/compiler
 budgets without argument arrays, frames, per-call resets or native 255-count caps.
 Run generate_predicate_vectors.py --check and script_predicate_reference.py: 832
-actual C count/tag outcomes, 196 executable Rust subset outcomes, 636 explicitly
+actual C count/tag outcomes, 224 executable Rust subset outcomes, 608 explicitly
 helper-only rows for unavailable value tags/UINT32_MAX, and selected role mutations.
 Do not describe all native tags as implemented values or helper stubs as VM/plugin/
 error-unwind execution. Preserve shadow/case/developer/arity/order/maps/privacy,
@@ -381,9 +381,15 @@ It requires a first argument, accepts/discards evaluated extras, and tests tags
 rather than numeric truth. Retain old exact-one predicate behavior. Verified stack/
 global fuel bound discard work; preserve older prefixes and rightmost source
 evaluation. Run generate_defined_vectors.py --check and script_defined_reference.py:
-351 isolated archival comparison/modeled-admission outcomes, 56 Rust rows and 295
+351 isolated archival comparison/modeled-admission outcomes, 64 Rust rows and 287
 explicit helper-only rows; 46 selected-role mutations reject. These do not execute
 the native function/ABI/parameter-error services or entity/thread lifetimes.
+
+ADR 0065 adds ordinary-struct definedness and Size=1 through the explicit object
+context, not field count. Replay 15 ordinary-struct rows from the 180-case native
+pointer-size fixture; 165 other-subtype rows remain helper-only. Keep typed
+70,000-field constant-work and compiled-source queries, exact global admission,
+stale-reference rejection and unchanged immutable object-constant boundaries.
 Primitive integer switch now owns case inventory/section tasks/exit joins/balanced
 dispatch under compilation/function_switch. Evaluate keys once, require integers
 without float coercion, preserve source-order fallthrough/default/adjacent labels

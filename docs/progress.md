@@ -14,6 +14,22 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0065 adds checked ordinary-struct definedness and Size=1, independent of stored
+field count. A new actual C pointer-size oracle records 180 identical O0/O2 outcomes:
+15 ordinary-struct rows replay through Rust, 165 other-subtype rows remain helper-
+only. The parent-pool size guard now rejects 46 mutations. Existing definedness
+coverage expands to 64 Rust replays (56 results/eight missing errors) out of 351
+isolated archival/modeled-admission rows, leaving 287 helper-only. Four actual C
+type predicates now replay 224/832 rows (32 results/192 arity errors), leaving 608
+helper-only; outcome rows are unchanged. Typed Size executes with 70,000 fields
+and exact three-step global work; one-less rejects without mutation. Compiled GSC
+calls combine Size/IsDefined and evaluated extras. Full Windows debug/release,
+denied-warning Clippy/rustdoc, formatting, policy (714 sources/eight crates/largest
+287) and diff checks pass. Current suites are 245 frontend/165 legacy, six private
+units and two doctests. Constructors/fields, general object operators, arrays,
+scheduling/library/game services, native lifetimes/full mods, Linux/CI and joins
+remain open. No complete GSC workstream is closed by these component checkpoints.
+
 ADR 0063 now assesses explicit-root shared struct storage: opaque wide checked
 identities, flat object/field arenas, owned exact binary keys, metered probes and
 staged tombstone rebuilds, atomic iterative graph reclamation and composite stored/

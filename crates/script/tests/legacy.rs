@@ -29,6 +29,8 @@ mod object_heap_ownership;
 #[path = "object_heap_stress.rs"]
 mod object_heap_stress;
 mod object_heap_support;
+#[path = "object_size_vectors.rs"]
+mod object_size_vectors;
 #[path = "string_access_limits.rs"]
 mod string_access_limits;
 #[path = "string_access_vectors.rs"]

@@ -15,8 +15,8 @@ pub enum KernelBuiltin {
     IsVector,
     /// Original isstring: true only for plain string values, not localized strings.
     IsString,
-    /// Tests the available value subset for Undefined. Requires a first argument;
-    /// extras are evaluated and discarded. Entity/thread lifetime checks stay unsupported.
+    /// Tests primitives/checked ordinary structs for definedness. Requires a first
+    /// argument; evaluated extras are discarded. Entity/thread lifetimes stay unsupported.
     IsDefined,
 }
 
@@ -54,18 +54,13 @@ pub(super) fn apply(
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
         KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
         KernelBuiltin::IsDefined => match value {
-            KernelValue::Object(_) => {
-                return Err(kernel_error::at(
-                    pc,
-                    KernelErrorKind::ObjectExecutionUnsupported,
-                ));
-            }
             KernelValue::Undefined => false,
             KernelValue::Number(_)
             | KernelValue::Vector(_)
             | KernelValue::Function(_)
             | KernelValue::String(_)
-            | KernelValue::LocalizedString(_) => true,
+            | KernelValue::LocalizedString(_)
+            | KernelValue::Object(_) => true,
         },
     };
     Ok(KernelValue::Number(LegacyNumber::Integer(i32::from(

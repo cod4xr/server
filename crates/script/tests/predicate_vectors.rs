@@ -10,11 +10,14 @@ use cod4x_script::execution::{
     KernelBuiltin, KernelErrorKind, KernelExecutionBudget, KernelFunctionLayout, KernelHeapContext,
     KernelInstruction, KernelValue, KernelVerificationBudget, VerifiedKernelProgram,
 };
-use cod4x_script::heap::{HeapWorkBudget, StringHeap, StringHeapBudget};
+use cod4x_script::heap::{
+    HeapWorkBudget, ObjectHeap, ObjectHeapBudget, StringHeap, StringHeapBudget,
+};
 use cod4x_script::legacy::{LegacyNumber, LegacyVector};
 
 #[test]
-fn native_predicate_subset_replays_through_verified_pure_instructions() -> Result<(), String> {
+fn native_predicate_subset_replays_through_verified_heap_backed_instructions() -> Result<(), String>
+{
     let leaf = [integer(0), KernelInstruction::Return];
     let module = kernel_call_support::verify(&[definition(&leaf, 0, 0)]);
     let reference = module.function_reference(0).expect("Function value");
@@ -23,7 +26,13 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
         .allocate(b"type-only fixture", HeapWorkBudget::default())
         .expect("Plain string")
         .id;
-    let mut context = KernelHeapContext::new(&mut heap, &[], HeapWorkBudget::default());
+    let mut objects = ObjectHeap::new(&heap, ObjectHeapBudget::default()).expect("Objects");
+    let object = objects
+        .allocate(HeapWorkBudget::default())
+        .expect("Ordinary struct")
+        .id;
+    let mut context = KernelHeapContext::new(&mut heap, &[], HeapWorkBudget::default())
+        .with_objects(&mut objects, &[]);
     let mut rows = 0;
     let mut replayed = 0;
     let mut successes = 0;
@@ -50,17 +59,12 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
         assert!([0, 1, 2, 6, 255, 256, 70_000, u32::MAX].contains(&count));
         assert_eq!(fields.len(), if count == 1 { 6 } else { 5 });
         assert_eq!(fields[4], if count == 1 { "ok" } else { "E1" });
-        let value = match tag {
-            0 => Some(KernelValue::Undefined),
-            2 => Some(KernelValue::String(string)),
-            3 => Some(KernelValue::LocalizedString(string)),
-            4 => Some(KernelValue::Vector(LegacyVector::from_components([0.0; 3]))),
-            5 => Some(KernelValue::Number(LegacyNumber::Float(f32::NAN))),
-            6 => Some(KernelValue::Number(LegacyNumber::Integer(0))),
-            9 => Some(KernelValue::Function(reference)),
-            1..=25 => None,
-            _ => return Err("Unknown native enum tag".into()),
-        };
+        let value = fixture_value(
+            tag,
+            KernelValue::String(string),
+            KernelValue::Object(object),
+            KernelValue::Function(reference),
+        )?;
         rows += 1;
         // Full native declared counts/tags are retained as helper evidence, not
         // claimed as allocated values or memory-admitted runtime invocations.
@@ -113,7 +117,30 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
     }
     assert_eq!(
         (rows, replayed, successes, helper_only),
-        (832, 196, 28, 636)
+        (832, 224, 32, 608)
     );
     Ok(())
+}
+
+fn fixture_value(
+    tag: u32,
+    string: KernelValue,
+    object: KernelValue,
+    function: KernelValue,
+) -> Result<Option<KernelValue>, String> {
+    Ok(match tag {
+        0 => Some(KernelValue::Undefined),
+        1 => Some(object),
+        2 => Some(string),
+        3 => match string {
+            KernelValue::String(id) => Some(KernelValue::LocalizedString(id)),
+            _ => return Err("Expected fixture string reference".into()),
+        },
+        4 => Some(KernelValue::Vector(LegacyVector::from_components([0.0; 3]))),
+        5 => Some(KernelValue::Number(LegacyNumber::Float(f32::NAN))),
+        6 => Some(KernelValue::Number(LegacyNumber::Integer(0))),
+        9 => Some(function),
+        7..=25 => None,
+        _ => return Err("Unknown native enum tag".into()),
+    })
 }

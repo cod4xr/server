@@ -6,6 +6,8 @@ mod bound_object_arguments;
 mod expression_list_support;
 mod expression_support;
 mod function_compile_support;
+#[path = "source_struct_queries.rs"]
+mod source_struct_queries;
 mod statement_support;
 
 #[path = "local_vector_index_limits.rs"]

@@ -24,10 +24,11 @@ The complete server rewrite remains open.
   their nested strings during pressure collection; ADR 0064. Source constructors,
   field operations, arrays and the full object VM remain open.
 
-- Primitive `isdefined` preserves Undefined, optional parameters, evaluated extra
+- Primitive/ordinary-struct `isdefined` preserves Undefined, optional parameters, evaluated extra
   arguments and local-function shadowing. Wide stack/source/process tests and
   isolated archival instruction evidence cover the subset; entity lifetimes stay
-  open; ADR 0062.
+  open; ADRs 0062/0065. Checked struct `.size` returns one independently of its
+  field count, including 70,000 stored fields; native helper and source tests cover it.
 
 - Plain-string byte indexing and `.size` preserve the legacy first-NUL prefix,
   with explicit work/heap budgets and complete roots during result allocation.

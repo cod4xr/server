@@ -63,6 +63,11 @@ future object/entity values; no native lifetime checks are fabricated. Local and
 developer resolution still precede fallback. Global stack/fuel bounds include all
 operand pushes; resumable preloaded stacks need their own future work contract.
 
+ADR 0065 adds checked ordinary-struct definedness and Size=1 under that context.
+Size validates the reference with constant global work instead of scanning/counting
+fields. Native pointer-size rows distinguish supported ordinary structs from
+helper-only subtypes; entity/thread lifetimes and other object operations stay open.
+
 ## Dependency direction
 
 The server and future client are peers above shared engine libraries. Shared
