@@ -99,6 +99,17 @@ counts, borrowed name bytes, and separate logical index storage/work. Duplicate
 diagnostics expose both source offsets/line/byte columns without function names.
 This is local-definition inspection, not full symbol/call linking or execution.
 
+Offline primitive execution now emits script.started, script.compiled,
+script.executed or script.failed events under an explicit --execute-gsc mode.
+Profile/phase/kind/category fields are fixed; source/compiler/runtime locations,
+logical compiler/proof work and global frame/setup/fuel/stack/local peaks are
+numeric. Raw source, function spelling, paths, arguments and return contents remain
+outside operational logs/files. Explicit typed return data goes to stdout only;
+function values expose no address/identity. Write/flush errors fail explicitly,
+and completion logs follow successful output. JSON/human formatting and log-runtime
+flush lifetime remain shared with existing modes. No server-started event/listener
+is created. See ADR 0053 and the runnable primitive GSC example.
+
 Any future logging of user-controlled fields requires explicit size limits and
 escaping. Use typed outcome/error categories rather than printing peer-provided
 error text. Keep actual I/O/configuration causes available to local operators

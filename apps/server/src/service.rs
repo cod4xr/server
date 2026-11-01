@@ -31,7 +31,8 @@ impl RuntimeService {
             | Mode::InspectFastFile(_)
             | Mode::InspectZonePrefix(_)
             | Mode::InspectRawFiles(_)
-            | Mode::InspectGsc(_) => Err(AppError::Arguments("content inspection is offline")),
+            | Mode::InspectGsc(_)
+            | Mode::ExecuteGsc(_) => Err(AppError::Arguments("content inspection is offline")),
         }
     }
 

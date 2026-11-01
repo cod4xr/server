@@ -330,6 +330,22 @@ valid-domain versus full-word/count expansion evidence, all source nesting/joins
 maps/privacy/type/quota/recovery and exact-one-less tests, 66,000 cases, 12,000 deep
 switches, hostile typed code and isolated-profile regressions. Strings, general
 heap/diagnostic/native cleanup/mod/Linux acceptance stay open; see ADR 0052.
+The explicit offline --execute-gsc mode now reuses bounded source/declaration/
+binding phases, rejects include/animation resolution, compiles every active local
+body and invokes canonical active main with the legacy empty argument prefix.
+Never fall back to entry zero or silently ignore directives/unsupported bodies.
+Keep --inspect-gsc structural and network settings illegal in both offline modes.
+Pure execution shares existing compiler/proof/global frame/setup/fuel/count/byte
+budgets and grants no game/host/plugin authority. Operational logs contain phases,
+located sanitized errors and logical resource counts, never return values/source/
+function spelling/paths. Explicit stdout contains one typed result; function results
+expose only the category, not identities or addresses. Handle write/flush errors.
+Use existing pretty development/JSON/file lifetimes. Preserve real process tests
+for mapping/developer/case/default arguments, every result category, directives/
+missing entries/whole-module failure/fuel/errors/locations/privacy/offline settings
+and existing inspection/query behavior. The runnable examples/gsc/primitive_demo.gsc
+prints integer 18. Full GSC/gameplay/Linux and command-line budget overrides remain
+open. No dependencies/alternate targets/deployment; see ADR 0053.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

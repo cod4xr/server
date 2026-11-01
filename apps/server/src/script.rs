@@ -8,12 +8,34 @@ use cod4x_script::syntax::{LegacySyntaxBudget, LegacySyntaxMode, LegacySyntaxTre
 
 use crate::app_error::AppError;
 use crate::content_snapshot;
+use crate::script_execution;
+
+#[derive(Clone, Copy)]
+enum Operation {
+    Inspect,
+    Execute,
+}
 
 pub(crate) fn inspect(path: &Path, developer_mode: LegacyDeveloperMode) -> Result<(), AppError> {
+    process(path, developer_mode, Operation::Inspect)
+}
+
+pub(crate) fn execute(path: &Path, developer_mode: LegacyDeveloperMode) -> Result<(), AppError> {
+    process(path, developer_mode, Operation::Execute)
+}
+
+fn process(
+    path: &Path,
+    developer_mode: LegacyDeveloperMode,
+    operation: Operation,
+) -> Result<(), AppError> {
     tracing::info!(
         event = "script.started",
-        mode = "legacy_structure",
-        "inspecting legacy GSC structure"
+        mode = match operation {
+            Operation::Inspect => "legacy_structure",
+            Operation::Execute => "primitive_execution",
+        },
+        "loading legacy GSC source"
     );
     let budget = SourceBudget::default();
     let bytes = content_snapshot::read(path, budget.max_source_bytes).map_err(|error| {
@@ -52,8 +74,13 @@ pub(crate) fn inspect(path: &Path, developer_mode: LegacyDeveloperMode) -> Resul
             AppError::ScriptDeclaration(error)
         })?;
     let symbols = bind_module(&source, &module, developer_mode)?;
-    report(&source, &tree, &module, &symbols);
-    Ok(())
+    match operation {
+        Operation::Inspect => {
+            report(&source, &tree, &module, &symbols);
+            Ok(())
+        }
+        Operation::Execute => script_execution::run(&source, &module, &symbols),
+    }
 }
 
 fn report(
@@ -89,7 +116,7 @@ fn report(
         ordinary_functions = bindings.ordinary_functions, developer_functions = bindings.developer_functions,
         binding_steps = bindings.steps, binding_metadata_bytes = bindings.metadata_bytes,
         function_name_bytes = bindings.name_bytes,
-        "legacy GSC module inspected; compilation and execution remain unavailable"
+        "legacy GSC structure inspected; this mode does not compile or execute"
     );
 }
 

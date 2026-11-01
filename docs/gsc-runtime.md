@@ -483,6 +483,21 @@ replays stay unchanged. These do not execute native switch routines. See ADR 005
 string switch, full heap/native scope/diagnostics/cleanup/mod and Linux gates remain
 open. No complete legacy workstream is closed by this subset.
 
+The CLI now exposes --execute-gsc PATH for this implemented primitive subset.
+It reuses bounded source loading/binding, rejects unresolved include/animation-tree
+directives, compiles every active body and invokes canonical active main through
+owned declaration mapping. It supplies no explicit arguments, preserving initialized
+Undefined for missing parameters. Default compiler/proof/global execution limits
+remain mandatory. Source/compiler/runtime failures are located and sanitized;
+stdout alone carries typed result data, while logs retain category/work/peak usage.
+Function results expose no identity. The mode opens no listener and permits no
+unknown host services. Real process tests cover mappings/developer settings, all
+primitive outputs, directives/missing entries/active unsupported bodies, compiler/
+runtime/fuel failures, source locations/privacy, JSON/human logs and offline options.
+Write/flush errors propagate. The runnable primitive_demo.gsc example produces
+integer 18 under the normal target build. See ADR 0053; this is not full-mod,
+heap/builtin/scheduling/game-service or joinable-server acceptance.
+
 ## Remaining legacy acceptance workstreams
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of

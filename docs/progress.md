@@ -842,8 +842,34 @@ hashes or alternate targets. String switch, heap/general builtins/scheduler/game
 services/full native scope/diagnostics/cleanup/mod and Linux acceptance stay open.
 No complete legacy workstream is closed.
 
-Next: explicit offline primitive entry-point execution and value ownership,
-alongside broader builtin/semantic/call/frame work. Full objects, calls, scheduling,
+The explicit offline --execute-gsc PATH mode now compiles/executes supported
+primitive source under ADR 0053. It shares bounded source/index/parse/declaration/
+binding phases with inspection, rejects unresolved include/animation directives,
+compiles all active bodies and selects canonical active main through declaration
+mapping. It never falls back to entry zero; missing parameters receive initialized
+Undefined. Default compiler/proof/global execution budgets apply. Typed result
+data goes to stdout only; function results omit identity. Fixed operational events
+retain original source/compiler/runtime locations and logical work/peak counts,
+never source/paths/spellings/arguments/return contents. Write/flush failures propagate.
+Pretty development and JSON/file/log-flush behavior remain shared. The mode opens
+no listener and provides no unknown host/plugin/game services. Existing inspection
+remains structural and now says explicitly that its mode does not compile/execute.
+Eight real process tests cover calls/references/builtins/switch execution, all
+primitive results, nonzero/case/developer/disabled declaration mapping, missing main/
+directives/unsupported active bodies/services, located compile/runtime errors,
+global infinite-loop fuel, privacy/human/JSON logs and conflicting/offline options.
+A private output test injects write/flush failures. Existing inspection/binding/
+query behavior passes. The public examples/gsc/primitive_demo.gsc ran through the
+normal debug executable, printing integer 18: 64 compiled instructions/479 compiler
+steps, 181 execution steps, two peak frames and four peak locals. Full Windows
+workspace debug/release tests, formatting, denied-warning Clippy/rustdoc, repository
+policy (581 sources/eight crates, largest 287 lines) and diff checks pass. Core
+script suites remain 214 frontend/89 legacy plus doctests. No dependencies,
+alternate targets or deployments. Imports, heap/general builtins/scheduler/game
+services/full mod/join/Linux and CLI budget overrides remain open.
+
+Next: source-grounded string/value ownership and broader builtin/semantic/call/frame
+work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
 workstreams, each containing many implementation/testing tasks, not an exact task

@@ -20,6 +20,10 @@ pub(crate) enum AppError {
     ScriptSyntax(cod4x_script::syntax::LegacySyntaxError),
     ScriptDeclaration(cod4x_script::declaration::DeclarationError),
     ScriptBinding(cod4x_script::binding::SymbolError),
+    ScriptCompilation(cod4x_script::compilation::ModuleCompileError),
+    ScriptExecution(cod4x_script::execution::KernelModuleError),
+    ScriptFeature(&'static str),
+    ScriptOutput(io::Error),
     Snapshot(SnapshotError),
     Entropy(getrandom::Error),
     Cookie(cod4x_server_core::CookieKeyError),
@@ -45,6 +49,14 @@ impl fmt::Display for AppError {
                 write!(formatter, "script inspection failed: {error}")
             }
             Self::ScriptBinding(error) => write!(formatter, "script inspection failed: {error}"),
+            Self::ScriptCompilation(error) => {
+                write!(formatter, "script compilation failed: {error}")
+            }
+            Self::ScriptExecution(error) => write!(formatter, "script execution failed: {error}"),
+            Self::ScriptFeature(message) => {
+                write!(formatter, "primitive script execution: {message}")
+            }
+            Self::ScriptOutput(error) => write!(formatter, "script result output failed: {error}"),
             Self::Snapshot(error) => error.fmt(formatter),
             Self::Entropy(error) => write!(formatter, "process entropy failed: {error}"),
             Self::Cookie(error) => write!(formatter, "cookie initialization failed: {error}"),
@@ -55,11 +67,11 @@ impl fmt::Display for AppError {
 impl Error for AppError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
-            Self::Arguments(_) => None,
+            Self::Arguments(_) | Self::ScriptFeature(_) => None,
             Self::Logging(error) => Some(error),
             Self::Subscriber(error) => Some(error),
             Self::Signal(error) => Some(error),
-            Self::Io(error) => Some(error),
+            Self::Io(error) | Self::ScriptOutput(error) => Some(error),
             Self::Content(error) => Some(error),
             Self::FastFile(error) => Some(error),
             Self::ZonePrefix(error) => Some(error),
@@ -68,6 +80,8 @@ impl Error for AppError {
             Self::ScriptSyntax(error) => Some(error),
             Self::ScriptDeclaration(error) => Some(error),
             Self::ScriptBinding(error) => Some(error),
+            Self::ScriptCompilation(error) => Some(error),
+            Self::ScriptExecution(error) => Some(error),
             Self::Snapshot(error) => Some(error),
             Self::Entropy(error) => Some(error),
             Self::Cookie(error) => Some(error),

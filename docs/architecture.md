@@ -449,6 +449,17 @@ int32 domain and wide case counts deliberately exceed native encoded variable-ID
 serialized-short bounds. They define no external ABI. See ADR 0052; string/heap/
 full native scope/diagnostic/cleanup compatibility remains open.
 
+Offline --execute-gsc reuses snapshot/index/parse/declaration/binding phases with
+the inspector, then delegates complete primitive compilation/execution and typed
+stdout output to separate application leaves. It rejects unresolved directives,
+selects canonical active main through explicit declaration-to-entry mapping, and
+uses the existing empty script argument prefix/global runtime budgets. Operational
+diagnostics retain original source locations and aggregate counters without source,
+paths, spellings or result values. Stdout is explicit operator data, not a wire/
+plugin ABI; function results omit identity. Write/flush errors remain typed. The
+library keeps filesystem/logging/socket ownership outside its boundary. See ADR
+0053; host/game services, full mods and a joinable server remain open.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

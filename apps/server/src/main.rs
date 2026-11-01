@@ -10,6 +10,8 @@ mod counters;
 mod ready_socket;
 mod runtime;
 mod script;
+mod script_execution;
+mod script_result;
 mod service;
 
 use std::process::ExitCode;

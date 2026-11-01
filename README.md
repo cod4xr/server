@@ -258,6 +258,22 @@ resolve imports/call expressions, validate body literal values, compile, or exec
 scripts. Source bytes/paths stay outside logs. Default source/scanner/parser/
 declaration/binding budgets apply; command-line budget overrides remain future work.
 
+Compile the supported primitive subset and execute its local `main` offline:
+
+```sh
+cargo run -p cod4x-server -- --execute-gsc examples/gsc/primitive_demo.gsc
+```
+
+The example prints `integer 18` to stdout. Readable development logs report compiler
+and runtime resources on stderr; `--json-logs` selects structured stderr. Results
+stay outside logs, and function results reveal only their category. The command
+compiles all active local bodies, uses canonical `main` lookup and the selected
+developer mode, and applies default compiler/proof/global execution budgets.
+Missing main parameters receive `undefined`. Includes and animation-tree directives
+fail explicitly until resolution exists. Strings/objects/general builtins/game
+services and full-mod support remain open; this command opens no server listener.
+`--inspect-gsc` remains structural inspection without compilation/execution.
+
 Exercise the legacy challenge/cookie exchange over UDP:
 
 ```sh

@@ -31,7 +31,7 @@ fn offline_structure_reports_counts_as_json_and_readable_development_logs() {
         assert!(!logs.contains("private_function"));
         assert!(!logs.contains("server.started"));
         assert!(logs.contains("script.syntax_inspected"));
-        assert!(logs.contains("compilation and execution remain unavailable"));
+        assert!(logs.contains("this mode does not compile or execute"));
         if format == "--json-logs" {
             let records: Vec<Value> = logs
                 .lines()

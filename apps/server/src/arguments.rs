@@ -18,6 +18,7 @@ Usage: cod4x-server --query-only [options]
        cod4x-server --inspect-zone-prefix PATH [logging options]
        cod4x-server --inspect-rawfiles PATH [logging options]
        cod4x-server --inspect-gsc PATH [logging options]
+       cod4x-server --execute-gsc PATH [logging options]
 
   --query-only             Enable discovery only; gameplay is not implemented
   --handshake-probe        Exchange challenges; refuse connects without gameplay
@@ -26,6 +27,7 @@ Usage: cod4x-server --query-only [options]
   --inspect-zone-prefix PATH  Inspect IW3 root tables; asset bodies stay unvalidated
   --inspect-rawfiles PATH  Decode raw-file-only collection offline; execute no scripts
   --inspect-gsc PATH       Inspect legacy GSC structure offline; no compilation/execution
+  --execute-gsc PATH       Compile primitive GSC and execute main offline under budgets
   --gsc-developer MODE     Include developer-only functions: enabled/disabled (default: disabled)
   --bind ADDRESS           UDP address (default: 127.0.0.1:28960)
   --log-dir PATH           Dedicated directory for daily JSON log files
@@ -58,6 +60,7 @@ pub(crate) enum Mode {
     InspectZonePrefix(PathBuf),
     InspectRawFiles(PathBuf),
     InspectGsc(PathBuf),
+    ExecuteGsc(PathBuf),
 }
 
 #[derive(Debug)]
@@ -94,7 +97,8 @@ impl Arguments {
                 | "--inspect-fastfile"
                 | "--inspect-zone-prefix"
                 | "--inspect-rawfiles"
-                | "--inspect-gsc" => {
+                | "--inspect-gsc"
+                | "--execute-gsc" => {
                     let path = PathBuf::from(
                         arguments
                             .next()
@@ -105,6 +109,7 @@ impl Arguments {
                         "--inspect-fastfile" => Mode::InspectFastFile(path),
                         "--inspect-zone-prefix" => Mode::InspectZonePrefix(path),
                         "--inspect-gsc" => Mode::InspectGsc(path),
+                        "--execute-gsc" => Mode::ExecuteGsc(path),
                         _ => Mode::InspectRawFiles(path),
                     };
                     select_mode(&mut mode, selected)?;
@@ -141,9 +146,9 @@ impl Arguments {
                 "offline content modes cannot use network options",
             ));
         }
-        if script_settings && !matches!(&options.mode, Mode::InspectGsc(_)) {
+        if script_settings && !matches!(&options.mode, Mode::InspectGsc(_) | Mode::ExecuteGsc(_)) {
             return Err(AppError::Arguments(
-                "GSC developer mode requires --inspect-gsc",
+                "GSC developer mode requires --inspect-gsc or --execute-gsc",
             ));
         }
         Ok(Action::Run(options))
@@ -208,7 +213,8 @@ impl Mode {
             | Self::InspectFastFile(_)
             | Self::InspectZonePrefix(_)
             | Self::InspectRawFiles(_)
-            | Self::InspectGsc(_) => true,
+            | Self::InspectGsc(_)
+            | Self::ExecuteGsc(_) => true,
         }
     }
 }

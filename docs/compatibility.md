@@ -490,6 +490,15 @@ Rust references (72 successes/2,592 errors). Selected source-role guards reject
 self/receivers, heap/closures, imports/reload, builtins/scheduler/game services,
 full-mod/native cleanup/diagnostic and Linux gates open.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
+An explicit --execute-gsc offline mode now compiles all active local primitive
+bodies and executes canonical main under existing budgets. It rejects unresolved
+include/animation directives and missing/disabled entries, preserves declaration
+mapping/developer policy and supplies the legacy empty argument prefix. Real
+process tests cover success and located compiler/runtime/fuel failures, every
+primitive result category, output/log privacy, unsupported services/whole bodies,
+JSON/human diagnostics and offline/conflicting options. Results go to stdout;
+function results omit identity, and write/flush errors propagate. See ADR 0053;
+inspection remains structural, and full GSC/mod/gameplay/Linux acceptance stays open.
 Primitive integer switch now supports default placement, adjacent labels,
 fallthrough, nested break/continue ownership and path initialization joins. Strict
 integer admission preserves words without float coercion. Valid native in-range
