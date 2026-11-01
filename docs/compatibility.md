@@ -1,5 +1,12 @@
 # Compatibility contract
 
+ADR 0069 adds ordinary struct identity equality/inequality. All 108 actual C
+ordinary-pointer outcomes agree at O0/O2 with modeled records/ref callbacks;
+36 source-role mutations reject. Selected C and archival marker reads use CHILD
+namespace, so this corpus makes no array comparison inference. Wide/reference/
+resource/source/process tests assess the checked Rust subset; native cleanup,
+ABI/compiler/VM/GC parity and full mods remain open.
+
 ADR 0067 adds ordinary struct source reads/simple writes and Undefined deletion.
 The selected field-role guard rejects 99 mutations; 35 actual C helper traces
 agree at O0/O2 with modeled lookup/ref/removal (27 Rust value replays/eight

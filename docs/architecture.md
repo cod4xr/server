@@ -1,5 +1,10 @@
 # Architecture and expansion
 
+ADR 0069 dispatches ordinary struct equality/inequality through checked object
+references with fixed work and no graph traversal. Pure/string-only ownership
+boundaries and immutable constants remain enforced. Array comparison/ownership
+and other object operators stay separate from shared struct identity.
+
 ADR 0067 adds immutable per-function field-name tables independently of literal
 caches. Bound-source field reads/simple writes use checked shared storage and
 explicit zero/one-value heap dispatch; operands remain rooted through pressure

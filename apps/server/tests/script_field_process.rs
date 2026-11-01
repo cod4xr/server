@@ -82,3 +82,19 @@ fn offline_compound_and_postfix_field_updates_execute_with_readable_private_logs
     assert!(!logs.contains(file.0.to_string_lossy().as_ref()));
     assert!(!logs.contains('\u{1b}'));
 }
+
+#[test]
+fn offline_struct_comparisons_return_numbers_without_exposing_ids_or_private_field_names() {
+    let file = FixtureFile::from_bytes(br"main(){first=spawnstruct();same=first;other=spawnstruct();first.PrivateField=1;other.PrivateField=1;return (first==same)+2*(first!=other);}");
+    let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args(["--color", "never", "--execute-gsc"])
+        .arg(&file.0)
+        .output()
+        .expect("Struct identity process");
+    assert!(output.status.success());
+    assert_eq!(output.stdout, b"integer 3\n");
+    let logs = String::from_utf8(output.stderr).expect("Human logs");
+    assert!(!logs.contains("PrivateField"));
+    assert!(!logs.contains("ObjectId"));
+    assert!(!logs.contains(file.0.to_string_lossy().as_ref()));
+}

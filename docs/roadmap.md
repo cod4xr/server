@@ -40,7 +40,8 @@ through typed and compiled GSC calls. ADR 0066 adds empty struct construction wi
 source/typed/process pressure tests. ADR 0067 adds ordinary struct fields and
 Undefined deletion with wide/deep/cyclic/resource tests. ADR 0068 adds ten compound
 field operators and integer-only postfix updates under selected source guards.
-General object operators and the S5 gate remain open;
+ADR 0069 adds checked ordinary struct identity equality/inequality. Other object
+operators and the S5 gate remain open;
 arrays need legacy copy-on-write before source activation.
 
 ## Next concrete work

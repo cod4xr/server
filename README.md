@@ -24,6 +24,10 @@ The complete server rewrite remains open.
   Ten compound operators and integer postfix updates now preserve the distinct
   legacy receiver evaluation orders and old values through RHS collection;
   exact-budget/deep/error/process tests and selected source guards cover ADR 0068.
+  Ordinary structs now compare by checked shared identity for `==`/`!=`, including
+  aliases through fields/calls and collection; distinct equal-content structs stay
+  distinct. Native ordinary-pointer helper and resource/source/process evidence
+  are scoped in ADR 0069; array comparisons remain separate.
 
 - Bound GSC `spawnstruct()` creates empty shared structs, evaluates extra arguments
   and preserves roots under allocation pressure. Tests retain 70,000 live values

@@ -76,8 +76,9 @@ pub enum KernelInstruction {
     /// Pops right then left operands. Plain-string addition requires a heap context;
     /// mixed string coercion and other string arithmetic remain unsupported.
     Arithmetic(LegacyArithmetic),
-    /// Pops right then left primitives and pushes the legacy comparison integer.
+    /// Pops right then left values and pushes the legacy comparison integer.
     /// Two Undefined values support equality only; mixed Undefined pairs fail.
+    /// Checked ordinary structs support identity equality/inequality only.
     Compare(LegacyComparison),
     /// Pops right then left numbers and applies an integer-only operator.
     Integer(LegacyIntegerOperator),

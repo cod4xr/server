@@ -9,6 +9,7 @@ mod kernel_heap_usage;
 mod kernel_literal_cache;
 mod kernel_object_allocation;
 mod kernel_object_collection;
+mod kernel_object_comparison;
 mod kernel_object_error;
 mod kernel_object_fields;
 mod kernel_object_roots;

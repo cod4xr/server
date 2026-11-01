@@ -171,6 +171,10 @@ mod localized_values;
 mod numeric_boundaries;
 #[path = "numeric_vectors.rs"]
 mod numeric_vectors;
+#[path = "object_comparison_limits.rs"]
+mod object_comparison_limits;
+#[path = "object_comparison_vectors.rs"]
+mod object_comparison_vectors;
 #[path = "predicate_vectors.rs"]
 mod predicate_vectors;
 #[path = "string_equality_work.rs"]

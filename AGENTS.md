@@ -1,5 +1,15 @@
 # Project contract
 
+ADR 0069 adds checked ordinary struct identity equality/inequality. Validate both
+references before identity comparison, never compare fields or use KernelValue's
+derived equality as a language rule. Keep mixed/ordered errors, fixed work and
+zero scratch, private source/process diagnostics and stale/foreign rejection.
+Run generate_object_comparison_vectors.py --check (108 actual C outcomes with
+modeled records/ref callbacks) and script_object_comparison_reference.py (36
+mutations). Selected C and archival array-marker reads both use CHILD namespace;
+do not infer array equality or rejection from this ordinary-only corpus. Native
+allocation/cleanup/ABI/compiler/VM/GC parity and the remaining S5 gate stay open.
+
 ADR 0068 adds ten compound field operators and integer-only postfix updates.
 Compound must read the receiver, evaluate RHS/operator and reevaluate the writable
 receiver; postfix selects once and retains it on the checked stack. Preserve old

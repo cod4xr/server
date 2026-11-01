@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::heap::KernelHeapStep;
-use crate::execution::heap::{kernel_object_validation, kernel_string_operations};
+use crate::execution::heap::{
+    kernel_object_comparison, kernel_object_validation, kernel_string_operations,
+};
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
     KernelBuiltin, KernelErrorKind, KernelHeapContext, KernelInstruction, KernelValue,
@@ -37,6 +39,13 @@ pub(in crate::execution) fn apply(
     context: Option<&mut KernelHeapContext<'_>>,
     roots: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<KernelHeapStep, KernelErrorKind> {
+    if let (KernelInstruction::Compare(comparison), Some((left, right))) =
+        (instruction, stack.binary_values())
+        && (matches!(left, KernelValue::Object(_)) || matches!(right, KernelValue::Object(_)))
+    {
+        return kernel_object_comparison::compare(context, comparison, left, right)
+            .map(|value| KernelHeapStep::Applied(Some(value)));
+    }
     if let KernelInstruction::LoadField(name) | KernelInstruction::StoreField(name) = instruction {
         let key = program
             .field_names

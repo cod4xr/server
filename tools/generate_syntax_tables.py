@@ -18,6 +18,7 @@ import script_string_access_reference as string_access
 import script_defined_reference as definedness
 import script_field_reference as fields
 import script_field_update_reference as field_updates
+import script_object_comparison_reference as object_comparisons
 import script_expression_reference as expressions
 import script_for_reference as for_loops
 import script_lexer_reference as lexical
@@ -123,6 +124,7 @@ def main() -> None:
     definedness.verify(*definedness.inputs(reference))
     fields.verify(*fields.inputs(reference))
     field_updates.verify(reference.files["src/asmsource/_scr_compiler.asm"])
+    object_comparisons.verify(object_comparisons.inputs(reference))
     switches.verify(*switches.inputs(reference))
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])

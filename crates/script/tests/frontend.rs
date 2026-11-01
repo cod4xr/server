@@ -215,6 +215,8 @@ mod source_field_width;
 mod source_localized_strings;
 #[path = "source_locations.rs"]
 mod source_locations;
+#[path = "source_object_comparison.rs"]
+mod source_object_comparison;
 #[path = "source_string_access.rs"]
 mod source_string_access;
 #[path = "source_strings_diagnostics.rs"]

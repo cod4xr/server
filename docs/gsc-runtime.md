@@ -1,5 +1,10 @@
 # Expanded GSC runtime contract
 
+Ordinary struct equality/inequality now validate and compare shared identities
+(ADR 0069), with fixed logical work and no field scans. Native ordinary-pointer
+helper evidence and Rust wide/reference/source/process tests cover the subset;
+array comparison, ordered/mixed coercion and full object semantics remain open.
+
 Ordinary bound-source struct reads/simple writes now use independent immutable
 field-name tables, preserving aliases, missing Undefined, Undefined deletion and
 RHS-before-receiver order (ADR 0067). Wide/cyclic/deep/resource/source/process
