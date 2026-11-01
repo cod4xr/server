@@ -14,6 +14,25 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0087 admits independently constructed EMPTY data through typed EmptyArray and
+bound [] source/package lowering. Every population path stays closed. A shared
+owner creation leaf preserves prepaid admission and pending coverage; one paired
+retry retains complete frame/cache/world/managed roots. Eleven source/two
+standalone/three process tests cover ownership, returned data, exact/every-shorter
+growth/publication/storage/frame scopes, forbidden stored edges, context recovery,
+70k independent arrays, 100k constructions in one value/two data slots under
+4 KiB scratch, and first construction 12k frames deep with failed final cleanup.
+The real offline example returns integer 1 and reports private numeric array
+accounting in success/failure logs. Full Windows formatting, all-target Clippy,
+debug/release workspace tests, denied-warning rustdoc, policy/diff pass: 345
+frontend/242 legacy/fifteen private script tests/two doctests plus three new
+process tests. One obsolete constructor-rejection name is intentionally replaced
+by the write/game gate; all other prior names remain. Native 306/20/210/100 O0/O2
+traces, 39 constructor mutations, 99 structural replays and twelve suite-policy
+regressions pass. Policy: 968 sources/eight crates/largest 287. Linux/hosted CI
+is unrun. No full GSC/S5 or join workstream closes. Next: review local indexed
+assignment, preserving native COW/key/Undefined ordering and closed nested edges.
+
 ADR 0086 executes read-only host-origin array indexing/size through existing
 Index/Size instructions, bound source and explicit package/root contexts. Closed
 origins and forbidden stored arrays keep host backing graphs live as VM operands

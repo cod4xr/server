@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 mod array_owners;
 mod kernel_array_access;
+mod kernel_array_allocation;
 mod kernel_array_operations;
 mod kernel_heap_accounting;
 mod kernel_heap_collection;

@@ -1,5 +1,18 @@
 # Project contract
 
+ADR 0087 accepts independent EMPTY array construction. Its source guard passes
+39 native allocation/emission/type/dispatch mutations. Full Windows acceptance
+passes with eleven source/two standalone/three process tests. The
+only new origin is data that remains empty: every population path stays closed,
+so it cannot acquire outgoing object/string/array edges. Nonempty data still
+derives from live host arguments/game. Share admitted owner creation/publication
+with copies, cover fresh owners in pending before fallible work and use one paired
+pressure retry with complete roots. Preserve prepaid exhausted cleanup, explicit
+returned-host ownership and no unmetered scans. Do not activate writes, nested
+fields, game replacement, populated returning builtins or scheduling. Run every
+budget/publication prefix, width/churn/pressure/context/source/package/CLI tests,
+native/structural/suite guards and full Windows gates before accepting this step.
+
 ADR 0086 adds read-only Index/Size for checked host-origin arrays. Keep every
 array derived from a still-live host argument/game location; no independent
 constructor/returning builtin, stored/nested array, indexed write, game replacement

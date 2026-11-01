@@ -13,6 +13,7 @@ import script_array_write_reference as array_writes
 import script_array_alias_reference as array_aliases
 import script_array_lifetime_reference as array_lifetimes
 import script_array_read_reference as array_reads
+import script_empty_array_reference as empty_arrays
 import script_path_reference as script_paths
 import script_package_reference as script_packages
 import script_include_reference as script_includes
@@ -130,6 +131,7 @@ def main() -> None:
     array_aliases.verify(array_aliases.inputs(reference))
     array_lifetimes.verify(array_lifetimes.inputs(reference))
     array_reads.verify(array_reads.inputs(reference))
+    empty_arrays.verify(empty_arrays.inputs(reference))
     script_paths.verify(script_paths.inputs(reference))
     script_packages.verify(reference.files["src/asmsource/_scr_compiler.asm"])
     script_includes.verify(reference.files["src/asmsource/_scr_compiler.asm"], reference.files["src/scr_vm.h"])

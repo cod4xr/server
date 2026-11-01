@@ -1,5 +1,16 @@
 # Expanded GSC runtime contract
 
+ADR 0087 adds independent empty `[]` construction in bound source/packages and
+typed standalone execution with explicit object contexts. Empty data can travel
+through calls/returns and existing reads; all population paths remain closed, so
+independent data has no outgoing payload edges during its invocation. Nonempty
+host-origin data still obeys 0085/0086. Complete owner admission and pending
+coverage precede fallible publication, and one paired pressure retry includes
+caller/cache/world/managed roots. Tests cover exact/failure budgets, 70k data,
+12k frames and bounded 100k churn. The offline empty_arrays.gsc example returns
+integer 1 and logs logical array accounting. Stored/nested arrays, writes, game
+replacement, logical RC/cycles, scheduling and full stock/mod acceptance stay open.
+
 ADR 0086 executes read-only entry/size access for checked host-origin arrays.
 Arguments and explicit game bindings retain host ownership through source,
 standalone and package execution. Missing keys yield Undefined, stored Undefined

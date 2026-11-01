@@ -22,6 +22,7 @@ pub(crate) fn run(image: ScriptImage<'_, '_>, entry: u64) -> Result<(), AppError
     let outcome = image.program().execute_with_heap(entry, &[], KernelCallBudget::default(), &mut context).map_err(|error| {
         let location = error.function.zip(error.cause.instruction).and_then(|(function, instruction)| image.location(function, instruction));
         let heap_usage = context.usage();
+        let objects = context.object_heap_usage();
         tracing::error!(event = "script.failed", phase = "execute", kind = "runtime", cause = ?error.cause.kind,
             function = error.function, instruction = error.cause.instruction,
             module = location.as_ref().and_then(|value| value.module),
@@ -30,6 +31,9 @@ pub(crate) fn run(image: ScriptImage<'_, '_>, entry: u64) -> Result<(), AppError
             steps = error.cause.work_steps, setup_work = error.setup_work, peak_frames = error.peak_frames,
             heap_steps = heap_usage.steps, collections = heap_usage.collections,
             object_collections = heap_usage.object_collections,
+            live_arrays = objects.map(|usage| usage.live_arrays),
+            live_array_values = objects.map(|usage| usage.live_array_values),
+            array_value_slots = objects.map(|usage| usage.array_value_slots),
             heap_scratch_bytes = heap_usage.peak_scratch_bytes, "primitive GSC execution failed");
         AppError::ScriptExecution(error)
     })?;
@@ -66,6 +70,10 @@ pub(crate) fn run(image: ScriptImage<'_, '_>, entry: u64) -> Result<(), AppError
         string_slots = strings.slots,
         string_metadata_bytes = strings.metadata_bytes,
         live_objects = objects.map(|usage| usage.live_objects),
+        live_arrays = objects.map(|usage| usage.live_arrays),
+        live_array_values = objects.map(|usage| usage.live_array_values),
+        array_value_slots = objects.map(|usage| usage.array_value_slots),
+        array_metadata_rows = objects.map(|usage| usage.array_metadata_rows),
         live_fields = objects.map(|usage| usage.live_fields),
         object_key_bytes = objects.map(|usage| usage.key_bytes),
         object_slots = objects.map(|usage| usage.object_slots),

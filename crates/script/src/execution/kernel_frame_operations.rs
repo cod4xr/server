@@ -28,6 +28,14 @@ impl KernelFrame {
             return self.stack.push(value, pc);
         }
         let roots = self.values().chain(parents);
+        if matches!(instruction, KernelInstruction::EmptyArray) {
+            let value = heap
+                .as_deref_mut()
+                .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::ObjectExecutionUnsupported))?
+                .construct_empty_array(owner, roots)
+                .map_err(|kind| kernel_error::at(pc, kind))?;
+            return self.stack.push(KernelValue::Array(value), pc);
+        }
         let value = heap::apply(
             program,
             instruction,

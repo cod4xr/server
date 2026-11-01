@@ -31,6 +31,9 @@ pub enum KernelInstruction {
     /// Reads a fixed host-supplied root. Game reads clone a managed VM owner;
     /// ordinary roots retain shared identity. No implicit world is created.
     LoadScriptRoot(KernelScriptRoot),
+    /// Allocates independent empty data and one managed VM owner. Requires an
+    /// explicit object context; indexed writes and stored arrays remain unsupported.
+    EmptyArray,
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
     StoreLocal(usize),
     /// Calls a function in the complete verified module. Stack arguments run
@@ -69,7 +72,7 @@ pub enum KernelInstruction {
     /// use strict legacy integer/plain-string keys in an object-aware context.
     Index,
     /// Replaces a plain string with its byte length before the first NUL, or a
-    /// checked ordinary struct with integer one. A managed host-origin array
+    /// checked ordinary struct with integer one. A managed array
     /// produces its stored count checked into int32, without native u16 truncation.
     Size,
     /// Replaces a checked struct receiver with the named field value or Undefined.
@@ -130,6 +133,7 @@ impl KernelInstruction {
             Self::Constant(_)
             | Self::LoadLocal(_)
             | Self::LoadScriptRoot(_)
+            | Self::EmptyArray
             | Self::FunctionReference(_)
             | Self::StringLiteral(_)
             | Self::LocalizedStringLiteral(_) => (0, 1),

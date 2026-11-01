@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 mod array_frame;
 mod owner_admission;
+mod owner_creation;
 mod owner_lookup;
 mod owner_release;
 mod owner_table;

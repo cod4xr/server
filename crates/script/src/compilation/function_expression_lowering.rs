@@ -87,6 +87,9 @@ fn primary<'tree, 'source>(
         function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
+        LegacyPrimaryKind::EmptyArray if builder.mode.bound() => {
+            builder.emit(KernelInstruction::EmptyArray, node.span())
+        }
         LegacyPrimaryKind::Object(root) if builder.mode.bound() => {
             let root = match root {
                 LegacyObjectRoot::CurrentObject => KernelScriptRoot::CurrentObject,

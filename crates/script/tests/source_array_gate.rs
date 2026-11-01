@@ -12,23 +12,7 @@ use cod4x_script::syntax::{
 };
 
 #[test]
-fn empty_array_source_remains_rejected_until_complete_vm_ownership_and_cow_are_ready() {
-    for source in [
-        b"main(){privateArray=[];return privateArray;}".as_slice(),
-        b"main(){return [];}",
-    ] {
-        let error = module_compile_support::compile(
-            source,
-            LegacyDeveloperMode::Disabled,
-            ModuleCompilationBudget::default(),
-        )
-        .expect_err("No source activation from empty-data component work");
-        assert_eq!(
-            error.cause.kind,
-            FunctionCompileErrorKind::UnsupportedPrimary
-        );
-        assert!(!format!("{error:?} {error}").contains("privateArray"));
-    }
+fn indexed_writes_and_game_replacement_remain_rejected_after_empty_array_activation() {
     for source in [
         "main(a){a[0]=1;return 0;}",
         "main(a){a[0]+=1;return 0;}",

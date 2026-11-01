@@ -101,6 +101,7 @@ mod kernel_call_limits;
 mod kernel_call_recursion;
 mod kernel_call_support;
 mod kernel_call_width;
+mod kernel_empty_arrays;
 mod kernel_function_references;
 mod kernel_heap_churn;
 mod kernel_heap_hostile;

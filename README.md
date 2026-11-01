@@ -16,6 +16,13 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC now constructs independent empty arrays with `[]`, including package
+  calls and explicit owner transfer on return. The offline command runs
+  `examples/gsc/empty_arrays.gsc` (integer 1), with readable development logs and
+  numeric array accounting. Tests cover 70,000 arrays, 12,001 frames, bounded
+  100,000-construction churn and exhausted cleanup. ADR 0087 scopes the empty
+  profile; indexed writes, stored/nested arrays and general lifetimes remain open.
+
 - Bound GSC can read host-managed array entries and size through arguments or
   explicit game bindings, including direct/indirect/package calls. Reads preserve
   host owners, shared objects, complete byte keys and wide counts. Tests cover

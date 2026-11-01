@@ -72,6 +72,7 @@ pub(super) fn apply(
         KernelInstruction::Swap => return stack.swap(pc),
         KernelInstruction::LoadLocal(_)
         | KernelInstruction::LoadScriptRoot(_)
+        | KernelInstruction::EmptyArray
         | KernelInstruction::StoreLocal(_)
         | KernelInstruction::Duplicate
         | KernelInstruction::Discard

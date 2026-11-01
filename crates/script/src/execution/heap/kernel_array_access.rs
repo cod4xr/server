@@ -6,8 +6,9 @@ use crate::heap::{ArrayId, ArrayKey, ArrayValueId, LegacyArrayKeyError};
 use crate::legacy::LegacyNumber;
 
 impl KernelHeapContext<'_> {
-    // Current fields cannot contain Array values. Every VM array derives from a
-    // still-live host owner, keeping result graphs rooted as operands release.
+    // Current fields cannot contain Array values. Nonempty VM arrays derive from
+    // live host owners; independently constructed data cannot acquire entries.
+    // Result graphs therefore stay rooted as read operands release (0086/0087).
     // No allocation, COW detach, field creation or independent owner originates here.
     pub(super) fn array_index(
         &mut self,

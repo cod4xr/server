@@ -100,6 +100,7 @@ jobs:
           python tools/script_package_reference.py reference
           python tools/script_include_reference.py reference
           python tools/script_root_reference.py reference
+          python tools/script_empty_array_reference.py reference
           python tools/generate_string_access_vectors.py reference --check
           python tools/generate_object_size_vectors.py reference --check
           python tools/generate_struct_vectors.py reference --check

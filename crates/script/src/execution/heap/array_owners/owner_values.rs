@@ -10,12 +10,7 @@ impl KernelHeapContext<'_> {
         frame: usize,
         value: ArrayValueId,
     ) -> Result<ArrayValueId, KernelErrorKind> {
-        if self.array_owners.pending.is_some() {
-            return Err(KernelErrorKind::ArrayOwnershipInvariant);
-        }
-        self.prepare_array_frame(frame, 1)?;
-        self.charge(VALUE_CLEANUP)?;
-        self.array_owners.reserve_cleanup(VALUE_CLEANUP)?;
+        self.prepare_array_value(frame)?;
         let budget = self.remaining(0)?;
         let result = self
             .objects
@@ -26,20 +21,7 @@ impl KernelHeapContext<'_> {
             Ok(result) => result,
             Err(error) => return Err(kernel_object_error::record(self, error, 0)?),
         };
-        // Track the fresh owner before any fallible accounting/index lookup.
-        self.array_owners.pending = Some(result.value);
-        self.array_owners.live = self
-            .array_owners
-            .live
-            .checked_add(1)
-            .ok_or(KernelErrorKind::SizeOverflow)?;
-        self.record(result.usage, 0)?;
-        let slot = self.new_array_owner_slot(frame, result.value)?;
-        self.array_owners.frames[frame]
-            .values
-            .insert(slot, result.value);
-        self.array_owners.pending = None;
-        Ok(result.value)
+        self.publish_array_value(frame, result)
     }
 
     pub(in crate::execution) fn copy_owned_array(
