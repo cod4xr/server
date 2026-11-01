@@ -461,13 +461,14 @@ evaluate arguments before the target, without a temporary argument array.
 Comparison dispatch isolates function identity from numeric/vector/Undefined rules.
 See ADR 0050; imports/reload, receivers/self, closures, heap and scheduling remain open.
 
-Pure builtin instructions form a sealed typed subset (isint/isfloat/isvector),
+Pure builtin instructions form a sealed typed subset (isint/isfloat/isvector/isstring),
 separate from script-call frames and any future host-service capability boundary.
 Bound source first resolves active canonical script names and visibility, then
 permits only these known pure calls. Function-reference construction stays script-
 only. Runtime checks arity after all arguments evaluate and shares existing stack/
 fuel/storage admission without allocating an argument array or callee frame.
-Source maps/compiler quotas remain unchanged. See ADR 0051; this is not a general
+Source maps/compiler quotas remain unchanged. ADR 0058 adds plain-only isstring
+with actual native helper/type/result evidence. See ADR 0051; this is not a general
 plugin/callback system, heap, scheduler or game-service implementation.
 
 Integer switches keep case records in admitted control metadata and save outer

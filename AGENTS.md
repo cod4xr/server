@@ -313,21 +313,23 @@ role/mutation guards, not native compiler/VM execution). Retain identity exhaust
 foreign/drop/nonreuse/parallel uniqueness, type/arity/order, exact/one-less limits,
 wide/deep/hostile/recovery tests. Heap/closures/self/scheduler/module loading/reload/
 full-mod/Linux behavior remains open; see ADR 0050.
-Three sealed pure predicates (isint/isfloat/isvector) now resolve after active
+Four sealed pure predicates (isint/isfloat/isvector/isstring) resolve after active
 local script lookup; never bypass developer rejection or grant unknown host calls.
 Disabled developer declarations do not shadow; builtin reference literals remain
 unsupported. All arguments execute before exact-one arity checking at the caller
 instruction, including errors; skipped wrong counts remain valid. Proof still
 requires reachable supplied operands. Share existing fuel/stack/count/byte/compiler
 budgets without argument arrays, frames, per-call resets or native 255-count caps.
-Run generate_predicate_vectors.py --check and script_predicate_reference.py: 624
-actual C count/tag outcomes, 105 executable Rust subset outcomes, 519 explicitly
+Run generate_predicate_vectors.py --check and script_predicate_reference.py: 832
+actual C count/tag outcomes, 168 executable Rust subset outcomes, 664 explicitly
 helper-only rows for unavailable value tags/UINT32_MAX, and selected role mutations.
 Do not describe all native tags as implemented values or helper stubs as VM/plugin/
 error-unwind execution. Preserve shadow/case/developer/arity/order/maps/privacy,
 wide/deep/hostile/exact-one-less/isolated/quota/recovery tests. General builtins,
 heap/entity lifetime, isdefined, host services, full-mod/Linux gates remain open;
-see ADR 0051. New reference hashes were checked against pinned Git blobs.
+see ADRs 0051/0058. isstring checks plain tag 2, not localized tag 3, and its native
+result service is Scr_AddInt. Preserve the 46 result/type/arity/lookup mutations.
+Reference hashes were checked against pinned Git blobs.
 Primitive integer switch now owns case inventory/section tasks/exit joins/balanced
 dispatch under compilation/function_switch. Evaluate keys once, require integers
 without float coercion, preserve source-order fallthrough/default/adjacent labels

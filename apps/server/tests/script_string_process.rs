@@ -13,9 +13,11 @@ use serde_json::Value;
 
 #[test]
 fn offline_source_string_results_escape_bytes_and_keep_payloads_out_of_human_and_json_logs() {
-    let mut text = br#"main(){return wrap("PrivateValue\n"#.to_vec();
+    let mut text = br#"main(){value=wrap("PrivateValue\n"#.to_vec();
     text.push(0xff);
-    text.extend_from_slice(br#"");}wrap(x){return "["+x+"]";}"#);
+    text.extend_from_slice(
+        br#"");if(isstring(value)){return value;}return undefined;}wrap(x){return "["+x+"]";}"#,
+    );
     let file = FixtureFile::from_bytes(&text);
     for format in ["--json-logs", "--human-logs"] {
         let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))

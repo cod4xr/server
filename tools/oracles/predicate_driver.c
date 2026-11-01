@@ -17,11 +17,13 @@ static unsigned int Scr_GetType(unsigned int index)
     if (index != 0 || parameter_count != 1 || ++type_reads != 1) abort();
     return parameter_type;
 }
-static void Scr_AddBool(int value)
+static void write_result(int value)
 {
     if (++result_writes != 1 || failed || (value != 0 && value != 1)) abort();
     result_value = value;
 }
+static void Scr_AddBool(int value) { write_result(value); }
+static void Scr_AddInt(int value) { write_result(value); }
 static void Scr_Error(const char *message)
 {
     if (!message || failed || result_writes || type_reads) abort();
@@ -33,9 +35,9 @@ static void Scr_Error(const char *message)
 
 int main(void)
 {
-    void (*const functions[])(void) = {GScr_IsInt, GScr_IsFloat, GScr_IsVector};
+    void (*const functions[])(void) = {GScr_IsInt, GScr_IsFloat, GScr_IsVector, GScr_IsString};
     const unsigned int counts[] = {0, 1, 2, 6, 255, 256, 70000, UINT32_MAX};
-    for (unsigned int function = 0; function < 3; ++function) {
+    for (unsigned int function = 0; function < sizeof(functions)/sizeof(functions[0]); ++function) {
         for (unsigned int type = 0; type <= VAR_ENDON_LIST; ++type) {
             for (unsigned int count = 0; count < sizeof(counts)/sizeof(counts[0]); ++count) {
                 parameter_count = counts[count];

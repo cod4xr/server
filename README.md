@@ -194,10 +194,12 @@ The complete server rewrite remains open.
   `[[expression]](...)` targets. Opaque references reject foreign/stale owners and
   share existing global runtime limits. All 2,664 actual C identity/type comparison
   cases pass; native compiler/VM, receiver/self, heap and full-mod gates remain open.
-- Bound source calls `isint`, `isfloat`, and `isvector` directly without native
+- Bound source calls `isint`, `isfloat`, `isvector`, and `isstring` without native
   plugins. Active script definitions shadow these pure builtins; wrong argument
   counts fail at invocation after argument evaluation. General builtins/game
   services, the complete value heap and full-mod compatibility remain open.
+  The four actual C helpers produce 832 reference outcomes; 168 currently
+  representable cases replay in Rust. Localized strings remain separate; ADR 0058.
 - Integer `switch` preserves default placement, adjacent labels, fallthrough,
   nearest break/continue ownership and initialization joins. Tests cover 66,000
   cases with balanced dispatch and 12,000 nested switches. Full int32 keys are an

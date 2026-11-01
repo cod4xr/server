@@ -13,6 +13,8 @@ pub enum KernelBuiltin {
     IsFloat,
     /// Original isvector: true only for an inline vector value.
     IsVector,
+    /// Original isstring: true only for plain string values, not localized strings.
+    IsString,
 }
 
 pub(super) fn apply(
@@ -35,6 +37,7 @@ pub(super) fn apply(
         KernelBuiltin::IsInt => matches!(value, KernelValue::Number(LegacyNumber::Integer(_))),
         KernelBuiltin::IsFloat => matches!(value, KernelValue::Number(LegacyNumber::Float(_))),
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
+        KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
     };
     Ok(KernelValue::Number(LegacyNumber::Integer(i32::from(
         result,

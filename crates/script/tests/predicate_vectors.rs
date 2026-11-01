@@ -7,9 +7,10 @@
 
 use crate::kernel_call_support::{self, definition, integer};
 use cod4x_script::execution::{
-    KernelBuiltin, KernelErrorKind, KernelExecutionBudget, KernelInstruction, KernelValue,
-    KernelVerificationBudget, VerifiedKernelProgram,
+    KernelBuiltin, KernelErrorKind, KernelExecutionBudget, KernelFunctionLayout, KernelHeapContext,
+    KernelInstruction, KernelValue, KernelVerificationBudget, VerifiedKernelProgram,
 };
+use cod4x_script::heap::{HeapWorkBudget, StringHeap, StringHeapBudget};
 use cod4x_script::legacy::{LegacyNumber, LegacyVector};
 
 #[test]
@@ -17,6 +18,12 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
     let leaf = [integer(0), KernelInstruction::Return];
     let module = kernel_call_support::verify(&[definition(&leaf, 0, 0)]);
     let reference = module.function_reference(0).expect("Function value");
+    let mut heap = StringHeap::new(StringHeapBudget::default()).expect("String owner");
+    let string = heap
+        .allocate(b"type-only fixture", HeapWorkBudget::default())
+        .expect("Plain string")
+        .id;
+    let mut context = KernelHeapContext::new(&mut heap, &[], HeapWorkBudget::default());
     let mut rows = 0;
     let mut replayed = 0;
     let mut successes = 0;
@@ -31,6 +38,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
             "0" => KernelBuiltin::IsInt,
             "1" => KernelBuiltin::IsFloat,
             "2" => KernelBuiltin::IsVector,
+            "3" => KernelBuiltin::IsString,
             _ => return Err("Unknown predicate fixture".into()),
         };
         let tag: u32 = fields[2]
@@ -44,6 +52,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
         assert_eq!(fields[4], if count == 1 { "ok" } else { "E1" });
         let value = match tag {
             0 => Some(KernelValue::Undefined),
+            2 => Some(KernelValue::String(string)),
             4 => Some(KernelValue::Vector(LegacyVector::from_components([0.0; 3]))),
             5 => Some(KernelValue::Number(LegacyNumber::Float(f32::NAN))),
             6 => Some(KernelValue::Number(LegacyNumber::Integer(0))),
@@ -59,7 +68,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
             continue;
         };
         let arguments = usize::try_from(count).expect("Bounded count");
-        let mut code = vec![KernelInstruction::Constant(value); arguments];
+        let mut code = vec![KernelInstruction::LoadLocal(0); arguments];
         code.extend([
             KernelInstruction::Builtin {
                 function,
@@ -67,9 +76,14 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
             },
             KernelInstruction::Return,
         ]);
-        let proof = VerifiedKernelProgram::verify(&code, KernelVerificationBudget::default())
-            .expect("Predicate proof");
-        let result = proof.execute(KernelExecutionBudget::default());
+        let proof = VerifiedKernelProgram::verify_function(
+            &code,
+            KernelFunctionLayout::new(1, 1).expect("Fixture argument"),
+            KernelVerificationBudget::default(),
+        )
+        .expect("Predicate proof");
+        let result =
+            proof.execute_with_heap(&[value], KernelExecutionBudget::default(), &mut context);
         if count == 1 {
             let expected = fields[5]
                 .parse::<i32>()
@@ -98,7 +112,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
     }
     assert_eq!(
         (rows, replayed, successes, helper_only),
-        (624, 105, 15, 519)
+        (832, 168, 24, 664)
     );
     Ok(())
 }

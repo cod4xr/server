@@ -130,6 +130,10 @@ mod bound_reference_contracts;
 mod builtin_source;
 #[path = "builtin_source_contracts.rs"]
 mod builtin_source_contracts;
+#[path = "builtin_string_arguments.rs"]
+mod builtin_string_arguments;
+#[path = "builtin_string_source.rs"]
+mod builtin_string_source;
 #[path = "call_views.rs"]
 mod call_views;
 #[path = "declaration_budgets.rs"]

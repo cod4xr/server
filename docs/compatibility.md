@@ -535,17 +535,18 @@ guards reject 39 mutations without executing native compiler/VM/switch routines.
 Case/fact payload shares compiler control/metadata admission; typed code uses
 existing proof/fuel/stack limits and wide addresses. See ADR 0052; string switch,
 full heap/scope/native diagnostics/unwind/mod and Linux gates stay open.
-Three pure builtin calls now execute from bound source: isint/isfloat/isvector.
+Four pure builtin calls execute from bound source: isint/isfloat/isvector/isstring.
 Active script definitions shadow them; existing developer policy and canonical
 names remain enforced. Exact-one arity checks run after supplied arguments, so
 unselected wrong counts do not fail and argument errors retain precedence. Typed
 instructions share existing resource limits without native 255-count ceilings,
-new host/plugin authority or frames. Of 624 actual C O0/O2 count/tag outcomes, 105
-currently representable/bounded cases execute in Rust; 519 are explicitly helper-
-only, not full native value/VM coverage. Selected source guards reject 36 mutations.
+new host/plugin authority or frames. Of 832 actual C O0/O2 count/tag outcomes, 168
+currently representable/bounded cases execute in Rust; 664 are explicitly helper-
+only, not full native value/VM coverage. Selected source guards reject 46 mutations.
 Source tests reach 256 arguments and 12,000 nested calls; typed fixtures include
 70,000 arguments. Exact count/byte/fuel/proof, unsupported authority, maps/privacy,
-developer/shadowing/order/arity/hostile/recovery checks remain required. See ADR 0051;
+developer/shadowing/order/arity/hostile/recovery checks remain required. isstring
+checks plain tag 2; localized tag 3 remains helper-only. See ADRs 0051/0058;
 general builtins, heap/isdefined/entity lifetime, scheduler/game services, full-mod
 and Linux gates stay open.
 

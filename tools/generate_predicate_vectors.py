@@ -9,6 +9,7 @@ import sys
 import tempfile
 
 from reference_source import ReferenceSource, declaration
+import script_predicate_reference as predicates
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "crates/script/tests/fixtures/predicate_vectors.txt"
@@ -21,8 +22,9 @@ def main() -> None:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     reference = ReferenceSource(args.reference)
-    functions = "\n\n".join(reference.function("src/scr_vm_functions.c", name)
-                             for name in ("GScr_IsInt", "GScr_IsFloat", "GScr_IsVector"))
+    profiles = predicates.inputs(reference)
+    predicates.verify(*profiles)
+    functions = "\n\n".join(profiles[1])
     types = declaration(reference.files["src/scr_vm.h"], r"enum \$[A-Z0-9]+\s*\{\s*VAR_UNDEFINED.*?\};")
     driver = (ROOT / "tools/oracles/predicate_driver.c").read_text(encoding="utf-8")
     source = driver.replace("/* ORIGINAL_FUNCTIONS */", types + "\n\n" + functions)
@@ -39,8 +41,8 @@ def main() -> None:
     if outputs[0] != outputs[1]:
         raise ValueError("Predicate helpers disagree between O0/O2")
     expected = (
-        "# Actual C isint/isfloat/isvector; O0/O2; count/type/result/error services stubbed.\n"
-        "# Enum tag codes include markers; only U/vector/float/int/function currently have Rust values.\n"
+        "# Actual C isint/isfloat/isvector/isstring; O0/O2; count/type/result/error services stubbed.\n"
+        "# Enum tag codes include markers; only U/plain-string/vector/float/int/function have Rust values.\n"
         "# No native compiler/VM/plugin/error-unwinding execution claim.\n"
         "# P predicate type_tag supplied_count status [boolean]\n"
         "# SPDX-License-Identifier: AGPL-3.0-or-later\n"

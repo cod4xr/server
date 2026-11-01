@@ -42,6 +42,8 @@ pub(super) fn named_call(
         KernelBuiltin::IsFloat
     } else if name.eq_ignore_ascii_case(b"isvector") {
         KernelBuiltin::IsVector
+    } else if name.eq_ignore_ascii_case(b"isstring") {
+        KernelBuiltin::IsString
     } else {
         return Err(unknown(callee));
     };

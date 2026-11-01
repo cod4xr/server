@@ -8,9 +8,10 @@ import re
 from reference_source import ReferenceSource
 import script_update_reference as assembly
 
-PREDICATES = (("isint", "GScr_IsInt", "VAR_INTEGER", 6),
-              ("isfloat", "GScr_IsFloat", "VAR_FLOAT", 5),
-              ("isvector", "GScr_IsVector", "VAR_VECTOR", 4))
+PREDICATES = (("isint", "GScr_IsInt", "VAR_INTEGER", 6, "Scr_AddBool"),
+              ("isfloat", "GScr_IsFloat", "VAR_FLOAT", 5, "Scr_AddBool"),
+              ("isvector", "GScr_IsVector", "VAR_VECTOR", 4, "Scr_AddBool"),
+              ("isstring", "GScr_IsString", "VAR_STRING", 2, "Scr_AddInt"))
 ROLES = {
     "EmitCall_10": ("mov ebx, [eax+0x4]\n\tcmp dword [ebx], 0x12\n\tjz EmitCall_110\n",),
     "EmitCall_110": (
@@ -31,15 +32,15 @@ ROLES = {
 
 def verify(compiler: str, functions: tuple[str, ...], registrations: str, header: str) -> None:
     """Check complete small C bodies plus selected ordered assembly roles, not execution."""
-    for (_, name, kind, tag), function in zip(PREDICATES, functions, strict=True):
+    for (_, name, kind, tag, writer), function in zip(PREDICATES, functions, strict=True):
         pattern = (rf'void\s+{name}\(\)\s*\{{\s*if\s*\(Scr_GetNumParam\(\)\s*!=\s*1\)\s*'
                    rf'\{{\s*Scr_Error\("[^"\n]+"\);\s*return;\s*\}}\s*'
-                   rf'Scr_AddBool\(Scr_GetType\(0\)\s*==\s*{tag}\);\s*\}}')
+                   rf'{writer}\(Scr_GetType\(0\)\s*==\s*{tag}\);\s*\}}')
         if not re.fullmatch(pattern, function):
             raise ValueError("Predicate arity-before-type/result roles changed")
         if not re.search(rf"\b{kind}\s*=\s*0x{tag:x}\b", header):
             raise ValueError("Predicate native type identities changed")
-    for spelling, name, _, _ in PREDICATES:
+    for spelling, name, _, _, _ in PREDICATES:
         if not re.search(rf'(?m)^\s*Scr_AddFunction\("{spelling}",\s*{name},\s*0\s*\);', registrations):
             raise ValueError("Pure builtin nondeveloper registration changed")
     for label, needles in ROLES.items():
@@ -67,14 +68,15 @@ def verify_mutations(inputs: tuple[str, tuple[str, ...], str, str]) -> int:
         if len(needles) > 1:
             changed = body.replace(needles[0], "", 1) + needles[0]
             cases.append((compiler.replace(original, f"{label}:\n{changed}", 1), functions, registrations, header))
-    for index, (spelling, name, kind, tag) in enumerate(PREDICATES):
-        for old, new in (("!= 1", "!= 2"), (f"== {tag}", f"== {tag+1}"), ("return;", "")):
+    for index, (spelling, name, kind, tag, writer) in enumerate(PREDICATES):
+        other_writer = "Scr_AddInt" if writer == "Scr_AddBool" else "Scr_AddBool"
+        for old, new in (("!= 1", "!= 2"), (f"== {tag}", f"== {tag+1}"), ("return;", ""), (writer, other_writer)):
             changed = list(functions)
             changed[index] = changed[index].replace(old, new, 1)
             cases.append((compiler, tuple(changed), registrations, header))
         changed = list(functions)
         # Every original call/token remains, but result access moves ahead of arity.
-        expression = f"    Scr_AddBool(Scr_GetType(0) == {tag});"
+        expression = f"    {writer}(Scr_GetType(0) == {tag});"
         changed[index] = changed[index].replace(expression, "", 1).replace("{", "{\n" + expression, 1)
         cases.append((compiler, tuple(changed), registrations, header))
         changed = registrations.replace(f'Scr_AddFunction("{spelling}", {name}, 0',
@@ -97,7 +99,7 @@ def verify_mutations(inputs: tuple[str, tuple[str, ...], str, str]) -> int:
 def inputs(reference: ReferenceSource) -> tuple[str, tuple[str, ...], str, str]:
     """Extract locked small C definitions and selected compiler/header sources."""
     return (reference.files["src/asmsource/_scr_compiler.asm"],
-            tuple(reference.function("src/scr_vm_functions.c", name) for _, name, _, _ in PREDICATES),
+            tuple(reference.function("src/scr_vm_functions.c", name) for _, name, _, _, _ in PREDICATES),
             reference.function("src/scr_vm_main.c", "Scr_AddStockFunctions"), reference.files["src/scr_vm.h"])
 
 
