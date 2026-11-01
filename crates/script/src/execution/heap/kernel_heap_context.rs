@@ -30,8 +30,8 @@ use crate::heap::{
 /// [`ObjectHeap::release_array_value`]. Raw Rust handle copies create no owner.
 /// Error cleanup uses work reserved before publication, even when execution or
 /// heap fuel is exhausted. Read-only indexing and size accept checked host-origin
-/// arrays and independently constructed data. Proposal 0088 adds typed local-cell
-/// mutation for current nonnested values; source writes remain separately gated.
+/// arrays and independently constructed data. ADR 0088 supplies typed local-cell
+/// mutation; ADR 0095 admits initialized plain-local source writes.
 /// Stored array fields, general root lvalues and nested/object logical lifetimes
 /// remain unsupported. A read result reaches its frame before a consumed array's
 /// unowned payload can be collected; releases cannot allocate, collect or yield.
@@ -78,7 +78,7 @@ impl<'heap> KernelHeapContext<'heap> {
     /// then strings; a later failure may retain a completed object collection.
     /// Backs checked structs and managed array transport. All live array locations
     /// already root their data in the object store, including host-owned locations.
-    /// Nested array fields, source array operations and scheduling remain separate.
+    /// Stored/nested array edges, general root writes and scheduling remain separate.
     #[must_use]
     pub fn with_objects(
         mut self,

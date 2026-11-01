@@ -24,6 +24,8 @@ pub struct KernelFunctionDefinition<'a> {
     pub string_literals: &'a [Vec<u8>],
     /// Exact immutable field-name bytes, independent of runtime string caches.
     pub field_names: &'a [Vec<u8>],
+    /// Immutable switch label bytes; these never reserve runtime literal-cache slots.
+    pub switch_labels: &'a [Vec<u8>],
 }
 
 /// Owned immutable call/reference inventory. This is not source linking/module activation.
@@ -40,8 +42,8 @@ pub struct KernelFunctionDefinition<'a> {
 /// let result = KernelValue::Number(LegacyNumber::Integer(42));
 /// let callee = [KernelInstruction::Constant(result), KernelInstruction::Return];
 /// let definitions = [
-///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[] },
-///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[] },
+///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[], switch_labels: &[] },
+///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[], switch_labels: &[] },
 /// ];
 /// let module = VerifiedKernelModule::verify(&definitions, KernelModuleVerificationBudget::default())?;
 /// assert_eq!(module.execute(0, &[], KernelCallBudget::default())?.value, result);
@@ -60,6 +62,7 @@ impl fmt::Debug for KernelFunctionDefinition<'_> {
             .field("instructions", &self.instructions.len())
             .field("layout", &self.layout)
             .field("string_literals", &self.string_literals.len())
+            .field("switch_labels", &self.switch_labels.len())
             .finish_non_exhaustive()
     }
 }

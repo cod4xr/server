@@ -12,6 +12,10 @@ pub struct KernelModuleUsage {
     pub field_names: u64,
     /// Retained field-name rows/payload, also included in retained bytes.
     pub retained_field_bytes: u64,
+    /// Complete immutable switch-label rows, including unused rows; not cache slots.
+    pub switch_labels: u64,
+    /// Label rows/payload, included in retained bytes, without runtime string IDs.
+    pub retained_switch_bytes: u64,
     /// Retained verified function count.
     pub functions: u64,
     /// Retained complete instruction count.

@@ -48,6 +48,8 @@ impl KernelVerificationLedger {
                 retained_string_bytes: 0,
                 field_names: 0,
                 retained_field_bytes: 0,
+                switch_labels: 0,
+                retained_switch_bytes: 0,
                 parameters: layout.parameters(),
                 local_values: layout.local_values(),
                 instructions: count,
@@ -94,6 +96,17 @@ impl KernelVerificationLedger {
         self.retain_bytes(bytes)?;
         self.usage.field_names = count;
         self.usage.retained_field_bytes = bytes;
+        Ok(())
+    }
+
+    pub(super) fn retain_switch_labels(
+        &mut self,
+        count: u64,
+        bytes: u64,
+    ) -> Result<(), KernelError> {
+        self.retain_bytes(bytes)?;
+        self.usage.switch_labels = count;
+        self.usage.retained_switch_bytes = bytes;
         Ok(())
     }
 

@@ -23,6 +23,7 @@ pub fn definition(
         instructions: code,
         string_literals: &[],
         field_names: &[],
+        switch_labels: &[],
         layout: KernelFunctionLayout::new(parameters, locals).expect("Valid layout"),
     }
 }

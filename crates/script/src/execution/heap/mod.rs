@@ -26,6 +26,8 @@ mod kernel_script_roots;
 mod kernel_string_access;
 mod kernel_string_allocation;
 mod kernel_string_operations;
+mod kernel_switch_operations;
+mod kernel_switch_strings;
 
 pub(super) use kernel_array_mutation::KernelArrayMutation;
 pub use kernel_heap_context::KernelHeapContext;

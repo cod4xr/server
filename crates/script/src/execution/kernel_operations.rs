@@ -76,6 +76,8 @@ pub(super) fn apply(
         | KernelInstruction::StoreLocal(_)
         | KernelInstruction::StoreArrayLocal(_)
         | KernelInstruction::ClearArrayLocal(_)
+        | KernelInstruction::RequireSwitchKey
+        | KernelInstruction::SwitchCompare { .. }
         | KernelInstruction::Duplicate
         | KernelInstruction::Discard
         | KernelInstruction::Call { .. }

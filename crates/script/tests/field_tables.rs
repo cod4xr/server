@@ -26,6 +26,7 @@ fn owned_binary_field_names_do_not_allocate_runtime_string_cache_or_expose_paylo
         layout: KernelFunctionLayout::new(1, 1).expect("Layout"),
         string_literals: &[],
         field_names: &names,
+        switch_labels: &[],
     };
     let program =
         VerifiedKernelProgram::verify_definition(definition, KernelVerificationBudget::default())

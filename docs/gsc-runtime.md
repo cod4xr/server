@@ -1,5 +1,13 @@
 # Expanded GSC runtime contract
 
+ADR 0097 adds typed switch-key validation/comparison and separately owned label
+bytes. Labels neither allocate runtime strings nor occupy invocation cache slots.
+Integer and plain-string domains remain distinct; normalized order is an internal
+search contract rather than native global-ID ordering. Complete proof, private
+errors, explicit heaps, cleanup, exact/failure budgets and wide/pressure/churn
+tests cover this typed component. Source string switches remain rejected until
+their separate compiler and dispatch acceptance.
+
 ADR 0095 adds source indexed assignment/clear through initialized plain local
 cells, using ADR 0088's checked instructions and ADR 0094's physical lifetimes.
 Normal assignment evaluates RHS/key before borrowing the owning location.

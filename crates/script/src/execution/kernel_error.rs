@@ -9,6 +9,13 @@ use crate::legacy::{LegacyNumberError, LegacyVectorError};
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// A switch key must be a strict integer or a checked plain string.
+    ExpectedSwitchKey,
+    /// A switch operand is outside this function's complete immutable label table.
+    InvalidSwitchLabel {
+        /// Rejected wide operand, without label contents or native identities.
+        label: u64,
+    },
     /// A writable initialized local is neither Array nor an autovivifiable Undefined.
     ExpectedArrayTarget,
     /// Legacy plain-string characters cannot be assigned or cleared individually.

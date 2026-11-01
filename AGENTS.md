@@ -1,5 +1,17 @@
 # Project contract
 
+ADR 0097 accepts typed RequireSwitchKey/SwitchCompare and a separately owned
+immutable switch-label table. Labels must not allocate heap strings or reserve
+runtime literal-cache slots. Admit complete descriptors/payload/copies and global
+prefix/current verifier overlap, including unused labels. Validate operands even
+when unreachable. Keep normalized typed order explicit (signed integers before
+complete plain-string bytes), separate from native global-ID serialization.
+Require explicit heaps for string keys and preserve prepaid Array-key failure
+cleanup. Keep sixteen typed tests, wide labels/keys, zero-cache proofs, pressure,
+every-prefix budgets and bounded churn. Full Windows gates pass 390 frontend/
+273 legacy; source string/mixed switches remain rejected until their compiler/
+sorting/duplicate/cleanup/package/CLI acceptance. No general GSC/lifetime claim.
+
 Assessment 0096 extends the executed native switch family from eleven to fifteen
 scenarios with modeled plain-string identities, mixed integer/string labels,
 serialized key words and user-transfer records. Native comparator order is

@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::{KernelBuiltin, KernelErrorKind, KernelScriptRoot, KernelValue};
+use crate::execution::{
+    KernelBuiltin, KernelErrorKind, KernelScriptRoot, KernelSwitchComparison, KernelSwitchKey,
+    KernelValue,
+};
 use crate::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate,
 };
@@ -74,6 +77,16 @@ pub enum KernelInstruction {
     MakeVector,
     /// Preserves an integer word and rejects other primitive categories, without coercion.
     RequireInteger,
+    /// Preserves a strict int32/plain-string key; strings require a checked heap context.
+    RequireSwitchKey,
+    /// Replaces a key with an integer predicate against immutable code data.
+    /// Labels never allocate runtime strings or occupy literal-cache slots.
+    SwitchCompare {
+        /// Integer word or checked wide operand in the separate label-byte table.
+        key: KernelSwitchKey,
+        /// Sealed predicate over the documented normalized internal key order.
+        comparison: KernelSwitchComparison,
+    },
     /// Consumes bottom-to-top index/object and pushes a copied indexed result.
     /// Vectors use strict integer component indices; plain strings return one byte
     /// before the first NUL and require an explicit heap context. Managed arrays
@@ -156,7 +169,9 @@ impl KernelInstruction {
             | Self::IntegerUpdate(_)
             | Self::Size
             | Self::LoadField(_)
-            | Self::RequireInteger => (1, 1),
+            | Self::RequireInteger
+            | Self::RequireSwitchKey
+            | Self::SwitchCompare { .. } => (1, 1),
             Self::Duplicate => (1, 2),
             Self::Swap => (2, 2),
             Self::StoreField(_) | Self::StoreArrayLocal(_) => (2, 0),

@@ -14,7 +14,7 @@ pub(super) fn verify(
     layout: KernelFunctionLayout,
     budget: KernelVerificationBudget,
 ) -> Result<VerifiedKernelProgram, KernelError> {
-    verify_linked(input, layout, &[], &[], budget, None)
+    verify_linked(input, layout, &[], &[], &[], budget, None)
 }
 
 pub(super) fn verify_linked(
@@ -22,6 +22,7 @@ pub(super) fn verify_linked(
     layout: KernelFunctionLayout,
     literals: &[Vec<u8>],
     field_names: &[Vec<u8>],
+    switch_labels: &[Vec<u8>],
     budget: KernelVerificationBudget,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
@@ -38,7 +39,16 @@ pub(super) fn verify_linked(
         .map_err(|error| error.with_locals(layout.local_values()))?;
     let result = kernel_literals::copy(literals, &mut ledger).and_then(|strings| {
         let names = kernel_literals::copy_fields(field_names, &mut ledger)?;
-        verify_flow(input, layout, &mut ledger, functions, strings, names)
+        let labels = kernel_literals::copy_switch_labels(switch_labels, &mut ledger)?;
+        verify_flow(
+            input,
+            layout,
+            &mut ledger,
+            functions,
+            strings,
+            names,
+            labels,
+        )
     });
     result.map_err(|error| {
         error
@@ -57,6 +67,7 @@ fn verify_flow(
     functions: Option<&[KernelFunctionDefinition<'_>]>,
     string_literals: Vec<Vec<u8>>,
     field_names: Vec<Vec<u8>>,
+    switch_labels: Vec<Vec<u8>>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     for (pc, instruction) in input.iter().copied().enumerate() {
         ledger.visit(pc)?;
@@ -66,8 +77,11 @@ fn verify_flow(
             input.len(),
             layout,
             functions,
-            string_literals.len(),
-            field_names.len(),
+            kernel_operands::KernelOperandTables {
+                literals: string_literals.len(),
+                fields: field_names.len(),
+                labels: switch_labels.len(),
+            },
         )?;
     }
     let mut instructions = Vec::new();
@@ -99,6 +113,7 @@ fn verify_flow(
     Ok(VerifiedKernelProgram {
         string_literals,
         field_names,
+        switch_labels,
         literal_offset: 0,
         layout,
         instructions,

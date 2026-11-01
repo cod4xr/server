@@ -37,6 +37,7 @@ pub(super) fn verify(
             instructions: &function.instructions,
             string_literals: &function.string_literals,
             field_names: &function.field_names,
+            switch_labels: &[],
             layout: function.layout,
         });
     }

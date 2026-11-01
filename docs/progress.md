@@ -14,6 +14,22 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0097 accepts typed switch-key validation/comparison and independent immutable
+label tables. Labels are owned by code, never native IDs or runtime cache slots.
+Explicit normalized ordering keeps int32 and complete plain-string byte domains
+distinct. Complete operand/global/function metadata and work proofs cover unused
+labels and invalid unreachable operands. Sixteen tests cover ownership/privacy,
+strict types/handles, context recovery, exact/every-shorter scopes, rejected-Array
+cleanup, stack-only keys through last-array release/collection, 70k labels/key
+bytes with zero case-cache scratch, and 100k comparisons beside 70,001 host owners
+under 4 KiB. Full Windows debug/release workspace passes 390 frontend/273 legacy,
+fifteen private/two script doctests, denied-warning Clippy/rustdoc, formatting,
+five native generators, 38 admissions, 59/98 mutations, 99 structural replays,
+twelve suite-policy regressions and policy/diff checks (1067 sources/eight crates/
+largest 287). All prior test identities remain. Source string/mixed switches stay
+rejected pending source sorting/duplicate/budget/package/CLI acceptance. No new
+dependency/crate/target directory; Linux/hosted CI and full GSC remain open.
+
 Assessment 0096 extends the selected native switch oracle to fifteen scenarios
 with four plain-string/mixed-label cases. Actual pinned emitter/comparator/
 scope instructions execute with explicit modeled remaining services at driver

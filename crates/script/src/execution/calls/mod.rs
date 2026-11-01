@@ -6,6 +6,7 @@ mod kernel_call_usage;
 mod kernel_module_admission;
 mod kernel_module_error;
 mod kernel_module_executor;
+mod kernel_module_tables;
 mod kernel_module_verifier;
 mod verified_kernel_module;
 

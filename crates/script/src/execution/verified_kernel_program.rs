@@ -20,6 +20,10 @@ pub struct KernelProgramUsage {
     pub field_names: u64,
     /// Logical field-name Vec rows and payload, excluding allocator/spare capacity/RSS.
     pub retained_field_bytes: u64,
+    /// Complete immutable switch-label rows, including unused ones; not cache slots.
+    pub switch_labels: u64,
+    /// Logical label Vec rows/payload, excluding allocator rounding/spare capacity/RSS.
+    pub retained_switch_bytes: u64,
     /// Declared parameter-prefix count; invocation entry points select binding policy.
     pub parameters: u64,
     /// Complete layout slots, including parameters and uninitialized slots.
@@ -59,6 +63,7 @@ pub struct KernelOutcome {
 pub struct VerifiedKernelProgram {
     pub(super) string_literals: Vec<Vec<u8>>,
     pub(super) field_names: Vec<Vec<u8>>,
+    pub(super) switch_labels: Vec<Vec<u8>>,
     pub(super) literal_offset: usize,
     pub(super) layout: KernelFunctionLayout,
     pub(super) instructions: Vec<KernelInstruction>,
@@ -78,7 +83,7 @@ impl VerifiedKernelProgram {
         literals: &[Vec<u8>],
         budget: KernelVerificationBudget,
     ) -> Result<Self, KernelError> {
-        kernel_verifier::verify_linked(instructions, layout, literals, &[], budget, None)
+        kernel_verifier::verify_linked(instructions, layout, literals, &[], &[], budget, None)
     }
 
     /// Verifies/copies all code, string rows and independent field-name rows.
@@ -95,6 +100,7 @@ impl VerifiedKernelProgram {
             definition.layout,
             definition.string_literals,
             definition.field_names,
+            definition.switch_labels,
             budget,
             None,
         )

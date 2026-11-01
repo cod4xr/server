@@ -2,8 +2,15 @@
 use crate::execution::kernel_error;
 use crate::execution::{
     KernelError, KernelErrorKind, KernelFunctionDefinition, KernelFunctionLayout,
-    KernelInstruction, KernelValue,
+    KernelInstruction, KernelSwitchKey, KernelValue,
 };
+
+#[derive(Clone, Copy)]
+pub(super) struct KernelOperandTables {
+    pub(super) literals: usize,
+    pub(super) fields: usize,
+    pub(super) labels: usize,
+}
 
 pub(super) fn verify(
     instruction: KernelInstruction,
@@ -11,15 +18,23 @@ pub(super) fn verify(
     count: usize,
     layout: KernelFunctionLayout,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
-    literals: usize,
-    field_names: usize,
+    tables: KernelOperandTables,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::SwitchCompare {
+            key: KernelSwitchKey::StringLabel(label),
+            ..
+        } if label >= tables.labels => Err(kernel_error::at(
+            pc,
+            KernelErrorKind::InvalidSwitchLabel {
+                label: label as u64,
+            },
+        )),
         KernelInstruction::Constant(KernelValue::Array(_)) => {
             Err(kernel_error::at(pc, KernelErrorKind::RuntimeArrayConstant))
         }
         KernelInstruction::LoadField(name) | KernelInstruction::StoreField(name)
-            if name >= field_names =>
+            if name >= tables.fields =>
         {
             Err(kernel_error::at(
                 pc,
@@ -31,7 +46,7 @@ pub(super) fn verify(
         }
         KernelInstruction::StringLiteral(literal)
         | KernelInstruction::LocalizedStringLiteral(literal)
-            if literal >= literals =>
+            if literal >= tables.literals =>
         {
             Err(kernel_error::at(
                 pc,

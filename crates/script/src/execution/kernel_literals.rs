@@ -34,6 +34,15 @@ pub(super) fn copy_fields(
     copy_rows(names, ledger)
 }
 
+pub(super) fn copy_switch_labels(
+    labels: &[Vec<u8>],
+    ledger: &mut KernelVerificationLedger,
+) -> Result<Vec<Vec<u8>>, KernelError> {
+    ledger.charge(labels.len() as u64, None)?;
+    ledger.retain_switch_labels(labels.len() as u64, retained_bytes(labels)?)?;
+    copy_rows(labels, ledger)
+}
+
 fn copy_rows(
     literals: &[Vec<u8>],
     ledger: &mut KernelVerificationLedger,
