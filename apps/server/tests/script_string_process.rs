@@ -5,6 +5,9 @@
     reason = "Tests execute real offline source strings through owned temporary fixtures."
 )]
 mod content_support;
+#[path = "script_developer/mod.rs"]
+mod script_developer;
+mod script_package_support;
 #[path = "script_string_switch/mod.rs"]
 mod script_string_switch;
 

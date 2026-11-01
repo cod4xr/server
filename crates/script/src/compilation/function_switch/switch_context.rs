@@ -27,6 +27,12 @@ pub(in crate::compilation) struct FunctionSwitchContext {
     pub(super) scope_parent: Option<ScopeId>,
 }
 
+impl FunctionSwitchContext {
+    pub(in crate::compilation) fn begins_before(&self, instruction: usize) -> bool {
+        self.head < instruction
+    }
+}
+
 #[derive(Clone, Copy)]
 pub(in crate::compilation) enum SwitchLabel {
     Case(usize),

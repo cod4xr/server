@@ -28,6 +28,8 @@ pub struct ModuleCompilationUsage {
     pub compiler_steps: u64,
     /// Complete active instruction count.
     pub instructions: u64,
+    /// Peak staged prefix plus current temporary code, including discarded developer regions.
+    pub peak_instructions: u64,
     /// Peak admitted compiler tables/payload/current-function overlap.
     pub peak_metadata_bytes: u64,
     /// Retained declaration/function-map records and span payload, excluding kernel code.

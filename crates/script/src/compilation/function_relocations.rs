@@ -94,6 +94,12 @@ impl FunctionBuilder<'_, '_> {
         for pending in mem::take(&mut self.instructions) {
             self.ledger.charge(1, pending.span.clone())?;
             let instruction = match pending.kind {
+                PendingFunctionKind::ValidationOnly => {
+                    return Err(function_compile_error::at(
+                        pending.span,
+                        FunctionCompileErrorKind::InvalidControlState,
+                    ));
+                }
                 PendingFunctionKind::Ready(instruction) => instruction,
                 PendingFunctionKind::Branch {
                     condition,

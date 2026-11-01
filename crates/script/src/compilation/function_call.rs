@@ -35,22 +35,29 @@ pub(super) fn queue<'tree, 'source>(
     if call.receiver().is_some() || call.kind() != LegacyInvocationKind::Immediate {
         return Err(error(FunctionCompileErrorKind::UnsupportedCall));
     }
+    let discarded = crate::compilation::function_developer::discarded(builder).is_some();
     let target = match call.callee() {
+        LegacyCalleeKind::Named(callee) if discarded => {
+            crate::compilation::function_developer::validate_name(builder, callee)?;
+            None
+        }
         LegacyCalleeKind::Named(callee) => Some(function_call_target::named_call(builder, callee)?),
         LegacyCalleeKind::Indirect { .. } => None,
     };
     let arguments = call.arguments_syntax();
     let count = function_call_arguments::count(builder, arguments)?;
-    builder.push_task(
+    let finish = if discarded {
+        FunctionTask::ValidationOnly { span: node.span() }
+    } else {
         FunctionTask::Emit {
             instruction: match target {
                 Some(target) => target.instruction(count),
                 None => KernelInstruction::CallIndirect { arguments: count },
             },
             span: node.span(),
-        },
-        node.span(),
-    )?;
+        }
+    };
+    builder.push_task(finish, node.span())?;
     if let LegacyCalleeKind::Indirect { expression } = call.callee() {
         builder.push_task(FunctionTask::Visit(expression), expression.span())?;
     }

@@ -32,6 +32,7 @@ impl FunctionCompilationLedger {
                 retained_switch_bytes: 0,
                 compiler_steps: 0,
                 instructions: 0,
+                peak_instructions: 0,
                 peak_task_frames: 0,
                 peak_metadata_bytes: 0,
                 verification_steps: 0,
@@ -173,6 +174,7 @@ impl FunctionCompilationLedger {
             })?;
         self.metadata_with_bindings(bytes, span)?;
         self.usage.instructions = instructions as u64;
+        self.usage.peak_instructions = self.usage.peak_instructions.max(instructions as u64);
         self.usage.peak_task_frames = self.usage.peak_task_frames.max(tasks as u64);
         Ok(())
     }

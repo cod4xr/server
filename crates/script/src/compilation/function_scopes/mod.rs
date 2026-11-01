@@ -3,6 +3,7 @@
 
 mod scope_branches;
 mod scope_condition;
+mod scope_developer;
 mod scope_emission;
 mod scope_fold_string;
 mod scope_fold_value;
@@ -20,6 +21,7 @@ mod scope_transfers;
 mod scope_unions;
 mod scope_visit;
 
+pub(in crate::compilation) use scope_developer::{enter_developer, leave_developer};
 pub(in crate::compilation) use scope_emission::{break_edge, continue_edge, current, local_store};
 pub(in crate::compilation) use scope_if_emission::{begin_else, begin_if, end_consequence, end_if};
 pub(in crate::compilation) use scope_loop_emission::{
@@ -62,6 +64,10 @@ struct ScopeBlock {
 
 #[derive(Clone, Copy)]
 pub(in crate::compilation) enum ScopeControl {
+    Developer {
+        parent: ScopeId,
+        body: ScopeId,
+    },
     If {
         parent: ScopeId,
         consequence: ScopeId,

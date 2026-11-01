@@ -97,45 +97,7 @@ impl ModuleCompilationLedger {
         usage: FunctionCompilationUsage,
         span: Range<u64>,
     ) -> Result<(), FunctionCompileError> {
-        let peak = add(
-            self.prefix(span.clone())?,
-            usage.peak_metadata_bytes,
-            span.clone(),
-        )?;
-        self.metadata(peak, span.clone())?;
-        self.charge(usage.compiler_steps, span.clone())?;
-        let instructions = add(self.usage.instructions, usage.instructions, span.clone())?;
-        self.check(
-            ModuleCompilationResource::Instructions,
-            instructions,
-            self.budget.max_instructions,
-            span.clone(),
-        )?;
-        self.usage.instructions = instructions;
-        self.usage.string_literals = add(
-            self.usage.string_literals,
-            usage.string_literals,
-            span.clone(),
-        )?;
-        self.usage.staged_string_bytes = add(
-            self.usage.staged_string_bytes,
-            usage.retained_string_bytes,
-            span.clone(),
-        )?;
-        self.usage.field_names = add(self.usage.field_names, usage.field_names, span.clone())?;
-        self.usage.staged_field_bytes = add(
-            self.usage.staged_field_bytes,
-            usage.retained_field_bytes,
-            span.clone(),
-        )?;
-        self.usage.switch_labels =
-            add(self.usage.switch_labels, usage.switch_labels, span.clone())?;
-        self.usage.staged_switch_bytes = add(
-            self.usage.staged_switch_bytes,
-            usage.retained_switch_bytes,
-            span,
-        )?;
-        Ok(())
+        super::module_compilation_record::record(self, usage, span)
     }
 
     pub(super) fn locate(&self, mut cause: FunctionCompileError) -> FunctionCompileError {
@@ -272,7 +234,7 @@ impl ModuleCompilationLedger {
     }
 }
 
-fn add(left: u64, right: u64, span: Range<u64>) -> Result<u64, FunctionCompileError> {
+pub(super) fn add(left: u64, right: u64, span: Range<u64>) -> Result<u64, FunctionCompileError> {
     left.checked_add(right)
         .ok_or_else(|| function_compile_error::at(span, FunctionCompileErrorKind::SizeOverflow))
 }

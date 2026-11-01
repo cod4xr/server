@@ -4,6 +4,7 @@ mod compiled_module;
 mod compiled_module_function;
 mod module_compilation_budget;
 mod module_compilation_ledger;
+mod module_compilation_record;
 mod module_compile_error;
 mod module_inventory;
 mod module_metadata;

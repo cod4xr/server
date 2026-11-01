@@ -87,6 +87,36 @@ pub(super) fn lower(
     kind: FunctionLoopTransfer,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
+    if let Some(start) = crate::compilation::function_developer::discarded(builder) {
+        let outside = if matches!(kind, FunctionLoopTransfer::Break)
+            && builder.break_owner == Some(FunctionBreakOwner::Switch)
+        {
+            builder
+                .active_switch
+                .as_ref()
+                .is_some_and(|context| context.begins_before(start))
+        } else {
+            builder
+                .active_loop
+                .as_ref()
+                .is_some_and(|context| context.head.0 < start)
+        };
+        if outside {
+            // Discarded code still validates the legal target and local cleanup,
+            // but cannot append patches/facts to a retained enclosing construct.
+            match kind {
+                FunctionLoopTransfer::Break => {
+                    function_scopes::break_edge(builder, builder.break_scope, span.clone())?;
+                }
+                FunctionLoopTransfer::Continue => {
+                    function_scopes::continue_edge(builder, span.clone())?;
+                }
+            }
+            crate::compilation::function_developer::emit_validation(builder, span)?;
+            builder.reachable = false;
+            return Ok(());
+        }
+    }
     if matches!(kind, FunctionLoopTransfer::Break)
         && builder.break_owner == Some(FunctionBreakOwner::Switch)
     {

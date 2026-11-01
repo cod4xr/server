@@ -3,9 +3,8 @@
     clippy::expect_used,
     reason = "Real offline processes must log switch counts and located failures without source labels."
 )]
-#[path = "../script_package_support/mod.rs"]
-mod script_package_support;
 use crate::content_support::FixtureFile;
+use crate::script_package_support;
 use std::process::Command;
 
 #[test]

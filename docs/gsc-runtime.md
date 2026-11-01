@@ -1,5 +1,15 @@
 # Expanded GSC runtime contract
 
+ADR 0102 activates bound-source developer lists using explicit per-module modes.
+Disabled lists validate and discard code/literal/field/label rows without linked
+placeholder targets; enabled lists preserve private cleanup and developer-call
+visibility. Parent validation, returns, outer transfers, peak temporary instruction
+admission, mixed package modes, wide/deep/churn/failure and private process paths
+are tested. The developer_blocks.gsc example returns 20 by default and 42 when
+enabled. Stable local layouts retain planned private declarations. Full collection
+still audits all retained array-owner slots; that separate performance issue and
+general scheduling/engine/full-GSC acceptance remain open.
+
 Assessment 0100 adds twenty selected native developer local-analysis cases with
 eight admission tests. Ordinary child names, common/disjoint branches, returns,
 nested planning and break/continue loop unions stay distinct. This planning family
@@ -707,8 +717,9 @@ adds distinct localized values, same-type equality and raw escaped output, with
 3,024 actual C comparison/arithmetic outcomes, complete predicate tag replays and
 mixed 70,000-row/source/rooting/resource tests. ADR 0061 now adds plain-string byte
 indexing/size with 896 native outcomes, source/process/rooting/resource tests and
-45 selected-role mutations. Translation/mixed coercion, string switches,
-objects/cycles/scheduling and general library/game roots remain integration work.
+45 selected-role mutations. Later ADRs accept bounded ordinary structs/roots,
+arrays and string switches; translation/mixed coercion, general cycles/scheduling
+and complete library/game services remain integration work.
 
 ADR 0062 adds isdefined for the implemented primitive categories, with a required
 first argument and evaluated extras. Optional script parameters retain Undefined;
@@ -729,8 +740,9 @@ ref/output services and VM call sequences are modeled; collision relocation and
 allocator reuse stay open. 69 copy/key and 141 write/grammar/compiler/VM role
 mutations reject. Literal and
 computed Undefined deletion have distinct parent/temporary-key setup paths.
-Rust array/object storage and VM execution remain
-unimplemented. The ownership/storage acceptance assessment is ADR 0060.
+Rust array/object storage and VM execution were unimplemented at that checkpoint.
+Later ADRs accept bounded storage/source/VM profiles; general ownership and full
+legacy compatibility remain open. The early assessment is ADR 0060.
 
 | Workstream | Required completion evidence |
 | --- | --- |

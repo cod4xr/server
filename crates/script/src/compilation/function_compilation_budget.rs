@@ -9,7 +9,7 @@ use crate::statement::StatementListBudget;
 pub struct FunctionCompilationBudget {
     /// Body/task/group/case probes, literal/name bytes, facts, dispatch and resolution.
     pub max_steps: u64,
-    /// Complete emitted primitive instruction count.
+    /// Peak temporary instruction count, including code later discarded by developer mode.
     pub max_instructions: u64,
     /// Maximum live iterative lowering frames.
     pub max_task_frames: u64,

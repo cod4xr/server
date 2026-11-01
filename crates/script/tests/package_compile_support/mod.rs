@@ -16,6 +16,27 @@ pub fn compile(
     mode: LegacyDeveloperMode,
     budget: ScriptPackageBudget,
 ) -> Result<CompiledScriptPackage, ScriptPackageError> {
+    compile_with_mode_for(inputs, |_| mode, budget)
+}
+
+pub fn compile_with_modes(
+    inputs: &[(&[u8], &[u8])],
+    modes: &[LegacyDeveloperMode],
+    budget: ScriptPackageBudget,
+) -> Result<CompiledScriptPackage, ScriptPackageError> {
+    assert_eq!(
+        inputs.len(),
+        modes.len(),
+        "Explicit mode for every supplied module"
+    );
+    compile_with_mode_for(inputs, |index| modes[index], budget)
+}
+
+fn compile_with_mode_for(
+    inputs: &[(&[u8], &[u8])],
+    mode: impl Fn(usize) -> LegacyDeveloperMode,
+    budget: ScriptPackageBudget,
+) -> Result<CompiledScriptPackage, ScriptPackageError> {
     let sources: Vec<_> = inputs
         .iter()
         .map(|(_, bytes)| SourceText::index(bytes, SourceBudget::default()).expect("Source"))
@@ -39,8 +60,10 @@ pub fn compile(
         .collect();
     let symbols: Vec<_> = modules
         .iter()
-        .map(|module| {
-            LegacyModuleSymbols::bind(module, mode, SymbolBudget::default()).expect("Local symbols")
+        .enumerate()
+        .map(|(index, module)| {
+            LegacyModuleSymbols::bind(module, mode(index), SymbolBudget::default())
+                .expect("Local symbols")
         })
         .collect();
     let definitions: Vec<_> = inputs

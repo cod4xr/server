@@ -40,6 +40,9 @@ impl<'tree, 'source> ScopePlanner<'tree, 'source> {
                 Ok(())
             }
             LegacyStatementKind::Block { body } => self.queue_body(builder, body, block, flow),
+            LegacyStatementKind::DeveloperBlock { body } => {
+                self.begin_developer(builder, block, body, flow, view.statement_syntax().span())
+            }
             LegacyStatementKind::Return { .. } => {
                 self.plan.block_mut(block, syntax.span())?.abort = ScopeAbort::Return;
                 Ok(())

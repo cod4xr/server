@@ -11,7 +11,7 @@ const DEFAULT_MAX_CALL_ARGUMENTS: u64 = 1_000_000;
 pub struct FunctionLoweringBudget {
     /// Body/task/group/case probes, literal/name bytes, facts, dispatch and resolution.
     pub max_steps: u64,
-    /// Complete emitted typed instructions.
+    /// Peak temporary typed instructions, including discarded developer regions.
     pub max_instructions: u64,
     /// Maximum live iterative lowering tasks.
     pub max_task_frames: u64,

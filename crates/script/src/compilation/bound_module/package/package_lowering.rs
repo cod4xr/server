@@ -53,6 +53,7 @@ pub(super) fn lower<'tree, 'source>(
                 scope,
                 caller: binding.visibility(),
                 module,
+                developer: input.symbols.mode(),
             };
             let (staged, map) =
                 staged_function::lower(binding.declaration(), declaration, mode, limits).map_err(

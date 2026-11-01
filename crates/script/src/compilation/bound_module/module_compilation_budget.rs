@@ -11,7 +11,7 @@ pub struct ModuleCompilationBudget {
     pub max_functions: u64,
     /// Inventory/name/record visits plus all function compiler work.
     pub max_steps: u64,
-    /// Total instructions across all staged active functions.
+    /// Staged active prefix plus peak current temporary code, including discarded regions.
     pub max_instructions: u64,
     /// Logical tables/scope/staged code/maps plus current lowering overlap.
     /// Excludes source/CST/symbols, nested body/literal/kernel scopes, hash controls,

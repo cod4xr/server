@@ -13,6 +13,10 @@ pub(super) fn lower(
     let callee = LegacyFunctionNameSyntax::from_node(node).map_err(|_| {
         function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
+    if crate::compilation::function_developer::discarded(builder).is_some() {
+        crate::compilation::function_developer::validate_name(builder, callee)?;
+        return crate::compilation::function_developer::emit_validation(builder, node.span());
+    }
     let function = function_call_target::resolve(builder, callee)?;
     builder.emit(KernelInstruction::FunctionReference(function), node.span())
 }

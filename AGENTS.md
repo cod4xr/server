@@ -1,5 +1,22 @@
 # Project contract
 
+ADR 0102 accepts bound-source developer lists with explicit per-module modes,
+private child scopes, inherited developer visibility and validation-only discard.
+Off regions validate arguments/literals/initialization/control and drop temporary
+code/literal/field/label rows; never create executable dummy targets. Private
+markers must reject outside discard and at publication. Discarded outer transfers
+must not mutate retained patch/fact chains. Nested lists/developer definitions
+reject. Keep one flat frame, restore parent validation, charge all work/peaks and
+report peak_instructions separately from retained code. Planned private local
+slots remain in stable layouts; no compaction claim. Preserve seventeen source/
+three process/two private tests, width/depth/churn, exact/all-prefix budgets and
+mixed package policies. The negative owner-audit stress records an existing
+linear full-collection cost; constant VM owner operations do not prove cheap
+collection beside many host aliases. Any optimization needs its own audit/lifetime/
+atomicity/resource review. Full Windows gates pass 424 frontend/273 legacy/17
+private script tests, seven generators/56 admissions, 98/59/31/38 mutations and
+existing structural/suite/policy gates. Full GSC/scheduling/gameplay remain open.
+
 Assessment 0101 adds four executed mode-two EmitFunction cases to 0099, preserving
 all original twelve outcomes. Local/external owned/borrowed names bypass lookup/
 linking/output on this selected path; release counts and pending-file counters

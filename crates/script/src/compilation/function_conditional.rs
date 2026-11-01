@@ -9,6 +9,30 @@ use crate::compilation::function_task::{FunctionPatchSite, FunctionTask};
 use crate::execution::KernelBranchCondition;
 use crate::syntax::LegacySyntaxNode;
 
+pub(super) fn queue<'tree, 'source>(
+    builder: &mut FunctionBuilder<'tree, 'source>,
+    syntax: LegacySyntaxNode<'tree, 'source>,
+    condition: LegacySyntaxNode<'tree, 'source>,
+    consequence: LegacySyntaxNode<'tree, 'source>,
+    alternative: Option<LegacySyntaxNode<'tree, 'source>>,
+) -> Result<(), FunctionCompileError> {
+    let span = crate::compilation::function_body::child(
+        syntax,
+        0,
+        if alternative.is_some() { 7 } else { 5 },
+    )?
+    .span();
+    builder.push_task(
+        FunctionTask::BeginIf {
+            consequence,
+            alternative,
+            span: span.clone(),
+        },
+        span,
+    )?;
+    builder.push_task(FunctionTask::Visit(condition), condition.span())
+}
+
 pub(super) fn begin<'tree, 'source>(
     builder: &mut FunctionBuilder<'tree, 'source>,
     consequence: LegacySyntaxNode<'tree, 'source>,

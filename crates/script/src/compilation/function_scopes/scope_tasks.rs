@@ -41,6 +41,10 @@ pub(super) struct ScopeForWork {
 }
 
 pub(super) enum ScopeTaskKind<'tree, 'source> {
+    DeveloperEnd {
+        parent: ScopeId,
+        body: ScopeId,
+    },
     Visit {
         syntax: LegacySyntaxNode<'tree, 'source>,
         block: ScopeId,

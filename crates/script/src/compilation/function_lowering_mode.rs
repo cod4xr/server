@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::binding::LegacyFunctionVisibility;
+use crate::binding::{LegacyDeveloperMode, LegacyFunctionVisibility};
 use crate::compilation::FunctionSourceProfile;
 use crate::execution::{KernelExecutionBudget, KernelVerificationBudget};
 
@@ -18,6 +18,7 @@ pub(super) enum FunctionLoweringMode<'scope, 'source> {
         scope: &'scope FunctionCallScope<'source>,
         caller: LegacyFunctionVisibility,
         module: usize,
+        developer: LegacyDeveloperMode,
     },
 }
 
@@ -31,6 +32,23 @@ impl FunctionLoweringMode<'_, '_> {
 
     pub(super) fn bound(self) -> bool {
         matches!(self, Self::BoundModule { .. })
+    }
+
+    pub(super) fn developer(self) -> LegacyDeveloperMode {
+        match self {
+            Self::BoundModule { developer, .. } => developer,
+            Self::Standalone(_) => LegacyDeveloperMode::Disabled,
+        }
+    }
+
+    pub(super) fn developer_function(self) -> bool {
+        matches!(
+            self,
+            Self::BoundModule {
+                caller: LegacyFunctionVisibility::DeveloperOnly,
+                ..
+            }
+        )
     }
 
     pub(super) fn standalone(self) -> Option<StandaloneFunctionMode> {

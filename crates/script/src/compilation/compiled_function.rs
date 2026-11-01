@@ -33,6 +33,8 @@ pub struct FunctionCompilationUsage {
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.
     pub instructions: u64,
+    /// Peak temporary instructions before discarded developer code is removed.
+    pub peak_instructions: u64,
     /// Peak live iterative lowering frames.
     pub peak_task_frames: u64,
     /// Peak admitted logical compiler-owned metadata; excludes source/CST and kernel scopes.

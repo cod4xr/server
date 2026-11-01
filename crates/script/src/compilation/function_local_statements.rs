@@ -31,6 +31,13 @@ pub(super) fn lower<'tree, 'source>(
     })?;
     match view.kind() {
         LegacyStatementKind::Empty => Ok(()),
+        LegacyStatementKind::DeveloperBlock { body } => {
+            crate::compilation::function_developer::begin(
+                builder,
+                body,
+                view.statement_syntax().span(),
+            )
+        }
         LegacyStatementKind::Switch { expression, body } => {
             function_switch::queue(builder, expression, body, syntax.span())
         }
@@ -73,23 +80,13 @@ pub(super) fn lower<'tree, 'source>(
             condition,
             consequence,
             alternative,
-        } => {
-            let span = function_body::child(
-                view.statement_syntax(),
-                0,
-                if alternative.is_some() { 7 } else { 5 },
-            )?
-            .span();
-            builder.push_task(
-                FunctionTask::BeginIf {
-                    consequence,
-                    alternative,
-                    span: span.clone(),
-                },
-                span,
-            )?;
-            builder.push_task(FunctionTask::Visit(condition), condition.span())
-        }
+        } => crate::compilation::function_conditional::queue(
+            builder,
+            view.statement_syntax(),
+            condition,
+            consequence,
+            alternative,
+        ),
         LegacyStatementKind::While { condition, body } => {
             let span = function_body::child(view.statement_syntax(), 0, 5)?.span();
             function_while::queue(builder, condition, body, span)

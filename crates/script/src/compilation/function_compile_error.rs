@@ -56,6 +56,8 @@ pub enum FunctionCompileErrorKind {
     UnknownFunction,
     /// Ordinary code cannot reference a developer-only function.
     DeveloperFunctionReference,
+    /// A developer list is nested in developer-only execution or another list.
+    NestedDeveloperBlock,
     /// Parentheses require a singleton; the primitive profile additionally accepts triples.
     UnsupportedGroupArity,
     /// The target is outside this profile's plain-local, bound field or local-index authority.
@@ -78,9 +80,9 @@ pub enum FunctionCompileErrorKind {
     IllegalContinue,
     /// A case/default label is outside an immediate switch body.
     IllegalCase,
-    /// This primitive switch requires integer literal labels.
+    /// A case label is outside this profile's integer/plain-string literal productions.
     UnsupportedCase,
-    /// Multiple labels decode to the same integer key or default.
+    /// Multiple labels decode to the same typed key or repeat default.
     DuplicateCase,
     /// A private switch context, case target or admission invariant did not hold.
     InvalidSwitchContext,

@@ -19,6 +19,12 @@ pub(super) struct FunctionPatchSite(pub(super) usize);
 pub(super) struct FunctionLoopHead(pub(super) usize);
 
 pub(super) enum FunctionTask<'tree, 'source> {
+    EndDeveloper {
+        span: Range<u64>,
+    },
+    ValidationOnly {
+        span: Range<u64>,
+    },
     Switch(FunctionSwitchTask<'tree, 'source>),
     Visit(LegacySyntaxNode<'tree, 'source>),
     CallArguments {
@@ -95,7 +101,9 @@ impl FunctionTask<'_, '_> {
             Self::Statement { syntax, .. } => syntax.span(),
             Self::AfterForInit(plan) | Self::BeginForBody { plan, .. } => plan.span.clone(),
             Self::AfterForBody { end, .. } | Self::AfterForUpdate(end) => end.span.clone(),
-            Self::CallArguments { span, .. }
+            Self::EndDeveloper { span }
+            | Self::ValidationOnly { span }
+            | Self::CallArguments { span, .. }
             | Self::Emit { span, .. }
             | Self::FinishAssignment { span, .. }
             | Self::BeginLogical { span, .. }
@@ -110,6 +118,9 @@ impl FunctionTask<'_, '_> {
 }
 
 pub(super) enum PendingFunctionKind {
+    /// Validation-only marker with no executable or link target representation.
+    /// Resolution must reject any marker that escapes discarded source.
+    ValidationOnly,
     Ready(KernelInstruction),
     Branch {
         condition: KernelBranchCondition,

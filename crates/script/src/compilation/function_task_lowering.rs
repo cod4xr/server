@@ -17,6 +17,12 @@ pub(super) fn drain(builder: &mut FunctionBuilder<'_, '_>) -> Result<(), Functio
     while let Some(task) = builder.next_task() {
         builder.ledger.charge(1, task.span())?;
         match task {
+            FunctionTask::EndDeveloper { span } => {
+                crate::compilation::function_developer::finish(builder, span)?;
+            }
+            FunctionTask::ValidationOnly { span } => {
+                crate::compilation::function_developer::emit_validation(builder, span)?;
+            }
             FunctionTask::Switch(task) => function_switch::lower(builder, task)?,
             FunctionTask::Visit(node) => function_expression_lowering::visit(builder, node)?,
             FunctionTask::CallArguments { cursor, span } => {

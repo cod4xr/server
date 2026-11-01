@@ -3,6 +3,7 @@ use std::ops::Range;
 
 use crate::compilation::function_compilation_ledger::FunctionCompilationLedger;
 use crate::compilation::function_compile_error;
+use crate::compilation::function_developer::FunctionDeveloperFrame;
 use crate::compilation::function_local_bindings::FunctionLocalBindings;
 use crate::compilation::function_loop_transfer::{FunctionBreakOwner, FunctionLoopContext};
 use crate::compilation::function_lowering_mode::{FunctionLoweringMode, StandaloneFunctionMode};
@@ -26,6 +27,7 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) break_owner: Option<FunctionBreakOwner>,
     pub(super) break_scope: Option<ScopeId>,
     pub(super) active_switch: Option<FunctionSwitchContext>,
+    pub(super) active_developer: Option<FunctionDeveloperFrame>,
     pub(super) scopes: Option<FunctionScopePlan>,
     tasks: Vec<FunctionTask<'tree, 'source>>,
     pub(super) instructions: Vec<PendingFunctionInstruction>,
@@ -60,6 +62,7 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             break_owner: None,
             break_scope: None,
             active_switch: None,
+            active_developer: None,
             scopes: None,
             tasks: Vec::new(),
             instructions: Vec::new(),
@@ -212,7 +215,7 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             .map(FunctionPatchSite)
     }
 
-    fn append(
+    pub(super) fn append(
         &mut self,
         kind: PendingFunctionKind,
         span: Range<u64>,

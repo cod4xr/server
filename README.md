@@ -16,6 +16,13 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC now supports developer blocks with explicit per-module modes,
+  private-scope cleanup and checked validation of discarded code. Disabled blocks
+  retain no code/string/field/label rows or executable dummy targets. Compiler
+  logs distinguish retained instructions from temporary peaks. The
+  `examples/gsc/developer_blocks.gsc` example returns 20 by default and 42 with
+  `--gsc-developer enabled`. ADR 0102 scopes this component; full GSC remains open.
+
 - Bound GSC modules/packages now compile and execute plain-string and mixed
   integer/string switches with separately owned label bytes and no runtime label
   cache. Tests cover decoded duplicates, cleanup, 66,000 string cases, 70,001-byte

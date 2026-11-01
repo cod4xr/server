@@ -101,6 +101,7 @@ pub(super) fn lower<'tree, 'source>(
         scopes.release(builder, function.span())?;
     }
     if builder.active_loop.is_some()
+        || builder.active_developer.is_some()
         || builder.active_switch.is_some()
         || builder.break_owner.is_some()
         || builder.break_scope.is_some()

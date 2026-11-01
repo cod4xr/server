@@ -30,6 +30,11 @@ pub(in crate::compilation) fn build<'tree, 'source>(
         planner.active_task = true;
         builder.ledger.charge(1, span.clone())?;
         match kind {
+            ScopeTaskKind::DeveloperEnd { parent, body } => {
+                planner
+                    .plan
+                    .make_public(builder, parent, &[body], span.clone())?;
+            }
             ScopeTaskKind::Visit {
                 syntax,
                 block,

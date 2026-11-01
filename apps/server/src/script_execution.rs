@@ -40,6 +40,7 @@ pub(crate) fn run(
         declarations = usage.declarations,
         functions = usage.functions,
         instructions = usage.instructions,
+        peak_instructions = usage.peak_instructions,
         string_literals = usage.string_literals,
         staged_string_bytes = usage.staged_string_bytes,
         field_names = usage.field_names,

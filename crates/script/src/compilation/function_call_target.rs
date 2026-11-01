@@ -88,6 +88,7 @@ fn find(
         scope,
         caller: _,
         module,
+        ..
     } = builder.mode
     else {
         return Err(function_compile_error::at(
@@ -130,6 +131,7 @@ fn script(
         ));
     };
     if caller == LegacyFunctionVisibility::Ordinary
+        && builder.active_developer.is_none()
         && target.visibility == LegacyFunctionVisibility::DeveloperOnly
     {
         return Err(function_compile_error::at(
