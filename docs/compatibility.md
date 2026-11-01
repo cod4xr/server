@@ -1,5 +1,11 @@
 # Compatibility contract
 
+ADR 0078 runs explicitly supplied packages through the real offline process, with
+eleven process/two private tests for source/entry/developer/error/log/output and
+aggregate admission behavior. It preserves current single-file/query modes and
+rejects includes/animation directives in every file. This is not filesystem mount,
+automatic dependency/preprocessing, native loader or stock/mod compatibility.
+
 ADR 0077 adds closed supplied-file GSC compilation/execution with canonical module
 lookup, local namespaces, strict qualified misses and developer visibility.
 Thirteen integration tests cover wide/deep/owned/error/budget/heap boundaries;

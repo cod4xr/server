@@ -1,5 +1,11 @@
 # Expanded GSC runtime contract
 
+ADR 0078 provides --execute-gsc-package with explicit --gsc-module NAME PATH
+inputs, shared aggregate frontend/compiler/runtime admission and the normal
+readable/JSON logging and typed stdout. Its real-process example returns integer
+1001. Caller-supplied file authority is explicit; directives/automatic loading,
+source arrays, scheduling, host libraries and stock/mod acceptance remain open.
+
 ADR 0077 adds closed supplied-file compilation into one owned verified image,
 including qualified calls/references, local namespaces, developer rules and shared
 compiler/runtime/heap admission. The script_package example runs two real sources;

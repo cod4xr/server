@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- The offline server command runs explicitly supplied GSC packages through the
+  normal readable/JSON logs and typed result output. Use `--execute-gsc-package`
+  with repeatable `--gsc-module NAME PATH`; ADR 0078 includes a runnable example.
+  Combined frontend budgets and private file/source failures are tested. Automatic
+  loading, includes, game services and complete GSC execution remain open.
+
 - Supplied GSC files now compile into one owned verified package with qualified
   calls/function references, local namespaces and shared budgets. Tests cover
   66,000 modules/functions, 70,000-byte names, deep cross-file frames and heap

@@ -21,6 +21,7 @@ pub(crate) enum AppError {
     ScriptDeclaration(cod4x_script::declaration::DeclarationError),
     ScriptBinding(cod4x_script::binding::SymbolError),
     ScriptCompilation(cod4x_script::compilation::ModuleCompileError),
+    ScriptPackage(cod4x_script::compilation::ScriptPackageError),
     ScriptExecution(cod4x_script::execution::KernelModuleError),
     ScriptFeature(&'static str),
     ScriptOutput(io::Error),
@@ -54,6 +55,9 @@ impl fmt::Display for AppError {
             Self::ScriptBinding(error) => write!(formatter, "script inspection failed: {error}"),
             Self::ScriptCompilation(error) => {
                 write!(formatter, "script compilation failed: {error}")
+            }
+            Self::ScriptPackage(error) => {
+                write!(formatter, "script package compilation failed: {error}")
             }
             Self::ScriptExecution(error) => write!(formatter, "script execution failed: {error}"),
             Self::ScriptFeature(message) => {
@@ -89,6 +93,7 @@ impl Error for AppError {
             Self::ScriptDeclaration(error) => Some(error),
             Self::ScriptBinding(error) => Some(error),
             Self::ScriptCompilation(error) => Some(error),
+            Self::ScriptPackage(error) => Some(error),
             Self::ScriptExecution(error) => Some(error),
             Self::ScriptHeap(error) => Some(error),
             Self::ScriptObjects(error) => Some(error),

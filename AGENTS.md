@@ -1,5 +1,18 @@
 # Project contract
 
+ADR 0078 adds explicit offline --execute-gsc-package ENTRY with repeatable
+--gsc-module NAME PATH. Paths come only from operator arguments, never script
+names. Reject directives/unsupported active bodies and missing/duplicate/invalid
+identities before stdout/execution. Keep one shared ScriptImage runtime/result/
+logging path, global frames/fuel/heaps and private numeric module/source locations.
+CLI rows/raw names and aggregate snapshot/index/parser/scanner/declaration/symbol
+work/storage must stay admitted across files; parser peaks conservatively sum.
+Preserve eleven process/two private tests, 17 exact/one-less frontend scopes, raw
+name-compaction bypass rejection, combined-snapshot limits and flushed JSON files.
+Run the documented example (integer 1001). Keep source phases in script_package/,
+fallible variable staging, one normal target and existing offline/query behavior.
+No automatic/include/mount/preprocess/stock-mod/complete GSC compatibility implied.
+
 ADR 0077 adds an explicit supplied bound-module package compiler. Preserve local
 namespaces, native canonical path identity, all-active forward/recursive inventory,
 developer rules and strict qualified misses (no builtin fallback). Own complete

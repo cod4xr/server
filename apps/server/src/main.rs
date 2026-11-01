@@ -11,6 +11,8 @@ mod ready_socket;
 mod runtime;
 mod script;
 mod script_execution;
+mod script_image;
+mod script_package;
 mod script_result;
 mod script_runtime;
 mod service;

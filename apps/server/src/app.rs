@@ -9,6 +9,7 @@ use crate::arguments::{self, Action, Arguments, Mode};
 use crate::content;
 use crate::runtime::Runtime;
 use crate::script;
+use crate::script_package;
 use crate::service::RuntimeService;
 
 pub(crate) fn run() -> Result<(), AppError> {
@@ -36,6 +37,13 @@ pub(crate) fn run() -> Result<(), AppError> {
         Mode::InspectRawFiles(path) => return content::inspect_rawfiles(path),
         Mode::InspectGsc(path) => return script::inspect(path, options.developer_scripts),
         Mode::ExecuteGsc(path) => return script::execute(path, options.developer_scripts),
+        Mode::ExecuteGscPackage(entry) => {
+            return script_package::run(
+                entry,
+                &options.script_package.inputs,
+                options.developer_scripts,
+            );
+        }
         Mode::QueryOnly | Mode::HandshakeProbe => {}
     }
     let service = match RuntimeService::for_mode(&options.mode) {

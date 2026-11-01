@@ -1,5 +1,12 @@
 # Architecture and expansion
 
+ADR 0078 exposes closed-package execution through explicit offline CLI inputs.
+The script_package folder owns named input admission, aggregate source/frontend
+budgets and orchestration. A private borrowed ScriptImage shares runtime roots,
+typed stdout and structured logs with single-file execution. Source snapshots stay
+for numeric diagnostics while compiler/tree staging drops before execution. Script
+paths grant no filesystem authority; operator paths are the only files opened.
+
 ADR 0077 links caller-supplied bound GSC files into one owned verified image.
 Module-indexed local name keys and a separately sorted canonical path index keep
 source order stable and prevent name leakage across files. Namespace rows/payload,

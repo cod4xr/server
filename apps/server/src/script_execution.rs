@@ -5,6 +5,7 @@ use cod4x_script::declaration::{LegacyModuleItem, LegacyModuleSyntax};
 use cod4x_script::source::SourceText;
 
 use crate::app_error::AppError;
+use crate::script_image::ScriptImage;
 use crate::script_runtime;
 
 pub(crate) fn run(
@@ -12,7 +13,7 @@ pub(crate) fn run(
     module: &LegacyModuleSyntax<'_, '_>,
     symbols: &LegacyModuleSymbols<'_, '_, '_>,
 ) -> Result<(), AppError> {
-    check_directives(module)?;
+    check_directives(module, None)?;
     let compiled = compilation::compile_bound_primitive_module(symbols, ModuleCompilationBudget::default()).map_err(|error| {
         let location = source.location(error.cause.span.start).ok();
         tracing::error!(event = "script.failed", phase = "compile", kind = "module", cause = ?error.cause.kind,
@@ -22,16 +23,9 @@ pub(crate) fn run(
             "primitive GSC compilation failed");
         AppError::ScriptCompilation(error)
     })?;
-    let declaration = symbols
-        .functions()
-        .iter()
-        .position(|function| {
-            function.inclusion() == LegacyFunctionInclusion::Active
-                && function.name().as_bytes().eq_ignore_ascii_case(b"main")
-        })
-        .ok_or_else(|| feature("entry", "an active local main function is required"))?;
+    let declaration = entry(symbols, None)?;
     let entry = compiled
-        .function_for_declaration(declaration as u64)
+        .function_for_declaration(declaration)
         .ok_or_else(|| feature("entry", "compiled main entry mapping is invalid"))?;
     let usage = compiled.usage();
     tracing::info!(
@@ -49,12 +43,22 @@ pub(crate) fn run(
         verification_steps = usage.verification.verification_steps,
         "primitive GSC module compiled"
     );
-    script_runtime::run(source, &compiled, entry)
+    script_runtime::run(
+        ScriptImage::Module {
+            source,
+            compiled: &compiled,
+        },
+        entry,
+    )
 }
 
-fn check_directives(module: &LegacyModuleSyntax<'_, '_>) -> Result<(), AppError> {
+pub(crate) fn check_directives(
+    module: &LegacyModuleSyntax<'_, '_>,
+    index: Option<u64>,
+) -> Result<(), AppError> {
     if !module.includes().is_empty() {
-        return Err(feature(
+        return Err(feature_at(
+            index,
             "directives",
             "include resolution is not implemented",
         ));
@@ -64,7 +68,8 @@ fn check_directives(module: &LegacyModuleSyntax<'_, '_>) -> Result<(), AppError>
         .iter()
         .any(|item| matches!(item, LegacyModuleItem::UsingAnimTree(_)))
     {
-        return Err(feature(
+        return Err(feature_at(
+            index,
             "directives",
             "animation-tree resolution is not implemented",
         ));
@@ -72,10 +77,30 @@ fn check_directives(module: &LegacyModuleSyntax<'_, '_>) -> Result<(), AppError>
     Ok(())
 }
 
+pub(crate) fn entry(
+    symbols: &LegacyModuleSymbols<'_, '_, '_>,
+    module: Option<u64>,
+) -> Result<u64, AppError> {
+    symbols
+        .functions()
+        .iter()
+        .position(|function| {
+            function.inclusion() == LegacyFunctionInclusion::Active
+                && function.name().as_bytes().eq_ignore_ascii_case(b"main")
+        })
+        .map(|index| index as u64)
+        .ok_or_else(|| feature_at(module, "entry", "an active local main function is required"))
+}
+
 fn feature(phase: &'static str, message: &'static str) -> AppError {
+    feature_at(None, phase, message)
+}
+
+fn feature_at(module: Option<u64>, phase: &'static str, message: &'static str) -> AppError {
     tracing::error!(
         event = "script.failed",
         phase,
+        module,
         kind = "unsupported",
         "{message}"
     );
