@@ -23,6 +23,17 @@ actual C outcomes) and retain strict default oracle string services. Keep isolat
 scalar profiles distinct. Translation/mixed coercion, string indexing/switches and
 full arrays/objects/scheduling remain open.
 
+Array semantics are assessed in ADR 0060; no Rust array store or VM instructions
+exist yet. Preserve native local-slot copy-on-write, recursive nested-array copies,
+shared struct identity and copy-induced sibling-order reversal. Run
+generate_array_vectors.py --check (262 actual helper traces at O0/O2 with modeled
+pool/ref/output services) and script_array_reference.py (69 selected-role mutations).
+Separate-process checked error exits do not execute an unwinder; native entity,
+allocation/GC/compiler/VM behavior and general deletion remain outside that corpus.
+Do not copy packed key names/16-bit size/ref fields into authoritative storage.
+Assess ownership and measured wide/churn/deep/cycle/resource workloads before
+choosing or activating object storage; raw copied IDs are not managed owners.
+
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a
 future consumer, not a core dependency. Do not read or modify the Deathrun

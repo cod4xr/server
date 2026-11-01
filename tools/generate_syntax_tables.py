@@ -8,6 +8,7 @@ import subprocess
 
 from reference_source import ReferenceSource
 import script_argument_reference as arguments
+import script_array_reference as arrays
 import script_call_link_reference as call_links
 import script_function_reference as function_references
 import script_predicate_reference as predicates
@@ -111,6 +112,7 @@ def main() -> None:
     function_references.verify(reference.files["src/asmsource/_scr_compiler.asm"],
                                reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
     predicates.verify(*predicates.inputs(reference))
+    arrays.verify(*arrays.inputs(reference))
     switches.verify(*switches.inputs(reference))
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])
@@ -137,7 +139,7 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print("Verified grammar/declaration/symbol/expression/statement/update/argument/local-call/function-reference/predicate/switch/while/transfer/for/vector/index "
+    print("Verified grammar/declaration/symbol/expression/statement/update/argument/array/local-call/function-reference/predicate/switch/while/transfer/for/vector/index "
           f"profiles and {len(rows) - 2} structural replays")
 
 

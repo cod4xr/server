@@ -526,6 +526,12 @@ small coding tasks or a delivery promise. This working breakdown uses twelve;
 several interact and each requires multiple implementation/validation changes.
 Partial scalar/source support does not close any full legacy acceptance gate.
 
+Array ownership research now records 262 actual C helper traces at O0/O2 under
+explicit modeled pool/reference services. These cover key domains/order, recursive
+array copies, shared structs and local-slot copy-on-write/autovivification; 69
+source-role mutations reject. Rust array/object storage and VM execution remain
+unimplemented. The ownership/storage acceptance assessment is ADR 0060.
+
 | Workstream | Required completion evidence |
 | --- | --- |
 | Full semantic frontend | Every supported legacy statement/expression/directive lowers with valid diagnostics and budgets |

@@ -370,6 +370,8 @@ python tools/generate_arithmetic_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check
+python tools/generate_array_vectors.py ../cod4x-reference --check
+python tools/script_array_reference.py ../cod4x-reference
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check

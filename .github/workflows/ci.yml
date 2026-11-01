@@ -77,3 +77,5 @@ jobs:
           python tools/generate_lexical_tables.py reference --check
           python tools/generate_literal_vectors.py reference --check
           python tools/generate_syntax_tables.py reference --check
+          python tools/generate_array_vectors.py reference --check
+          python tools/script_array_reference.py reference

@@ -3,6 +3,15 @@
 Date: 2026-10-31. Scope: implemented protocol, ordinary transport, query-only
 runtime, and structured/development logging. The complete server remains open.
 
+2026-11-01 array-research addendum: all required Windows workspace policy,
+formatting, warnings-denied Clippy/rustdoc and debug/release tests pass. There are
+650 source files/eight crates (largest 287 lines). The new selected native array
+helpers reproduce 262 traces at O0/O2 using explicit modeled pool/ref/output
+services; the source guard rejects 69 mutations and 99 structural replays stay
+unchanged. This is helper-only evidence, not implemented Rust arrays/objects or
+native allocation/interner/GC/compiler/VM/unwinding. See ADR 0060. Linux/hosted CI
+was not rerun for this addendum; the older platform table below is historical.
+
 | Check | Windows x86-64 MSVC | Linux x86-64 GNU (Debian/WSL) |
 | --- | --- | --- |
 | Exact Rust 1.95.0 toolchain | Passed | Passed |

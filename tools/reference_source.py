@@ -45,7 +45,7 @@ class ReferenceSource:
         pattern = (
             rf"(?m)^(?:(?:static|inline|__cdecl|__optimize3|__regparm[123])\s+)*"
             rf"(?:void|(?:char|byte)\s*\*|bool|int|unsigned(?:\s+int)?|"
-            rf"u?int(?:8|16|32|64)_t|qboolean)\s*"
+            rf"u?int(?:8|16|32|64)_t|qboolean|VariableValue)\s*"
             rf"(?:(?:__cdecl|QDECL|__regparm[123])\s+)*{re.escape(name)}\s*\([^;{{]*\)\s*\{{"
         )
         matches = list(re.finditer(pattern, source))
