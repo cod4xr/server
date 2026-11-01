@@ -8,9 +8,9 @@ use crate::execution::KernelError;
 use crate::literal::LegacyLiteralError;
 use crate::statement::StatementListError;
 
-/// Restricted scalar compiler resource, independent of legacy parser/VM pools.
+/// Restricted function compiler resource, independent of legacy parser/VM pools.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum ScalarCompilationResource {
+pub enum FunctionCompilationResource {
     /// Compiler actions, literal/identifier-byte work, and instruction resolution.
     Steps,
     /// Emitted typed instructions.
@@ -27,9 +27,9 @@ pub enum ScalarCompilationResource {
     ControlBytes,
 }
 
-/// Fixed scalar compilation category, without source text, values, or names.
+/// Fixed function compilation category, without source text, values, or names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum ScalarCompileErrorKind {
+pub enum FunctionCompileErrorKind {
     /// This source profile accepts no parameters.
     UnsupportedParameters,
     /// A statement is outside the selected restricted source profile.
@@ -40,7 +40,7 @@ pub enum ScalarCompileErrorKind {
     UnsupportedGroupArity,
     /// This profile permits only plain-name local assignment targets.
     UnsupportedLocalTarget,
-    /// Initializer/update clauses accept only scalar assignment/update or empty syntax.
+    /// Initializer/update clauses accept only primitive assignment/update or empty syntax.
     UnsupportedForClause,
     /// This restricted profile rejects repeated canonical parameter names.
     DuplicateParameter,
@@ -79,7 +79,7 @@ pub enum ScalarCompileErrorKind {
     /// A compiler-owned resource was exhausted.
     BudgetExceeded {
         /// Resource being admitted.
-        resource: ScalarCompilationResource,
+        resource: FunctionCompilationResource,
         /// Requested count or bytes at this check.
         requested: u64,
         /// Configured admission budget.
@@ -87,11 +87,11 @@ pub enum ScalarCompileErrorKind {
     },
 }
 
-/// Failed scalar compilation at an original half-open source byte span.
+/// Failed function compilation at an original half-open source byte span.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ScalarCompileError {
+pub struct FunctionCompileError {
     /// Fixed category and sanitized nested failure.
-    pub kind: ScalarCompileErrorKind,
+    pub kind: FunctionCompileErrorKind,
     /// Original source bytes associated with the failing stage/operation.
     pub span: Range<u64>,
     /// Charged compiler work, separate from nested kernel work.
@@ -100,30 +100,30 @@ pub struct ScalarCompileError {
     pub peak_metadata_bytes: u64,
 }
 
-impl fmt::Display for ScalarCompileError {
+impl fmt::Display for FunctionCompileError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             formatter,
-            "scalar compilation error at bytes {:?} after {} work steps: {:?}",
+            "function compilation error at bytes {:?} after {} work steps: {:?}",
             self.span, self.work_steps, self.kind
         )
     }
 }
 
-impl Error for ScalarCompileError {
+impl Error for FunctionCompileError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match &self.kind {
-            ScalarCompileErrorKind::Identifier(error) => Some(error),
-            ScalarCompileErrorKind::BodyList(error) => Some(error),
-            ScalarCompileErrorKind::Literal(error) => Some(error),
-            ScalarCompileErrorKind::Kernel(error) => Some(error),
+            FunctionCompileErrorKind::Identifier(error) => Some(error),
+            FunctionCompileErrorKind::BodyList(error) => Some(error),
+            FunctionCompileErrorKind::Literal(error) => Some(error),
+            FunctionCompileErrorKind::Kernel(error) => Some(error),
             _ => None,
         }
     }
 }
 
-pub(super) fn at(span: Range<u64>, kind: ScalarCompileErrorKind) -> ScalarCompileError {
-    ScalarCompileError {
+pub(super) fn at(span: Range<u64>, kind: FunctionCompileErrorKind) -> FunctionCompileError {
+    FunctionCompileError {
         kind,
         span,
         work_steps: 0,

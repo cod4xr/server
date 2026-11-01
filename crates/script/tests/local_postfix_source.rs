@@ -5,12 +5,12 @@
     reason = "Tests supply valid finite postfix statement source."
 )]
 
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::{LegacyNumber, LegacyNumberError};
 use cod4x_script::source::{SourceBudget, SourceText};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn postfix_statements_update_integer_locals_and_private_parameters_with_wrapping() {
@@ -20,9 +20,9 @@ fn postfix_statements_update_integer_locals_and_private_parameters_with_wrapping
         ("main(){x=2147483647;x++;return x;}", i32::MIN),
         ("main(){x=-2147483648;x--;return x;}", i32::MAX),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Postfix source compilation");
         assert_eq!(
@@ -35,9 +35,9 @@ fn postfix_statements_update_integer_locals_and_private_parameters_with_wrapping
         );
         assert_eq!(compiled.usage().local_bindings, 1);
     }
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         b"main(arg){arg++;arg--;return arg;}",
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Postfix parameter source");
     let arguments = [KernelValue::Number(LegacyNumber::Integer(i32::MAX))];
@@ -60,20 +60,20 @@ fn postfix_requires_initialized_plain_targets_and_rejects_floats_at_original_upd
     for (text, expected) in [
         (
             "main(){PrivateMissing++;}",
-            ScalarCompileErrorKind::UninitializedLocal,
+            FunctionCompileErrorKind::UninitializedLocal,
         ),
         (
             "main(){self.PrivateField--;}",
-            ScalarCompileErrorKind::UnsupportedLocalTarget,
+            FunctionCompileErrorKind::UnsupportedLocalTarget,
         ),
         (
             "main(){PrivateArray[0]++;}",
-            ScalarCompileErrorKind::UnsupportedLocalTarget,
+            FunctionCompileErrorKind::UnsupportedLocalTarget,
         ),
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect_err("Postfix target admission");
         assert_eq!(error.kind, expected);
@@ -96,9 +96,9 @@ fn postfix_requires_initialized_plain_targets_and_rejects_floats_at_original_upd
             "++",
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Located update function");
         let error = compiled
@@ -118,29 +118,30 @@ fn postfix_requires_initialized_plain_targets_and_rejects_floats_at_original_upd
 #[test]
 fn postfix_source_uses_existing_name_task_code_and_binding_admission() {
     let text = b"main(arg){x=arg;x++;x--;return x;}";
-    let usage = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Baseline")
-        .usage();
+    let usage =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Baseline")
+            .usage();
     assert_eq!(usage.identifier_bytes, 13);
     assert_eq!(usage.local_bindings, 2);
-    let exact = ScalarCompilationBudget {
+    let exact = FunctionCompilationBudget {
         max_steps: usage.compiler_steps,
         max_instructions: usage.instructions,
         max_task_frames: usage.peak_task_frames,
         max_metadata_bytes: usage.peak_metadata_bytes,
         max_identifier_bytes: usage.identifier_bytes,
         max_local_bindings: usage.local_bindings,
-        ..ScalarCompilationBudget::default()
+        ..FunctionCompilationBudget::default()
     };
     assert_eq!(
-        scalar_compile_support::compile_local(text, exact)
+        function_compile_support::compile_primitive(text, exact)
             .expect("Exact postfix admission")
             .usage(),
         usage
     );
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         text,
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_identifier_bytes: 12,
             ..exact
         },
@@ -148,7 +149,7 @@ fn postfix_source_uses_existing_name_task_code_and_binding_admission() {
     .expect_err("All postfix visits stay admitted");
     assert!(matches!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded { .. }
+        FunctionCompileErrorKind::BudgetExceeded { .. }
     ));
     assert!(error.work_steps > 0);
 }

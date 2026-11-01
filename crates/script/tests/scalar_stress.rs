@@ -5,11 +5,11 @@
     reason = "Tests construct finite valid source within explicit default budgets."
 )]
 
-use cod4x_script::compilation::ScalarCompilationBudget;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn twelve_thousand_groups_and_left_operators_compile_execute_and_drop_without_recursion() {
@@ -21,9 +21,11 @@ fn twelve_thousand_groups_and_left_operators_compile_execute_and_drop_without_re
     );
     let chained = format!("main(){{return {}1;}}", "1+".repeat(count));
     for (text, expected) in [(grouped, 1), (chained, 12_001)] {
-        let compiled =
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect("Deep scalar source");
+        let compiled = function_compile_support::compile_scalar(
+            text.as_bytes(),
+            FunctionCompilationBudget::default(),
+        )
+        .expect("Deep scalar source");
         let outcome = compiled
             .program()
             .execute(KernelExecutionBudget::default())
@@ -39,9 +41,11 @@ fn twelve_thousand_groups_and_left_operators_compile_execute_and_drop_without_re
 #[test]
 fn logical_source_resolves_branch_destinations_beyond_sixteen_bits() {
     let text = format!("main(){{return {}true;}}", "false||".repeat(12_000));
-    let compiled =
-        scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-            .expect("Large logical source");
+    let compiled = function_compile_support::compile_scalar(
+        text.as_bytes(),
+        FunctionCompilationBudget::default(),
+    )
+    .expect("Large logical source");
     assert!(compiled.usage().instructions > u64::from(u16::MAX));
     let outcome = compiled
         .program()

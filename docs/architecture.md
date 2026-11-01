@@ -347,6 +347,14 @@ programs can receive vector arguments, but three-element source constructors
 remain unsupported. This defines no native/serialized bytecode ABI, source
 evaluation order or whole value/heap/VM contract; see ADR 0042.
 
+The growing compiler now exposes CompiledFunction, FunctionCompilationBudget/
+Usage/Resource, FunctionCompileError/Kind and FunctionSourceProfile. Its implemented
+entry points are compile_scalar_return_function (PureScalarReturn) and
+compile_primitive_function (PrimitiveStatements). Leaf modules/private data and
+test helper names follow the same function terminology. No compatibility alias,
+duplicate implementation, profile, language/runtime behavior or wire/bytecode
+format is added by this unreleased API cleanup. See ADR 0043.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

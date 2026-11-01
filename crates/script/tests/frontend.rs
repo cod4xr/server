@@ -3,7 +3,7 @@
 
 mod expression_list_support;
 mod expression_support;
-mod scalar_compile_support;
+mod function_compile_support;
 mod statement_support;
 
 #[path = "local_vector_arguments.rs"]

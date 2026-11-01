@@ -2,21 +2,21 @@
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifier;
-use crate::compilation::scalar_for::{ScalarForEnd, ScalarForPlan};
-use crate::compilation::scalar_initialization::ScalarInitializationSnapshot;
-use crate::compilation::scalar_loop_transfer::ScalarLoopContext;
+use crate::compilation::function_for::{FunctionForEnd, FunctionForPlan};
+use crate::compilation::function_initialization::FunctionInitializationSnapshot;
+use crate::compilation::function_loop_transfer::FunctionLoopContext;
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::LegacyLogicalOperator;
 use crate::syntax::LegacySyntaxNode;
 
 /// Private relocation identity, never a published instruction target or runtime ID.
-pub(super) struct ScalarPatchSite(pub(super) usize);
+pub(super) struct FunctionPatchSite(pub(super) usize);
 
 /// Compiler-private loop destination, distinct from an unresolved forward site.
 #[derive(Clone, Copy, Eq, PartialEq)]
-pub(super) struct ScalarLoopHead(pub(super) usize);
+pub(super) struct FunctionLoopHead(pub(super) usize);
 
-pub(super) enum ScalarTask<'tree, 'source> {
+pub(super) enum FunctionTask<'tree, 'source> {
     Visit(LegacySyntaxNode<'tree, 'source>),
     Statement {
         syntax: LegacySyntaxNode<'tree, 'source>,
@@ -37,7 +37,7 @@ pub(super) enum ScalarTask<'tree, 'source> {
         span: Range<u64>,
     },
     EndLogical {
-        site: ScalarPatchSite,
+        site: FunctionPatchSite,
         span: Range<u64>,
     },
     BeginIf {
@@ -46,41 +46,41 @@ pub(super) enum ScalarTask<'tree, 'source> {
         span: Range<u64>,
     },
     AfterThen {
-        false_site: ScalarPatchSite,
-        incoming: ScalarInitializationSnapshot,
+        false_site: FunctionPatchSite,
+        incoming: FunctionInitializationSnapshot,
         alternative: Option<LegacySyntaxNode<'tree, 'source>>,
         span: Range<u64>,
     },
     AfterElse {
-        end_site: ScalarPatchSite,
-        then_facts: ScalarInitializationSnapshot,
+        end_site: FunctionPatchSite,
+        then_facts: FunctionInitializationSnapshot,
         span: Range<u64>,
     },
     BeginWhileBody {
-        head: ScalarLoopHead,
+        head: FunctionLoopHead,
         body: LegacySyntaxNode<'tree, 'source>,
         span: Range<u64>,
     },
     AfterWhileBody {
-        head: ScalarLoopHead,
-        exit_site: ScalarPatchSite,
-        incoming: ScalarInitializationSnapshot,
-        outer_loop: Option<ScalarLoopContext>,
+        head: FunctionLoopHead,
+        exit_site: FunctionPatchSite,
+        incoming: FunctionInitializationSnapshot,
+        outer_loop: Option<FunctionLoopContext>,
         span: Range<u64>,
     },
-    AfterForInit(ScalarForPlan<'tree, 'source>),
+    AfterForInit(FunctionForPlan<'tree, 'source>),
     BeginForBody {
-        head: ScalarLoopHead,
-        plan: ScalarForPlan<'tree, 'source>,
+        head: FunctionLoopHead,
+        plan: FunctionForPlan<'tree, 'source>,
     },
     AfterForBody {
-        end: ScalarForEnd,
+        end: FunctionForEnd,
         update: Option<LegacySyntaxNode<'tree, 'source>>,
     },
-    AfterForUpdate(ScalarForEnd),
+    AfterForUpdate(FunctionForEnd),
 }
 
-impl ScalarTask<'_, '_> {
+impl FunctionTask<'_, '_> {
     pub(super) fn span(&self) -> Range<u64> {
         match self {
             Self::Visit(node) => node.span(),
@@ -100,7 +100,7 @@ impl ScalarTask<'_, '_> {
     }
 }
 
-pub(super) enum PendingScalarKind {
+pub(super) enum PendingFunctionKind {
     Ready(KernelInstruction),
     Branch {
         condition: KernelBranchCondition,
@@ -111,11 +111,11 @@ pub(super) enum PendingScalarKind {
     },
     Transfer {
         target: Option<usize>,
-        next: Option<ScalarPatchSite>,
+        next: Option<FunctionPatchSite>,
     },
 }
 
-pub(super) struct PendingScalarInstruction {
-    pub(super) kind: PendingScalarKind,
+pub(super) struct PendingFunctionInstruction {
+    pub(super) kind: PendingFunctionKind,
     pub(super) span: Range<u64>,
 }

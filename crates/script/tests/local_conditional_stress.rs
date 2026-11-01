@@ -5,9 +5,9 @@
     reason = "Tests generate finite valid wide/deep source."
 )]
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelExecutionBudget, KernelInstruction, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
@@ -20,9 +20,9 @@ fn seventy_thousand_local_snapshots_keep_wide_slots_and_targets() {
         write!(source, "v{index}=1;").expect("Generated source");
     }
     source.push_str("if(arg){v69999=2;}else{v69999=3;}return v69999;}");
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide facts");
     assert_eq!(compiled.usage().local_bindings, 70_001);
@@ -49,9 +49,9 @@ fn large_forward_branch_skips_more_than_sixty_five_thousand_instructions() {
         "main(arg){{x=0;if(arg){{{}}}return x;}}",
         "x=1;".repeat(40_000)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide forward destination");
     assert!(compiled.program().instructions().iter().enumerate().any(|(index, instruction)| matches!(instruction, KernelInstruction::Branch { target, .. } if target.saturating_sub(index) > 65_535)));
@@ -73,9 +73,9 @@ fn twelve_thousand_nested_branches_lower_execute_and_fail_drop_iteratively() {
         "if(arg){".repeat(12_000),
         "}".repeat(12_000)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Deep iterative source");
     assert_eq!(compiled.usage().peak_control_bytes, 24_000);
@@ -92,18 +92,18 @@ fn twelve_thousand_nested_branches_lower_execute_and_fail_drop_iteratively() {
             KernelValue::Number(LegacyNumber::Integer(expected))
         );
     }
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_control_bytes: 23_999,
-            ..ScalarCompilationBudget::default()
+            ..FunctionCompilationBudget::default()
         },
     )
     .expect_err("Deep failure drops flat pending tasks");
     assert!(matches!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded {
-            resource: ScalarCompilationResource::ControlBytes,
+        FunctionCompileErrorKind::BudgetExceeded {
+            resource: FunctionCompilationResource::ControlBytes,
             ..
         }
     ));

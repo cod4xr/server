@@ -5,35 +5,37 @@
     reason = "Tests supply syntactically valid restricted-profile failures."
 )]
 
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn unsupported_parameters_and_statement_bodies_are_rejected_explicitly() {
     for (text, kind) in [
         (
             "main(arg){return 1;}",
-            ScalarCompileErrorKind::UnsupportedParameters,
+            FunctionCompileErrorKind::UnsupportedParameters,
         ),
         (
             "main(){return 1;return 2;}",
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         ),
-        ("main(){x=1;}", ScalarCompileErrorKind::UnsupportedBody),
+        ("main(){x=1;}", FunctionCompileErrorKind::UnsupportedBody),
         (
             "main(){if(true)return 1;}",
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         ),
-        ("main(){wait 1;}", ScalarCompileErrorKind::UnsupportedBody),
+        ("main(){wait 1;}", FunctionCompileErrorKind::UnsupportedBody),
         (
             "main(){{return 1;}}",
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         ),
     ] {
-        let error =
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect_err("Unsupported function");
+        let error = function_compile_support::compile_scalar(
+            text.as_bytes(),
+            FunctionCompilationBudget::default(),
+        )
+        .expect_err("Unsupported function");
         assert_eq!(error.kind, kind);
         assert!(error.work_steps > 0);
         assert!(error.span.start <= error.span.end);
@@ -60,10 +62,12 @@ fn unsupported_values_are_rejected_even_in_short_circuited_source() {
         "false && private_name",
     ] {
         let text = format!("PrivateMain(){{return {expression};}}");
-        let error =
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect_err("Unsupported scalar value");
-        assert_eq!(error.kind, ScalarCompileErrorKind::UnsupportedPrimary);
+        let error = function_compile_support::compile_scalar(
+            text.as_bytes(),
+            FunctionCompilationBudget::default(),
+        )
+        .expect_err("Unsupported scalar value");
+        assert_eq!(error.kind, FunctionCompileErrorKind::UnsupportedPrimary);
         assert!(error.work_steps > 0);
         let diagnostic = format!("{error:?} {error}");
         assert!(!diagnostic.contains("PrivateMain"));
@@ -73,10 +77,13 @@ fn unsupported_values_are_rejected_even_in_short_circuited_source() {
     for expression in ["()", "(1,2)", "(1,2,3)"] {
         let text = format!("main(){{return {expression};}}");
         assert_eq!(
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect_err("Scalar group arity")
-                .kind,
-            ScalarCompileErrorKind::UnsupportedGroupArity,
+            function_compile_support::compile_scalar(
+                text.as_bytes(),
+                FunctionCompilationBudget::default()
+            )
+            .expect_err("Scalar group arity")
+            .kind,
+            FunctionCompileErrorKind::UnsupportedGroupArity,
         );
     }
 }

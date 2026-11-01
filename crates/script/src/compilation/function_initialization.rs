@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 
 /// Flat source-ordered facts; absence denotes an uninitialized later binding.
-pub(super) struct ScalarInitializationSnapshot {
+pub(super) struct FunctionInitializationSnapshot {
     initialized: Vec<bool>,
     reachable: bool,
 }
@@ -18,9 +18,9 @@ enum SnapshotAction {
 }
 
 pub(super) fn capture(
-    builder: &mut ScalarBuilder<'_, '_>,
+    builder: &mut FunctionBuilder<'_, '_>,
     span: Range<u64>,
-) -> Result<ScalarInitializationSnapshot, ScalarCompileError> {
+) -> Result<FunctionInitializationSnapshot, FunctionCompileError> {
     let count = builder
         .locals
         .as_ref()
@@ -28,13 +28,13 @@ pub(super) fn capture(
         .names
         .len();
     let work = (count as u64).checked_mul(2).ok_or_else(|| {
-        scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+        function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
     })?;
     builder.ledger.charge(work, span.clone())?;
     builder.admit_control(count as u64, span.clone())?;
     let mut initialized = Vec::new();
     initialized.try_reserve_exact(count).map_err(|_| {
-        scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
+        function_compile_error::at(span.clone(), FunctionCompileErrorKind::AllocationFailed)
     })?;
     initialized.resize(count, false);
     let locals = builder
@@ -47,44 +47,44 @@ pub(super) fn capture(
             .ok_or_else(|| invalid(span.clone()))?;
         *flag = slot.initialized;
     }
-    Ok(ScalarInitializationSnapshot {
+    Ok(FunctionInitializationSnapshot {
         initialized,
         reachable: builder.reachable,
     })
 }
 
 pub(super) fn restore(
-    builder: &mut ScalarBuilder<'_, '_>,
-    snapshot: ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: FunctionInitializationSnapshot,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     apply(builder, &snapshot, SnapshotAction::Restore, span.clone())?;
     release(builder, snapshot, span)
 }
 
 pub(super) fn restore_from(
-    builder: &mut ScalarBuilder<'_, '_>,
-    snapshot: &ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: &FunctionInitializationSnapshot,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     apply(builder, snapshot, SnapshotAction::Restore, span)
 }
 
 pub(super) fn merge(
-    builder: &mut ScalarBuilder<'_, '_>,
-    snapshot: ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: FunctionInitializationSnapshot,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     apply(builder, &snapshot, SnapshotAction::Merge, span.clone())?;
     release(builder, snapshot, span)
 }
 
 fn apply(
-    builder: &mut ScalarBuilder<'_, '_>,
-    snapshot: &ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: &FunctionInitializationSnapshot,
     action: SnapshotAction,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let count = builder
         .locals
         .as_ref()
@@ -122,15 +122,15 @@ fn apply(
     reason = "Consuming the snapshot releases its admitted flag payload exactly once."
 )]
 fn release(
-    builder: &mut ScalarBuilder<'_, '_>,
-    snapshot: ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: FunctionInitializationSnapshot,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     builder
         .ledger
         .release_control(snapshot.initialized.len() as u64, span)
 }
 
-fn invalid(span: Range<u64>) -> ScalarCompileError {
-    scalar_compile_error::at(span, ScalarCompileErrorKind::InvalidControlState)
+fn invalid(span: Range<u64>) -> FunctionCompileError {
+    function_compile_error::at(span, FunctionCompileErrorKind::InvalidControlState)
 }

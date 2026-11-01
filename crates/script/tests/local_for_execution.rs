@@ -5,8 +5,8 @@
     reason = "Tests compile finite valid synthetic for functions."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::ScalarCompilationBudget;
+use crate::function_compile_support;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 
@@ -37,9 +37,11 @@ fn for_conditions_updates_and_mixed_loop_transfers_execute() {
         ),
     ] {
         let mut source = text.as_bytes().to_vec();
-        let compiled =
-            scalar_compile_support::compile_local(&source, ScalarCompilationBudget::default())
-                .expect("For source");
+        let compiled = function_compile_support::compile_primitive(
+            &source,
+            FunctionCompilationBudget::default(),
+        )
+        .expect("For source");
         source.fill(0);
         assert_eq!(compiled.usage().validation_steps, None);
         for (arg, expected) in (0..9).zip(results) {
@@ -67,9 +69,9 @@ fn every_optional_clause_combination_and_returning_body_have_real_results() {
                 let source = format!(
                     "main(){{i=0;for({initializer};{condition};{update}){{if(i>=3)break;{manual}}}return i;}}"
                 );
-                let compiled = scalar_compile_support::compile_local(
+                let compiled = function_compile_support::compile_primitive(
                     source.as_bytes(),
-                    ScalarCompilationBudget::default(),
+                    FunctionCompilationBudget::default(),
                 )
                 .expect("Optional for clauses");
                 assert_eq!(
@@ -101,9 +103,9 @@ fn every_optional_clause_combination_and_returning_body_have_real_results() {
             KernelValue::Number(LegacyNumber::Integer(2)),
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Return/empty update source");
         assert_eq!(

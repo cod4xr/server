@@ -1,73 +1,73 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::binding::LegacyIdentifier;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_local_bindings::{ScalarLocalDeclaration, ScalarLocalSlot};
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_local_bindings::{FunctionLocalDeclaration, FunctionLocalSlot};
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
 use crate::expression::{LegacyReferenceKind, LegacyReferenceSyntax};
 use crate::lexical::LegacyLexeme;
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn declare<'source>(
-    builder: &mut ScalarBuilder<'_, 'source>,
+    builder: &mut FunctionBuilder<'_, 'source>,
     token: LegacyLexeme<'source>,
-    declaration: ScalarLocalDeclaration,
-) -> Result<(LegacyIdentifier<'source>, usize), ScalarCompileError> {
+    declaration: FunctionLocalDeclaration,
+) -> Result<(LegacyIdentifier<'source>, usize), FunctionCompileError> {
     let name = identifier(builder, token)?;
-    let error = |kind| scalar_compile_error::at(token.span(), kind);
+    let error = |kind| function_compile_error::at(token.span(), kind);
     let table = &builder
         .locals
         .as_ref()
-        .ok_or_else(|| error(ScalarCompileErrorKind::InvalidLocalBinding))?
+        .ok_or_else(|| error(FunctionCompileErrorKind::InvalidLocalBinding))?
         .names;
     if let Some(slot) = table.get(&name) {
         return match declaration {
-            ScalarLocalDeclaration::Parameter => {
-                Err(error(ScalarCompileErrorKind::DuplicateParameter))
+            FunctionLocalDeclaration::Parameter => {
+                Err(error(FunctionCompileErrorKind::DuplicateParameter))
             }
-            ScalarLocalDeclaration::Assignment => Ok((name, slot.index)),
+            FunctionLocalDeclaration::Assignment => Ok((name, slot.index)),
         };
     }
     let index = table.len();
     let count = index
         .checked_add(1)
-        .ok_or_else(|| error(ScalarCompileErrorKind::SizeOverflow))?;
+        .ok_or_else(|| error(FunctionCompileErrorKind::SizeOverflow))?;
     // Logical key/value payload only: hash control/capacity/allocator overhead is
     // excluded explicitly, not presented as an aggregate heap/RSS bound.
     let bytes = (count as u64)
-        .checked_mul(size_of::<(LegacyIdentifier<'_>, ScalarLocalSlot)>() as u64)
-        .ok_or_else(|| error(ScalarCompileErrorKind::SizeOverflow))?;
+        .checked_mul(size_of::<(LegacyIdentifier<'_>, FunctionLocalSlot)>() as u64)
+        .ok_or_else(|| error(FunctionCompileErrorKind::SizeOverflow))?;
     builder.admit_binding(count as u64, bytes, token.span())?;
     let table = &mut builder
         .locals
         .as_mut()
-        .ok_or_else(|| error(ScalarCompileErrorKind::InvalidLocalBinding))?
+        .ok_or_else(|| error(FunctionCompileErrorKind::InvalidLocalBinding))?
         .names;
     table
         .try_reserve(1)
-        .map_err(|_| error(ScalarCompileErrorKind::AllocationFailed))?;
-    let initialized = matches!(declaration, ScalarLocalDeclaration::Parameter);
+        .map_err(|_| error(FunctionCompileErrorKind::AllocationFailed))?;
+    let initialized = matches!(declaration, FunctionLocalDeclaration::Parameter);
     if table
-        .insert(name, ScalarLocalSlot { index, initialized })
+        .insert(name, FunctionLocalSlot { index, initialized })
         .is_some()
     {
-        return Err(error(ScalarCompileErrorKind::InvalidLocalBinding));
+        return Err(error(FunctionCompileErrorKind::InvalidLocalBinding));
     }
     Ok((name, index))
 }
 
 pub(super) fn read<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     syntax: LegacySyntaxNode<'tree, 'source>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let reference = LegacyReferenceSyntax::from_node(syntax).map_err(|_| {
-        scalar_compile_error::at(syntax.span(), ScalarCompileErrorKind::InvalidStructure)
+        function_compile_error::at(syntax.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     let LegacyReferenceKind::Name { name: token } = reference.kind() else {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             syntax.span(),
-            ScalarCompileErrorKind::UnsupportedPrimary,
+            FunctionCompileErrorKind::UnsupportedPrimary,
         ));
     };
     let (_, slot) = lookup(builder, token)?;
@@ -75,9 +75,9 @@ pub(super) fn read<'tree, 'source>(
 }
 
 pub(super) fn lookup<'source>(
-    builder: &mut ScalarBuilder<'_, 'source>,
+    builder: &mut FunctionBuilder<'_, 'source>,
     token: LegacyLexeme<'source>,
-) -> Result<(LegacyIdentifier<'source>, usize), ScalarCompileError> {
+) -> Result<(LegacyIdentifier<'source>, usize), FunctionCompileError> {
     let name = identifier(builder, token)?;
     let slot = builder
         .locals
@@ -86,16 +86,16 @@ pub(super) fn lookup<'source>(
         .filter(|slot| slot.initialized)
         .copied()
         .ok_or_else(|| {
-            scalar_compile_error::at(token.span(), ScalarCompileErrorKind::UninitializedLocal)
+            function_compile_error::at(token.span(), FunctionCompileErrorKind::UninitializedLocal)
         })?;
     Ok((name, slot.index))
 }
 
 pub(super) fn initialize<'source>(
-    builder: &mut ScalarBuilder<'_, 'source>,
+    builder: &mut FunctionBuilder<'_, 'source>,
     name: LegacyIdentifier<'source>,
     index: usize,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     builder
         .ledger
         .identifier(name.as_bytes().len() as u64, name.lexeme().span())?;
@@ -105,9 +105,9 @@ pub(super) fn initialize<'source>(
         .and_then(|locals| locals.names.get_mut(&name))
         .filter(|slot| slot.index == index)
         .ok_or_else(|| {
-            scalar_compile_error::at(
+            function_compile_error::at(
                 name.lexeme().span(),
-                ScalarCompileErrorKind::InvalidLocalBinding,
+                FunctionCompileErrorKind::InvalidLocalBinding,
             )
         })?;
     slot.initialized = true;
@@ -115,13 +115,13 @@ pub(super) fn initialize<'source>(
 }
 
 fn identifier<'source>(
-    builder: &mut ScalarBuilder<'_, '_>,
+    builder: &mut FunctionBuilder<'_, '_>,
     token: LegacyLexeme<'source>,
-) -> Result<LegacyIdentifier<'source>, ScalarCompileError> {
+) -> Result<LegacyIdentifier<'source>, FunctionCompileError> {
     builder
         .ledger
         .identifier(token.as_bytes().len() as u64, token.span())?;
     LegacyIdentifier::from_lexeme(token).map_err(|error| {
-        scalar_compile_error::at(token.span(), ScalarCompileErrorKind::Identifier(error))
+        function_compile_error::at(token.span(), FunctionCompileErrorKind::Identifier(error))
     })
 }

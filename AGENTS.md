@@ -207,6 +207,12 @@ native component evaluation/push order or a full compiler/heap/VM. Preserve the
 18,116 kernel construction/operator outcomes versus 1,736 helper-only coercion
 rows and hostile vector streams. No native/serialized ABI or ref/cleanup parity
 is implied; see ADR 0042.
+The growing compiler now uses CompiledFunction/FunctionCompilation*/FunctionCompileError
+and FunctionSourceProfile terminology. Keep compile_scalar_return_function with
+PureScalarReturn separate from compile_primitive_function with PrimitiveStatements.
+Compiler leaf/private data and function_compile_support imports follow those names;
+do not recreate obsolete scalar aliases/wrappers or imply full GSC from a rename.
+Preserve behavior/quota/proof/map coverage and explicit suite registration; see ADR 0043.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

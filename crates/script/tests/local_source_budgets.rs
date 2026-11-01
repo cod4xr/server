@@ -6,65 +6,67 @@
 )]
 
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelErrorKind, KernelResource, KernelVerificationBudget};
 use cod4x_script::statement::{StatementListBudget, StatementListErrorKind, StatementListResource};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn exact_and_one_less_compiler_limits_cover_local_names_payload_and_all_lowering_scopes() {
     let text = b"main(arg){x=arg+1;y=x*2;return y;}";
-    let usage = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Baseline")
-        .usage();
+    let usage =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Baseline")
+            .usage();
     assert_eq!(usage.local_bindings, 3);
     assert!(usage.identifier_bytes > 0);
-    let exact = ScalarCompilationBudget {
+    let exact = FunctionCompilationBudget {
         max_steps: usage.compiler_steps,
         max_instructions: usage.instructions,
         max_task_frames: usage.peak_task_frames,
         max_metadata_bytes: usage.peak_metadata_bytes,
         max_local_bindings: usage.local_bindings,
         max_identifier_bytes: usage.identifier_bytes,
-        ..ScalarCompilationBudget::default()
+        ..FunctionCompilationBudget::default()
     };
     assert_eq!(
-        scalar_compile_support::compile_local(text, exact)
+        function_compile_support::compile_primitive(text, exact)
             .expect("Exact limits")
             .usage(),
         usage
     );
     for resource in [
-        ScalarCompilationResource::Steps,
-        ScalarCompilationResource::Instructions,
-        ScalarCompilationResource::TaskFrames,
-        ScalarCompilationResource::MetadataBytes,
-        ScalarCompilationResource::LocalBindings,
-        ScalarCompilationResource::IdentifierBytes,
+        FunctionCompilationResource::Steps,
+        FunctionCompilationResource::Instructions,
+        FunctionCompilationResource::TaskFrames,
+        FunctionCompilationResource::MetadataBytes,
+        FunctionCompilationResource::LocalBindings,
+        FunctionCompilationResource::IdentifierBytes,
     ] {
         let mut budget = exact;
         match resource {
-            ScalarCompilationResource::Steps => budget.max_steps -= 1,
-            ScalarCompilationResource::Instructions => budget.max_instructions -= 1,
-            ScalarCompilationResource::TaskFrames => budget.max_task_frames -= 1,
-            ScalarCompilationResource::MetadataBytes => budget.max_metadata_bytes -= 1,
-            ScalarCompilationResource::LocalBindings => budget.max_local_bindings -= 1,
-            ScalarCompilationResource::IdentifierBytes => budget.max_identifier_bytes -= 1,
-            ScalarCompilationResource::ControlBytes => budget.max_control_bytes = 0,
+            FunctionCompilationResource::Steps => budget.max_steps -= 1,
+            FunctionCompilationResource::Instructions => budget.max_instructions -= 1,
+            FunctionCompilationResource::TaskFrames => budget.max_task_frames -= 1,
+            FunctionCompilationResource::MetadataBytes => budget.max_metadata_bytes -= 1,
+            FunctionCompilationResource::LocalBindings => budget.max_local_bindings -= 1,
+            FunctionCompilationResource::IdentifierBytes => budget.max_identifier_bytes -= 1,
+            FunctionCompilationResource::ControlBytes => budget.max_control_bytes = 0,
         }
-        let error = scalar_compile_support::compile_local(text, budget).expect_err("One less");
+        let error =
+            function_compile_support::compile_primitive(text, budget).expect_err("One less");
         assert!(
-            matches!(error.kind, ScalarCompileErrorKind::BudgetExceeded { resource: actual, requested, maximum } if actual == resource && requested > maximum)
+            matches!(error.kind, FunctionCompileErrorKind::BudgetExceeded { resource: actual, requested, maximum } if actual == resource && requested > maximum)
         );
         assert!(error.work_steps > 0 && error.work_steps <= usage.compiler_steps);
         assert!(error.peak_metadata_bytes <= budget.max_metadata_bytes);
         assert!(error.span.end <= text.len() as u64);
     }
-    let zero = scalar_compile_support::compile_local(
+    let zero = function_compile_support::compile_primitive(
         text,
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_steps: 0,
             ..exact
         },
@@ -99,15 +101,15 @@ fn body_and_kernel_local_admission_remain_separate_sanitized_nested_scopes() -> 
             },
         ),
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text,
-            ScalarCompilationBudget {
+            FunctionCompilationBudget {
                 body,
-                ..ScalarCompilationBudget::default()
+                ..FunctionCompilationBudget::default()
             },
         )
         .expect_err("Body scope");
-        let ScalarCompileErrorKind::BodyList(body) = error.kind else {
+        let FunctionCompileErrorKind::BodyList(body) = error.kind else {
             return Err(format!("Expected body admission, got {:?}", error.kind));
         };
         assert!(
@@ -115,19 +117,19 @@ fn body_and_kernel_local_admission_remain_separate_sanitized_nested_scopes() -> 
         );
         assert!(error.work_steps > 0);
     }
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         text,
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             verification: KernelVerificationBudget {
                 max_local_values: 2,
                 ..KernelVerificationBudget::default()
             },
-            ..ScalarCompilationBudget::default()
+            ..FunctionCompilationBudget::default()
         },
     )
     .expect_err("Separate kernel layout admission");
     assert!(
-        matches!(error.kind, ScalarCompileErrorKind::Kernel(kernel) if kernel.kind == KernelErrorKind::BudgetExceeded { resource: KernelResource::LocalValues, requested: 3, maximum: 2 })
+        matches!(error.kind, FunctionCompileErrorKind::Kernel(kernel) if kernel.kind == KernelErrorKind::BudgetExceeded { resource: KernelResource::LocalValues, requested: 3, maximum: 2 })
     );
     assert!(error.work_steps > 0);
     Ok(())

@@ -5,8 +5,8 @@
     reason = "Tests invoke finite source with typed primitive arguments."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use crate::function_compile_support;
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::{LegacyNumber, LegacyVector, LegacyVectorError};
 use cod4x_script::source::{SourceBudget, SourceText};
@@ -15,7 +15,7 @@ use cod4x_script::source::{SourceBudget, SourceText};
 fn parameterized_source_reuses_vector_operations_without_source_constructor_claims() {
     let source = b"PrivateMain(vec,scale){x=vec;x*=scale;return x;}";
     let compiled =
-        scalar_compile_support::compile_local(source, ScalarCompilationBudget::default())
+        function_compile_support::compile_primitive(source, FunctionCompilationBudget::default())
             .expect("Restricted named source");
     let args = [
         KernelValue::Vector(LegacyVector::from_components([1.0, 2.0, 3.0])),
@@ -39,18 +39,18 @@ fn parameterized_source_reuses_vector_operations_without_source_constructor_clai
     assert_eq!(compiled.usage().validation_steps, None);
     for pure in [false, true] {
         let error = if pure {
-            scalar_compile_support::compile(
+            function_compile_support::compile_scalar(
                 b"main(){return(1,2,3);}",
-                ScalarCompilationBudget::default(),
+                FunctionCompilationBudget::default(),
             )
         } else {
-            scalar_compile_support::compile_local(
+            function_compile_support::compile_primitive(
                 b"main(){return(1,2,3);}",
-                ScalarCompilationBudget::default(),
+                FunctionCompilationBudget::default(),
             )
         }
         .expect_err("Source vector construction remains separate work");
-        assert_eq!(error.kind, ScalarCompileErrorKind::UnsupportedGroupArity);
+        assert_eq!(error.kind, FunctionCompileErrorKind::UnsupportedGroupArity);
     }
 }
 
@@ -73,9 +73,9 @@ fn vector_argument_failures_keep_source_operator_locations_and_redaction() {
             "if",
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Argument-dependent source");
         let args = [KernelValue::Vector(LegacyVector::from_components([

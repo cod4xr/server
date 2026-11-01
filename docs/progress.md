@@ -627,7 +627,22 @@ fixtures regenerate unchanged. See ADR 0042. No dependencies or alternate target
 Source constructors/evaluation order, native VM error indices/ref/cleanup, heap/
 calls/scheduling, full GSC/mod acceptance and Linux validation remain open.
 
-Next: clarify growing function compiler API names, then source vector construction,
+Function compiler naming now passes full Windows workspace gates. Owned results,
+budgets/usage/resources/errors and profiles use CompiledFunction and Function*
+names. compile_scalar_return_function selects PureScalarReturn;
+compile_primitive_function selects PrimitiveStatements. Leaf/private types and
+function_compile_support imports match that terminology. The unreleased API has
+no compatibility wrappers/duplicate implementation or additional profile; accepted
+syntax/runtime behavior, quotas/accounting, proofs, diagnostic categories/spans/
+privacy and source maps remain covered by existing suites. Diagnostic labels
+follow the new names. No new rename-only tests were added. All 157 frontend/56
+legacy tests and doctests pass, along with formatting, warnings-denied Clippy/
+rustdoc and repository policy (469 sources/eight crates, largest 287 lines).
+Stale Rust compiler/helper symbols were checked. See ADR 0043. No dependency,
+alternate target, wire/content/bytecode format or full-GSC claim is introduced.
+Source constructors, native/full-GSC/mod conformance and Linux remain open.
+
+Next: primitive source vector construction with explicit profile/component-order guards,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

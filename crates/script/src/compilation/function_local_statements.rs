@@ -1,42 +1,42 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::compilation::scalar_body;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_for;
-use crate::compilation::scalar_local_assignment;
-use crate::compilation::scalar_loop_transfer::{self, ScalarLoopTransfer};
-use crate::compilation::scalar_statement_body;
-use crate::compilation::scalar_task::ScalarTask;
-use crate::compilation::scalar_while;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_body;
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_for;
+use crate::compilation::function_local_assignment;
+use crate::compilation::function_loop_transfer::{self, FunctionLoopTransfer};
+use crate::compilation::function_statement_body;
+use crate::compilation::function_task::FunctionTask;
+use crate::compilation::function_while;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelInstruction, KernelValue};
 use crate::statement::{LegacyStatementKind, LegacyStatementSyntax};
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn lower<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     syntax: LegacySyntaxNode<'tree, 'source>,
     last: bool,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     if !builder.reachable {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             syntax.span(),
-            ScalarCompileErrorKind::UnreachableStatement,
+            FunctionCompileErrorKind::UnreachableStatement,
         ));
     }
     let view = LegacyStatementSyntax::from_node(syntax).map_err(|_| {
-        scalar_compile_error::at(syntax.span(), ScalarCompileErrorKind::InvalidStructure)
+        function_compile_error::at(syntax.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match view.kind() {
         LegacyStatementKind::Empty => Ok(()),
         LegacyStatementKind::Assignment { target, value } => {
-            scalar_local_assignment::assign(builder, view.statement_syntax(), target, value)
+            function_local_assignment::assign(builder, view.statement_syntax(), target, value)
         }
         LegacyStatementKind::CompoundAssignment {
             target,
             operator,
             value,
-        } => scalar_local_assignment::compound(
+        } => function_local_assignment::compound(
             builder,
             view.statement_syntax(),
             target,
@@ -45,9 +45,9 @@ pub(super) fn lower<'tree, 'source>(
         ),
         LegacyStatementKind::Return { value } => {
             if !last {
-                return Err(scalar_compile_error::at(
+                return Err(function_compile_error::at(
                     view.span(),
-                    ScalarCompileErrorKind::ReturnNotLast,
+                    FunctionCompileErrorKind::ReturnNotLast,
                 ));
             }
             queue_return(builder, value, view.statement_syntax().span())?;
@@ -55,33 +55,33 @@ pub(super) fn lower<'tree, 'source>(
             Ok(())
         }
         LegacyStatementKind::Update { target, kind } => {
-            scalar_local_assignment::postfix(builder, view.statement_syntax(), target, kind)
+            function_local_assignment::postfix(builder, view.statement_syntax(), target, kind)
         }
-        LegacyStatementKind::Block { body } => scalar_statement_body::queue(builder, body),
+        LegacyStatementKind::Block { body } => function_statement_body::queue(builder, body),
         LegacyStatementKind::If {
             condition,
             consequence,
             alternative,
         } => {
-            let span = scalar_body::child(
+            let span = function_body::child(
                 view.statement_syntax(),
                 0,
                 if alternative.is_some() { 7 } else { 5 },
             )?
             .span();
             builder.push_task(
-                ScalarTask::BeginIf {
+                FunctionTask::BeginIf {
                     consequence,
                     alternative,
                     span: span.clone(),
                 },
                 span,
             )?;
-            builder.push_task(ScalarTask::Visit(condition), condition.span())
+            builder.push_task(FunctionTask::Visit(condition), condition.span())
         }
         LegacyStatementKind::While { condition, body } => {
-            let span = scalar_body::child(view.statement_syntax(), 0, 5)?.span();
-            scalar_while::queue(builder, condition, body, span)
+            let span = function_body::child(view.statement_syntax(), 0, 5)?.span();
+            function_while::queue(builder, condition, body, span)
         }
         LegacyStatementKind::For {
             initializer,
@@ -89,43 +89,43 @@ pub(super) fn lower<'tree, 'source>(
             update,
             body,
         } => {
-            let span = scalar_body::child(view.statement_syntax(), 0, 8)?.span();
-            scalar_for::queue(builder, initializer, condition, update, body, span)
+            let span = function_body::child(view.statement_syntax(), 0, 8)?.span();
+            function_for::queue(builder, initializer, condition, update, body, span)
         }
-        LegacyStatementKind::Break => scalar_loop_transfer::lower(
+        LegacyStatementKind::Break => function_loop_transfer::lower(
             builder,
-            ScalarLoopTransfer::Break,
+            FunctionLoopTransfer::Break,
             view.statement_syntax().span(),
         ),
-        LegacyStatementKind::Continue => scalar_loop_transfer::lower(
+        LegacyStatementKind::Continue => function_loop_transfer::lower(
             builder,
-            ScalarLoopTransfer::Continue,
+            FunctionLoopTransfer::Continue,
             view.statement_syntax().span(),
         ),
-        _ => Err(scalar_compile_error::at(
+        _ => Err(function_compile_error::at(
             view.span(),
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         )),
     }
 }
 
 pub(super) fn queue_return<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     value: Option<LegacySyntaxNode<'tree, 'source>>,
     span: std::ops::Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     builder.push_task(
-        ScalarTask::Emit {
+        FunctionTask::Emit {
             instruction: KernelInstruction::Return,
             span: span.clone(),
         },
         span.clone(),
     )?;
     if let Some(value) = value {
-        builder.push_task(ScalarTask::Visit(value), value.span())
+        builder.push_task(FunctionTask::Visit(value), value.span())
     } else {
         builder.push_task(
-            ScalarTask::Emit {
+            FunctionTask::Emit {
                 instruction: KernelInstruction::Constant(KernelValue::Undefined),
                 span: span.clone(),
             },

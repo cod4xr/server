@@ -6,13 +6,13 @@
 )]
 
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::{LegacyNumber, LegacyNumberError};
 use cod4x_script::source::{SourceBudget, SourceText};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn all_ten_compound_operators_preserve_numeric_domains_boundaries_and_alias_values() {
@@ -31,9 +31,9 @@ fn all_ten_compound_operators_preserve_numeric_domains_boundaries_and_alias_valu
         ("x=2;x+=x+1", LegacyNumber::Integer(5)),
     ] {
         let text = format!("main(){{{expression};return x;}}");
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Compound source compilation");
         assert_eq!(compiled.usage().local_bindings, 1);
@@ -46,9 +46,9 @@ fn all_ten_compound_operators_preserve_numeric_domains_boundaries_and_alias_valu
             KernelValue::Number(expected)
         );
     }
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         b"main(arg){arg+=2;return arg;}",
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Compound parameter assignment");
     let arguments = [KernelValue::Number(LegacyNumber::Integer(3))];
@@ -68,20 +68,20 @@ fn compound_targets_require_initialization_and_numeric_failures_map_to_original_
     for (text, expected) in [
         (
             "main(){PrivateMissing+=1;}",
-            ScalarCompileErrorKind::UninitializedLocal,
+            FunctionCompileErrorKind::UninitializedLocal,
         ),
         (
             "main(){self.PrivateField+=1;}",
-            ScalarCompileErrorKind::UnsupportedLocalTarget,
+            FunctionCompileErrorKind::UnsupportedLocalTarget,
         ),
         (
             "main(){PrivateArray[0]+=1;}",
-            ScalarCompileErrorKind::UnsupportedLocalTarget,
+            FunctionCompileErrorKind::UnsupportedLocalTarget,
         ),
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect_err("Unsupported/uninitialized target");
         assert_eq!(error.kind, expected);
@@ -106,9 +106,9 @@ fn compound_targets_require_initialization_and_numeric_failures_map_to_original_
         ),
     ] {
         let text = format!("main(){{{expression};return x;}}");
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Located compound function");
         let error = compiled
@@ -128,29 +128,30 @@ fn compound_targets_require_initialization_and_numeric_failures_map_to_original_
 #[test]
 fn compound_name_visits_stores_and_instruction_tasks_keep_exact_compiler_admission() {
     let text = b"main(arg){x=arg;x+=x*2;return x;}";
-    let usage = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Baseline")
-        .usage();
+    let usage =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Baseline")
+            .usage();
     assert_eq!(usage.local_bindings, 2);
     assert_eq!(usage.identifier_bytes, 12);
-    let exact = ScalarCompilationBudget {
+    let exact = FunctionCompilationBudget {
         max_steps: usage.compiler_steps,
         max_instructions: usage.instructions,
         max_task_frames: usage.peak_task_frames,
         max_metadata_bytes: usage.peak_metadata_bytes,
         max_local_bindings: usage.local_bindings,
         max_identifier_bytes: usage.identifier_bytes,
-        ..ScalarCompilationBudget::default()
+        ..FunctionCompilationBudget::default()
     };
     assert_eq!(
-        scalar_compile_support::compile_local(text, exact)
+        function_compile_support::compile_primitive(text, exact)
             .expect("Complete exact admission")
             .usage(),
         usage
     );
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         text,
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_identifier_bytes: 11,
             ..exact
         },
@@ -158,8 +159,8 @@ fn compound_name_visits_stores_and_instruction_tasks_keep_exact_compiler_admissi
     .expect_err("Final name visit stays charged");
     assert_eq!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded {
-            resource: ScalarCompilationResource::IdentifierBytes,
+        FunctionCompileErrorKind::BudgetExceeded {
+            resource: FunctionCompilationResource::IdentifierBytes,
             requested: 12,
             maximum: 11
         }

@@ -311,6 +311,14 @@ invoke vector arguments. Two source tests pass vector arguments through existing
 restricted syntax and retain operator maps/caller isolation. Source vector literals
 remain unsupported; native construction error indices/cleanup, source component
 evaluation/push order, heap/calls/scheduling and full GSC remain open. See ADR 0042.
+Compiler APIs now use function terminology: CompiledFunction, FunctionCompilation
+accounting/budgets/resources, FunctionCompileError/Kind and FunctionSourceProfile.
+compile_scalar_return_function selects PureScalarReturn; compile_primitive_function
+selects PrimitiveStatements. Compiler leaf modules/private types and the shared
+test helper use matching names. This is an unreleased Rust API cleanup with no
+syntax/runtime/quota/proof/source-map change or additional profile/implementation.
+Diagnostic labels follow the new names; historical ADRs retain earlier naming.
+No full GSC/compiler/module acceptance follows from this cleanup; see ADR 0043.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::compilation::ScalarCompileError;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_initialization::{self, ScalarInitializationSnapshot};
-use crate::compilation::scalar_task::{ScalarPatchSite, ScalarTask};
+use crate::compilation::FunctionCompileError;
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_initialization::{self, FunctionInitializationSnapshot};
+use crate::compilation::function_task::{FunctionPatchSite, FunctionTask};
 use crate::execution::KernelBranchCondition;
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn begin<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     consequence: LegacySyntaxNode<'tree, 'source>,
     alternative: Option<LegacySyntaxNode<'tree, 'source>>,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
-    let incoming = scalar_initialization::capture(builder, span.clone())?;
+) -> Result<(), FunctionCompileError> {
+    let incoming = function_initialization::capture(builder, span.clone())?;
     let false_site = builder.branch(KernelBranchCondition::IfFalse, span.clone())?;
     builder.push_task(
-        ScalarTask::AfterThen {
+        FunctionTask::AfterThen {
             false_site,
             incoming,
             alternative,
@@ -26,7 +26,7 @@ pub(super) fn begin<'tree, 'source>(
         span,
     )?;
     builder.push_task(
-        ScalarTask::Statement {
+        FunctionTask::Statement {
             syntax: consequence,
             last: true,
         },
@@ -35,22 +35,22 @@ pub(super) fn begin<'tree, 'source>(
 }
 
 pub(super) fn after_then<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
-    false_site: ScalarPatchSite,
-    incoming: ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'tree, 'source>,
+    false_site: FunctionPatchSite,
+    incoming: FunctionInitializationSnapshot,
     alternative: Option<LegacySyntaxNode<'tree, 'source>>,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let Some(alternative) = alternative else {
         builder.bind(false_site, span.clone())?;
-        return scalar_initialization::merge(builder, incoming, span);
+        return function_initialization::merge(builder, incoming, span);
     };
-    let then_facts = scalar_initialization::capture(builder, span.clone())?;
+    let then_facts = function_initialization::capture(builder, span.clone())?;
     let end_site = builder.jump(span.clone())?;
     builder.bind(false_site, span.clone())?;
-    scalar_initialization::restore(builder, incoming, span.clone())?;
+    function_initialization::restore(builder, incoming, span.clone())?;
     builder.push_task(
-        ScalarTask::AfterElse {
+        FunctionTask::AfterElse {
             end_site,
             then_facts,
             span: span.clone(),
@@ -58,7 +58,7 @@ pub(super) fn after_then<'tree, 'source>(
         span,
     )?;
     builder.push_task(
-        ScalarTask::Statement {
+        FunctionTask::Statement {
             syntax: alternative,
             last: true,
         },
@@ -67,11 +67,11 @@ pub(super) fn after_then<'tree, 'source>(
 }
 
 pub(super) fn after_else(
-    builder: &mut ScalarBuilder<'_, '_>,
-    end_site: ScalarPatchSite,
-    then_facts: ScalarInitializationSnapshot,
+    builder: &mut FunctionBuilder<'_, '_>,
+    end_site: FunctionPatchSite,
+    then_facts: FunctionInitializationSnapshot,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
-    scalar_initialization::merge(builder, then_facts, span.clone())?;
+) -> Result<(), FunctionCompileError> {
+    function_initialization::merge(builder, then_facts, span.clone())?;
     builder.bind(end_site, span)
 }

@@ -5,9 +5,9 @@
     reason = "Tests generate finite valid deep/wide source."
 )]
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelExecutionBudget, KernelInstruction, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
@@ -20,9 +20,9 @@ fn twenty_thousand_continue_fixups_reach_a_wide_update_destination() {
         write!(source, "if(arg=={index})continue;").expect("Generated deferred fixups");
     }
     source.push_str("}return i;}");
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide deferred fixups");
     let jumps: Vec<_> = compiled
@@ -63,9 +63,9 @@ fn twelve_thousand_for_contexts_execute_and_fail_cleanup_iteratively() {
         "for(;arg;){if(arg==2)break;".repeat(12_000),
         "}break;".repeat(11_999)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Deep for contexts");
     assert_eq!(compiled.usage().peak_control_bytes, 12_001);
@@ -82,18 +82,18 @@ fn twelve_thousand_for_contexts_execute_and_fail_cleanup_iteratively() {
             KernelValue::Number(LegacyNumber::Integer(7))
         );
     }
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_control_bytes: 11_999,
-            ..ScalarCompilationBudget::default()
+            ..FunctionCompilationBudget::default()
         },
     )
     .expect_err("Deep bounded failure");
     assert!(matches!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded {
-            resource: ScalarCompilationResource::ControlBytes,
+        FunctionCompileErrorKind::BudgetExceeded {
+            resource: FunctionCompilationResource::ControlBytes,
             requested: 12_000,
             maximum: 11_999
         }

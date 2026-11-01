@@ -2,41 +2,44 @@
 use std::mem;
 use std::ops::Range;
 
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_task::{PendingScalarKind, ScalarPatchSite};
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_task::{FunctionPatchSite, PendingFunctionKind};
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
 
-impl ScalarBuilder<'_, '_> {
+impl FunctionBuilder<'_, '_> {
     pub(super) fn bind_transfers(
         &mut self,
-        mut chain: Option<ScalarPatchSite>,
+        mut chain: Option<FunctionPatchSite>,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let target = self.instructions.len();
         while let Some(site) = chain {
             self.ledger.charge(1, span.clone())?;
             if site.0 >= target {
-                return Err(scalar_compile_error::at(
+                return Err(function_compile_error::at(
                     span,
-                    ScalarCompileErrorKind::InvalidBranchBinding,
+                    FunctionCompileErrorKind::InvalidBranchBinding,
                 ));
             }
             let instruction = self.instructions.get_mut(site.0).ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::InvalidBranchBinding)
+                function_compile_error::at(
+                    span.clone(),
+                    FunctionCompileErrorKind::InvalidBranchBinding,
+                )
             })?;
             match &mut instruction.kind {
-                PendingScalarKind::Transfer { target: slot, next }
+                PendingFunctionKind::Transfer { target: slot, next }
                     if slot.is_none() && next.as_ref().is_none_or(|next| next.0 < site.0) =>
                 {
                     *slot = Some(target);
                     chain = next.take();
                 }
                 _ => {
-                    return Err(scalar_compile_error::at(
+                    return Err(function_compile_error::at(
                         span,
-                        ScalarCompileErrorKind::InvalidBranchBinding,
+                        FunctionCompileErrorKind::InvalidBranchBinding,
                     ));
                 }
             }
@@ -50,24 +53,24 @@ impl ScalarBuilder<'_, '_> {
     )]
     pub(super) fn bind(
         &mut self,
-        site: ScalarPatchSite,
+        site: FunctionPatchSite,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let target = self.instructions.len();
         let instruction = self.instructions.get_mut(site.0).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::InvalidBranchBinding)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::InvalidBranchBinding)
         })?;
         match &mut instruction.kind {
-            PendingScalarKind::Branch { target: slot, .. }
-            | PendingScalarKind::Jump { target: slot }
+            PendingFunctionKind::Branch { target: slot, .. }
+            | PendingFunctionKind::Jump { target: slot }
                 if slot.is_none() && target > site.0 =>
             {
                 *slot = Some(target);
             }
             _ => {
-                return Err(scalar_compile_error::at(
+                return Err(function_compile_error::at(
                     span,
-                    ScalarCompileErrorKind::InvalidBranchBinding,
+                    FunctionCompileErrorKind::InvalidBranchBinding,
                 ));
             }
         }
@@ -77,38 +80,38 @@ impl ScalarBuilder<'_, '_> {
     pub(super) fn resolve(
         &mut self,
         span: Range<u64>,
-    ) -> Result<(Vec<KernelInstruction>, Vec<Range<u64>>), ScalarCompileError> {
+    ) -> Result<(Vec<KernelInstruction>, Vec<Range<u64>>), FunctionCompileError> {
         self.ledger.resolution(span.clone())?;
         let count = self.instructions.len();
         let mut code = Vec::new();
         let mut spans = Vec::new();
         code.try_reserve_exact(count).map_err(|_| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::AllocationFailed)
         })?;
         spans.try_reserve_exact(count).map_err(|_| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::AllocationFailed)
         })?;
         for pending in mem::take(&mut self.instructions) {
             self.ledger.charge(1, pending.span.clone())?;
             let instruction = match pending.kind {
-                PendingScalarKind::Ready(instruction) => instruction,
-                PendingScalarKind::Branch {
+                PendingFunctionKind::Ready(instruction) => instruction,
+                PendingFunctionKind::Branch {
                     condition,
                     target: Some(target),
                 } => KernelInstruction::Branch { condition, target },
-                PendingScalarKind::Jump {
+                PendingFunctionKind::Jump {
                     target: Some(target),
                 }
-                | PendingScalarKind::Transfer {
+                | PendingFunctionKind::Transfer {
                     target: Some(target),
                     next: None,
                 } => KernelInstruction::Jump(target),
-                PendingScalarKind::Branch { target: None, .. }
-                | PendingScalarKind::Jump { target: None }
-                | PendingScalarKind::Transfer { .. } => {
-                    return Err(scalar_compile_error::at(
+                PendingFunctionKind::Branch { target: None, .. }
+                | PendingFunctionKind::Jump { target: None }
+                | PendingFunctionKind::Transfer { .. } => {
+                    return Err(function_compile_error::at(
                         pending.span,
-                        ScalarCompileErrorKind::InvalidBranchBinding,
+                        FunctionCompileErrorKind::InvalidBranchBinding,
                     ));
                 }
             };

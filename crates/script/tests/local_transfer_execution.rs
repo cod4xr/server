@@ -5,8 +5,8 @@
     reason = "Tests compile finite synthetic scalar transfer programs."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::ScalarCompilationBudget;
+use crate::function_compile_support;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{
     KernelErrorKind, KernelExecutionBudget, KernelResource, KernelValue,
 };
@@ -45,9 +45,9 @@ fn break_continue_nested_contexts_and_reaching_joins_execute() {
             vec![0; 9],
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Scoped transfer source");
         for (arg, expected) in (0..9).zip(results) {
@@ -69,8 +69,9 @@ fn break_continue_nested_contexts_and_reaching_joins_execute() {
 #[test]
 fn continue_fuel_and_original_keyword_maps_remain_bounded_and_private() {
     let text = b"PrivateMain(arg){while(arg){continue;}}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Fuel-bounded continue source");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Fuel-bounded continue source");
     // Load + branch + continue repeats; after five instructions PC names continue.
     let error = compiled
         .program()
@@ -97,8 +98,9 @@ fn continue_fuel_and_original_keyword_maps_remain_bounded_and_private() {
     assert_eq!(source.span(span).expect("Transfer token"), b"continue");
     assert!(!format!("{compiled:?} {error:?}").contains("Private"));
     let text = b"main(arg){while(arg){break;}return 3;}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Break source map");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Break source map");
     let error = compiled
         .program()
         .execute_with_arguments(

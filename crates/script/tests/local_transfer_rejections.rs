@@ -5,8 +5,8 @@
     reason = "Tests supply valid syntax with restricted semantic failures."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use crate::function_compile_support;
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::source::{SourceBudget, SourceText};
 
 #[test]
@@ -14,48 +14,48 @@ fn illegal_contexts_restored_outer_context_and_unreachable_source_fail() {
     for (text, kind, token) in [
         (
             "PrivateMain(){break;}",
-            ScalarCompileErrorKind::IllegalBreak,
+            FunctionCompileErrorKind::IllegalBreak,
             "break",
         ),
         (
             "PrivateMain(){continue;}",
-            ScalarCompileErrorKind::IllegalContinue,
+            FunctionCompileErrorKind::IllegalContinue,
             "continue",
         ),
         (
             "PrivateMain(arg){while(arg){break;}break;}",
-            ScalarCompileErrorKind::IllegalBreak,
+            FunctionCompileErrorKind::IllegalBreak,
             "break",
         ),
         (
             "PrivateMain(arg){while(arg){continue;}continue;}",
-            ScalarCompileErrorKind::IllegalContinue,
+            FunctionCompileErrorKind::IllegalContinue,
             "continue",
         ),
         (
             "PrivateMain(arg){while(arg){break;PrivateLocal=1;}}",
-            ScalarCompileErrorKind::UnreachableStatement,
+            FunctionCompileErrorKind::UnreachableStatement,
             "PrivateLocal=1;",
         ),
         (
             "PrivateMain(arg){while(arg){if(arg)break;else continue;PrivateLocal=1;}}",
-            ScalarCompileErrorKind::UnreachableStatement,
+            FunctionCompileErrorKind::UnreachableStatement,
             "PrivateLocal=1;",
         ),
         (
             "PrivateMain(arg){while(arg){PrivateLocal=1;break;}return PrivateLocal;}",
-            ScalarCompileErrorKind::UninitializedLocal,
+            FunctionCompileErrorKind::UninitializedLocal,
             "PrivateLocal",
         ),
         (
             "PrivateMain(arg){while(arg){if(arg){PrivateLocal=1;continue;}else{break;}}return PrivateLocal;}",
-            ScalarCompileErrorKind::UninitializedLocal,
+            FunctionCompileErrorKind::UninitializedLocal,
             "PrivateLocal",
         ),
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect_err("Restricted transfer failure");
         assert_eq!(error.kind, kind);

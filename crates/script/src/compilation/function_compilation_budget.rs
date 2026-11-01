@@ -3,12 +3,12 @@ use crate::execution::{KernelExecutionBudget, KernelVerificationBudget};
 use crate::literal::LegacyLiteralBudget;
 use crate::statement::StatementListBudget;
 
-/// Independent resource scopes for the restricted scalar function compilers.
+/// Independent resource scopes for the restricted function compilers.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct ScalarCompilationBudget {
+pub struct FunctionCompilationBudget {
     /// Body/queue/task actions, literal/name bytes, snapshot flag visits and resolution.
     pub max_steps: u64,
-    /// Complete emitted scalar instruction count.
+    /// Complete emitted primitive instruction count.
     pub max_instructions: u64,
     /// Maximum live iterative lowering frames.
     pub max_task_frames: u64,
@@ -33,7 +33,7 @@ pub struct ScalarCompilationBudget {
     pub validation: KernelExecutionBudget,
 }
 
-impl Default for ScalarCompilationBudget {
+impl Default for FunctionCompilationBudget {
     fn default() -> Self {
         Self {
             max_steps: 16_000_000,

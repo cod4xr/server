@@ -5,13 +5,13 @@
     reason = "Tests supply valid synthetic scalar modules."
 )]
 
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::{LegacyNumber, LegacyNumberError};
 use cod4x_script::literal::LegacyLiteralError;
 use cod4x_script::source::{SourceBudget, SourceText};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn all_numeric_operators_and_integer_boundaries_lower_to_actual_results() -> Result<(), String> {
@@ -71,19 +71,21 @@ fn signed_literal_and_numeric_operation_failures_keep_source_and_work_without_va
     for (expression, expected, token) in [
         (
             "2147483648",
-            ScalarCompileErrorKind::Literal(LegacyLiteralError::NumberOutOfRange),
+            FunctionCompileErrorKind::Literal(LegacyLiteralError::NumberOutOfRange),
             "2147483648",
         ),
         (
             "-2147483649",
-            ScalarCompileErrorKind::Literal(LegacyLiteralError::NumberOutOfRange),
+            FunctionCompileErrorKind::Literal(LegacyLiteralError::NumberOutOfRange),
             "2147483649",
         ),
     ] {
         let text = format!("PrivateMain(){{return {expression};}}");
-        let error =
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect_err("Checked literal domain");
+        let error = function_compile_support::compile_scalar(
+            text.as_bytes(),
+            FunctionCompilationBudget::default(),
+        )
+        .expect_err("Checked literal domain");
         assert_eq!(error.kind, expected);
         let source = SourceText::index(text.as_bytes(), SourceBudget::default()).expect("Source");
         assert_eq!(
@@ -107,10 +109,12 @@ fn signed_literal_and_numeric_operation_failures_keep_source_and_work_without_va
         ("undefined+1", KernelErrorKind::ExpectedNumber, "+"),
     ] {
         let text = format!("PrivateMain(){{return {expression};}}");
-        let error =
-            scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
-                .expect_err("Pure validation rejects numeric errors");
-        let ScalarCompileErrorKind::Kernel(kernel) = error.kind else {
+        let error = function_compile_support::compile_scalar(
+            text.as_bytes(),
+            FunctionCompilationBudget::default(),
+        )
+        .expect_err("Pure validation rejects numeric errors");
+        let FunctionCompileErrorKind::Kernel(kernel) = error.kind else {
             return Err(format!("Expected kernel error, got {:?}", error.kind));
         };
         assert_eq!(kernel.kind, expected);
@@ -126,7 +130,7 @@ fn signed_literal_and_numeric_operation_failures_keep_source_and_work_without_va
 
 fn evaluate(expression: &str) -> KernelValue {
     let text = format!("main(){{return {expression};}}");
-    scalar_compile_support::compile(text.as_bytes(), ScalarCompilationBudget::default())
+    function_compile_support::compile_scalar(text.as_bytes(), FunctionCompilationBudget::default())
         .expect("Scalar compilation")
         .program()
         .execute(KernelExecutionBudget::default())

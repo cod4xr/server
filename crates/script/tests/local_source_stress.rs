@@ -7,11 +7,11 @@
 
 use std::fmt::Write;
 
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelExecutionBudget, KernelInstruction, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn seventy_thousand_source_locals_compile_and_execute_with_wide_slot_operands() {
@@ -20,9 +20,9 @@ fn seventy_thousand_source_locals_compile_and_execute_with_wide_slot_operands() 
         write!(source, "v{index}=1;").expect("Synthetic source growth");
     }
     source.push_str("return v69999;}");
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide local source compilation");
     assert_eq!(compiled.usage().local_bindings, 70_000);
@@ -46,9 +46,9 @@ fn seventy_thousand_source_locals_compile_and_execute_with_wide_slot_operands() 
 fn hundred_thousand_byte_names_retain_legacy_exact_case_fallback_without_truncation() {
     let name = format!("P{}", "a".repeat(99_999));
     let source = format!("main(){{{name}=7;return {name};}}");
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide identifier compilation");
     assert_eq!(compiled.usage().local_bindings, 1);
@@ -64,13 +64,13 @@ fn hundred_thousand_byte_names_retain_legacy_exact_case_fallback_without_truncat
     let different = name.to_ascii_lowercase();
     let source = format!("main(){{{name}=7;return {different};}}");
     assert_eq!(
-        scalar_compile_support::compile_local(
+        function_compile_support::compile_primitive(
             source.as_bytes(),
-            ScalarCompilationBudget::default()
+            FunctionCompilationBudget::default()
         )
         .expect_err("Long names preserve exact case")
         .kind,
-        ScalarCompileErrorKind::UninitializedLocal
+        FunctionCompileErrorKind::UninitializedLocal
     );
 }
 
@@ -81,9 +81,9 @@ fn twelve_thousand_groups_around_parameter_reads_lower_iteratively() {
         "(".repeat(12_000),
         ")".repeat(12_000)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Deep local source");
     let outcome = compiled

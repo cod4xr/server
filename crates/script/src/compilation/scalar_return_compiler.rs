@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::compilation::scalar_body;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_program;
-use crate::compilation::scalar_task::ScalarTask;
-use crate::compilation::scalar_task_lowering;
+use crate::compilation::function_body;
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_program;
+use crate::compilation::function_task::FunctionTask;
+use crate::compilation::function_task_lowering;
 use crate::compilation::{
-    CompiledScalarFunction, ScalarCompilationBudget, ScalarCompileError, ScalarSourceProfile,
+    CompiledFunction, FunctionCompilationBudget, FunctionCompileError, FunctionSourceProfile,
 };
 use crate::declaration::LegacyFunctionSyntax;
 use crate::execution::{KernelFunctionLayout, KernelInstruction, KernelValue};
@@ -22,11 +22,11 @@ use crate::execution::{KernelFunctionLayout, KernelInstruction, KernelValue};
 /// private shapes, exhausted budgets, allocation failures, and kernel verification/
 /// pure validation-execution failures. No partial callable result or external state
 /// mutation escapes. Error locations preserve original bytes without source text.
-pub fn compile_scalar_function(
+pub fn compile_scalar_return_function(
     function: &LegacyFunctionSyntax<'_, '_>,
-    budget: ScalarCompilationBudget,
-) -> Result<CompiledScalarFunction, ScalarCompileError> {
-    let mut builder = ScalarBuilder::new(budget);
+    budget: FunctionCompilationBudget,
+) -> Result<CompiledFunction, FunctionCompileError> {
+    let mut builder = FunctionBuilder::new(budget);
     let result = compile(&mut builder, function);
     result.map_err(|mut error| {
         error.work_steps = builder.ledger.usage.compiler_steps;
@@ -36,34 +36,34 @@ pub fn compile_scalar_function(
 }
 
 fn compile<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     function: &LegacyFunctionSyntax<'tree, 'source>,
-) -> Result<CompiledScalarFunction, ScalarCompileError> {
+) -> Result<CompiledFunction, FunctionCompileError> {
     builder.ledger.charge(1, function.span())?;
-    let body = scalar_body::lower(function)?;
+    let body = function_body::lower(function)?;
     builder.push_task(
-        ScalarTask::Emit {
+        FunctionTask::Emit {
             instruction: KernelInstruction::Return,
             span: body.return_span.clone(),
         },
         body.return_span.clone(),
     )?;
     if let Some(expression) = body.expression {
-        builder.push_task(ScalarTask::Visit(expression), expression.span())?;
+        builder.push_task(FunctionTask::Visit(expression), expression.span())?;
     } else {
         builder.push_task(
-            ScalarTask::Emit {
+            FunctionTask::Emit {
                 instruction: KernelInstruction::Constant(KernelValue::Undefined),
                 span: body.return_span.clone(),
             },
             body.return_span,
         )?;
     }
-    scalar_task_lowering::drain(builder)?;
-    scalar_program::finish(
+    function_task_lowering::drain(builder)?;
+    function_program::finish(
         builder,
         KernelFunctionLayout::default(),
         function.body().span(),
-        ScalarSourceProfile::PureReturn,
+        FunctionSourceProfile::PureScalarReturn,
     )
 }

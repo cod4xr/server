@@ -411,6 +411,11 @@ low-level program API and retains source operation maps. Source three-element
 groups remain explicitly unsupported, and internal coordinate stack order is
 not native/source evaluation-order evidence. Native VM error indices/cleanup,
 heap/calls/scheduling and full GSC/mod parity remain open; see ADR 0042.
+Compiler Rust APIs now use function names and explicit PureScalarReturn/
+PrimitiveStatements profile names, with no accepted-syntax/runtime/quota/proof/
+map change. This is an unreleased API rename, without compatibility wrappers or
+a wire/content/serialized-bytecode change; see ADR 0043. Existing suites retain
+their coverage and unsupported GSC gates.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

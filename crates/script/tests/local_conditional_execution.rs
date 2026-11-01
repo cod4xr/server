@@ -5,12 +5,12 @@
     reason = "Tests supply finite valid synthetic branch functions."
 )]
 
-use cod4x_script::compilation::ScalarCompilationBudget;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::{LegacyNumber, LegacyNumberError};
 use cod4x_script::source::{SourceBudget, SourceText};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn branches_blocks_else_if_and_returning_paths_select_real_results() {
@@ -39,9 +39,11 @@ fn branches_blocks_else_if_and_returning_paths_select_real_results() {
         ),
     ] {
         let mut source = text.as_bytes().to_vec();
-        let compiled =
-            scalar_compile_support::compile_local(&source, ScalarCompilationBudget::default())
-                .expect("Branch compilation");
+        let compiled = function_compile_support::compile_primitive(
+            &source,
+            FunctionCompilationBudget::default(),
+        )
+        .expect("Branch compilation");
         source.fill(0);
         assert_eq!(compiled.usage().validation_steps, None);
         for (argument, expected) in (0..3).zip(results) {
@@ -72,9 +74,9 @@ fn empty_branches_blocks_and_bare_returns_preserve_undefined() {
         "main(arg){{}if(arg)return;}",
         "main(arg){if(arg){x=undefined;}else{x=undefined;}return x;}",
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Empty branch source");
         for arg in [0, 1] {
@@ -96,8 +98,9 @@ fn empty_branches_blocks_and_bare_returns_preserve_undefined() {
 #[test]
 fn condition_type_errors_and_taken_operator_errors_map_to_source() {
     let text = b"PrivateMain(arg){if(arg){return 1/0;}else{return 7;}}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Runtime-dependent source");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Runtime-dependent source");
     let source = SourceText::index(text, SourceBudget::default()).expect("Source");
     for (arg, kind, token) in [
         (

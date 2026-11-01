@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::str;
 
-use crate::compilation::scalar_compile_error;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_compile_error;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelValue;
 use crate::expression::LegacyLiteralPolarity;
 use crate::legacy::LegacyNumber;
@@ -15,16 +15,16 @@ pub(super) fn decode(
     token: LegacyLexeme<'_>,
     polarity: LegacyLiteralPolarity,
     budget: LegacyLiteralBudget,
-) -> Result<KernelValue, ScalarCompileError> {
+) -> Result<KernelValue, FunctionCompileError> {
     let error =
-        |kind| scalar_compile_error::at(token.span(), ScalarCompileErrorKind::Literal(kind));
+        |kind| function_compile_error::at(token.span(), FunctionCompileErrorKind::Literal(kind));
     let LegacyLexemeKind::Token(code) = token.kind() else {
         return Err(error(LegacyLiteralError::WrongToken));
     };
     if matches!(code.as_u16(), 0x103 | 0x104) {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             token.span(),
-            ScalarCompileErrorKind::UnsupportedPrimary,
+            FunctionCompileErrorKind::UnsupportedPrimary,
         ));
     }
     if token.as_bytes().len() as u64 > budget.max_encoded_bytes {
@@ -56,9 +56,9 @@ pub(super) fn decode(
                 value.to_bits() ^ 0x8000_0000,
             ))))
         }
-        _ => Err(scalar_compile_error::at(
+        _ => Err(function_compile_error::at(
             token.span(),
-            ScalarCompileErrorKind::InvalidStructure,
+            FunctionCompileErrorKind::InvalidStructure,
         )),
     }
 }

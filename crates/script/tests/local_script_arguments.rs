@@ -5,18 +5,18 @@
     reason = "Tests use valid finite source and ordered scalar arguments."
 )]
 
-use cod4x_script::compilation::ScalarCompilationBudget;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{KernelErrorKind, KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 use cod4x_script::source::{SourceBudget, SourceText};
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 
 #[test]
 fn source_parameter_order_missing_undefined_and_excess_errors_are_explicit() {
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         b"main(first,second){return second;}",
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Source function");
     let arguments = [
@@ -58,8 +58,9 @@ fn source_parameter_order_missing_undefined_and_excess_errors_are_explicit() {
 #[test]
 fn missing_parameter_is_initialized_but_numeric_use_still_fails_at_original_operator() {
     let text = b"main(arg){return arg+1;}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Source parameter binding");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Source parameter binding");
     let error = compiled
         .program()
         .execute_legacy_script_arguments(&[], KernelExecutionBudget::default())

@@ -1,68 +1,68 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::compilation::scalar_compile_error;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_compile_error;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::declaration::LegacyFunctionSyntax;
 use crate::statement::{LegacyStatementError, LegacyStatementKind, LegacyStatementSyntax};
 use crate::syntax::{LegacySyntaxNode, LegacySyntaxNodeKind};
 
-pub(super) struct ScalarBody<'tree, 'source> {
+pub(super) struct FunctionBody<'tree, 'source> {
     pub(super) expression: Option<LegacySyntaxNode<'tree, 'source>>,
     pub(super) return_span: Range<u64>,
 }
 
 pub(super) fn lower<'tree, 'source>(
     function: &LegacyFunctionSyntax<'tree, 'source>,
-) -> Result<ScalarBody<'tree, 'source>, ScalarCompileError> {
+) -> Result<FunctionBody<'tree, 'source>, FunctionCompileError> {
     if !function.parameters().is_empty() {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             function.span(),
-            ScalarCompileErrorKind::UnsupportedParameters,
+            FunctionCompileErrorKind::UnsupportedParameters,
         ));
     }
     let body = function.body();
     if production(body) == Some(110) {
         if body.children().next().is_some() {
-            return Err(scalar_compile_error::at(
+            return Err(function_compile_error::at(
                 body.span(),
-                ScalarCompileErrorKind::InvalidStructure,
+                FunctionCompileErrorKind::InvalidStructure,
             ));
         }
-        return Ok(ScalarBody {
+        return Ok(FunctionBody {
             expression: None,
             return_span: body.span(),
         });
     }
     if production(body) != Some(109) {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             body.span(),
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         ));
     }
     let previous = child(body, 0, 2)?;
     if production(previous) != Some(110) || previous.children().next().is_some() {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             body.span(),
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         ));
     }
     let node = child(body, 1, 2)?;
     let statement = LegacyStatementSyntax::from_node(node).map_err(|error| {
         let kind = match error {
-            LegacyStatementError::NotStatement => ScalarCompileErrorKind::UnsupportedBody,
-            LegacyStatementError::ProfileMismatch => ScalarCompileErrorKind::InvalidStructure,
+            LegacyStatementError::NotStatement => FunctionCompileErrorKind::UnsupportedBody,
+            LegacyStatementError::ProfileMismatch => FunctionCompileErrorKind::InvalidStructure,
         };
-        scalar_compile_error::at(node.span(), kind)
+        function_compile_error::at(node.span(), kind)
     })?;
     match statement.kind() {
-        LegacyStatementKind::Return { value } => Ok(ScalarBody {
+        LegacyStatementKind::Return { value } => Ok(FunctionBody {
             expression: value,
             return_span: statement.statement_syntax().span(),
         }),
-        _ => Err(scalar_compile_error::at(
+        _ => Err(function_compile_error::at(
             statement.statement_syntax().span(),
-            ScalarCompileErrorKind::UnsupportedBody,
+            FunctionCompileErrorKind::UnsupportedBody,
         )),
     }
 }
@@ -78,15 +78,15 @@ pub(super) fn child<'tree, 'source>(
     node: LegacySyntaxNode<'tree, 'source>,
     index: usize,
     count: usize,
-) -> Result<LegacySyntaxNode<'tree, 'source>, ScalarCompileError> {
+) -> Result<LegacySyntaxNode<'tree, 'source>, FunctionCompileError> {
     let mut children = node.children();
     if children.len() != count {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             node.span(),
-            ScalarCompileErrorKind::InvalidStructure,
+            FunctionCompileErrorKind::InvalidStructure,
         ));
     }
     children.nth(index).ok_or_else(|| {
-        scalar_compile_error::at(node.span(), ScalarCompileErrorKind::InvalidStructure)
+        function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })
 }

@@ -2,28 +2,28 @@
 use std::mem;
 use std::ops::Range;
 
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_task::{PendingScalarInstruction, ScalarTask};
+use crate::compilation::function_compile_error;
+use crate::compilation::function_task::{FunctionTask, PendingFunctionInstruction};
 use crate::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompilationUsage, ScalarCompileError,
-    ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompilationUsage,
+    FunctionCompileError, FunctionCompileErrorKind,
 };
 use crate::execution::KernelInstruction;
 
-pub(super) struct ScalarCompilationLedger {
-    pub(super) budget: ScalarCompilationBudget,
-    pub(super) usage: ScalarCompilationUsage,
+pub(super) struct FunctionCompilationLedger {
+    pub(super) budget: FunctionCompilationBudget,
+    pub(super) usage: FunctionCompilationUsage,
     binding_bytes: u64,
     control_bytes: u64,
 }
 
-impl ScalarCompilationLedger {
-    pub(super) fn new(budget: ScalarCompilationBudget) -> Self {
+impl FunctionCompilationLedger {
+    pub(super) fn new(budget: FunctionCompilationBudget) -> Self {
         Self {
             budget,
             binding_bytes: 0,
             control_bytes: 0,
-            usage: ScalarCompilationUsage {
+            usage: FunctionCompilationUsage {
                 compiler_steps: 0,
                 instructions: 0,
                 peak_task_frames: 0,
@@ -41,16 +41,16 @@ impl ScalarCompilationLedger {
         &mut self,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let next = self
             .usage
             .identifier_bytes
             .checked_add(bytes)
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         check(
-            ScalarCompilationResource::IdentifierBytes,
+            FunctionCompilationResource::IdentifierBytes,
             next,
             self.budget.max_identifier_bytes,
             span.clone(),
@@ -65,9 +65,9 @@ impl ScalarCompilationLedger {
         count: u64,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         check(
-            ScalarCompilationResource::LocalBindings,
+            FunctionCompilationResource::LocalBindings,
             count,
             self.budget.max_local_bindings,
             span,
@@ -81,16 +81,16 @@ impl ScalarCompilationLedger {
         &mut self,
         amount: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let next = self
             .usage
             .compiler_steps
             .checked_add(amount)
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         check(
-            ScalarCompilationResource::Steps,
+            FunctionCompilationResource::Steps,
             next,
             self.budget.max_steps,
             span,
@@ -103,12 +103,12 @@ impl ScalarCompilationLedger {
         &mut self,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let next = self.control_bytes.checked_add(bytes).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
         })?;
         check(
-            ScalarCompilationResource::ControlBytes,
+            FunctionCompilationResource::ControlBytes,
             next,
             self.budget.max_control_bytes,
             span,
@@ -122,9 +122,9 @@ impl ScalarCompilationLedger {
         &mut self,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         self.control_bytes = self.control_bytes.checked_sub(bytes).ok_or_else(|| {
-            scalar_compile_error::at(span, ScalarCompileErrorKind::InvalidControlState)
+            function_compile_error::at(span, FunctionCompileErrorKind::InvalidControlState)
         })?;
         Ok(())
     }
@@ -134,26 +134,26 @@ impl ScalarCompilationLedger {
         instructions: usize,
         tasks: usize,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         check(
-            ScalarCompilationResource::Instructions,
+            FunctionCompilationResource::Instructions,
             instructions as u64,
             self.budget.max_instructions,
             span.clone(),
         )?;
         check(
-            ScalarCompilationResource::TaskFrames,
+            FunctionCompilationResource::TaskFrames,
             tasks as u64,
             self.budget.max_task_frames,
             span.clone(),
         )?;
         let code =
-            (instructions as u64).checked_mul(mem::size_of::<PendingScalarInstruction>() as u64);
-        let frames = (tasks as u64).checked_mul(mem::size_of::<ScalarTask<'_, '_>>() as u64);
+            (instructions as u64).checked_mul(mem::size_of::<PendingFunctionInstruction>() as u64);
+        let frames = (tasks as u64).checked_mul(mem::size_of::<FunctionTask<'_, '_>>() as u64);
         let bytes = code
             .and_then(|code| frames.and_then(|frames| code.checked_add(frames)))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.metadata_with_bindings(bytes, span)?;
         self.usage.instructions = instructions as u64;
@@ -161,19 +161,19 @@ impl ScalarCompilationLedger {
         Ok(())
     }
 
-    pub(super) fn resolution(&mut self, span: Range<u64>) -> Result<(), ScalarCompileError> {
-        let slot = mem::size_of::<PendingScalarInstruction>()
+    pub(super) fn resolution(&mut self, span: Range<u64>) -> Result<(), FunctionCompileError> {
+        let slot = mem::size_of::<PendingFunctionInstruction>()
             .checked_add(mem::size_of::<KernelInstruction>())
             .and_then(|size| size.checked_add(mem::size_of::<Range<u64>>()))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         let bytes = self
             .usage
             .instructions
             .checked_mul(slot as u64)
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.metadata_with_bindings(bytes, span)
     }
@@ -182,19 +182,19 @@ impl ScalarCompilationLedger {
         &mut self,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let bytes = bytes
             .checked_add(self.binding_bytes)
             .and_then(|bytes| bytes.checked_add(self.control_bytes))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.metadata(bytes, span)
     }
 
-    fn metadata(&mut self, bytes: u64, span: Range<u64>) -> Result<(), ScalarCompileError> {
+    fn metadata(&mut self, bytes: u64, span: Range<u64>) -> Result<(), FunctionCompileError> {
         check(
-            ScalarCompilationResource::MetadataBytes,
+            FunctionCompilationResource::MetadataBytes,
             bytes,
             self.budget.max_metadata_bytes,
             span,
@@ -205,15 +205,15 @@ impl ScalarCompilationLedger {
 }
 
 fn check(
-    resource: ScalarCompilationResource,
+    resource: FunctionCompilationResource,
     requested: u64,
     maximum: u64,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     if requested > maximum {
-        return Err(scalar_compile_error::at(
+        return Err(function_compile_error::at(
             span,
-            ScalarCompileErrorKind::BudgetExceeded {
+            FunctionCompileErrorKind::BudgetExceeded {
                 resource,
                 requested,
                 maximum,

@@ -1,30 +1,32 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::compilation::scalar_compilation_ledger::ScalarCompilationLedger;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_local_bindings::ScalarLocalBindings;
-use crate::compilation::scalar_loop_transfer::ScalarLoopContext;
-use crate::compilation::scalar_task::{
-    PendingScalarInstruction, PendingScalarKind, ScalarPatchSite, ScalarTask,
+use crate::compilation::function_compilation_ledger::FunctionCompilationLedger;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_local_bindings::FunctionLocalBindings;
+use crate::compilation::function_loop_transfer::FunctionLoopContext;
+use crate::compilation::function_task::{
+    FunctionPatchSite, FunctionTask, PendingFunctionInstruction, PendingFunctionKind,
 };
-use crate::compilation::{ScalarCompilationBudget, ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::{
+    FunctionCompilationBudget, FunctionCompileError, FunctionCompileErrorKind,
+};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 
-pub(super) struct ScalarBuilder<'tree, 'source> {
-    pub(super) ledger: ScalarCompilationLedger,
-    pub(super) locals: Option<ScalarLocalBindings<'source>>,
+pub(super) struct FunctionBuilder<'tree, 'source> {
+    pub(super) ledger: FunctionCompilationLedger,
+    pub(super) locals: Option<FunctionLocalBindings<'source>>,
     pub(super) reachable: bool,
-    pub(super) active_loop: Option<ScalarLoopContext>,
-    tasks: Vec<ScalarTask<'tree, 'source>>,
-    pub(super) instructions: Vec<PendingScalarInstruction>,
+    pub(super) active_loop: Option<FunctionLoopContext>,
+    tasks: Vec<FunctionTask<'tree, 'source>>,
+    pub(super) instructions: Vec<PendingFunctionInstruction>,
     active_task: bool,
 }
 
-impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
-    pub(super) fn new(budget: ScalarCompilationBudget) -> Self {
+impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
+    pub(super) fn new(budget: FunctionCompilationBudget) -> Self {
         Self {
-            ledger: ScalarCompilationLedger::new(budget),
+            ledger: FunctionCompilationLedger::new(budget),
             locals: None,
             reachable: true,
             active_loop: None,
@@ -39,35 +41,35 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         count: u64,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         self.ledger.bindings(count, bytes, span.clone())?;
         let live = self
             .tasks
             .len()
             .checked_add(usize::from(self.active_task))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.ledger.admit(self.instructions.len(), live, span)
     }
 
     pub(super) fn push_task(
         &mut self,
-        task: ScalarTask<'tree, 'source>,
+        task: FunctionTask<'tree, 'source>,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         let count = self.tasks.len().checked_add(1).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
         })?;
         let live = count
             .checked_add(usize::from(self.active_task))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.ledger
             .admit(self.instructions.len(), live, span.clone())?;
         self.tasks.try_reserve(1).map_err(|_| {
-            scalar_compile_error::at(span, ScalarCompileErrorKind::AllocationFailed)
+            function_compile_error::at(span, FunctionCompileErrorKind::AllocationFailed)
         })?;
         self.tasks.push(task);
         Ok(())
@@ -77,19 +79,19 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         &mut self,
         bytes: u64,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
+    ) -> Result<(), FunctionCompileError> {
         self.ledger.control(bytes, span.clone())?;
         let live = self
             .tasks
             .len()
             .checked_add(usize::from(self.active_task))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.ledger.admit(self.instructions.len(), live, span)
     }
 
-    pub(super) fn next_task(&mut self) -> Option<ScalarTask<'tree, 'source>> {
+    pub(super) fn next_task(&mut self) -> Option<FunctionTask<'tree, 'source>> {
         let task = self.tasks.pop();
         self.active_task = task.is_some();
         task
@@ -103,8 +105,8 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         &mut self,
         instruction: KernelInstruction,
         span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
-        self.append(PendingScalarKind::Ready(instruction), span)
+    ) -> Result<(), FunctionCompileError> {
+        self.append(PendingFunctionKind::Ready(instruction), span)
             .map(|_| ())
     }
 
@@ -112,53 +114,56 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         &mut self,
         condition: KernelBranchCondition,
         span: Range<u64>,
-    ) -> Result<ScalarPatchSite, ScalarCompileError> {
+    ) -> Result<FunctionPatchSite, FunctionCompileError> {
         self.append(
-            PendingScalarKind::Branch {
+            PendingFunctionKind::Branch {
                 condition,
                 target: None,
             },
             span,
         )
-        .map(ScalarPatchSite)
+        .map(FunctionPatchSite)
     }
 
-    pub(super) fn jump(&mut self, span: Range<u64>) -> Result<ScalarPatchSite, ScalarCompileError> {
-        self.append(PendingScalarKind::Jump { target: None }, span)
-            .map(ScalarPatchSite)
+    pub(super) fn jump(
+        &mut self,
+        span: Range<u64>,
+    ) -> Result<FunctionPatchSite, FunctionCompileError> {
+        self.append(PendingFunctionKind::Jump { target: None }, span)
+            .map(FunctionPatchSite)
     }
 
     pub(super) fn transfer_jump(
         &mut self,
-        next: Option<ScalarPatchSite>,
+        next: Option<FunctionPatchSite>,
         span: Range<u64>,
-    ) -> Result<ScalarPatchSite, ScalarCompileError> {
-        self.append(PendingScalarKind::Transfer { target: None, next }, span)
-            .map(ScalarPatchSite)
+    ) -> Result<FunctionPatchSite, FunctionCompileError> {
+        self.append(PendingFunctionKind::Transfer { target: None, next }, span)
+            .map(FunctionPatchSite)
     }
 
     fn append(
         &mut self,
-        kind: PendingScalarKind,
+        kind: PendingFunctionKind,
         span: Range<u64>,
-    ) -> Result<usize, ScalarCompileError> {
+    ) -> Result<usize, FunctionCompileError> {
         let index = self.instructions.len();
         let count = index.checked_add(1).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
         })?;
         let live = self
             .tasks
             .len()
             .checked_add(usize::from(self.active_task))
             .ok_or_else(|| {
-                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+                function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
         self.ledger.admit(count, live, span.clone())?;
         self.instructions.try_reserve(1).map_err(|_| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
+            function_compile_error::at(span.clone(), FunctionCompileErrorKind::AllocationFailed)
         })?;
         self.instructions
-            .push(PendingScalarInstruction { kind, span });
+            .push(PendingFunctionInstruction { kind, span });
         Ok(index)
     }
 }

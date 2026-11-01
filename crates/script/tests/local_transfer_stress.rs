@@ -5,9 +5,9 @@
     reason = "Tests generate finite valid transfer source."
 )]
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelExecutionBudget, KernelInstruction, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
@@ -20,9 +20,9 @@ fn twenty_thousand_linked_break_fixups_resolve_wide_exits_without_native_case_ar
         write!(source, "if(arg=={index})break;").expect("Generated linked fixups");
     }
     source.push_str("arg=0;}return arg;}");
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Wide break fixup chain");
     let instructions = compiled.program().instructions();
@@ -62,9 +62,9 @@ fn twelve_thousand_nested_break_contexts_execute_and_fail_drop_iteratively() {
         "while(arg){if(arg==2)break;".repeat(12_000),
         "}break;".repeat(11_999)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Deep context ownership");
     assert_eq!(compiled.usage().peak_control_bytes, 12_001);
@@ -81,18 +81,18 @@ fn twelve_thousand_nested_break_contexts_execute_and_fail_drop_iteratively() {
             KernelValue::Number(LegacyNumber::Integer(7))
         );
     }
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_control_bytes: 11_999,
-            ..ScalarCompilationBudget::default()
+            ..FunctionCompilationBudget::default()
         },
     )
     .expect_err("Deep failure drops saved outer contexts");
     assert!(matches!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded {
-            resource: ScalarCompilationResource::ControlBytes,
+        FunctionCompileErrorKind::BudgetExceeded {
+            resource: FunctionCompilationResource::ControlBytes,
             requested: 12_000,
             maximum: 11_999
         }

@@ -5,8 +5,8 @@
     reason = "Tests supply syntactically valid restricted-profile failures."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use crate::function_compile_support;
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 use cod4x_script::source::{SourceBudget, SourceText};
@@ -20,12 +20,12 @@ fn first_iteration_post_loop_and_constant_false_source_reads_are_checked() {
         "main(arg){while(arg){if(arg)PrivateLocal=1;return PrivateLocal;}}",
         "main(){while(false){return PrivateLocal;}}",
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect_err("Uninitialized read");
-        assert_eq!(error.kind, ScalarCompileErrorKind::UninitializedLocal);
+        assert_eq!(error.kind, FunctionCompileErrorKind::UninitializedLocal);
         let source = SourceText::index(text.as_bytes(), SourceBudget::default()).expect("Source");
         assert_eq!(
             source.span(error.span.clone()).expect("Name location"),
@@ -38,9 +38,9 @@ fn first_iteration_post_loop_and_constant_false_source_reads_are_checked() {
 
 #[test]
 fn loop_slots_remain_stable_but_later_assignment_must_initialize_them_again() {
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         b"main(arg){x=3;while(arg){y=x;arg=0;}Y=9;return x+y;}",
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Post-loop ordinary assignment initializes the existing slot");
     assert_eq!(compiled.usage().local_bindings, 3);
@@ -62,13 +62,13 @@ fn loop_slots_remain_stable_but_later_assignment_must_initialize_them_again() {
         "main(){switch(1){}}",
     ] {
         assert_eq!(
-            scalar_compile_support::compile_local(
+            function_compile_support::compile_primitive(
                 text.as_bytes(),
-                ScalarCompilationBudget::default()
+                FunctionCompilationBudget::default()
             )
             .expect_err("Unsupported statement remains explicit")
             .kind,
-            ScalarCompileErrorKind::UnsupportedBody
+            FunctionCompileErrorKind::UnsupportedBody
         );
     }
 }

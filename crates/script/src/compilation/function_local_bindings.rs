@@ -4,16 +4,16 @@ use std::collections::HashMap;
 use crate::binding::LegacyIdentifier;
 
 #[derive(Clone, Copy)]
-pub(super) struct ScalarLocalSlot {
+pub(super) struct FunctionLocalSlot {
     pub(super) index: usize,
     pub(super) initialized: bool,
 }
 
-pub(super) struct ScalarLocalBindings<'source> {
-    pub(super) names: HashMap<LegacyIdentifier<'source>, ScalarLocalSlot>,
+pub(super) struct FunctionLocalBindings<'source> {
+    pub(super) names: HashMap<LegacyIdentifier<'source>, FunctionLocalSlot>,
 }
 
-impl ScalarLocalBindings<'_> {
+impl FunctionLocalBindings<'_> {
     pub(super) fn new() -> Self {
         Self {
             names: HashMap::new(),
@@ -22,7 +22,7 @@ impl ScalarLocalBindings<'_> {
 }
 
 #[derive(Clone, Copy)]
-pub(super) enum ScalarLocalDeclaration {
+pub(super) enum FunctionLocalDeclaration {
     Parameter,
     Assignment,
 }

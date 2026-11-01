@@ -4,19 +4,19 @@ use std::ops::Range;
 
 use crate::execution::VerifiedKernelProgram;
 
-/// Explicit accepted source/validation contract for an owned scalar function.
+/// Explicit accepted source/validation contract for an owned function.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum ScalarSourceProfile {
+pub enum FunctionSourceProfile {
     /// Zero parameters and empty/single-return body, validated by bounded pure execution.
-    PureReturn,
-    /// Scalar locals, assignments/updates, blocks, conditionals, while/for/transfers and returns.
+    PureScalarReturn,
+    /// Primitive locals, assignments/updates, blocks, conditionals, while/for/transfers and returns.
     /// Publication verifies code without executing fabricated argument values.
-    LocalStatements,
+    PrimitiveStatements,
 }
 
 /// Successful restricted source compiler accounting, excluding allocator overhead/RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct ScalarCompilationUsage {
+pub struct FunctionCompilationUsage {
     /// Body/task/literal/name/snapshot/resolution work charged to the compiler.
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.
@@ -37,25 +37,25 @@ pub struct ScalarCompilationUsage {
     pub validation_steps: Option<u64>,
 }
 
-/// Owned restricted scalar function code/maps, with no source/tree/name references.
+/// Owned restricted function code/maps, with no source/tree/name references.
 ///
 /// The explicit profile controls accepted syntax/validation; neither implements
 /// full GSC function/module compilation or activation. Callers retain source/module
 /// association for these byte spans and resolve module/function names.
-pub struct CompiledScalarFunction {
-    pub(super) profile: ScalarSourceProfile,
+pub struct CompiledFunction {
+    pub(super) profile: FunctionSourceProfile,
     pub(super) program: VerifiedKernelProgram,
     pub(super) spans: Vec<Range<u64>>,
-    pub(super) usage: ScalarCompilationUsage,
+    pub(super) usage: FunctionCompilationUsage,
 }
 
-impl CompiledScalarFunction {
+impl CompiledFunction {
     /// Returns the source/validation contract without source names or values.
     #[must_use]
-    pub fn profile(&self) -> ScalarSourceProfile {
+    pub fn profile(&self) -> FunctionSourceProfile {
         self.profile
     }
-    /// Borrows the immutable scalar proof; invocation admits arguments/locals/stack/fuel.
+    /// Borrows the immutable primitive proof; invocation admits arguments/locals/stack/fuel.
     #[must_use]
     pub fn program(&self) -> &VerifiedKernelProgram {
         &self.program
@@ -69,15 +69,15 @@ impl CompiledScalarFunction {
 
     /// Returns successful compiler/kernel accounting, without constants or source.
     #[must_use]
-    pub fn usage(&self) -> ScalarCompilationUsage {
+    pub fn usage(&self) -> FunctionCompilationUsage {
         self.usage
     }
 }
 
-impl fmt::Debug for CompiledScalarFunction {
+impl fmt::Debug for CompiledFunction {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
-            .debug_struct("CompiledScalarFunction")
+            .debug_struct("CompiledFunction")
             .field("profile", &self.profile)
             .field("usage", &self.usage)
             .finish_non_exhaustive()

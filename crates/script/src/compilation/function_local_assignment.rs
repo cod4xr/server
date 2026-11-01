@@ -2,14 +2,14 @@
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifier;
-use crate::compilation::scalar_body;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_expression_lowering;
-use crate::compilation::scalar_local_bindings::ScalarLocalDeclaration;
-use crate::compilation::scalar_local_names;
-use crate::compilation::scalar_task::ScalarTask;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_body;
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_expression_lowering;
+use crate::compilation::function_local_bindings::FunctionLocalDeclaration;
+use crate::compilation::function_local_names;
+use crate::compilation::function_task::FunctionTask;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
 use crate::expression::{LegacyInfixOperator, LegacyReferenceKind, LegacyReferenceSyntax};
 use crate::legacy::LegacyIntegerUpdate;
@@ -18,58 +18,58 @@ use crate::statement::LegacyUpdateKind;
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn assign<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     statement: LegacySyntaxNode<'tree, 'source>,
     target: LegacySyntaxNode<'tree, 'source>,
     value: LegacySyntaxNode<'tree, 'source>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let token = target_name(target)?;
     let (name, slot) =
-        scalar_local_names::declare(builder, token, ScalarLocalDeclaration::Assignment)?;
-    let span = scalar_body::child(statement, 1, 3)?.span();
+        function_local_names::declare(builder, token, FunctionLocalDeclaration::Assignment)?;
+    let span = function_body::child(statement, 1, 3)?.span();
     finish_assignment(builder, name, slot, span)?;
-    builder.push_task(ScalarTask::Visit(value), value.span())
+    builder.push_task(FunctionTask::Visit(value), value.span())
 }
 
 pub(super) fn compound<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     statement: LegacySyntaxNode<'tree, 'source>,
     target: LegacySyntaxNode<'tree, 'source>,
     operator: LegacyInfixOperator,
     value: LegacySyntaxNode<'tree, 'source>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let token = target_name(target)?;
-    let (name, slot) = scalar_local_names::lookup(builder, token)?;
+    let (name, slot) = function_local_names::lookup(builder, token)?;
     builder.emit(KernelInstruction::LoadLocal(slot), token.span())?;
-    let span = scalar_body::child(statement, 1, 3)?.span();
+    let span = function_body::child(statement, 1, 3)?.span();
     finish_assignment(builder, name, slot, span.clone())?;
     builder.push_task(
-        ScalarTask::Emit {
-            instruction: scalar_expression_lowering::infix(operator),
+        FunctionTask::Emit {
+            instruction: function_expression_lowering::infix(operator),
             span: span.clone(),
         },
         span,
     )?;
-    builder.push_task(ScalarTask::Visit(value), value.span())
+    builder.push_task(FunctionTask::Visit(value), value.span())
 }
 
 pub(super) fn postfix<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     statement: LegacySyntaxNode<'tree, 'source>,
     target: LegacySyntaxNode<'tree, 'source>,
     kind: LegacyUpdateKind,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let token = target_name(target)?;
-    let (name, slot) = scalar_local_names::lookup(builder, token)?;
+    let (name, slot) = function_local_names::lookup(builder, token)?;
     builder.emit(KernelInstruction::LoadLocal(slot), token.span())?;
-    let span = scalar_body::child(statement, 1, 2)?.span();
+    let span = function_body::child(statement, 1, 2)?.span();
     finish_assignment(builder, name, slot, span.clone())?;
     let update = match kind {
         LegacyUpdateKind::Increment => LegacyIntegerUpdate::Increment,
         LegacyUpdateKind::Decrement => LegacyIntegerUpdate::Decrement,
     };
     builder.push_task(
-        ScalarTask::Emit {
+        FunctionTask::Emit {
             instruction: KernelInstruction::IntegerUpdate(update),
             span: span.clone(),
         },
@@ -78,13 +78,13 @@ pub(super) fn postfix<'tree, 'source>(
 }
 
 fn finish_assignment<'source>(
-    builder: &mut ScalarBuilder<'_, 'source>,
+    builder: &mut FunctionBuilder<'_, 'source>,
     name: LegacyIdentifier<'source>,
     slot: usize,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     builder.push_task(
-        ScalarTask::FinishAssignment {
+        FunctionTask::FinishAssignment {
             name,
             slot,
             span: span.clone(),
@@ -95,11 +95,11 @@ fn finish_assignment<'source>(
 
 fn target_name<'source>(
     target: LegacySyntaxNode<'_, 'source>,
-) -> Result<LegacyLexeme<'source>, ScalarCompileError> {
+) -> Result<LegacyLexeme<'source>, FunctionCompileError> {
     let error = || {
-        scalar_compile_error::at(
+        function_compile_error::at(
             target.span(),
-            ScalarCompileErrorKind::UnsupportedLocalTarget,
+            FunctionCompileErrorKind::UnsupportedLocalTarget,
         )
     };
     let reference = LegacyReferenceSyntax::from_node(target).map_err(|_| error())?;

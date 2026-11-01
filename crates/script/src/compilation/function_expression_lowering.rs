@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::compilation::scalar_body;
-use crate::compilation::scalar_builder::ScalarBuilder;
-use crate::compilation::scalar_compile_error;
-use crate::compilation::scalar_literal;
-use crate::compilation::scalar_local_names;
-use crate::compilation::scalar_task::ScalarTask;
-use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
+use crate::compilation::function_body;
+use crate::compilation::function_builder::FunctionBuilder;
+use crate::compilation::function_compile_error;
+use crate::compilation::function_literal;
+use crate::compilation::function_local_names;
+use crate::compilation::function_task::FunctionTask;
+use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::{
     LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator, LegacyLogicalOperator,
@@ -17,112 +17,112 @@ use crate::legacy::{LegacyArithmetic, LegacyComparison, LegacyIntegerOperator};
 use crate::syntax::LegacySyntaxNode;
 
 pub(super) fn visit<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     node: LegacySyntaxNode<'tree, 'source>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let expression = LegacyExpressionSyntax::from_node(node).map_err(|_| {
-        scalar_compile_error::at(node.span(), ScalarCompileErrorKind::InvalidStructure)
+        function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match expression.kind() {
         LegacyExpressionKind::Primary { syntax } => primary(builder, syntax),
         LegacyExpressionKind::Prefix { operator, operand } => {
-            let span = scalar_body::child(node, 0, 2)?.span();
+            let span = function_body::child(node, 0, 2)?.span();
             let instruction = match operator {
                 LegacyPrefixOperator::LogicalNot => KernelInstruction::LogicalNot,
                 LegacyPrefixOperator::BitwiseNot => KernelInstruction::BitwiseNot,
             };
             builder.push_task(
-                ScalarTask::Emit {
+                FunctionTask::Emit {
                     instruction,
                     span: span.clone(),
                 },
                 span,
             )?;
-            builder.push_task(ScalarTask::Visit(operand), operand.span())
+            builder.push_task(FunctionTask::Visit(operand), operand.span())
         }
         LegacyExpressionKind::Infix {
             operator,
             left,
             right,
         } => {
-            let span = scalar_body::child(node, 1, 3)?.span();
+            let span = function_body::child(node, 1, 3)?.span();
             builder.push_task(
-                ScalarTask::Emit {
+                FunctionTask::Emit {
                     instruction: infix(operator),
                     span: span.clone(),
                 },
                 span,
             )?;
-            builder.push_task(ScalarTask::Visit(right), right.span())?;
-            builder.push_task(ScalarTask::Visit(left), left.span())
+            builder.push_task(FunctionTask::Visit(right), right.span())?;
+            builder.push_task(FunctionTask::Visit(left), left.span())
         }
         LegacyExpressionKind::Logical {
             operator,
             left,
             right,
         } => {
-            let span = scalar_body::child(node, 1, 3)?.span();
+            let span = function_body::child(node, 1, 3)?.span();
             builder.push_task(
-                ScalarTask::BeginLogical {
+                FunctionTask::BeginLogical {
                     operator,
                     right,
                     span: span.clone(),
                 },
                 span,
             )?;
-            builder.push_task(ScalarTask::Visit(left), left.span())
+            builder.push_task(FunctionTask::Visit(left), left.span())
         }
     }
 }
 
 fn primary<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     node: LegacySyntaxNode<'tree, 'source>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     let primary = LegacyPrimarySyntax::from_node(node).map_err(|_| {
-        scalar_compile_error::at(node.span(), ScalarCompileErrorKind::InvalidStructure)
+        function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
         LegacyPrimaryKind::Reference { syntax } if builder.locals.is_some() => {
-            scalar_local_names::read(builder, syntax)
+            function_local_names::read(builder, syntax)
         }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder
                 .ledger
                 .charge(token.as_bytes().len() as u64, token.span())?;
-            let value = scalar_literal::decode(token, polarity, builder.ledger.budget.literal)?;
+            let value = function_literal::decode(token, polarity, builder.ledger.budget.literal)?;
             builder.emit(KernelInstruction::Constant(value), node.span())
         }
         LegacyPrimaryKind::Parenthesized { expressions } => {
-            if scalar_body::production(expressions) != Some(113) {
-                return Err(scalar_compile_error::at(
+            if function_body::production(expressions) != Some(113) {
+                return Err(function_compile_error::at(
                     node.span(),
-                    ScalarCompileErrorKind::UnsupportedGroupArity,
+                    FunctionCompileErrorKind::UnsupportedGroupArity,
                 ));
             }
-            let list = scalar_body::child(expressions, 0, 1)?;
-            if scalar_body::production(list) != Some(112) {
-                return Err(scalar_compile_error::at(
+            let list = function_body::child(expressions, 0, 1)?;
+            if function_body::production(list) != Some(112) {
+                return Err(function_compile_error::at(
                     node.span(),
-                    ScalarCompileErrorKind::UnsupportedGroupArity,
+                    FunctionCompileErrorKind::UnsupportedGroupArity,
                 ));
             }
-            let inner = scalar_body::child(list, 0, 1)?;
-            builder.push_task(ScalarTask::Visit(inner), inner.span())
+            let inner = function_body::child(list, 0, 1)?;
+            builder.push_task(FunctionTask::Visit(inner), inner.span())
         }
-        _ => Err(scalar_compile_error::at(
+        _ => Err(function_compile_error::at(
             node.span(),
-            ScalarCompileErrorKind::UnsupportedPrimary,
+            FunctionCompileErrorKind::UnsupportedPrimary,
         )),
     }
 }
 
 pub(super) fn logical<'tree, 'source>(
-    builder: &mut ScalarBuilder<'tree, 'source>,
+    builder: &mut FunctionBuilder<'tree, 'source>,
     operator: LegacyLogicalOperator,
     right: LegacySyntaxNode<'tree, 'source>,
     span: Range<u64>,
-) -> Result<(), ScalarCompileError> {
+) -> Result<(), FunctionCompileError> {
     builder.emit(KernelInstruction::CastBool, span.clone())?;
     builder.emit(KernelInstruction::Duplicate, span.clone())?;
     let condition = match operator {
@@ -132,20 +132,20 @@ pub(super) fn logical<'tree, 'source>(
     let site = builder.branch(condition, span.clone())?;
     builder.emit(KernelInstruction::Discard, span.clone())?;
     builder.push_task(
-        ScalarTask::EndLogical {
+        FunctionTask::EndLogical {
             site,
             span: span.clone(),
         },
         span.clone(),
     )?;
     builder.push_task(
-        ScalarTask::Emit {
+        FunctionTask::Emit {
             instruction: KernelInstruction::CastBool,
             span: span.clone(),
         },
         span,
     )?;
-    builder.push_task(ScalarTask::Visit(right), right.span())
+    builder.push_task(FunctionTask::Visit(right), right.span())
 }
 
 pub(super) fn infix(operator: LegacyInfixOperator) -> KernelInstruction {

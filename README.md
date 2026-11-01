@@ -158,6 +158,12 @@ The complete server rewrite remains open.
   18,116 native construction/operator cases execute through owned programs;
   source three-element groups remain unsupported pending component-order work.
 
+Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
+and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded
+`PureScalarReturn` contract; `compile_primitive_function` selects
+`PrimitiveStatements` without fabricated-argument execution. These restricted
+profiles do not establish full GSC/module/mod support.
+
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process
 signal dependencies are isolated above deterministic protocol/server services.

@@ -5,8 +5,8 @@
     reason = "Tests invoke finite or explicitly fuel-bounded source."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::ScalarCompilationBudget;
+use crate::function_compile_support;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{
     KernelErrorKind, KernelExecutionBudget, KernelResource, KernelValue,
 };
@@ -41,9 +41,9 @@ fn initializer_condition_and_update_errors_map_to_their_original_operations() {
             "/=",
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Runtime-dependent clauses");
         let args = [arg];
@@ -72,8 +72,9 @@ fn initializer_condition_and_update_errors_map_to_their_original_operations() {
 #[test]
 fn omitted_condition_and_deferred_continue_cannot_evade_fuel() {
     let text = b"main(){for(;;){continue;}}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Admitted endless source");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Admitted endless source");
     let error = compiled
         .program()
         .execute(KernelExecutionBudget {

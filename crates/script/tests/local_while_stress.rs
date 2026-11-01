@@ -5,9 +5,9 @@
     reason = "Tests generate finite valid wide/deep scalar source."
 )]
 
-use crate::scalar_compile_support;
+use crate::function_compile_support;
 use cod4x_script::compilation::{
-    ScalarCompilationBudget, ScalarCompilationResource, ScalarCompileErrorKind,
+    FunctionCompilationBudget, FunctionCompilationResource, FunctionCompileErrorKind,
 };
 use cod4x_script::execution::{KernelExecutionBudget, KernelInstruction, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
@@ -24,9 +24,9 @@ fn seventy_thousand_locals_and_long_backward_jumps_use_wide_instruction_indices(
     source.push_str(&"v69999=2;".repeat(40_000));
     source.push_str("arg--;}return v69999;}");
     // This combined wide-locals/large-body fixture separately admits its >1M CST nodes.
-    let compiled = scalar_compile_support::compile_local_with_syntax_budget(
+    let compiled = function_compile_support::compile_primitive_with_syntax_budget(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
         LegacySyntaxBudget {
             max_nodes: 2_000_000,
             ..LegacySyntaxBudget::default()
@@ -58,9 +58,9 @@ fn twelve_thousand_loops_lower_execute_and_fail_cleanup_without_recursive_owners
         "while(arg){".repeat(12_000),
         "}".repeat(12_000)
     );
-    let compiled = scalar_compile_support::compile_local(
+    let compiled = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Deep loops");
     assert_eq!(compiled.usage().peak_control_bytes, 12_000);
@@ -77,18 +77,18 @@ fn twelve_thousand_loops_lower_execute_and_fail_cleanup_without_recursive_owners
             KernelValue::Number(LegacyNumber::Integer(expected))
         );
     }
-    let error = scalar_compile_support::compile_local(
+    let error = function_compile_support::compile_primitive(
         source.as_bytes(),
-        ScalarCompilationBudget {
+        FunctionCompilationBudget {
             max_control_bytes: 11_999,
-            ..ScalarCompilationBudget::default()
+            ..FunctionCompilationBudget::default()
         },
     )
     .expect_err("Deep quota failure");
     assert!(matches!(
         error.kind,
-        ScalarCompileErrorKind::BudgetExceeded {
-            resource: ScalarCompilationResource::ControlBytes,
+        FunctionCompileErrorKind::BudgetExceeded {
+            resource: FunctionCompilationResource::ControlBytes,
             requested: 12_000,
             maximum: 11_999
         }

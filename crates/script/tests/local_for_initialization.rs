@@ -5,8 +5,8 @@
     reason = "Tests use syntactically valid scalar for profiles."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::{ScalarCompilationBudget, ScalarCompileErrorKind};
+use crate::function_compile_support;
+use cod4x_script::compilation::{FunctionCompilationBudget, FunctionCompileErrorKind};
 use cod4x_script::execution::{KernelExecutionBudget, KernelValue};
 use cod4x_script::legacy::LegacyNumber;
 use cod4x_script::source::{SourceBudget, SourceText};
@@ -18,9 +18,9 @@ fn update_reads_accept_only_initialization_on_every_continuing_path() {
         "main(n){for(i=0;i<n;x++){if(i%3==0){x=1;i++;continue;}if(i%3==1){x=2;i++;continue;}x=3;i++;}return i;}",
         "main(n){for(i=0;i<n;x++){if(i==4)break;x=1;i++;}return i;}",
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Update facts from reaching paths");
         for arg in 0..4 {
@@ -47,12 +47,12 @@ fn missing_continue_exit_and_unreachable_update_reads_remain_located_failures() 
         "PrivateMain(){for(i=0;i<3;PrivateLocal++){PrivateLocal=1;break;}}",
         "PrivateMain(){for(;false;PrivateLocal++){}}",
     ] {
-        let error = scalar_compile_support::compile_local(
+        let error = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect_err("Conservative initialization failure");
-        assert_eq!(error.kind, ScalarCompileErrorKind::UninitializedLocal);
+        assert_eq!(error.kind, FunctionCompileErrorKind::UninitializedLocal);
         let source = SourceText::index(text.as_bytes(), SourceBudget::default()).expect("Source");
         assert_eq!(
             source.span(error.span.clone()).expect("Read location"),
@@ -66,13 +66,13 @@ fn missing_continue_exit_and_unreachable_update_reads_remain_located_failures() 
         "main(){for(;;PrivateCall()){}}",
     ] {
         assert_eq!(
-            scalar_compile_support::compile_local(
+            function_compile_support::compile_primitive(
                 text.as_bytes(),
-                ScalarCompilationBudget::default()
+                FunctionCompilationBudget::default()
             )
             .expect_err("Restricted clause policy")
             .kind,
-            ScalarCompileErrorKind::UnsupportedForClause
+            FunctionCompileErrorKind::UnsupportedForClause
         );
     }
 }

@@ -5,8 +5,8 @@
     reason = "Tests invoke finite valid synthetic scalar loops."
 )]
 
-use crate::scalar_compile_support;
-use cod4x_script::compilation::ScalarCompilationBudget;
+use crate::function_compile_support;
+use cod4x_script::compilation::FunctionCompilationBudget;
 use cod4x_script::execution::{
     KernelErrorKind, KernelExecutionBudget, KernelResource, KernelValue,
 };
@@ -32,9 +32,11 @@ fn repeated_and_nested_loops_reevaluate_mutation_and_lazy_conditions() {
         ),
     ] {
         let mut source = text.as_bytes().to_vec();
-        let compiled =
-            scalar_compile_support::compile_local(&source, ScalarCompilationBudget::default())
-                .expect("Loop source");
+        let compiled = function_compile_support::compile_primitive(
+            &source,
+            FunctionCompilationBudget::default(),
+        )
+        .expect("Loop source");
         source.fill(0);
         assert_eq!(compiled.usage().validation_steps, None);
         for (argument, expected) in (0..20).zip(expected) {
@@ -77,9 +79,9 @@ fn zero_iterations_bare_returns_and_returning_bodies_have_real_results() {
             KernelValue::Number(LegacyNumber::Integer(5)),
         ),
     ] {
-        let compiled = scalar_compile_support::compile_local(
+        let compiled = function_compile_support::compile_primitive(
             text.as_bytes(),
-            ScalarCompilationBudget::default(),
+            FunctionCompilationBudget::default(),
         )
         .expect("Return/empty loop");
         assert_eq!(
@@ -99,8 +101,9 @@ fn zero_iterations_bare_returns_and_returning_bodies_have_real_results() {
 #[test]
 fn loop_condition_body_and_fuel_errors_remain_located_and_bounded() {
     let text = b"PrivateMain(arg){while(arg){x=1/0;}return 7;}";
-    let compiled = scalar_compile_support::compile_local(text, ScalarCompilationBudget::default())
-        .expect("Runtime-dependent loop");
+    let compiled =
+        function_compile_support::compile_primitive(text, FunctionCompilationBudget::default())
+            .expect("Runtime-dependent loop");
     let source = SourceText::index(text, SourceBudget::default()).expect("Source");
     for (arg, kind, token) in [
         (
@@ -125,9 +128,9 @@ fn loop_condition_body_and_fuel_errors_remain_located_and_bounded() {
         assert_eq!(source.span(span).expect("Original token"), token);
         assert!(!format!("{error:?} {compiled:?}").contains("Private"));
     }
-    let infinite = scalar_compile_support::compile_local(
+    let infinite = function_compile_support::compile_primitive(
         b"main(arg){while(arg){}}",
-        ScalarCompilationBudget::default(),
+        FunctionCompilationBudget::default(),
     )
     .expect("Fuel-bounded source");
     let error = infinite
