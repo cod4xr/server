@@ -7,7 +7,8 @@ use crate::legacy::LegacyNumber;
 ///
 /// Construction preserves float input bits and converts integers under the selected
 /// nearest/binary32 profile. This does not configure the host floating environment.
-#[derive(Clone, Copy)]
+/// Derived equality is Rust data equality; language comparisons use explicit pairs.
+#[derive(Clone, Copy, PartialEq)]
 pub struct LegacyVector([f32; 3]);
 
 impl LegacyVector {

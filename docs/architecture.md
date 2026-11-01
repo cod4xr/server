@@ -335,6 +335,18 @@ services and intercepts errors; this is not native VM/cleanup execution. Kernel
 values and source compilation remain scalar pending separate construction/order/
 storage-budget integration. See ADR 0041; no serialized vector ABI is introduced.
 
+The primitive kernel now stores inline legacy vectors and a typed MakeVector
+instruction with explicit bottom-to-top z/y/x stack order and x/y/z coordinates.
+Verification admits its three inputs
+and one output; shared opcode fuel and size_of-based code/stack/Option-local
+budgets cover complete enlarged payloads. Focused numeric-value dispatch keeps
+vector/scalar arithmetic and comparison outside stack/opcode control. Constants,
+locals, duplicate, arguments and return retain ownership through fixed copies;
+there is no vector heap/ref pool. Error kinds redact data. Restricted source
+programs can receive vector arguments, but three-element source constructors
+remain unsupported. This defines no native/serialized bytecode ABI, source
+evaluation order or whole value/heap/VM contract; see ADR 0042.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

@@ -50,7 +50,9 @@ fn result_matches(value: KernelValue, kind: &str, bits: &str) -> Result<(), Stri
                 );
             }
         }
-        KernelValue::Undefined => return Err("Expected numeric execution result".to_owned()),
+        KernelValue::Undefined | KernelValue::Vector(_) => {
+            return Err("Expected numeric execution result".to_owned());
+        }
     }
     Ok(())
 }

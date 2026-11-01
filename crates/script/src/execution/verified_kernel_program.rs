@@ -28,10 +28,10 @@ pub struct KernelProgramUsage {
     pub verification_metadata_bytes: u64,
 }
 
-/// Completed pure execution result; Debug omits the returned scalar contents.
+/// Completed pure execution result; Debug omits the returned primitive contents.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct KernelOutcome {
-    /// Returned undefined/numeric data, not a full GSC runtime value.
+    /// Returned undefined/numeric/vector data, not a full GSC runtime value.
     pub value: KernelValue,
     /// Executed instructions, including return.
     pub steps: u64,
@@ -43,7 +43,7 @@ pub struct KernelOutcome {
     pub local_bytes: u64,
 }
 
-/// Independently owned immutable control-flow/stack proof for the scalar profile.
+/// Independently owned immutable control-flow/stack proof for the primitive profile.
 ///
 /// Construction stays inside this private execution boundary. No public mutation,
 /// source/host ownership, runtime IDs, native bytecode, or serialized ABI is supplied.
@@ -112,7 +112,7 @@ impl VerifiedKernelProgram {
         kernel_executor::execute(self, arguments, budget, KernelArgumentBinding::Exact)
     }
 
-    /// Invokes the scalar legacy script profile with an already parameter-ordered prefix.
+    /// Invokes the primitive legacy script profile with an already parameter-ordered prefix.
     ///
     /// Missing parameter slots receive initialized Undefined; supplied values are
     /// copied, and nonparameter locals remain uninitialized. Excess values fail.

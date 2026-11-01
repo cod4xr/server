@@ -13,27 +13,30 @@ pub enum KernelBranchCondition {
     IfTrue,
 }
 
-/// Typed scalar instruction profile, not native/serialized GSC bytecode or a full VM.
+/// Typed primitive instruction profile, not native/serialized GSC bytecode or a full VM.
 ///
 /// Jump targets index instructions in this program, independently of old short
 /// offsets. Constants and stack operands do not appear in Debug output.
 #[derive(Clone, Copy, Debug)]
 pub enum KernelInstruction {
-    /// Pushes an independently copied scalar value.
+    /// Pushes an independently copied primitive value.
     Constant(KernelValue),
     /// Pushes an initialized local slot; the layout bounds every operand.
     LoadLocal(usize),
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
     StoreLocal(usize),
-    /// Pops right then left numbers and pushes the coerced arithmetic result.
+    /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.
+    /// Components must be numbers; this does not specify source evaluation order.
+    MakeVector,
+    /// Pops right then left numeric/vector operands and pushes the coerced result.
     Arithmetic(LegacyArithmetic),
-    /// Pops right then left numbers and pushes the language comparison integer.
+    /// Pops right then left numeric/vector operands and pushes the comparison integer.
     Compare(LegacyComparison),
     /// Pops right then left numbers and applies an integer-only operator.
     Integer(LegacyIntegerOperator),
     /// Applies one integer-only increment/decrement, without selecting a writable reference.
     IntegerUpdate(LegacyIntegerUpdate),
-    /// Pops right then left numbers and pushes float-result division.
+    /// Pops right then left numeric/vector operands and pushes float/vector division.
     Divide,
     /// Converts numeric truth to integer zero or one.
     CastBool,
@@ -41,9 +44,9 @@ pub enum KernelInstruction {
     LogicalNot,
     /// Applies integer-only bitwise complement.
     BitwiseNot,
-    /// Duplicates the top scalar value.
+    /// Duplicates the top primitive value.
     Duplicate,
-    /// Discards the top scalar value.
+    /// Discards the top primitive value.
     Discard,
     /// Continues at an absolute instruction index.
     Jump(usize),
@@ -61,6 +64,7 @@ pub enum KernelInstruction {
 impl KernelInstruction {
     pub(super) fn stack_effect(self) -> (usize, usize) {
         match self {
+            Self::MakeVector => (3, 1),
             Self::Constant(_) | Self::LoadLocal(_) => (0, 1),
             Self::Arithmetic(_) | Self::Compare(_) | Self::Integer(_) | Self::Divide => (2, 1),
             Self::CastBool | Self::LogicalNot | Self::BitwiseNot | Self::IntegerUpdate(_) => (1, 1),

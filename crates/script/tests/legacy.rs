@@ -2,8 +2,17 @@
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
 
 mod kernel_support;
+mod kernel_vector_support;
+
+#[path = "kernel_vector_execution.rs"]
+mod kernel_vector_execution;
+#[path = "kernel_vector_limits.rs"]
+mod kernel_vector_limits;
 mod string_support;
 mod vector_support;
+
+#[path = "kernel_vector_vectors.rs"]
+mod kernel_vector_vectors;
 
 #[path = "vector_boundaries.rs"]
 mod vector_boundaries;

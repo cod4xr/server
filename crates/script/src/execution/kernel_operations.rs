@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
 use crate::execution::kernel_locals::KernelLocals;
+use crate::execution::kernel_numeric_values;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelError, KernelErrorKind, KernelInstruction, KernelValue};
-use crate::legacy::{LegacyNumber, LegacyNumericPair};
+use crate::legacy::LegacyNumber;
 
 pub(super) fn apply(
     instruction: KernelInstruction,
@@ -18,13 +19,20 @@ pub(super) fn apply(
             locals.store(slot, stack.pop(pc)?, pc)?;
             return Ok(());
         }
-        KernelInstruction::Arithmetic(operator) => {
-            let (left, right) = stack.pair(pc)?;
-            KernelValue::Number(operator.evaluate(LegacyNumericPair::coerce(left, right)))
+        KernelInstruction::Arithmetic(_)
+        | KernelInstruction::Compare(_)
+        | KernelInstruction::Divide => {
+            let right = stack.pop(pc)?;
+            let left = stack.pop(pc)?;
+            kernel_numeric_values::binary(instruction, left, right)
+                .map_err(|kind| kernel_error::at(pc, kind))?
         }
-        KernelInstruction::Compare(comparison) => {
-            let (left, right) = stack.pair(pc)?;
-            KernelValue::Number(LegacyNumericPair::coerce(left, right).compare(comparison))
+        KernelInstruction::MakeVector => {
+            let x = stack.pop(pc)?;
+            let y = stack.pop(pc)?;
+            let z = stack.pop(pc)?;
+            kernel_numeric_values::construct([x, y, z])
+                .map_err(|kind| kernel_error::at(pc, kind))?
         }
         KernelInstruction::Integer(operator) => {
             let (left, right) = stack.pair(pc)?;
@@ -36,13 +44,6 @@ pub(super) fn apply(
         KernelInstruction::IntegerUpdate(update) => {
             let value = update
                 .evaluate(stack.number(pc)?)
-                .map_err(|error| kernel_error::at(pc, KernelErrorKind::Numeric(error)))?;
-            KernelValue::Number(value)
-        }
-        KernelInstruction::Divide => {
-            let (left, right) = stack.pair(pc)?;
-            let value = LegacyNumericPair::coerce(left, right)
-                .divide()
                 .map_err(|error| kernel_error::at(pc, KernelErrorKind::Numeric(error)))?;
             KernelValue::Number(value)
         }

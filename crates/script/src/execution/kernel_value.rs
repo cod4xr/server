@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::fmt;
 
-use crate::legacy::LegacyNumber;
+use crate::legacy::{LegacyNumber, LegacyVector};
 
-/// Scalar-kernel values only; not the full GSC value/object/heap representation.
+/// Primitive-kernel values only; not the full GSC value/object/heap representation.
 ///
 /// Derived data equality is Rust equality, never a GSC language comparison.
 /// Numeric language comparisons use the explicit comparison instruction.
@@ -13,6 +13,8 @@ pub enum KernelValue {
     Undefined,
     /// Legacy int32/binary32 data under the documented numeric profile.
     Number(LegacyNumber),
+    /// Inline copied binary32 triple, without native pool/reference IDs.
+    Vector(LegacyVector),
 }
 
 impl fmt::Debug for KernelValue {
@@ -20,6 +22,7 @@ impl fmt::Debug for KernelValue {
         formatter.write_str(match self {
             Self::Undefined => "KernelValue::Undefined",
             Self::Number(_) => "KernelValue::Number(..)",
+            Self::Vector(_) => "KernelValue::Vector(..)",
         })
     }
 }

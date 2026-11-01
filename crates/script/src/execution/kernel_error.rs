@@ -2,7 +2,7 @@
 use std::error::Error;
 use std::fmt;
 
-use crate::legacy::LegacyNumberError;
+use crate::legacy::{LegacyNumberError, LegacyVectorError};
 
 /// Program/execution resource, independent of native script capacity constants.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -44,11 +44,11 @@ pub enum KernelErrorKind {
         /// Complete admitted local count.
         local_values: u64,
     },
-    /// Argument count does not satisfy the selected scalar invocation profile.
+    /// Argument count does not satisfy the selected primitive invocation profile.
     ArgumentCount {
         /// Layout parameters: exact internal count or legacy script maximum.
         expected: u64,
-        /// Supplied scalar arguments.
+        /// Supplied primitive arguments.
         actual: u64,
     },
     /// A local has never been initialized on the selected path.
@@ -97,10 +97,12 @@ pub enum KernelErrorKind {
     SizeOverflow,
     /// Fallible complete code/state/stack allocation failed.
     AllocationFailed,
-    /// Undefined is not a numeric operand in this limited instruction profile.
+    /// This operation requires a number; Undefined/vector data is unsupported here.
     ExpectedNumber,
     /// Defined legacy numeric operation failure, without operand values.
     Numeric(LegacyNumberError),
+    /// Defined legacy vector-domain operation failure, without coordinate data.
+    Vector(LegacyVectorError),
     /// Private execution state disagreed with an immutable verified proof.
     InvalidExecutionState,
 }
@@ -137,7 +139,7 @@ impl fmt::Display for KernelError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             formatter,
-            "scalar kernel error at {:?} after {} work steps: {:?}",
+            "primitive kernel error at {:?} after {} work steps: {:?}",
             self.instruction, self.work_steps, self.kind
         )
     }

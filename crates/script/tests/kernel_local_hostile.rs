@@ -10,7 +10,7 @@ use cod4x_script::execution::{
     KernelInstruction, KernelResource, KernelValue, KernelVerificationBudget,
     VerifiedKernelProgram,
 };
-use cod4x_script::legacy::{LegacyArithmetic, LegacyIntegerUpdate, LegacyNumber};
+use cod4x_script::legacy::{LegacyArithmetic, LegacyIntegerUpdate, LegacyNumber, LegacyVector};
 
 use crate::kernel_support;
 
@@ -19,6 +19,35 @@ fn next(state: &mut u32) -> u32 {
     *state ^= *state >> 17;
     *state ^= *state << 5;
     *state
+}
+
+fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
+    let choice = next(state);
+    let slot = usize::try_from(next(state) % 12).expect("Small local");
+    let target = usize::try_from(next(state)).expect("Supported test host") % (count + 3);
+    match choice % 14 {
+        0 => KernelInstruction::LoadLocal(slot),
+        1 => KernelInstruction::StoreLocal(slot),
+        2 => kernel_support::integer(choice.cast_signed()),
+        3 => KernelInstruction::Return,
+        4 => KernelInstruction::Jump(target),
+        5 => KernelInstruction::Branch {
+            condition: KernelBranchCondition::IfFalse,
+            target,
+        },
+        6 => KernelInstruction::Arithmetic(LegacyArithmetic::Add),
+        7 => KernelInstruction::Discard,
+        8 => KernelInstruction::Duplicate,
+        9 => KernelInstruction::Constant(KernelValue::Undefined),
+        10 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Increment),
+        11 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Decrement),
+        12 => KernelInstruction::Constant(KernelValue::Vector(LegacyVector::from_components([
+            f32::from_bits(choice),
+            -0.0,
+            1.0,
+        ]))),
+        _ => KernelInstruction::MakeVector,
+    }
 }
 
 #[test]
@@ -43,33 +72,14 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
         KernelValue::Number(LegacyNumber::Integer(3)),
         KernelValue::Undefined,
     ];
+    let vector_arguments = [
+        KernelValue::Vector(LegacyVector::from_components([1.0, 2.0, 3.0])),
+        KernelValue::Undefined,
+    ];
     let mut admitted = 0;
     for iteration in 0..4096 {
         let count = usize::try_from(next(&mut state) % 32).expect("Small count");
-        let mut input = Vec::new();
-        for _ in 0..count {
-            let choice = next(&mut state);
-            let slot = usize::try_from(next(&mut state) % 12).expect("Small local");
-            let target =
-                usize::try_from(next(&mut state)).expect("Supported test host") % (count + 3);
-            input.push(match choice % 12 {
-                0 => KernelInstruction::LoadLocal(slot),
-                1 => KernelInstruction::StoreLocal(slot),
-                2 => kernel_support::integer(choice.cast_signed()),
-                3 => KernelInstruction::Return,
-                4 => KernelInstruction::Jump(target),
-                5 => KernelInstruction::Branch {
-                    condition: KernelBranchCondition::IfFalse,
-                    target,
-                },
-                6 => KernelInstruction::Arithmetic(LegacyArithmetic::Add),
-                7 => KernelInstruction::Discard,
-                8 => KernelInstruction::Duplicate,
-                9 => KernelInstruction::Constant(KernelValue::Undefined),
-                10 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Increment),
-                _ => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Decrement),
-            });
-        }
+        let mut input: Vec<_> = (0..count).map(|_| instruction(&mut state, count)).collect();
         if iteration % 32 == 0 {
             input = vec![
                 KernelInstruction::LoadLocal(0),
@@ -86,6 +96,7 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
         let invocations = [
             program.execute_with_arguments(&arguments, execution),
             program.execute_legacy_script_arguments(&arguments[..iteration % 3], execution),
+            program.execute_with_arguments(&vector_arguments, execution),
         ];
         for invocation in invocations {
             match invocation {
@@ -103,6 +114,7 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
                         KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
                             | KernelErrorKind::Numeric(_)
+                            | KernelErrorKind::Vector(_)
                             | KernelErrorKind::BudgetExceeded {
                                 resource: KernelResource::ExecutionSteps,
                                 ..
@@ -118,6 +130,10 @@ fn hostile_local_streams_reject_or_execute_within_layout_stack_and_fuel() -> Res
         }
         assert_eq!(arguments[0], KernelValue::Number(LegacyNumber::Integer(3)));
         assert_eq!(arguments[1], KernelValue::Undefined);
+        assert_eq!(
+            vector_arguments[0],
+            KernelValue::Vector(LegacyVector::from_components([1.0, 2.0, 3.0]))
+        );
     }
     assert!(admitted >= 128);
     Ok(())

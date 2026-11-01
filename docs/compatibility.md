@@ -399,6 +399,18 @@ hash locking. Three tests cover the corpus, boundary distinctions, data isolatio
 domain rejection and redaction. Source evaluation/push order, native constructor
 failure/ref/cleanup/unwinding, kernel/source vectors and whole VM/mod acceptance
 remain open; see ADR 0041.
+Primitive-kernel vectors now execute construction and numeric/vector operations
+under independently verified stack effects, actual payload byte limits and fuel.
+18,116 original construction/arithmetic/comparison cases execute through owned
+programs; 1,736 coercion-only rows remain standalone helper evidence. New tests
+cover copy/default/local isolation, invalid components/truth/integer operations,
+underflow, exact stack/local/fuel limits, 70,000 vector argument slots and redaction.
+Both hostile corpora include vectors/MakeVector; local hostile streams also use
+vector arguments. Existing restricted source accepts vector parameters at its
+low-level program API and retains source operation maps. Source three-element
+groups remain explicitly unsupported, and internal coordinate stack order is
+not native/source evaluation-order evidence. Native VM error indices/cleanup,
+heap/calls/scheduling and full GSC/mod parity remain open; see ADR 0042.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

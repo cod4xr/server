@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Owned verified scalar execution, not a GSC source compiler or complete VM.
+//! Owned verified primitive execution, not a GSC source compiler or complete VM.
 //!
 //! Instructions are typed internal data, with no serialized/native bytecode ABI.
 //! This kernel owns no objects, strings, call frames, scheduler, host services,
@@ -12,6 +12,7 @@ mod kernel_flow_state;
 mod kernel_function_layout;
 mod kernel_instruction;
 mod kernel_locals;
+mod kernel_numeric_values;
 mod kernel_operations;
 mod kernel_stack;
 mod kernel_value;

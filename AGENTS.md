@@ -198,6 +198,15 @@ native constructor cleanup/unwinding, source evaluation/push order or a VM heap.
 The scalar kernel/compiler remain unchanged until separately admitted integration;
 see ADR 0041. Keep arithmetic NaN-class versus exact construction/coercion-bit
 evidence and FP-environment limits explicit.
+Primitive-kernel vector values/MakeVector now share immutable proof, global fuel
+and actual size_of-based code/stack/Option-local admission. Preserve z/y/x internal
+stack order, copied arguments/locals, scalar semantics and fixed vector errors.
+Keep numeric-value dispatch in its own leaf. Source three-element groups remain
+unsupported; vector arguments through restricted source syntax do not establish
+native component evaluation/push order or a full compiler/heap/VM. Preserve the
+18,116 kernel construction/operator outcomes versus 1,736 helper-only coercion
+rows and hostile vector streams. No native/serialized ABI or ref/cleanup parity
+is implied; see ADR 0042.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

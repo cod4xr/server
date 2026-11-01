@@ -2,7 +2,7 @@
 use crate::execution::kernel_error;
 use crate::execution::{KernelError, KernelErrorKind};
 
-/// Immutable scalar parameter-prefix/total-local layout, without names or native ABI.
+/// Immutable primitive parameter-prefix/total-local layout, without names or native ABI.
 ///
 /// Parameters are part of the total local count. Actual count/storage admission
 /// occurs separately at verification/invocation; constructing this value allocates nothing.

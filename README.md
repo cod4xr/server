@@ -152,7 +152,11 @@ The complete server rewrite remains open.
   Clause/constant-folding restrictions remain explicit; switch/general GSC remains open.
 - Owned legacy vector helpers now preserve component-wise arithmetic, numeric
   broadcast, exact equality and addition's separate mixed-type rejection. They
-  match 19,852 recorded original-helper cases; kernel/source integration remains open.
+  match 19,852 recorded original-helper cases; source constructors remain open.
+- Verified primitive-kernel vectors now support construction, numeric/vector
+  operators and copied locals/arguments under actual payload byte limits and fuel.
+  18,116 native construction/operator cases execute through owned programs;
+  source three-element groups remain unsupported pending component-order work.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

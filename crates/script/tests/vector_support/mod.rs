@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::str::SplitWhitespace;
+pub mod evaluator;
+use evaluator::{EvaluationFailure, HelperEvaluator, VectorEvaluator};
 
 use cod4x_script::legacy::{
     LegacyComparison, LegacyNumber, LegacyVector, LegacyVectorError, LegacyVectorOperand,
@@ -7,6 +9,10 @@ use cod4x_script::legacy::{
 };
 
 pub fn validate(line: &str) -> Result<&str, String> {
+    validate_with::<HelperEvaluator>(line)
+}
+
+pub fn validate_with<E: VectorEvaluator>(line: &str) -> Result<&str, String> {
     let mut fields = line.split_whitespace();
     let kind = word(&mut fields)?;
     match kind {
@@ -16,7 +22,10 @@ pub fn validate(line: &str) -> Result<&str, String> {
                 number(&mut fields)?,
                 number(&mut fields)?,
             ];
-            exact_vector(LegacyVector::from_numbers(numbers), &mut fields)?;
+            exact_vector(
+                E::construct(numbers).map_err(|error| error.to_string())?,
+                &mut fields,
+            )?;
         }
         "P" => {
             let pair = pair(&mut fields)?;
@@ -24,8 +33,8 @@ pub fn validate(line: &str) -> Result<&str, String> {
             exact_vector(left, &mut fields)?;
             exact_vector(right, &mut fields)?;
         }
-        "A" => arithmetic(&mut fields)?,
-        "C" => comparison(&mut fields)?,
+        "A" => arithmetic::<E>(&mut fields)?,
+        "C" => comparison::<E>(&mut fields)?,
         _ => return Err("Unknown vector fixture row".into()),
     }
     if fields.next().is_some() {
@@ -34,7 +43,7 @@ pub fn validate(line: &str) -> Result<&str, String> {
     Ok(kind)
 }
 
-fn arithmetic(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+fn arithmetic<E: VectorEvaluator>(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
     let operator = match word(fields)? {
         "0" => LegacyVectorOperation::Add,
         "1" => LegacyVectorOperation::Subtract,
@@ -42,16 +51,16 @@ fn arithmetic(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
         "3" => LegacyVectorOperation::Divide,
         _ => return Err("Unknown vector operation".into()),
     };
-    let result = operator.evaluate(pair(fields)?);
+    let result = E::arithmetic(operator, operand(fields)?, operand(fields)?);
     match (word(fields)?, result) {
         ("ok", Ok(result)) => arithmetic_vector(result, fields),
-        ("E1", Err(LegacyVectorError::UnsupportedMixedAddition))
-        | ("E2", Err(LegacyVectorError::DivisionByZero)) => Ok(()),
+        ("E1", Err(EvaluationFailure::Domain(LegacyVectorError::UnsupportedMixedAddition)))
+        | ("E2", Err(EvaluationFailure::Domain(LegacyVectorError::DivisionByZero))) => Ok(()),
         _ => Err("Original vector arithmetic outcome differs".into()),
     }
 }
 
-fn comparison(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+fn comparison<E: VectorEvaluator>(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
     let operator = match word(fields)? {
         "0" => LegacyComparison::Equal,
         "1" => LegacyComparison::NotEqual,
@@ -61,7 +70,7 @@ fn comparison(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
         "5" => LegacyComparison::GreaterOrEqual,
         _ => return Err("Unknown vector comparison".into()),
     };
-    let result = pair(fields)?.compare(operator);
+    let result = E::compare(operator, operand(fields)?, operand(fields)?);
     match (word(fields)?, result) {
         ("ok", Ok(result)) => {
             let expected = match word(fields)? {
@@ -72,7 +81,7 @@ fn comparison(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
             assert_eq!(result, expected);
             Ok(())
         }
-        ("E1", Err(LegacyVectorError::UnsupportedOrdering)) => Ok(()),
+        ("E1", Err(EvaluationFailure::Domain(LegacyVectorError::UnsupportedOrdering))) => Ok(()),
         _ => Err("Original vector comparison outcome differs".into()),
     }
 }

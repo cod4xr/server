@@ -606,7 +606,28 @@ dependencies/alternate target directories. Kernel/source vector support, native
 component evaluation/push order and constructor cleanup, full heap/VM/mod acceptance
 and Linux remain open.
 
-Next: verified primitive-kernel vector execution with actual inline storage admission,
+Primitive-kernel vector execution now passes full Windows workspace gates. Inline
+values and MakeVector retain immutable proof, copied locals/arguments/duplicate/
+return, global fuel and actual size_of-based code/stack/Option-local admission.
+MakeVector consumes bottom-to-top z/y/x and produces x/y/z coordinates, matching
+the selected native constructor's reversed slots without defining a serialized
+opcode ABI. Focused numeric-value dispatch preserves scalar behavior and vector
+operator/coercion/equality rules; unsupported component/truth/integer types and
+fixed nested vector errors disclose no data. Five new kernel tests replay 18,116
+original construction/arithmetic/comparison outcomes, retain 1,736 helper-only
+coercion rows as separate evidence, and cover underflow, exact/one-less byte/fuel
+limits, default arguments, data isolation and 70,000 vector argument slots. Both
+4,096-stream hostile corpora now include vector constants/MakeVector; local streams
+also execute vector arguments. Two source tests pass vector parameters through
+existing restricted syntax with caller isolation and original operation maps.
+Three-element source groups still fail explicitly. All 157 frontend/56 legacy
+tests and doctests pass; formatting, warnings-denied Clippy/rustdoc and repository
+policy pass (469 sources/eight crates, largest 287 lines). Original vector O0/O2
+fixtures regenerate unchanged. See ADR 0042. No dependencies or alternate targets.
+Source constructors/evaluation order, native VM error indices/ref/cleanup, heap/
+calls/scheduling, full GSC/mod acceptance and Linux validation remain open.
+
+Next: clarify growing function compiler API names, then source vector construction,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

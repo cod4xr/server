@@ -295,6 +295,22 @@ not native error-unwinding successes. Construction/coercion bits and finite math
 bits match; arithmetic NaNs compare by class under the nearest/SSE FTZ/DAZ-off
 profile. Native source-component evaluation/push order, constructor error cleanup,
 kernel/source vectors, richer heap values and full GSC remain open; see ADR 0041.
+The owned primitive kernel now additionally represents inline vectors and verifies
+MakeVector's three-input/one-output stack effect. Its explicit bottom-to-top z/y/x
+contract is an internal typed instruction profile, not native/source push-order
+evidence. Shared numeric/vector dispatch preserves scalar behavior and vector
+rules, with fixed nested errors; unsupported truth/integer/component types fail.
+Constants, duplicate, locals, arguments and returns copy inline data. Existing
+size_of-based code/stack/Option-local limits include larger payloads before
+allocation, and instruction fuel remains shared. Five added kernel tests replay
+18,116 original construction/arithmetic/comparison outcomes, test invalid types,
+underflow, exact/one-less storage/fuel, missing/default arguments, privacy and
+70,000 vector slots. Coercion-only 1,736 rows remain helper evidence. Both hostile
+4,096-stream corpora now include vectors/MakeVector; local streams additionally
+invoke vector arguments. Two source tests pass vector arguments through existing
+restricted syntax and retain operator maps/caller isolation. Source vector literals
+remain unsupported; native construction error indices/cleanup, source component
+evaluation/push order, heap/calls/scheduling and full GSC remain open. See ADR 0042.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

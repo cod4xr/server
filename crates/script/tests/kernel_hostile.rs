@@ -11,6 +11,7 @@ use cod4x_script::execution::{
 };
 use cod4x_script::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate, LegacyNumber,
+    LegacyVector,
 };
 
 fn next(state: &mut u32) -> u32 {
@@ -21,7 +22,7 @@ fn next(state: &mut u32) -> u32 {
 }
 
 fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
-    let choice = next(state) % 19;
+    let choice = next(state) % 21;
     let operand = next(state);
     let target = usize::try_from(operand).expect("Supported test host") % (count + 3);
     match choice {
@@ -53,6 +54,12 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
         },
         17 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Increment),
         18 => KernelInstruction::IntegerUpdate(LegacyIntegerUpdate::Decrement),
+        19 => KernelInstruction::Constant(KernelValue::Vector(LegacyVector::from_components([
+            f32::from_bits(operand),
+            f32::from_bits(operand.rotate_left(7)),
+            f32::from_bits(operand.rotate_right(11)),
+        ]))),
+        20 => KernelInstruction::MakeVector,
         _ => KernelInstruction::Return,
     }
 }
@@ -94,6 +101,7 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
                     error.kind,
                     KernelErrorKind::ExpectedNumber
                         | KernelErrorKind::Numeric(_)
+                        | KernelErrorKind::Vector(_)
                         | KernelErrorKind::BudgetExceeded {
                             resource: KernelResource::ExecutionSteps,
                             ..

@@ -6,6 +6,9 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_vector_arguments.rs"]
+mod local_vector_arguments;
+
 #[path = "local_for_budgets.rs"]
 mod local_for_budgets;
 #[path = "local_for_errors.rs"]
