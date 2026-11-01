@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Native slot/if/transfer helpers execute; opcode output/body dispatch is modeled. */
 static unsigned char code[4096];
-static Word code_size, event_count, positions;
+static Word code_size, event_count, positions, conditions;
 static Word event_offsets[128];
 
 void *TempMalloc(Word size)
@@ -38,6 +38,7 @@ const char *SL_ConvertToString(Word id)
 __attribute__((regparm(3))) Word EmitOrEvalExpression(Word *value, void *result, Word *block)
 {
     if (value[0] != 6 || !result || !block) unexpected("scope condition profile");
+    ++conditions;
     return 0;
 }
 void EmitValue(void) { unexpected("scope constant emission"); }
@@ -45,6 +46,9 @@ __attribute__((regparm(3))) Word Scr_FindLocalVarIndex(Word, Word, Word, Word *)
 __attribute__((regparm(3))) void EmitIfStatement(Word *, Word *, Word, Word, Word, Word *, Word **);
 __attribute__((regparm(3))) void EmitIfElseStatement(
     Word *, Word *, Word *, Word, Word, Word, Word, Word *, Word **, Word **);
+__attribute__((regparm(3))) void EmitWhileStatement(Word *, Word *, Word, Word, Word *, Word **);
+__attribute__((regparm(3))) void EmitForStatement(
+    Word *, Word *, Word *, Word *, Word, Word, Word *, Word **, Word **);
 __attribute__((regparm(2))) void EmitBreakStatement(Word, Word *);
 __attribute__((regparm(2))) void EmitContinueStatement(Word, Word *);
 
@@ -57,6 +61,8 @@ static void emit_assignment(Word *statement, Word *block)
 }
 __attribute__((regparm(3))) void EmitStatement(Word *statement, Word last, Word source, Word *block)
 {
+    static Word depth;
+    if (++depth > 8) unexpected("scope body depth bound");
     if (last || source > 10) unexpected("scope body flags");
     if (statement[0] == 2) emit_assignment(statement, block);
     else if (statement[0] == 0x2c) {
@@ -65,14 +71,33 @@ __attribute__((regparm(3))) void EmitStatement(Word *statement, Word last, Word 
         Word count = 0;
         while (link) {
             if (++count > 2) unexpected("scope body list bound");
-            emit_assignment((Word *)link[0], block);
+            EmitStatement((Word *)link[0], 0, source, block);
             link = (Word *)link[1];
         }
+    } else if (statement[0] == 0x25) {
+        EmitIfStatement((Word *)statement[1], (Word *)statement[2], 0, 0, 0,
+            block, (Word **)&statement[4]);
+    } else if (statement[0] == 0x26) {
+        EmitIfElseStatement((Word *)statement[1], (Word *)statement[2],
+            (Word *)statement[3], 0, 0, 0, 0, block,
+            (Word **)&statement[6], (Word **)&statement[7]);
+    } else if (statement[0] == 0x27) {
+        EmitWhileStatement((Word *)statement[1], (Word *)statement[2], 0, 0,
+            block, (Word **)&statement[5]);
+    } else if (statement[0] == 0x28) {
+        EmitForStatement((Word *)statement[1], (Word *)statement[2],
+            (Word *)statement[3], (Word *)statement[4], 0, 0,
+            block, (Word **)&statement[7], (Word **)&statement[8]);
+    } else if (statement[0] == 0x3f) {
+        EmitBreakStatement(0, block);
+    } else if (statement[0] == 0x40) {
+        EmitContinueStatement(0, block);
     } else unexpected("scope unsupported body");
+    --depth;
 }
 static void reset_emission(void)
 {
-    code_size = event_count = positions = 0;
+    code_size = event_count = positions = conditions = 0;
     for (Word i = 0; i < sizeof(code); ++i) code[i] = 0;
 }
 static void show_emission(void)

@@ -1,5 +1,18 @@
 # Project contract
 
+Assessment 0091 adds ten executed selected native while/for scope-emission cases
+with independent state/request/condition-count expectations. It CORRECTS the six
+0089 for planning inputs (15/16/17 x later0/1): present optional conditions require
+tag 0x41 around the expression; raw expressions incorrectly take the omitted path.
+Those six fixture changes are an explicit documented correction; preserve all
+other old outcomes. Shared synthetic loop AST setup and nineteen admission tests
+guard the distinction. Dynamic-condition break can remove a private name where
+an omitted-condition break exports it. Do not merge those profiles. Actual native
+loop helpers execute but statement/condition/writer/string/allocator services stay
+modeled; no parser/VM/freeing claim. Constant conditions, switch/developer emission,
+iterative metered Rust physical scopes and source writes remain open. Run all three
+scope generators/admission suites, mutations and structural checks.
+
 Assessment 0090 adds 36 selected executed native local-slot/if/if-else/transfer
 emission cases with independent state/opcode-request expectations and six admission
 regressions. Body/condition/string/writer/allocation services remain modeled;
@@ -7,8 +20,9 @@ native opcode optimization/alignment, parser/VM/freeing do not run. Later direct
 declarations do not preserve earlier private branch cells; already-created outer
 cells survive. Common branches join; disjoint ones clean separately. Continue uses
 current public count; break uses target public count, then both reset created
-using the current public count. Do not conflate those inputs. Keep old planning
-fixtures byte-identical; run both generators/admission suites and existing guards.
+using the current public count. Do not conflate those inputs. Preserve old planning
+fixtures except the six documented 0091 corrections; run all scope generators/
+admission suites and existing guards.
 Source lifetime planning/cleanup and indexed writes remain open under ADR 0088.
 
 Assessment 0089 records 34 executed selected x86 local-name planning cases,

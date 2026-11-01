@@ -44,6 +44,14 @@ class LocalScopeTraceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(trace)
 
+    def test_dynamic_for_break_does_not_export_private_body_name(self) -> None:
+        start = self.trace.index(b"C 17 0\n")
+        trace = self.trace[:start] + self.trace[start:].replace(
+            b"R 0 2 2 4 3 0 n:1 n:3 n:5 n:4\n",
+            b"R 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2\n", 1)
+        with self.assertRaises(ValueError):
+            validate(trace)
+
 
 if __name__ == "__main__":
     unittest.main()

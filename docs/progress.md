@@ -14,6 +14,18 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0091 executes ten selected native loop-emission cases with independent
+state/request/condition-count checks. It corrects six 0089 for AST inputs that
+omitted the required tag-0x41 present-condition wrapper; the former snapshots took
+the omitted-condition path. Only those six planning cases change; the other 28
+planning/36 branch-emission cases remain identical. Shared synthetic loop setup
+and nineteen admission regressions prevent recurrence. Dynamic versus omitted
+conditions have different break cleanup/export behavior. Windows tools/guards/
+policy pass (1002 sources/eight crates/largest 287); no Rust behavior changes.
+Constant conditions/switch/developer emission, iterative Rust physical scopes and
+source indexed writes remain next; complete Rust gates stay ADR 0088 and Linux/
+hosted CI is unrun. No full GSC or join workstream closes.
+
 Assessment 0090 adds 36 executed selected x86 slot/if/if-else/break/continue
 emission cases, independently checked state/opcode-request traces and six more
 admission regressions. A later declaration does not retain a private branch cell;

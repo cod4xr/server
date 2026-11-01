@@ -50,7 +50,8 @@ def validate(output: bytes) -> None:
     # Independent selected consequences, including deliberately different exit paths.
     for case, names in {0: [1, 3], 1: [1, 3, 2], 2: [1, 3], 3: [1, 3, 4],
                         4: [1, 3, 2], 10: [1, 3, 2], 11: [1, 3],
-                        12: [1, 3, 2], 14: [1, 3, 4], 18: [1, 3]}.items():
+                        12: [1, 3, 2], 14: [1, 3, 4], 15: [1, 3, 5, 2, 4],
+                        16: [1, 3, 5, 2, 4], 17: [1, 3, 5, 4], 18: [1, 3]}.items():
         if cases[case, 0][0][2] != names:
             raise ValueError("Selected native branch/loop name-planning consequence changed")
 

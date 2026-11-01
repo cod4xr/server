@@ -9,7 +9,7 @@ from reference_source import ReferenceSource
 
 EMITTERS = FUNCTIONS + (
     "Scr_FindLocalVarIndex", "EmitIfStatement", "EmitIfElseStatement",
-    "EmitBreakStatement", "EmitContinueStatement",
+    "EmitBreakStatement", "EmitContinueStatement", "EmitWhileStatement", "EmitForStatement",
 )
 SERVICES = EXTERNALS | {
     "EmitOpcode", "TempMalloc", "TempMallocAlign", "AddOpcodePos",

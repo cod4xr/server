@@ -21,7 +21,7 @@ EXTERNALS = {
     "RemoveRefToValue", "Scr_CastBool", "scrCompileGlob", "gScrCompilePub",
 }
 DRIVERS = ("local_scope_platform.c", "local_scope_services.c", "local_scope_ast.c", "local_scope_cases.c",
-           "local_scope_loop_cases.c")
+           "local_scope_loops.c", "local_scope_loop_cases.c")
 
 
 def function(source: str, name: str) -> str:

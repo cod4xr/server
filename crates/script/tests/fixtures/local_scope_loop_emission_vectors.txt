@@ -1,0 +1,78 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+# Actual selected x86 while/for/slot/branch/transfer emitters; driver O0/O2 agree.
+# Modeled condition/body dispatch/string IDs/opcode writer/temp allocation; no parser/VM/freeing.
+# P/R parent before/after; B blocks; O opcode requests as local_scope_emission_vectors.txt.
+# Q dynamic condition-emission calls; native opcode optimization/alignment are not executed.
+# L 0 while fallthrough; 1 break; 2 continue; 3 common branches; 4 mixed exits;
+# 5 for fallthrough; 6 for continue; 7 for break; 8 nested while break;
+# 9 for break with omitted condition. Present for conditions use native tag 0x41.
+L 0
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 3 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+O 22:2 94 99 p:2
+Q 1
+L 1
+P 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 7 0 n:1 n:3 n:2
+O 94 22:2 23:1 98 99 p:4
+Q 1
+L 2
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 3 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+O 22:2 94 98 99 p:4
+Q 1
+L 3
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 3 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+O 22:2 94 94 98 99 p:4
+Q 2
+L 4
+P 0 2 2 3 3 0 n:1 n:3 n:4
+R 0 3 2 3 3 0 n:1 n:3 n:4
+B 0 3 3 3 3 0 n:1 n:3 n:4
+B 2 3 3 4 11 0 n:1 n:3 n:4 n:2
+B 1 3 3 3 7 0 n:1 n:3 n:4
+O 22:4 94 94 22:2 23:1 98 98 98 99 p:6
+Q 2
+L 5
+P 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+R 0 5 2 5 7 0 n:1 n:3 n:5 n:2 n:4
+B 0 5 5 5 15 0 n:1 n:3 n:5 n:2 n:4
+B 0 5 5 5 31 0 n:1 n:3 n:5 n:2 n:4
+O 22:5 22:2 22:4 94 99 p:2
+Q 1
+L 6
+P 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+R 0 5 2 5 7 0 n:1 n:3 n:5 n:2 n:4
+B 1 5 5 5 15 0 n:1 n:3 n:5 n:2 n:4
+B 0 5 5 5 31 0 n:1 n:3 n:5 n:2 n:4
+O 22:5 22:2 22:4 94 98 99 p:4
+Q 1
+L 7
+P 0 2 2 4 3 0 n:1 n:3 n:5 n:4
+R 0 4 2 4 7 0 n:1 n:3 n:5 n:4
+B 2 4 4 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 0 4 4 4 15 0 n:1 n:3 n:5 n:4
+O 22:5 22:4 94 22:2 23:1 98 99 p:4
+Q 1
+L 8
+P 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 7 0 n:1 n:3 n:2
+O 94 94 22:2 23:1 98 99 99 p:6
+Q 2
+L 9
+P 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+R 0 5 2 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 2 5 5 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 0 5 5 5 15 0 n:1 n:3 n:5 n:4 n:2
+O 22:5 22:4 22:2 98 99 p:3
+Q 0
