@@ -13,7 +13,7 @@ use cod4x_script::execution::{
 use cod4x_script::legacy::LegacyNumber;
 
 #[test]
-fn all_call_operands_need_complete_inventory_and_valid_arity_even_when_unreachable() {
+fn all_call_targets_need_complete_inventory_and_reachable_calls_need_stack_operands() {
     let leaf = [integer(1), KernelInstruction::Return];
     let code = [
         integer(0),
@@ -47,19 +47,18 @@ fn all_call_operands_need_complete_inventory_and_valid_arity_even_when_unreachab
             arguments: usize::MAX,
         },
     ];
-    let error = VerifiedKernelModule::verify(
+    let module = VerifiedKernelModule::verify(
         &[definition(&code, 0, 0), definition(&leaf, 0, 0)],
         KernelModuleVerificationBudget::default(),
     )
-    .expect_err("Unreachable arity still invalid");
+    .expect("Unreachable excess count is not a source-signature admission error");
     assert_eq!(
-        error.cause.kind,
-        KernelErrorKind::ArgumentCount {
-            expected: 0,
-            actual: usize::MAX as u64
-        }
+        module
+            .execute(0, &[], KernelCallBudget::default())
+            .expect("Unreachable call does not run")
+            .value,
+        KernelValue::Number(LegacyNumber::Integer(0))
     );
-    assert_eq!(error.cause.instruction, Some(2));
     let code = [
         KernelInstruction::Call {
             function: 1,

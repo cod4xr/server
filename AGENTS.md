@@ -240,16 +240,21 @@ and errors fixed/redacted. Verify generate_undefined_vectors.py --check alongsid
 vector/index corpora; service stubs are not native VM/cleanup proof. Preserve both
 source profiles, lazy flow and initialized-Undefined distinctions; see ADR 0046.
 Primitive direct calls require a complete immutable module proof. Check every
-target/arity even when unreachable; standalone proof must reject unresolved calls.
+target even when unreachable and every reachable call's stack operands;
+standalone proof must reject unresolved calls. Excess counts fail at invocation,
+after caller argument instructions and before callee allocation/parameter writes/
+body; skipped calls must not fail. Count parameters, never complete local slots.
 Global inventory/code/work/overlapping proof payload admission must precede
 publication. Keep calls leaves in execution/calls and share frame stepping with
 standalone execution. Invocation uses iterative private frames, global instruction
 fuel, separate setup/relocation work and aggregate frame/operand/local count/bytes;
 release admission on return and publish no partial result on failure. Preserve
 missing Undefined suffixes, explicit internal argument order and fixed private
-function/PC errors. Typed Call's static arity rule is not native source diagnostic/
+function/PC errors. These selected argument rules are not native source diagnostic/
 evaluation/push/cleanup parity. Source linking, methods/indirect calls, heap and
-scheduling stay separate. Retain wide/deep/hostile/quota tests; see ADR 0047.
+scheduling stay separate. Retain wide/deep/hostile/quota/order tests; see ADRs 0047/0048.
+Run tools/script_argument_reference.py against the pinned reference to exercise
+timing/marker/Undefined role fault injection, including preserved-needle reorderings.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

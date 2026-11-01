@@ -62,6 +62,7 @@ fn hostile_forward_recursive_and_cyclic_inventories_remain_bounded_after_proof()
                     if !matches!(
                         error.cause.kind,
                         KernelErrorKind::BudgetExceeded { .. }
+                            | KernelErrorKind::ArgumentCount { .. }
                             | KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
                             | KernelErrorKind::ExpectedIndexable

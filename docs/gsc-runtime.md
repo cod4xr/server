@@ -366,8 +366,8 @@ proof, byte/local/fuel budgets remain in force; there is no new allocation or
 value category. This is not object/string/builtin/native cleanup/full-VM parity;
 see ADR 0046.
 VerifiedKernelModule now admits a complete primitive function inventory with
-forward/recursive direct Call targets, strict static target/arity checks (including
-unreachable code), owned copied proof and per-function control-flow verification.
+forward/recursive direct Call targets, complete target checks (including unreachable
+code), owned copied proof and per-function stack/control-flow verification.
 All code/table/current-verifier payload and verification work share global budgets.
 The standalone verifier rejects unresolved calls. The iterative executor shares
 frame stepping with standalone execution, preserves private copied arguments and
@@ -381,6 +381,16 @@ exact/one-less global limits, repeated shallow calls, 12,001 frames, 66,000 func
 push order, source arity diagnostics, ref/error cleanup or original VM execution.
 Source calls/import linking, methods/indirect calls, heap values, scheduling and
 full GSC/mod acceptance remain open; see ADR 0047.
+Excess call arguments now fail at invocation, after caller argument instructions
+and before callee allocation/body. Unselected paths do not fail, while every
+reachable call still needs its declared operand count under proof. The check uses
+parameters rather than total local slots. Three added tests cover skipped and
+selected counts, caller/body error precedence, argument-fitting-local confusion,
+privacy/recovery and huge reachable count underflow. Hostile inventories now
+include dynamically failing excess counts. Selected locked compiler/VM argument
+roles and mutation guards supply evidence without executing the native routines;
+source/native cleanup/error-index/full-VM parity stays open. See ADR 0048, which
+supersedes ADR 0047's static excess rejection.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

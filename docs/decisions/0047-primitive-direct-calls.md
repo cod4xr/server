@@ -4,6 +4,10 @@ Date: 2026-10-31
 
 Status: accepted; implementation and validation tracked separately.
 
+The static excess-argument rejection below is superseded by
+[ADR 0048](0048-call-argument-error-timing.md). Targets/stack/flow still verify;
+excess arguments now fail at invocation after caller argument evaluation.
+
 ## Context
 
 Single primitive functions execute under owned proof/local/stack/fuel limits.

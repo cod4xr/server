@@ -386,7 +386,7 @@ their existing contracts. Actual C-helper outcomes cover both operand orders;
 the stubbed native service boundaries remain explicit. See ADR 0046.
 
 Primitive direct calls now live under execution/calls. Immutable module proof
-resolves every typed call target/arity against a complete borrowed inventory,
+resolves every typed call target against a complete borrowed inventory,
 including unreachable instructions, before copying/publishing all functions.
 Inventory/functions/code/work and overlapping table/retained-code/verifier
 payload share global admission; individual stack/local proof limits remain
@@ -397,7 +397,10 @@ separate conservative setup work. Return releases frame admission before reuse;
 failed invocation drops private state. Compact fixed errors retain function/PC,
 global work and peak admitted counts without allocating error boxes. This API
 does not resolve source imports/names, activate modules, reproduce native call
-ABI/cleanup or grant host/scheduler authority. See ADR 0047.
+ABI/cleanup or grant host/scheduler authority. Excess arguments now fail at the
+executed caller location after argument instructions and before callee allocation/
+body, preserving skipped calls. Stack operand proof remains mandatory and parameter
+count is distinct from total locals. See ADRs 0047/0048.
 
 ## Future custom client
 

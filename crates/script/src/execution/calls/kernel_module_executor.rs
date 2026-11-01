@@ -29,16 +29,8 @@ pub(super) fn execute(
             )
         })?;
     let index = index.ok_or_else(|| ledger.error(None, None, state()))?;
-    if arguments.len() as u64 > proof.layout.parameters() {
-        return Err(ledger.error(
-            Some(index),
-            None,
-            kernel_error::general(KernelErrorKind::ArgumentCount {
-                expected: proof.layout.parameters(),
-                actual: arguments.len() as u64,
-            }),
-        ));
-    }
+    check_arguments(proof, arguments.len())
+        .map_err(|cause| ledger.error(Some(index), None, cause))?;
     kernel_error::check(KernelResource::ExecutionSteps, 1, budget.max_steps, Some(0))
         .map_err(|cause| ledger.error(Some(index), None, cause))?;
     let admission = ledger
@@ -131,6 +123,7 @@ fn push_call(
     pc: usize,
 ) -> Result<(), KernelError> {
     let proof: &VerifiedKernelProgram = module.functions.get(function).ok_or_else(state)?;
+    check_arguments(proof, arguments)?;
     let admission = ledger.admit(proof, arguments)?;
     reserve(frames)?;
     let mut machine = KernelFrame::new(proof, &[], admission, KernelArgumentBinding::LegacyScript)?;
@@ -148,6 +141,16 @@ fn reserve(frames: &mut Vec<KernelCallFrame>) -> Result<(), KernelError> {
     frames
         .try_reserve_exact(1)
         .map_err(|_| kernel_error::general(KernelErrorKind::AllocationFailed))
+}
+
+fn check_arguments(proof: &VerifiedKernelProgram, count: usize) -> Result<(), KernelError> {
+    if count as u64 > proof.layout.parameters() {
+        return Err(kernel_error::general(KernelErrorKind::ArgumentCount {
+            expected: proof.layout.parameters(),
+            actual: count as u64,
+        }));
+    }
+    Ok(())
 }
 
 fn state() -> KernelError {

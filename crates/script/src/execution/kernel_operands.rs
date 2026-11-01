@@ -33,13 +33,10 @@ pub(super) fn verify(
                 },
             ))
         }
-        KernelInstruction::Call {
-            function,
-            arguments,
-        } => {
+        KernelInstruction::Call { function, .. } => {
             let functions =
                 functions.ok_or_else(|| kernel_error::at(pc, KernelErrorKind::UnlinkedCall))?;
-            let target = functions.get(function).ok_or_else(|| {
+            functions.get(function).ok_or_else(|| {
                 kernel_error::at(
                     pc,
                     KernelErrorKind::InvalidFunction {
@@ -47,15 +44,6 @@ pub(super) fn verify(
                     },
                 )
             })?;
-            if arguments as u64 > target.layout.parameters() {
-                return Err(kernel_error::at(
-                    pc,
-                    KernelErrorKind::ArgumentCount {
-                        expected: target.layout.parameters(),
-                        actual: arguments as u64,
-                    },
-                ));
-            }
             Ok(())
         }
         _ => Ok(()),

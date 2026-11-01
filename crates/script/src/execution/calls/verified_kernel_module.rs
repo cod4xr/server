@@ -47,11 +47,11 @@ pub struct VerifiedKernelModule {
 }
 
 impl VerifiedKernelModule {
-    /// Verifies every function, call operand/arity and reachable stack/flow shape.
+    /// Verifies every function, call target and reachable stack/flow shape.
     /// Supports forward calls and recursion without host recursion.
     ///
     /// # Errors
-    /// Rejects empty inventories, malformed/unresolved operands, excess arguments,
+    /// Rejects empty inventories, malformed/unresolved operands,
     /// invalid flow, global/per-function budget exhaustion and allocation failure.
     /// No partial module escapes; borrowed input remains unchanged.
     pub fn verify(
@@ -70,6 +70,8 @@ impl VerifiedKernelModule {
     /// Invokes an entry with a source-parameter-ordered primitive argument prefix.
     /// Missing parameters receive Undefined; excess arguments fail. All frames own
     /// copied private locals/stacks, sharing global fuel/setup/live-payload budgets.
+    /// Call-site excess arguments fail at invocation, after caller arguments run
+    /// and before callee allocation/body execution; skipped calls do not fail.
     /// This is not source linking, native call ABI, scheduling or host authority.
     ///
     /// # Errors

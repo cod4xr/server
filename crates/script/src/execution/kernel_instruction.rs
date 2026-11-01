@@ -31,7 +31,7 @@ pub enum KernelInstruction {
     Call {
         /// Wide module-local function index, checked even in unreachable code.
         function: usize,
-        /// Supplied prefix count; cannot exceed the target's parameter count.
+        /// Supplied operand count. Excess arguments fail when the call executes.
         arguments: usize,
     },
     /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.

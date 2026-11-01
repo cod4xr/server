@@ -54,6 +54,8 @@ mod kernel_verification;
 mod arithmetic_boundaries;
 #[path = "arithmetic_vectors.rs"]
 mod arithmetic_vectors;
+#[path = "kernel_call_arity.rs"]
+mod kernel_call_arity;
 #[path = "kernel_call_execution.rs"]
 mod kernel_call_execution;
 #[path = "kernel_call_limits.rs"]

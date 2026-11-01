@@ -715,6 +715,22 @@ alternate targets. Source calls/linking, methods/indirect calls, heap/scheduling
 native/full GSC/mod compatibility and Linux acceptance remain open. No full legacy
 workstream gate is closed by this kernel implementation.
 
+Excess direct-call arguments now fail at invocation after caller argument
+instructions and before callee allocation/copies/body. Proof still checks every
+target and reachable stack effect, while skipped/unreachable excess counts do
+not fail. Checks use parameter count rather than total local slots. Three added
+tests cover dynamic branches, caller/body error precedence, privacy/recovery and
+huge reachable-count underflow; hostile inventories now admit dynamic arity errors.
+Stronger selected argument source guards tie fallback caller traversal/emission
+and parameter check-before-body roles. The executable fault driver rejects 38
+in-memory role changes, including reorderings retaining all original needles;
+99 syntax fixture replays remain unchanged. All 173 frontend/77 legacy tests and
+doctests pass in workspace Windows debug/release, with formatting, warnings-denied
+Clippy/rustdoc and repository policy (511 sources/eight crates, largest 287 lines).
+See ADR 0048, superseding ADR 0047's static excess rejection. No dependencies or
+alternate targets. Native parser/compiler/VM execution, parameter safe-set/ref/
+error-index/cleanup parity, full GSC/mod and Linux gates remain open.
+
 Next: source-grounded local call compilation/linking and general value ownership,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
