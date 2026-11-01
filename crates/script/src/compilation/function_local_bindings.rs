@@ -6,17 +6,18 @@ use crate::binding::LegacyIdentifier;
 #[derive(Clone, Copy)]
 pub(super) struct FunctionLocalSlot {
     pub(super) index: usize,
-    pub(super) initialized: bool,
 }
 
 pub(super) struct FunctionLocalBindings<'source> {
     pub(super) names: HashMap<LegacyIdentifier<'source>, FunctionLocalSlot>,
+    pub(super) initialized: Vec<bool>,
 }
 
 impl FunctionLocalBindings<'_> {
     pub(super) fn new() -> Self {
         Self {
             names: HashMap::new(),
+            initialized: Vec::new(),
         }
     }
 }

@@ -14,6 +14,27 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0094 implements iterative metered declaration/public/created scope planning
+and private-local cleanup for bound source/packages. Indexed initialized flags
+prevent cleared partial-break bindings from becoming readable. Branch/loop/switch
+transfers retain distinct targets, and inherited public prefixes expand dynamically.
+The native switch family extends from nine to eleven cases, preserving the original
+nine rows and other four families. The unreachable native remove-255 request stays
+explicit evidence, never live Rust cleanup. Five scope admission suites now run
+35 regressions. Twenty-two new scope tests plus caller/cache/world pressure cover
+exact/every-shorter budgets, 70k private aliases, 12k branches/loops, 100k bounded
+churn and context recovery; the package source example returns 42 with readable
+logs and zero live VM owners. Windows debug workspace passes all 367 tests plus
+the final deep-loop test; all previous 345 frontend/257 legacy names are preserved.
+Release workspace and the final additional deep-loop test in both profiles pass,
+bringing the validated frontend inventory to 368. Denied-warning all-target
+Clippy/rustdoc, formatting, five native generators, 35 admission tests, 98/39
+scope mutations, 99 structural replays, twelve suite regressions and policy all
+pass (1042 sources/eight crates/largest 287). Existing 306 array traces and
+141/61 write/lifetime mutations also pass. Source indexed assignment is
+next; no complete GSC workstream closes and the rough 10–12 estimate is unchanged.
+No new dependency/crate/target directory; Linux/hosted CI remain unrun.
+
 Assessment 0093 adds eight selected literal-constant loop cases: six emitted,
 two false-condition analysis-only. Actual pinned x86 primitive/planning/emission
 helpers and the extracted C bool helper execute with explicit modeled remaining

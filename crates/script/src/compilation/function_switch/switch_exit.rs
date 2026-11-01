@@ -5,6 +5,7 @@ use crate::compilation::FunctionCompileError;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_initialization;
 use crate::compilation::function_loop_transfer::FunctionBreakOwner;
+use crate::compilation::function_scopes;
 use crate::compilation::function_switch::switch_context::FunctionSwitchContext;
 use crate::compilation::function_switch::{switch_dispatch, switch_error};
 use crate::compilation::function_task::FunctionPatchSite;
@@ -26,6 +27,7 @@ pub(super) fn finish(
     {
         return Err(switch_error::invalid(span));
     }
+    function_scopes::leave_switch(builder, span.clone())?;
     if let Some(facts) = context.exit_facts.take() {
         function_initialization::merge(builder, facts, span.clone())?;
     }
@@ -57,6 +59,7 @@ pub(super) fn finish(
     builder.bind_transfers(breaks, span.clone())?;
     builder.bind(fallthrough, span)?;
     builder.break_owner = context.previous_break_owner;
+    builder.break_scope = context.previous_break_scope;
     builder.active_switch = outer;
     Ok(())
 }

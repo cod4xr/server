@@ -34,24 +34,32 @@ pub(super) fn declare<'source>(
     // Logical key/value payload only: hash control/capacity/allocator overhead is
     // excluded explicitly, not presented as an aggregate heap/RSS bound.
     let bytes = (count as u64)
-        .checked_mul(size_of::<(LegacyIdentifier<'_>, FunctionLocalSlot)>() as u64)
+        .checked_mul(
+            (size_of::<(LegacyIdentifier<'_>, FunctionLocalSlot)>() + size_of::<bool>()) as u64,
+        )
         .ok_or_else(|| error(FunctionCompileErrorKind::SizeOverflow))?;
     builder.admit_binding(count as u64, bytes, token.span())?;
-    let table = &mut builder
+    let locals = builder
         .locals
         .as_mut()
-        .ok_or_else(|| error(FunctionCompileErrorKind::InvalidLocalBinding))?
-        .names;
-    table
+        .ok_or_else(|| error(FunctionCompileErrorKind::InvalidLocalBinding))?;
+    locals
+        .names
+        .try_reserve(1)
+        .map_err(|_| error(FunctionCompileErrorKind::AllocationFailed))?;
+    locals
+        .initialized
         .try_reserve(1)
         .map_err(|_| error(FunctionCompileErrorKind::AllocationFailed))?;
     let initialized = matches!(declaration, FunctionLocalDeclaration::Parameter);
-    if table
-        .insert(name, FunctionLocalSlot { index, initialized })
+    if locals
+        .names
+        .insert(name, FunctionLocalSlot { index })
         .is_some()
     {
         return Err(error(FunctionCompileErrorKind::InvalidLocalBinding));
     }
+    locals.initialized.push(initialized);
     Ok((name, index))
 }
 
@@ -71,8 +79,12 @@ pub(super) fn lookup<'source>(
     let slot = builder
         .locals
         .as_ref()
-        .and_then(|locals| locals.names.get(&name))
-        .filter(|slot| slot.initialized)
+        .and_then(|locals| {
+            locals
+                .names
+                .get(&name)
+                .filter(|slot| locals.initialized.get(slot.index).copied() == Some(true))
+        })
         .copied()
         .ok_or_else(|| {
             function_compile_error::at(token.span(), FunctionCompileErrorKind::UninitializedLocal)
@@ -88,18 +100,41 @@ pub(super) fn initialize<'source>(
     builder
         .ledger
         .identifier(name.as_bytes().len() as u64, name.lexeme().span())?;
-    let slot = builder
-        .locals
-        .as_mut()
-        .and_then(|locals| locals.names.get_mut(&name))
+    let locals = builder.locals.as_mut().ok_or_else(|| {
+        function_compile_error::at(
+            name.lexeme().span(),
+            FunctionCompileErrorKind::InvalidLocalBinding,
+        )
+    })?;
+    let slot = locals
+        .names
+        .get(&name)
         .filter(|slot| slot.index == index)
+        .and_then(|slot| locals.initialized.get_mut(slot.index))
         .ok_or_else(|| {
             function_compile_error::at(
                 name.lexeme().span(),
                 FunctionCompileErrorKind::InvalidLocalBinding,
             )
         })?;
-    slot.initialized = true;
+    *slot = true;
+    Ok(())
+}
+
+pub(super) fn uninitialize(
+    builder: &mut FunctionBuilder<'_, '_>,
+    index: usize,
+    span: std::ops::Range<u64>,
+) -> Result<(), FunctionCompileError> {
+    builder.ledger.charge(1, span.clone())?;
+    let flag = builder
+        .locals
+        .as_mut()
+        .and_then(|locals| locals.initialized.get_mut(index))
+        .ok_or_else(|| {
+            function_compile_error::at(span, FunctionCompileErrorKind::InvalidLocalBinding)
+        })?;
+    *flag = false;
     Ok(())
 }
 

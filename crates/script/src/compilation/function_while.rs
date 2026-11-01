@@ -7,6 +7,7 @@ use crate::compilation::function_initialization::{self, FunctionInitializationSn
 use crate::compilation::function_loop_transfer::{
     self, FunctionContinueDestination, FunctionLoopContext,
 };
+use crate::compilation::function_scopes;
 use crate::compilation::function_task::{FunctionLoopHead, FunctionPatchSite, FunctionTask};
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -18,6 +19,7 @@ pub(super) fn queue<'tree, 'source>(
     body: LegacySyntaxNode<'tree, 'source>,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
+    function_scopes::prepare_loop(builder, span.clone())?;
     let head = FunctionLoopHead(builder.instruction_position());
     builder.push_task(
         FunctionTask::BeginWhileBody {
@@ -38,6 +40,7 @@ pub(super) fn begin_body<'tree, 'source>(
 ) -> Result<(), FunctionCompileError> {
     let incoming = function_initialization::capture(builder, span.clone())?;
     let exit_site = builder.branch(KernelBranchCondition::IfFalse, span.clone())?;
+    function_scopes::enter_loop_body(builder, span.clone())?;
     let outer_loop =
         function_loop_transfer::enter(builder, head, FunctionContinueDestination::Condition);
     builder.push_task(
@@ -76,5 +79,9 @@ pub(super) fn after_body(
     builder.emit(KernelInstruction::Jump(head.0), span.clone())?;
     builder.bind(exit_site, span.clone())?;
     function_loop_transfer::leave(builder, head, outer_loop, span.clone())?;
-    function_initialization::restore(builder, incoming, span)
+    function_initialization::restore(builder, incoming, span.clone())?;
+    if !function_scopes::leave_loop(builder, span)? {
+        builder.reachable = false;
+    }
+    Ok(())
 }

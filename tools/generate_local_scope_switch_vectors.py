@@ -29,13 +29,14 @@ def main() -> None:
         "# P/R parent before/after; B blocks; O requests/Q condition calls as other scope fixtures.\n"
         "# S 0 no default; 1 disjoint default; 2 common default; 3 fallthrough; 4 empty case;\n"
         "# 5 existing outer local; 6 nested common if/else; 7 extra private name; 8 loop continue.\n"
+        "# 9 nested both-break arms (unreachable remove count 255); 10 partial nested break/fallthrough.\n"
     ).encode("ascii") + output
     if args.check:
         if OUTPUT.read_bytes() != expected:
             raise SystemExit("Native switch-scope fixtures differ")
     else:
         OUTPUT.write_bytes(expected)
-    print("Verified 9 selected native switch-scope cases against independent expectations at driver O0/O2")
+    print("Verified 11 selected native switch-scope cases against independent expectations at driver O0/O2")
 
 
 if __name__ == "__main__":

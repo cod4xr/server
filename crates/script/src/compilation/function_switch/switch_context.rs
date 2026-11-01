@@ -3,6 +3,7 @@ use std::ops::Range;
 
 use crate::compilation::function_initialization::FunctionInitializationSnapshot;
 use crate::compilation::function_loop_transfer::FunctionBreakOwner;
+use crate::compilation::function_scopes::ScopeId;
 use crate::compilation::function_task::FunctionPatchSite;
 
 pub(super) struct SwitchCase {
@@ -21,6 +22,8 @@ pub(in crate::compilation) struct FunctionSwitchContext {
     pub(super) exit_facts: Option<FunctionInitializationSnapshot>,
     pub(super) breaks: Option<FunctionPatchSite>,
     pub(super) previous_break_owner: Option<FunctionBreakOwner>,
+    pub(super) previous_break_scope: Option<ScopeId>,
+    pub(super) scope_parent: Option<ScopeId>,
 }
 
 #[derive(Clone, Copy)]

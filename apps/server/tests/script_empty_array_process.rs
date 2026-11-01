@@ -12,6 +12,28 @@ use std::process::Command;
 use content_support::FixtureFile;
 
 #[test]
+fn supplied_package_scopes_keep_calls_and_switch_loop_exits_owned_and_logs_readable() {
+    let root = FixtureFile::from_bytes(b"#include lib;main(){return run();}");
+    let source =
+        include_str!("../../../examples/gsc/local_scopes.gsc").replacen("main()", "run()", 1);
+    let lib = FixtureFile::from_bytes(source.as_bytes());
+    let output = script_package_support::execute(
+        "root",
+        &[("root", &root), ("lib", &lib)],
+        &["--human-logs", "--color", "never"],
+    );
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"integer 42\n");
+    let logs = script_package_support::logs(&output, &[&root, &lib]);
+    assert!(logs.contains("live_array_values=0"));
+    assert!(!logs.contains('\u{1b}'));
+}
+
+#[test]
 fn offline_empty_arrays_report_opaque_results_and_managed_counts_without_implicit_world_state() {
     for (source, expected, owners) in [
         (

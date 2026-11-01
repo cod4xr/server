@@ -38,6 +38,7 @@ mod function_program;
 mod function_reference;
 mod function_reference_value;
 mod function_relocations;
+mod function_scopes;
 mod function_statement_body;
 mod function_string_literal;
 mod function_switch;

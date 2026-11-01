@@ -179,6 +179,31 @@ fn run(
 }
 
 #[test]
+fn private_branch_alias_cleanup_preserves_caller_world_cached_keys_and_read_result_graphs() {
+    let module = module_compile_support::compile(
+        b"main(host){if(1){alias=host;}o=host[\"object\"];s=host[\"string\"];host=undefined;
+          empty=make();temp=make();return empty.size+o.payload.size+s.size;}
+          make(){return [];}",
+        LegacyDeveloperMode::Disabled,
+        ModuleCompilationBudget::default(),
+    )
+    .expect("Scoped alias before caller pressure");
+    let (result, usage) = run(&module, HeapWorkBudget::default());
+    assert_eq!(result.expect("Complete graph roots"), number(16));
+    for maximum in 0..usage.steps {
+        run(
+            &module,
+            HeapWorkBudget {
+                max_steps: maximum,
+                max_scratch_bytes: usage.peak_scratch_bytes,
+            },
+        )
+        .0
+        .expect_err("Every shorter scoped pressure prefix");
+    }
+}
+
+#[test]
 fn independent_empty_results_and_cached_keys_survive_callee_pressure_and_every_shorter_heap_scope()
 {
     let module = module_compile_support::compile(

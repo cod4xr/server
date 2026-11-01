@@ -5,6 +5,7 @@ use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_initialization;
 use crate::compilation::function_loop_transfer::FunctionBreakOwner;
+use crate::compilation::function_scopes;
 use crate::compilation::function_switch::switch_context::{FunctionSwitchContext, SwitchLabel};
 use crate::compilation::function_switch::switch_inventory;
 use crate::compilation::function_switch::switch_task::FunctionSwitchTask;
@@ -46,6 +47,8 @@ pub(super) fn begin<'tree, 'source>(
     let inventory = switch_inventory::build(builder, &body)?;
     let count = inventory.cases.len();
     let previous_break_owner = builder.break_owner.replace(FunctionBreakOwner::Switch);
+    let previous_break_scope = builder.break_scope.take();
+    let scope_parent = function_scopes::current(builder);
     let outer = builder.active_switch.replace(FunctionSwitchContext {
         head,
         cases: inventory.cases,
@@ -56,6 +59,8 @@ pub(super) fn begin<'tree, 'source>(
         exit_facts: None,
         breaks: None,
         previous_break_owner,
+        previous_break_scope,
+        scope_parent,
     });
     builder.reachable = false;
     builder.push_task(

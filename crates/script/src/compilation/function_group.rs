@@ -38,8 +38,8 @@ pub(super) fn lower<'tree, 'source>(
     Ok(())
 }
 
-fn triple<'tree, 'source>(
-    builder: &mut FunctionBuilder<'tree, 'source>,
+pub(super) fn triple<'tree, 'source>(
+    builder: &mut FunctionBuilder<'_, '_>,
     group: LegacySyntaxNode<'tree, 'source>,
     list: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<[LegacySyntaxNode<'tree, 'source>; 3], FunctionCompileError> {

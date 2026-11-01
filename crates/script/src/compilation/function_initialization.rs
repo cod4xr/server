@@ -11,6 +11,12 @@ pub(super) struct FunctionInitializationSnapshot {
     reachable: bool,
 }
 
+impl FunctionInitializationSnapshot {
+    pub(super) fn reachable(&self) -> bool {
+        self.reachable
+    }
+}
+
 #[derive(Clone, Copy)]
 enum SnapshotAction {
     Restore,
@@ -36,17 +42,11 @@ pub(super) fn capture(
     initialized.try_reserve_exact(count).map_err(|_| {
         function_compile_error::at(span.clone(), FunctionCompileErrorKind::AllocationFailed)
     })?;
-    initialized.resize(count, false);
     let locals = builder
         .locals
         .as_ref()
         .ok_or_else(|| invalid(span.clone()))?;
-    for slot in locals.names.values() {
-        let flag = initialized
-            .get_mut(slot.index)
-            .ok_or_else(|| invalid(span.clone()))?;
-        *flag = slot.initialized;
-    }
+    initialized.extend_from_slice(&locals.initialized);
     Ok(FunctionInitializationSnapshot {
         initialized,
         reachable: builder.reachable,
@@ -105,15 +105,11 @@ fn apply(
         .locals
         .as_mut()
         .ok_or_else(|| invalid(span.clone()))?;
-    for slot in locals.names.values_mut() {
-        let incoming = snapshot
-            .initialized
-            .get(slot.index)
-            .copied()
-            .unwrap_or(false);
-        slot.initialized = match action {
+    for (index, flag) in locals.initialized.iter_mut().enumerate() {
+        let incoming = snapshot.initialized.get(index).copied().unwrap_or(false);
+        *flag = match action {
             SnapshotAction::Merge if current_reachable => {
-                slot.initialized && (!snapshot.reachable || incoming)
+                *flag && (!snapshot.reachable || incoming)
             }
             SnapshotAction::Restore | SnapshotAction::Merge => incoming,
         };

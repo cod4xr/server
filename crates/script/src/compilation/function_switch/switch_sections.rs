@@ -5,6 +5,7 @@ use crate::compilation::FunctionCompileError;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_initialization;
 use crate::compilation::function_loop_transfer::FunctionBreakOwner;
+use crate::compilation::function_scopes;
 use crate::compilation::function_switch::switch_context::SwitchLabel;
 use crate::compilation::function_switch::switch_error;
 
@@ -16,6 +17,13 @@ pub(super) fn label(
     if builder.break_owner != Some(FunctionBreakOwner::Switch) {
         return Err(switch_error::invalid(span));
     }
+    let scope_parent = builder
+        .active_switch
+        .as_ref()
+        .ok_or_else(|| switch_error::invalid(span.clone()))?
+        .scope_parent;
+    function_scopes::enter_switch_label(builder, scope_parent, span.clone())?;
+    builder.break_scope = function_scopes::current(builder);
     let context = builder
         .active_switch
         .as_mut()
@@ -54,6 +62,7 @@ pub(in crate::compilation) fn record_break(
     if builder.break_owner != Some(FunctionBreakOwner::Switch) {
         return Err(switch_error::invalid(span));
     }
+    function_scopes::break_edge(builder, builder.break_scope, span.clone())?;
     let context = builder
         .active_switch
         .as_mut()

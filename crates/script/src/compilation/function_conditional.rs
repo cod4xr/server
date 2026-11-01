@@ -4,6 +4,7 @@ use std::ops::Range;
 use crate::compilation::FunctionCompileError;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_initialization::{self, FunctionInitializationSnapshot};
+use crate::compilation::function_scopes;
 use crate::compilation::function_task::{FunctionPatchSite, FunctionTask};
 use crate::execution::KernelBranchCondition;
 use crate::syntax::LegacySyntaxNode;
@@ -16,6 +17,7 @@ pub(super) fn begin<'tree, 'source>(
 ) -> Result<(), FunctionCompileError> {
     let incoming = function_initialization::capture(builder, span.clone())?;
     let false_site = builder.branch(KernelBranchCondition::IfFalse, span.clone())?;
+    function_scopes::begin_if(builder, span.clone())?;
     builder.push_task(
         FunctionTask::AfterThen {
             false_site,
@@ -41,6 +43,7 @@ pub(super) fn after_then<'tree, 'source>(
     alternative: Option<LegacySyntaxNode<'tree, 'source>>,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
+    function_scopes::end_consequence(builder, span.clone())?;
     let Some(alternative) = alternative else {
         builder.bind(false_site, span.clone())?;
         return function_initialization::merge(builder, incoming, span);
@@ -49,6 +52,7 @@ pub(super) fn after_then<'tree, 'source>(
     let end_site = builder.jump(span.clone())?;
     builder.bind(false_site, span.clone())?;
     function_initialization::restore(builder, incoming, span.clone())?;
+    function_scopes::begin_else(builder, span.clone())?;
     builder.push_task(
         FunctionTask::AfterElse {
             end_site,
@@ -72,6 +76,7 @@ pub(super) fn after_else(
     then_facts: FunctionInitializationSnapshot,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
+    function_scopes::end_if(builder, then_facts.reachable(), span.clone())?;
     function_initialization::merge(builder, then_facts, span.clone())?;
     builder.bind(end_site, span)
 }

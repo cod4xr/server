@@ -192,6 +192,23 @@ impl FunctionCompilationLedger {
         self.metadata_with_bindings(bytes, span)
     }
 
+    /// Auxiliary planner frames already pay their own typed payload in control
+    /// storage. Check/count them without charging `FunctionTask` payload again.
+    pub(super) fn auxiliary_frames(
+        &mut self,
+        frames: usize,
+        span: Range<u64>,
+    ) -> Result<(), FunctionCompileError> {
+        check(
+            FunctionCompilationResource::TaskFrames,
+            frames as u64,
+            self.budget.max_task_frames,
+            span,
+        )?;
+        self.usage.peak_task_frames = self.usage.peak_task_frames.max(frames as u64);
+        Ok(())
+    }
+
     fn metadata_with_bindings(
         &mut self,
         bytes: u64,

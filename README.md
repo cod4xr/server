@@ -16,11 +16,17 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC modules/packages now clean private local aliases across branches,
+  loops and switch exits/fallthrough using separate declaration and initialization
+  facts. Wide/deep and exact-budget tests cover the lifetime rules. The offline
+  `examples/gsc/local_scopes.gsc` example returns integer 42. ADR 0094 scopes this
+  component; source indexed writes and complete GSC remain open.
+
 - The typed GSC VM now mutates initialized local array cells with checked COW,
   distinct literal/computed Undefined behavior and prepaid failure cleanup.
   Tests replay 32 native delete outcomes, preserve operand/result graphs through
   collection, and cover 70,000 entries and bounded 100,000 updates. ADR 0088
-  scopes this component; source indexed assignment awaits native local-scope cleanup.
+  scopes this component; source indexed assignment awaits its separate acceptance.
 
 - Bound GSC now constructs independent empty arrays with `[]`, including package
   calls and explicit owner transfer on return. The offline command runs

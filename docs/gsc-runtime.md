@@ -1,5 +1,14 @@
 # Expanded GSC runtime contract
 
+ADR 0094 adds iterative, metered local lifetime planning/cleanup to bound modules
+and packages. Declaration/public/physical cells remain separate from initialized
+facts. Branch, loop, switch-fallthrough, break and continue rules preserve their
+distinct native evidence; removed bindings become uninitialized. Tests cover
+exact/failure budgets, 70k private aliases, 12k nested branches and bounded 100k
+churn. `examples/gsc/local_scopes.gsc` returns integer 42. Native helper requests
+do not establish whole compiler/VM/freeing parity. Source indexed writes and
+general stored/nested ownership remain rejected pending the next acceptance.
+
 ADR 0088 accepts typed StoreArrayLocal/ClearArrayLocal with initialized targets,
 registry-checked receiver borrowing, COW before key validation and real transient
 computed-Undefined children. Stored/nested Array values remain forbidden. Checked

@@ -6,6 +6,7 @@ use crate::compilation::function_compile_error;
 use crate::compilation::function_local_bindings::FunctionLocalBindings;
 use crate::compilation::function_loop_transfer::{FunctionBreakOwner, FunctionLoopContext};
 use crate::compilation::function_lowering_mode::{FunctionLoweringMode, StandaloneFunctionMode};
+use crate::compilation::function_scopes::{FunctionScopePlan, ScopeId};
 use crate::compilation::function_switch::FunctionSwitchContext;
 use crate::compilation::function_task::{
     FunctionPatchSite, FunctionTask, PendingFunctionInstruction, PendingFunctionKind,
@@ -23,7 +24,9 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
     pub(super) reachable: bool,
     pub(super) active_loop: Option<FunctionLoopContext>,
     pub(super) break_owner: Option<FunctionBreakOwner>,
+    pub(super) break_scope: Option<ScopeId>,
     pub(super) active_switch: Option<FunctionSwitchContext>,
+    pub(super) scopes: Option<FunctionScopePlan>,
     tasks: Vec<FunctionTask<'tree, 'source>>,
     pub(super) instructions: Vec<PendingFunctionInstruction>,
     pub(super) string_literals: Vec<Vec<u8>>,
@@ -54,7 +57,9 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             reachable: true,
             active_loop: None,
             break_owner: None,
+            break_scope: None,
             active_switch: None,
+            scopes: None,
             tasks: Vec::new(),
             instructions: Vec::new(),
             string_literals: Vec::new(),

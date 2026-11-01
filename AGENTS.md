@@ -1,5 +1,20 @@
 # Project contract
 
+ADR 0094 implements iterative metered bound-source local lifetime planning and
+private-cell cleanup, separately from definite initialization. Keep declaration,
+public, created and initialized states distinct; retain dynamic prefix expansion,
+case-root versus leaf-break distinctions and separate break/continue targets.
+Clearing a binding must clear its indexed initialization flag. Ordinary braces
+share scope. The native two-aborting-arm switch probe requests unreachable remove
+255; preserve that evidence but never emit live Rust cleanup for an unreachable
+path. Other original scope scenario bytes remain unchanged. Keep 22 scope tests,
+caller/cache/world pressure, package CLI and all prior inventories; run full
+Windows gates, five scope generators, 35 admission tests and existing mutations/
+structural/suite policies. Source indexed writes stay rejected until separately
+accepted against ADR 0088, including COW/key order and populated result graphs.
+Developer statements, stored/nested Arrays, root/game writes, scheduler ownership,
+general logical RC/cycles, complete GSC and joinable gameplay remain open.
+
 Assessment 0093 records eight literal-constant scope cases (six true emitted/two
 false analysis-only), actual pinned primitive/planning/emission instructions and
 the extracted C bool helper. Other dispatch/string/output/storage/scalar-release

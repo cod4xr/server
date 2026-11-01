@@ -8,12 +8,27 @@ REQUESTS = (
     "124 22:2 98 22:2 98 125 p:3", "22:2 124 98 22:4 23:1 98 125 p:3",
     "124 94 22:2 98 22:2 98 22:2 98 125 p:5",
     "124 22:2 22:4 23:1 98 22:2 98 125 p:3", "22:2 22:4 94 124 98 98 125 99 p:5",
+    "124 94 22:2 98 98 22:2 98 23:255 22:2 98 125 p:6",
+    "124 94 22:2 23:1 98 22:2 98 125 p:4",
 )
 
 
 def expected(scenario: int) -> list[str]:
     names = [1, 3] + ([4] if scenario == 3 else [2, 4] if scenario == 8 else
-                      [2] if scenario in (2, 4, 5, 6, 7) else [])
+                      [2] if scenario in (2, 4, 5, 6, 7, 9, 10) else [])
+    if scenario in (9, 10):
+        # Nested breaks do not publish the leaf's initialized bitmap to the case
+        # root. Both-aborting arms leave an unreachable native cleanup underflow;
+        # these are requests, never an executable-VM correctness assertion.
+        rows = [block("P", names), block("R", names),
+                block("B", names if scenario == 9 else [1, 3],
+                      created=3 if scenario == 9 else 2, public=3 if scenario == 9 else 2),
+                block("B", names, created=3 if scenario == 9 else 2,
+                      public=2, initialized=7, abort=2)]
+        if scenario == 9:
+            rows += [block("B", names, created=3, public=2, initialized=7, abort=2)]
+        rows += [block("B", names, created=3, public=3, initialized=7, abort=2)]
+        return rows + ["O " + REQUESTS[scenario], "Q 2"]
     rows = [block("P", names, created=3 if scenario == 5 else 2,
                   initialized=7 if scenario == 5 else 3),
             block("R", names, created=len(names), initialized=3 if scenario == 8 else
@@ -47,7 +62,7 @@ def expected(scenario: int) -> list[str]:
 
 
 def validate(output: bytes) -> None:
-    model = {f"S {scenario}": expected(scenario) for scenario in range(9)}
+    model = {f"S {scenario}": expected(scenario) for scenario in range(11)}
     actual = {}
     current = None
     for row in output.decode("ascii").splitlines():

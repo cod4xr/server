@@ -45,6 +45,19 @@ class LocalScopeSwitchTests(unittest.TestCase):
             with self.subTest(old=old), self.assertRaises(ValueError):
                 validate(self.changed_case(8, old, new))
 
+    def test_nested_partial_break_removes_a_private_leaf_before_its_jump(self) -> None:
+        with self.assertRaises(ValueError):
+            validate(self.changed_case(10, b"23:1 98", b"98"))
+
+    def test_aborting_nested_arms_do_not_publish_their_initialized_bitmap(self) -> None:
+        for scenario in (9, 10):
+            with self.subTest(scenario=scenario), self.assertRaises(ValueError):
+                validate(self.changed_case(scenario, b"R 0 2 2 3 3", b"R 0 3 2 3 7"))
+
+    def test_unreachable_native_cleanup_underflow_stays_explicit(self) -> None:
+        with self.assertRaises(ValueError):
+            validate(self.changed_case(9, b"23:255", b"23:1"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -5,6 +5,7 @@ use crate::compilation::function_local_bindings::FunctionLocalDeclaration;
 use crate::compilation::function_local_names;
 use crate::compilation::function_local_statements;
 use crate::compilation::function_program;
+use crate::compilation::function_scopes;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::function_task_lowering;
 use crate::compilation::{
@@ -62,6 +63,9 @@ pub(super) fn lower<'tree, 'source>(
         builder.ledger.charge(1, parameter.span())?;
         function_local_names::declare(builder, parameter, FunctionLocalDeclaration::Parameter)?;
     }
+    if builder.mode.bound() {
+        builder.scopes = Some(function_scopes::build(builder, function)?);
+    }
     let body = LegacyStatementListSyntax::lower(function.body(), builder.ledger.budget.body)
         .map_err(|error| {
             function_compile_error::at(
@@ -93,9 +97,13 @@ pub(super) fn lower<'tree, 'source>(
     }
     drop(body);
     function_task_lowering::drain(builder)?;
+    if let Some(scopes) = builder.scopes.take() {
+        scopes.release(builder, function.span())?;
+    }
     if builder.active_loop.is_some()
         || builder.active_switch.is_some()
         || builder.break_owner.is_some()
+        || builder.break_scope.is_some()
     {
         return Err(function_compile_error::at(
             function.span(),

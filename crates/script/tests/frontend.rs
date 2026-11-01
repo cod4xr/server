@@ -26,6 +26,13 @@ mod source_root_limits;
 mod source_root_pressure;
 mod source_root_pressure_limits;
 mod source_root_width;
+mod source_scope_branches;
+mod source_scope_context;
+mod source_scope_limits;
+mod source_scope_loops;
+mod source_scope_support;
+mod source_scope_switches;
+mod source_scope_width_depth;
 
 mod bound_object_arguments;
 mod expression_list_support;

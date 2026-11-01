@@ -12,10 +12,15 @@ static Word *switch_statement(Word scenario)
     if (scenario == 6) first = branch(assignment(2), assignment(2));
     if (scenario == 7) first = pair(assignment(2), assignment(4));
     if (scenario == 8) first = pair(assignment(2), node(0x40));
+    if (scenario == 9)
+        first = branch(pair(assignment(2), node(0x3f)),
+                       pair(assignment(2), node(0x3f)));
+    if (scenario == 10) first = branch(pair(assignment(2), node(0x3f)), 0);
     Word *statements[8]; Word count = 0;
     statements[count++] = case_label(1);
     statements[count++] = first;
-    if (scenario != 3 && scenario != 8) statements[count++] = node(0x3f);
+    if (scenario != 3 && scenario != 8 && scenario != 9 && scenario != 10)
+        statements[count++] = node(0x3f);
     if (scenario == 4) statements[count++] = case_label(2);
     if (scenario != 0) {
         statements[count++] = node(0x3e);
@@ -47,6 +52,6 @@ static void switch_case(Word scenario)
 }
 void scope_start(void)
 {
-    for (Word scenario = 0; scenario < 9; ++scenario) switch_case(scenario);
+    for (Word scenario = 0; scenario < 11; ++scenario) switch_case(scenario);
     scope_exit(0);
 }

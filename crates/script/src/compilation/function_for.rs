@@ -9,6 +9,7 @@ use crate::compilation::function_initialization::{self, FunctionInitializationSn
 use crate::compilation::function_loop_transfer::{
     self, FunctionContinueDestination, FunctionLoopContext,
 };
+use crate::compilation::function_scopes;
 use crate::compilation::function_task::{FunctionLoopHead, FunctionPatchSite, FunctionTask};
 use crate::compilation::function_while;
 use crate::execution::{KernelBranchCondition, KernelInstruction, KernelValue};
@@ -59,6 +60,7 @@ pub(super) fn after_init<'tree, 'source>(
     builder: &mut FunctionBuilder<'tree, 'source>,
     plan: FunctionForPlan<'tree, 'source>,
 ) -> Result<(), FunctionCompileError> {
+    function_scopes::prepare_loop(builder, plan.span.clone())?;
     let head = FunctionLoopHead(builder.instruction_position());
     let condition = plan.condition;
     let span = plan.span.clone();
@@ -85,6 +87,7 @@ pub(super) fn begin_body<'tree, 'source>(
 ) -> Result<(), FunctionCompileError> {
     let incoming = function_initialization::capture(builder, plan.span.clone())?;
     let exit_site = builder.branch(KernelBranchCondition::IfFalse, plan.span.clone())?;
+    function_scopes::enter_loop_body(builder, plan.span.clone())?;
     let outer_loop = function_loop_transfer::enter(
         builder,
         head,
@@ -121,6 +124,7 @@ pub(super) fn after_body<'tree, 'source>(
     end: FunctionForEnd,
     update: Option<LegacySyntaxNode<'tree, 'source>>,
 ) -> Result<(), FunctionCompileError> {
+    function_scopes::enter_for_update(builder, end.span.clone())?;
     function_for_update::prepare(builder, &end.incoming, end.span.clone())?;
     let span = end.span.clone();
     builder.push_task(FunctionTask::AfterForUpdate(end), span)?;

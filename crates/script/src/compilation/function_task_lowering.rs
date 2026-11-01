@@ -7,6 +7,7 @@ use crate::compilation::function_expression_lowering;
 use crate::compilation::function_for;
 use crate::compilation::function_local_names;
 use crate::compilation::function_local_statements;
+use crate::compilation::function_scopes;
 use crate::compilation::function_switch;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::function_while;
@@ -25,6 +26,7 @@ pub(super) fn drain(builder: &mut FunctionBuilder<'_, '_>) -> Result<(), Functio
                 function_local_statements::lower(builder, syntax, last)?;
             }
             FunctionTask::FinishAssignment { name, slot, span } => {
+                function_scopes::local_store(builder, slot, span.clone())?;
                 builder.emit(KernelInstruction::StoreLocal(slot), span)?;
                 function_local_names::initialize(builder, name, slot)?;
             }
