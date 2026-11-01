@@ -1,5 +1,12 @@
 # Project contract
 
+Client handshake work uses only `main` and `feature/...` branches; never create
+a `codex/` branch. The user authorizes committing and pushing validated checkpoints.
+Keep client-directed challenge codecs in the shared protocol crate. Decode only
+the named source-grounded suffix; a challenge marker or discovery advertisement
+is not a negotiated gameplay protocol. Cookie/nonce/endpoint/state/deadline checks
+belong to the client runtime. Do not publish other in-progress server changes.
+
 Assessment 0104 adds ten actual selected x86 VM_Resume and thirty copied C
 clock-phase cases, 18 trace admissions and five harness-boundary tests. Resume
 rechecks the queue after each modeled body; current-thread processing/entity

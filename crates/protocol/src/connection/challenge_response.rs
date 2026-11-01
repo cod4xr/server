@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::fmt;
 
-use crate::{Packet, PacketError};
+use super::{ChallengeError, challenge_decimal};
+use crate::{CommandLine, Direction, Packet, PacketError};
 
 /// The pinned server's legacy challenge response, without admission/authentication.
 ///
@@ -16,6 +17,57 @@ pub struct ChallengeResponse {
 }
 
 impl ChallengeResponse {
+    /// Parses a complete OOB datagram under this fixed challenge profile.
+    /// One terminal newline/NUL is permitted, while bytes after it reject.
+    /// This does not validate the peer or compare the caller's pending nonce.
+    ///
+    /// # Errors
+    /// Rejects invalid envelopes, trailing data and checked command/profile errors.
+    pub fn parse_packet(packet: &[u8]) -> Result<Self, ChallengeError> {
+        let Packet::Connectionless(body) = Packet::parse(packet, Direction::ServerToClient)
+            .map_err(|_| ChallengeError::InvalidEnvelope)?
+        else {
+            return Err(ChallengeError::InvalidEnvelope);
+        };
+        let line = CommandLine::parse(body).map_err(|_| ChallengeError::InvalidEnvelope)?;
+        if line.consumed_bytes() != body.len() {
+            return Err(ChallengeError::TrailingData);
+        }
+        Self::parse(line)
+    }
+
+    /// Parses the pinned `0 xproto 18` response profile after OOB line decoding.
+    /// Both signed values must be complete decimal i32 tokens. Client runtimes
+    /// must separately check the endpoint, echoed nonce, state and deadline.
+    /// The suffix is a compatibility marker, not a negotiated gameplay version.
+    ///
+    /// # Errors
+    /// Rejects missing/extra fields, malformed integers and unsupported suffixes.
+    pub fn parse(line: CommandLine<'_>) -> Result<Self, ChallengeError> {
+        let mut tokens = line.tokens();
+        if !tokens
+            .next()
+            .is_some_and(|command| command.eq_ignore_ascii_case(b"challengeResponse"))
+        {
+            return Err(ChallengeError::UnexpectedCommand);
+        }
+        let server = tokens.next().ok_or(ChallengeError::FieldCount)?;
+        let client = tokens.next().ok_or(ChallengeError::FieldCount)?;
+        let reserved = tokens.next().ok_or(ChallengeError::FieldCount)?;
+        let marker = tokens.next().ok_or(ChallengeError::FieldCount)?;
+        let hint = tokens.next().ok_or(ChallengeError::FieldCount)?;
+        if tokens.next().is_some() {
+            return Err(ChallengeError::FieldCount);
+        }
+        if reserved != b"0" || !marker.eq_ignore_ascii_case(b"xproto") || hint != b"18" {
+            return Err(ChallengeError::UnsupportedProfile);
+        }
+        Ok(Self {
+            server_challenge: challenge_decimal::parse(server)?,
+            client_challenge: challenge_decimal::parse(client)?,
+        })
+    }
+
     /// Encodes a complete connectionless datagram with no newline/NUL suffix.
     ///
     /// No allocation occurs. Output is unchanged on failure; unused output bytes
@@ -28,9 +80,9 @@ impl ChallengeResponse {
         let mut client = [0; 11];
         let parts = [
             b"challengeResponse ".as_slice(),
-            decimal(self.server_challenge, &mut server),
+            challenge_decimal::encode(self.server_challenge, &mut server),
             b" ",
-            decimal(self.client_challenge, &mut client),
+            challenge_decimal::encode(self.client_challenge, &mut client),
             b" 0 xproto 18",
         ];
         // Two signed i32 decimals require at most 22 bytes; fixed text requires
@@ -43,29 +95,6 @@ impl ChallengeResponse {
         }
         Packet::Connectionless(&body[..length]).encode(output)
     }
-}
-
-fn decimal(value: i32, storage: &mut [u8; 11]) -> &[u8] {
-    let mut magnitude = value.unsigned_abs();
-    let mut start = storage.len();
-    loop {
-        start -= 1;
-        #[allow(
-            clippy::cast_possible_truncation,
-            reason = "A decimal remainder is at most nine."
-        )]
-        let digit = (magnitude % 10) as u8;
-        storage[start] = b'0' + digit;
-        magnitude /= 10;
-        if magnitude == 0 {
-            break;
-        }
-    }
-    if value < 0 {
-        start -= 1;
-        storage[start] = b'-';
-    }
-    &storage[start..]
 }
 
 impl fmt::Debug for ChallengeResponse {
