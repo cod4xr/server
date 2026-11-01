@@ -278,6 +278,23 @@ continues with wide destinations and 12,000 nested for contexts/failed cleanup.
 Selected grammar/compiler phase profiles reject 35 in-memory mutations without
 executing original routines. Switch, richer values/calls/scheduling and full GSC
 acceptance remain open; see ADR 0040.
+Owned legacy vector helper values now represent three binary32 coordinates with
+explicit numeric broadcast/coerced-pair/operator/error APIs. Multiplication and
+division are component-wise. Addition retains the separate string-aware coercion
+policy and rejects mixed vector/numeric operands. Equality compares coordinates
+exactly: signed zeros and like infinities compare equal; NaNs do not. Scalar float
+tolerance does not apply. A zero in any denominator coordinate returns a typed
+error without exposing native cleared intermediate output. Inline values allocate
+no vector pool and Debug/errors redact data; they do not establish VM heap/RSS,
+reference cleanup or error unwinding. Scalar kernel/source profiles are unchanged.
+Fourteen original construction/coercion/operator/math functions plus original
+math macros run under bounded stubbed services at O0/O2. All 19,852 recorded cases
+match: 756 constructions, 1,736 coerced pairs, 6,944 arithmetic outcomes and 10,416
+comparison outcomes. These include 8,272 intercepted type/division error outcomes,
+not native error-unwinding successes. Construction/coercion bits and finite math
+bits match; arithmetic NaNs compare by class under the nearest/SSE FTZ/DAZ-off
+profile. Native source-component evaluation/push order, constructor error cleanup,
+kernel/source vectors, richer heap values and full GSC remain open; see ADR 0041.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -583,7 +583,30 @@ ADR 0040. No new dependencies/alternate target directories. Native compiler/VM,
 scope/constant folding/watchdog/error order, switch, richer values, full GSC/mod
 acceptance and Linux remain open.
 
-Next: source-grounded richer value semantics, starting with legacy vector rules,
+Owned legacy vector helper values now pass full Windows workspace gates. Fixed
+inline triples, numeric/vector operands, explicit weaker pairs, operators and
+typed errors preserve float bits, int conversion/broadcast, component arithmetic,
+exact equality and addition's separate mixed-type rejection. Any signed-zero
+denominator fails atomically. Debug/errors redact coordinates; no vector pool,
+reference ID or runtime allocation is introduced. Three tests cover all 19,852
+recorded original-helper outcomes plus boundary/coercion/equality/privacy cases.
+The corpus has 756 constructions, 1,736 weaker pairs, 6,944 arithmetic outcomes
+and 10,416 comparisons: 11,580 successful outcomes and 8,272 intercepted type/
+division error outcomes. Fourteen original C functions and original math macros
+run at O0/O2 under nearest/SSE, FTZ/DAZ-off, with bounded pool/ref/string/error
+stubs. Construction/coercion and finite math bits match; arithmetic NaNs match by
+class. This is not native error/ref/cleanup execution. q_math.c was compared to
+the existing pinned Git blob before adding SHA-256
+5601c38a82b0f7200beaffebf79a26a13ade36759cffd3c4412c619479027c74.
+All seventeen helper/source-profile generators pass after that lock addition;
+existing fixtures remain unchanged. All 155 frontend/51 legacy tests and doctests
+pass, alongside full formatting/warnings-denied Clippy/rustdoc and repository
+policy (462 source files/eight crates, largest 287 lines). See ADR 0041. No new
+dependencies/alternate target directories. Kernel/source vector support, native
+component evaluation/push order and constructor cleanup, full heap/VM/mod acceptance
+and Linux remain open.
+
+Next: verified primitive-kernel vector execution with actual inline storage admission,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

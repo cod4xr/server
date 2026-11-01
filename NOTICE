@@ -20,6 +20,12 @@ into a temporary compatibility oracle. The product contains no C or assembly
 runtime component. Original upstream notices remain applicable to the extracted
 reference material and derived fixtures.
 
+Legacy numeric/vector helper oracles additionally study selected functions from
+src/cscr_variable.cpp and VectorCompare from src/q_math.c, with macros from
+src/q_math.h. The pinned math header retains the Id Software notice above.
+The bounded pool/ref/string/error harness services are replacements used only
+for tests; the product does not contain the original runtime.
+
 Other upstream components and bundled third-party libraries have not been
 imported. Their licensing and attribution must be inventoried before reuse.
 Commercial game assets, operator configurations, tokens, and credentials are

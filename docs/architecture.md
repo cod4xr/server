@@ -324,6 +324,17 @@ native local ordering or a bytecode ABI. Selected grammar/compiler guards and
 source tests do not establish full native scope/constant folding/unwinding parity;
 see ADR 0040. No additional fixup allocation or recursive owner is introduced.
 
+Legacy vectors now have standalone fixed-size owned value/operand/pair/operation/
+error helpers in the script legacy module. Numeric pair coercion broadcasts while
+preserving original operand kinds so addition can enforce its separate mixed-type
+rejection. Coordinate arithmetic and exact vector equality remain distinct from
+scalar tolerance and from any future modern numeric/world-coordinate profile.
+Inputs/results are inline copies; Debug and errors redact data, without pool or
+reference IDs. A bounded original-C helper oracle stubs pool/ref/string/error
+services and intercepts errors; this is not native VM/cleanup execution. Kernel
+values and source compilation remain scalar pending separate construction/order/
+storage-budget integration. See ADR 0041; no serialized vector ABI is introduced.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

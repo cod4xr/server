@@ -3,6 +3,12 @@
 
 mod kernel_support;
 mod string_support;
+mod vector_support;
+
+#[path = "vector_boundaries.rs"]
+mod vector_boundaries;
+#[path = "vector_value_vectors.rs"]
+mod vector_value_vectors;
 
 #[path = "integer_updates.rs"]
 mod integer_updates;

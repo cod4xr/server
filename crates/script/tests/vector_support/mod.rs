@@ -1,0 +1,138 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+use std::str::SplitWhitespace;
+
+use cod4x_script::legacy::{
+    LegacyComparison, LegacyNumber, LegacyVector, LegacyVectorError, LegacyVectorOperand,
+    LegacyVectorOperation, LegacyVectorPair,
+};
+
+pub fn validate(line: &str) -> Result<&str, String> {
+    let mut fields = line.split_whitespace();
+    let kind = word(&mut fields)?;
+    match kind {
+        "V" => {
+            let numbers = [
+                number(&mut fields)?,
+                number(&mut fields)?,
+                number(&mut fields)?,
+            ];
+            exact_vector(LegacyVector::from_numbers(numbers), &mut fields)?;
+        }
+        "P" => {
+            let pair = pair(&mut fields)?;
+            let (left, right) = pair.operands();
+            exact_vector(left, &mut fields)?;
+            exact_vector(right, &mut fields)?;
+        }
+        "A" => arithmetic(&mut fields)?,
+        "C" => comparison(&mut fields)?,
+        _ => return Err("Unknown vector fixture row".into()),
+    }
+    if fields.next().is_some() {
+        return Err("Unexpected vector fixture suffix".into());
+    }
+    Ok(kind)
+}
+
+fn arithmetic(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+    let operator = match word(fields)? {
+        "0" => LegacyVectorOperation::Add,
+        "1" => LegacyVectorOperation::Subtract,
+        "2" => LegacyVectorOperation::Multiply,
+        "3" => LegacyVectorOperation::Divide,
+        _ => return Err("Unknown vector operation".into()),
+    };
+    let result = operator.evaluate(pair(fields)?);
+    match (word(fields)?, result) {
+        ("ok", Ok(result)) => arithmetic_vector(result, fields),
+        ("E1", Err(LegacyVectorError::UnsupportedMixedAddition))
+        | ("E2", Err(LegacyVectorError::DivisionByZero)) => Ok(()),
+        _ => Err("Original vector arithmetic outcome differs".into()),
+    }
+}
+
+fn comparison(fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+    let operator = match word(fields)? {
+        "0" => LegacyComparison::Equal,
+        "1" => LegacyComparison::NotEqual,
+        "2" => LegacyComparison::Less,
+        "3" => LegacyComparison::Greater,
+        "4" => LegacyComparison::LessOrEqual,
+        "5" => LegacyComparison::GreaterOrEqual,
+        _ => return Err("Unknown vector comparison".into()),
+    };
+    let result = pair(fields)?.compare(operator);
+    match (word(fields)?, result) {
+        ("ok", Ok(result)) => {
+            let expected = match word(fields)? {
+                "0" => false,
+                "1" => true,
+                _ => return Err("Invalid comparison boolean".into()),
+            };
+            assert_eq!(result, expected);
+            Ok(())
+        }
+        ("E1", Err(LegacyVectorError::UnsupportedOrdering)) => Ok(()),
+        _ => Err("Original vector comparison outcome differs".into()),
+    }
+}
+
+fn pair(fields: &mut SplitWhitespace<'_>) -> Result<LegacyVectorPair, String> {
+    LegacyVectorPair::coerce(operand(fields)?, operand(fields)?).map_err(|error| error.to_string())
+}
+
+fn operand(fields: &mut SplitWhitespace<'_>) -> Result<LegacyVectorOperand, String> {
+    let kind = word(fields)?;
+    let bits = [hex(fields)?, hex(fields)?, hex(fields)?];
+    match kind {
+        "V" => Ok(LegacyVectorOperand::Vector(LegacyVector::from_components(
+            bits.map(f32::from_bits),
+        ))),
+        "I" if bits[1..] == [0, 0] => Ok(LegacyVectorOperand::Number(LegacyNumber::Integer(
+            i32::from_ne_bytes(bits[0].to_ne_bytes()),
+        ))),
+        "F" if bits[1..] == [0, 0] => Ok(LegacyVectorOperand::Number(LegacyNumber::Float(
+            f32::from_bits(bits[0]),
+        ))),
+        _ => Err("Invalid fixture operand".into()),
+    }
+}
+
+fn number(fields: &mut SplitWhitespace<'_>) -> Result<LegacyNumber, String> {
+    match operand(fields)? {
+        LegacyVectorOperand::Number(number) => Ok(number),
+        LegacyVectorOperand::Vector(_) => Err("Construction requires a number".into()),
+    }
+}
+
+fn exact_vector(value: LegacyVector, fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+    for actual in value.components() {
+        assert_eq!(actual.to_bits(), hex(fields)?);
+    }
+    Ok(())
+}
+
+fn arithmetic_vector(value: LegacyVector, fields: &mut SplitWhitespace<'_>) -> Result<(), String> {
+    for actual in value.components() {
+        let expected = word(fields)?;
+        if expected == "nan" {
+            assert!(actual.is_nan());
+        } else {
+            assert_eq!(
+                actual.to_bits(),
+                u32::from_str_radix(expected, 16).map_err(|error| error.to_string())?
+            );
+        }
+    }
+    Ok(())
+}
+
+fn hex(fields: &mut SplitWhitespace<'_>) -> Result<u32, String> {
+    u32::from_str_radix(word(fields)?, 16).map_err(|error| error.to_string())
+}
+
+fn word<'source>(fields: &mut SplitWhitespace<'source>) -> Result<&'source str, String> {
+    fields
+        .next()
+        .ok_or_else(|| "Missing vector fixture field".into())
+}

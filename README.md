@@ -150,6 +150,9 @@ The complete server rewrite remains open.
 - Staged scalar `for` supports optional clauses and sends `continue` through the
   update. Update initialization merges continuing paths under existing quotas.
   Clause/constant-folding restrictions remain explicit; switch/general GSC remains open.
+- Owned legacy vector helpers now preserve component-wise arithmetic, numeric
+  broadcast, exact equality and addition's separate mixed-type rejection. They
+  match 19,852 recorded original-helper cases; kernel/source integration remains open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

@@ -386,6 +386,19 @@ fixups and deep contexts/failed cleanup. Selected grammar/compiler phase guards
 reject 35 in-memory mutations. Native compiler/VM routines are not executed;
 scope/constant folding/error ordering, switch, richer values and whole GSC/mod
 parity remain open. See ADR 0040 for the restricted diagnostic policy.
+Standalone owned legacy vector helpers now match construction, weaker numeric
+broadcast, component-wise operators and exact equality under the named FP profile.
+Addition rejects mixed vector/numeric inputs through its distinct coercion rule;
+ordering fails and any signed-zero denominator coordinate returns a typed error.
+The corpus has 19,852 original-helper cases: 11,580 successful value/coercion/math
+outcomes and 8,272 intercepted error-category outcomes, with bounded stubbed
+pool/ref/string/error services. Fourteen original functions and math macros run at
+O0/O2; construction/coercion bits and finite arithmetic bits match, arithmetic NaN
+payloads do not. q_math.c was verified against the existing pinned Git blob before
+hash locking. Three tests cover the corpus, boundary distinctions, data isolation,
+domain rejection and redaction. Source evaluation/push order, native constructor
+failure/ref/cleanup/unwinding, kernel/source vectors and whole VM/mod acceptance
+remain open; see ADR 0041.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

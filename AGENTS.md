@@ -188,6 +188,16 @@ iterations; clauses accept only scalar assignment/update/empty forms. Preserve
 explicit restrictions rather than claiming native scope/constant-folding parity.
 Guard selected optional grammar/compiler phases and retain wide flat ownership;
 see ADR 0040. Switch/general values/calls/scheduling remain separate work.
+Owned legacy vector helpers now preserve numeric broadcast, component operators,
+addition's distinct mixed-type rejection and exact coordinate equality. Do not
+reuse scalar float tolerance or a dot product. Any signed-zero denominator fails
+atomically; data Debug/errors remain redacted. Verify generate_vector_vectors.py
+--check against pinned construction/coercion/operators/VectorCompare/math macros.
+Its bounded pool/ref/string/error stubs and intercepted failures do not establish
+native constructor cleanup/unwinding, source evaluation/push order or a VM heap.
+The scalar kernel/compiler remain unchanged until separately admitted integration;
+see ADR 0041. Keep arithmetic NaN-class versus exact construction/coercion-bit
+evidence and FP-environment limits explicit.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.
