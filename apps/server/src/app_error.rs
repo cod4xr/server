@@ -25,6 +25,7 @@ pub(crate) enum AppError {
     ScriptFeature(&'static str),
     ScriptOutput(io::Error),
     ScriptHeap(cod4x_script::heap::HeapError),
+    ScriptObjects(cod4x_script::heap::ObjectHeapError),
     ScriptString(cod4x_script::heap::HeapErrorKind),
     Snapshot(SnapshotError),
     Entropy(getrandom::Error),
@@ -60,6 +61,7 @@ impl fmt::Display for AppError {
             }
             Self::ScriptOutput(error) => write!(formatter, "script result output failed: {error}"),
             Self::ScriptHeap(error) => write!(formatter, "script heap setup failed: {error}"),
+            Self::ScriptObjects(error) => write!(formatter, "script object setup failed: {error}"),
             Self::ScriptString(error) => {
                 write!(formatter, "script result reference failed: {error}")
             }
@@ -89,6 +91,7 @@ impl Error for AppError {
             Self::ScriptCompilation(error) => Some(error),
             Self::ScriptExecution(error) => Some(error),
             Self::ScriptHeap(error) => Some(error),
+            Self::ScriptObjects(error) => Some(error),
             Self::ScriptString(error) => Some(error),
             Self::Snapshot(error) => Some(error),
             Self::Entropy(error) => Some(error),

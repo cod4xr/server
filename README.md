@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC `spawnstruct()` creates empty shared structs, evaluates extra arguments
+  and preserves roots under allocation pressure. Tests retain 70,000 live values
+  and run 100,000 loop allocations under two slots. Offline object output is opaque
+  and logs report numeric storage/collection usage; ADR 0066. Fields remain open.
+
 - Explicit-root shared struct storage uses wide checked identities, owned binary
   field keys, metered hash probes and atomic graph/string reclamation. Tests cover
   70,000 objects/fields, cyclic graphs, 100,000 churn cycles and hostile operations.

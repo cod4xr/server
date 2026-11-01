@@ -47,10 +47,10 @@ pub enum KernelInstruction {
         /// Supplied argument count, excluding the top function reference.
         arguments: usize,
     },
-    /// Calls a sealed pure builtin after all supplied arguments have evaluated.
+    /// Calls a sealed deterministic builtin after all arguments have evaluated.
     /// Builtin-specific arity failures stay at this instruction; no frame is added.
     Builtin {
-        /// Statically known pure builtin, without host/plugin dispatch.
+        /// Statically known builtin, without host/plugin dispatch.
         function: KernelBuiltin,
         /// Supplied arguments, bottom-to-top last to first.
         arguments: usize,

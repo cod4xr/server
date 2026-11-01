@@ -9,6 +9,7 @@ use cod4x_script::heap::{
 };
 use cod4x_script::legacy::LegacyNumber;
 
+pub mod constructor;
 pub mod model;
 
 pub fn stores(budget: ObjectHeapBudget) -> (StringHeap, ObjectHeap) {

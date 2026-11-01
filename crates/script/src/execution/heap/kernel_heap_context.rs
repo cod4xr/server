@@ -55,7 +55,7 @@ impl<'heap> KernelHeapContext<'heap> {
     /// Entry validation checks the bound string store and every supplied reference.
     /// Pressure reclamation traces all frame values and external object graphs,
     /// then strings; a later failure may retain a completed object collection.
-    /// This transports references, not constructors/fields, array COW or a scheduler.
+    /// Backs struct transport/allocation; fields, array COW and scheduling stay separate.
     #[must_use]
     pub fn with_objects(
         mut self,

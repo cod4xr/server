@@ -1,31 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::heap::kernel_object_validation;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelErrorKind, KernelHeapContext, KernelInstruction, KernelValue};
 use crate::heap::StringId;
 use crate::legacy::{LegacyArithmetic, LegacyComparison, LegacyNumber};
-
-pub(in crate::execution) fn validate_arguments(
-    arguments: &[KernelValue],
-    context: Option<&mut KernelHeapContext<'_>>,
-) -> Result<(), KernelErrorKind> {
-    if context
-        .as_ref()
-        .is_none_or(|context| context.objects.is_none())
-        && arguments
-            .iter()
-            .any(|value| matches!(value, KernelValue::Object(_)))
-    {
-        return Err(KernelErrorKind::ObjectExecutionUnsupported);
-    }
-    if let Some(context) = context {
-        return context.validate(arguments);
-    }
-    if arguments.iter().any(|value| value.string_id().is_some()) {
-        return Err(KernelErrorKind::HeapContextRequired);
-    }
-    Ok(())
-}
 
 pub(in crate::execution) fn apply(
     instruction: KernelInstruction,
@@ -39,12 +16,6 @@ pub(in crate::execution) fn apply(
                 .ok_or(KernelErrorKind::HeapContextRequired)?
                 .size(id)
                 .map(Some),
-            Some(KernelValue::Object(id)) => {
-                let context = context.ok_or(KernelErrorKind::ObjectExecutionUnsupported)?;
-                context.charge(1)?;
-                kernel_object_validation::reference(context, id)?;
-                Ok(Some(KernelValue::Number(LegacyNumber::Integer(1))))
-            }
             _ => Err(KernelErrorKind::ExpectedSized),
         };
     }

@@ -36,8 +36,9 @@ still required. See docs/gsc-runtime.md for exact evidence and remaining work.
 
 Explicit-root shared struct storage is separately implemented and workload-tested
 under ADR 0063. ADR 0064 adds checked host reference transport and pressure roots
-through typed and compiled GSC calls. Object constructors/fields/operators and the
-S5 gate remain open; arrays need legacy copy-on-write before source activation.
+through typed and compiled GSC calls. ADR 0066 adds empty struct construction with
+source/typed/process pressure tests. Fields/operators and the S5 gate remain open;
+arrays need legacy copy-on-write before source activation.
 
 ## Next concrete work
 

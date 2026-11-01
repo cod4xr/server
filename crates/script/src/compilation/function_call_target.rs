@@ -46,6 +46,8 @@ pub(super) fn named_call(
         KernelBuiltin::IsString
     } else if name.eq_ignore_ascii_case(b"isdefined") {
         KernelBuiltin::IsDefined
+    } else if name.eq_ignore_ascii_case(b"spawnstruct") {
+        KernelBuiltin::SpawnStruct
     } else {
         return Err(unknown(callee));
     };

@@ -1,5 +1,17 @@
 # Project contract
 
+ADR 0066 adds sealed SpawnStruct and bound-source spawnstruct through explicit
+object contexts. Resolve active local/developer definitions before fallback;
+evaluate extras and keep every operand rooted until allocation succeeds. Retry
+only admitted object live/slot/metadata pressure after one complete collection
+pair. Preserve global work/scratch and individual-operation atomicity. Check
+generate_struct_vectors.py --check (32 actual helper traces with modeled allocator/
+output and selected native ref counters) and script_struct_reference.py (22
+mutations). Do not claim native allocation/cleanup/ABI/VM parity. Keep wide/churn/
+temporary-root/exact-budget/source/process tests and opaque object stdout/numeric
+metrics; never log IDs, fields, source payloads or private paths. Fields/arrays,
+general object operators and scheduling remain open.
+
 ADR 0063 implements explicit-root shared struct storage only. Preserve flat checked
 object/field arenas, owned exact keys, separately admitted index buckets/probes,
 atomic staged growth/collection, nonwrapping generations and nested string roots.

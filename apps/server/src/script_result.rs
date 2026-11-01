@@ -24,6 +24,7 @@ pub(crate) enum ScriptResult<'a> {
     Float(f32),
     Vector([f32; 3]),
     Function,
+    Object,
     String(&'a [u8]),
     LocalizedString(&'a [u8]),
 }
@@ -41,9 +42,8 @@ impl<'a> ScriptResult<'a> {
             KernelValue::Function(_) => Self::Function,
             KernelValue::String(id) => Self::String(heap.get(id)?),
             KernelValue::LocalizedString(id) => Self::LocalizedString(heap.get(id)?),
-            // Executable constants/arguments cannot admit objects in this profile.
-            // A result here would violate that proof, not grant object formatting.
-            KernelValue::Object(_) => return Err(HeapErrorKind::InvalidState),
+            // Opaque kind only, like functions; this never reads fields or exposes an ID.
+            KernelValue::Object(_) => Self::Object,
         })
     }
 
@@ -62,6 +62,7 @@ fn write_result(output: &mut impl Write, value: &ScriptResult<'_>) -> io::Result
             writeln!(output, "vector {x} {y} {z}")?;
         }
         ScriptResult::Function => writeln!(output, "function")?,
+        ScriptResult::Object => writeln!(output, "object")?,
         ScriptResult::String(bytes) => writeln!(output, "string b\"{}\"", bytes.escape_ascii())?,
         ScriptResult::LocalizedString(bytes) => {
             writeln!(output, "localized_string b\"{}\"", bytes.escape_ascii())?;

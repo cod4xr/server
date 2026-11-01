@@ -1,11 +1,17 @@
 # Expanded GSC runtime contract
 
+Bound-source spawnstruct now allocates empty shared structs through an explicit
+object context (ADR 0066), retaining evaluated operands during pressure collection.
+The offline runner owns both stores and exposes only opaque object output/numeric
+metrics. Struct fields, array COW, methods, entity lifetimes and scheduling remain
+open; this does not close a complete GSC acceptance workstream.
+
 Shared struct storage now has explicit-root iterative graph collection and composite
 string roots (ADR 0063), with wide/churn/cycle/resource/model workloads. This is a
 component boundary. ADR 0064 adds host reference transport through an explicit
 object-aware context, complete live frame/caller/cache/external roots and separately
 accounted object/string pressure collection. Pure/string-only invocations still
-reject object snapshots. Constructors/field operations and general object semantics
+reject object snapshots. Field operations and general object semantics
 remain open. Legacy arrays require their distinct copy-on-write, nested-copy and
 key-order behavior (ADR 0060).
 

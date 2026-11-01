@@ -4,7 +4,7 @@ use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelError, KernelErrorKind, KernelValue};
 use crate::legacy::LegacyNumber;
 
-/// Sealed pure builtin subset, without host callbacks, plugins or ambient authority.
+/// Sealed deterministic builtins, without host callbacks, plugins or ambient authority.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelBuiltin {
     /// Original isint: true only for an integer value, including zero.
@@ -18,6 +18,9 @@ pub enum KernelBuiltin {
     /// Tests primitives/checked ordinary structs for definedness. Requires a first
     /// argument; evaluated extras are discarded. Entity/thread lifetimes stay unsupported.
     IsDefined,
+    /// Allocates an empty shared struct through an explicit object context.
+    /// Supplied arguments are evaluated and discarded; no arity check is imposed.
+    SpawnStruct,
 }
 
 pub(super) fn apply(
@@ -32,6 +35,12 @@ pub(super) fn apply(
         | KernelBuiltin::IsVector
         | KernelBuiltin::IsString => arguments == 1,
         KernelBuiltin::IsDefined => arguments >= 1,
+        KernelBuiltin::SpawnStruct => {
+            return Err(kernel_error::at(
+                pc,
+                KernelErrorKind::ObjectExecutionUnsupported,
+            ));
+        }
     };
     if !accepted {
         return Err(kernel_error::at(
@@ -53,6 +62,12 @@ pub(super) fn apply(
         KernelBuiltin::IsFloat => matches!(value, KernelValue::Number(LegacyNumber::Float(_))),
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
         KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
+        KernelBuiltin::SpawnStruct => {
+            return Err(kernel_error::at(
+                pc,
+                KernelErrorKind::ObjectExecutionUnsupported,
+            ));
+        }
         KernelBuiltin::IsDefined => match value {
             KernelValue::Undefined => false,
             KernelValue::Number(_)

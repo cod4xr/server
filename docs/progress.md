@@ -14,6 +14,25 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0066 now compiles/executes spawnstruct through explicit object contexts and the
+offline runner. Arguments evaluate before allocation and remain roots through one
+pressure collection/retry. New native helper traces match at O0/O2 (32 cases,
+modeled allocator/output with actual selected type/add/remove-ref helpers); the
+constructor-role guard rejects 22 mutations. Six typed tests cover fresh identities,
+65,536 extras/exact stack/fuel, 70,000 live constructors, caller-stack graph/string
+roots, live/slot/metadata pressure and all insufficient work/scratch prefixes.
+Three source tests cover query/case/shadow/error maps, temporary operand roots and
+100,000 iterations under two slots/99,999 paired collections. Two process tests
+check opaque stdout, numeric usage, private errors and readable logs. The demo
+prints integer two from Size plus definedness. General heap dispatch and string/
+object operations remain separate leaves. Full Windows debug/release, denied-warning
+Clippy/rustdoc, formatting, policy (727 sources/eight crates/largest 287) and diff
+checks pass; 99 structural replays regenerate. Current suites are 248 frontend/
+171 legacy, six private units and two doctests. Native allocation/cleanup/ABI/VM,
+fields/arrays, scheduling/services/full mods, Linux/hosted CI and joins remain open.
+Next: source-grounded field reads/writes/deletion and key/evaluation semantics.
+No complete GSC workstream or full server milestone is closed by this checkpoint.
+
 ADR 0065 adds checked ordinary-struct definedness and Size=1, independent of stored
 field count. A new actual C pointer-size oracle records 180 identical O0/O2 outcomes:
 15 ordinary-struct rows replay through Rust, 165 other-subtype rows remain helper-

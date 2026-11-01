@@ -4,7 +4,7 @@
 //! Instructions are typed internal data, with no serialized/native bytecode ABI.
 //! An explicit heap context adds string operations and optional shared-object roots.
 //! This kernel owns no scheduler, host services, filesystem, logging or server state.
-//! Legacy numeric FP assumptions still apply; object constructors/fields remain open.
+//! Legacy numeric FP assumptions still apply; struct fields and arrays remain open.
 //! The separate verified-module API adds iterative primitive calls and opaque references.
 
 mod calls;

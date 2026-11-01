@@ -1,5 +1,12 @@
 # Compatibility contract
 
+ADR 0066 adds bound-source empty struct construction. A selected-role guard rejects
+22 mutations; 32 actual constructor/type/ref helper traces match O0/O2 with modeled
+allocator/output services. Rust tests cover fresh empty references, wide values/
+extras, pressure roots and source/process behavior, not native allocation/refcount
+ownership, cleanup/ABI/unwinding/whole-VM parity. Fields, arrays, entity lifetimes
+and full mod execution remain open.
+
 ADR 0063 assesses a shared struct storage component with 70,000 objects/fields,
 100,000 churn cycles, deep/cyclic graph reclamation, exact resource failures and
 an independent 4,096-operation graph model. These are Rust storage/ownership tests,
@@ -9,7 +16,7 @@ invocations reject them. ADR 0064 permits checked host arguments through an expl
 object context. Seven typed/one source tests cover 12,000 frames, 1,000 compiled
 loop/call allocations, caller/cache/external/nested roots, exact global limits,
 partial completed collections and returned snapshot lifetimes. This does not claim
-native refcount/GC/operator parity, source constructors/fields, arrays, entity
+native refcount/GC/operator parity, source fields, arrays, entity
 subtypes or scheduling. Those and full source object execution remain open.
 
 The owned string-store component replays 54 native plain-concatenation successes

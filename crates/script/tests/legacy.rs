@@ -35,6 +35,14 @@ mod object_size_vectors;
 mod string_access_limits;
 #[path = "string_access_vectors.rs"]
 mod string_access_vectors;
+#[path = "struct_limits.rs"]
+mod struct_limits;
+#[path = "struct_pressure.rs"]
+mod struct_pressure;
+#[path = "struct_vectors.rs"]
+mod struct_vectors;
+#[path = "struct_width.rs"]
+mod struct_width;
 
 mod kernel_support;
 mod kernel_vector_support;
