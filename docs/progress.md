@@ -14,6 +14,17 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0090 adds 36 executed selected x86 slot/if/if-else/break/continue
+emission cases, independently checked state/opcode-request traces and six more
+admission regressions. A later declaration does not retain a private branch cell;
+an already-created outer cell does. Common branches join names/initialization,
+disjoint branches clean separately, and break/continue use different public-count
+inputs. Body/condition/string/opcode writer services remain modeled; no full native
+emitter/VM/freeing claim. The 34 earlier planning fixture bytes remain unchanged.
+Windows tools/guards/policy pass (996 sources/eight crates/largest 287); no Rust
+behavior changes, complete Rust gates remain ADR 0088 and Linux/hosted CI is unrun.
+Next: iterative metered source scope planning and physical owner cleanup.
+
 Assessment 0089 adds 34 actual selected x86 local-name planning cases with
 identical O0/O2 C driver traces, 98 scoped local-removal source mutations and six
 trace-admission regressions. Windows native execution, structural replays and

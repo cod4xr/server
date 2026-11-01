@@ -26,7 +26,9 @@ jobs:
       - name: Test script suite registration policy
         run: python tools/test_script_test_targets.py
       - name: Test native local-scope trace admission
-        run: python tools/test_local_scope_vectors.py
+        run: |
+          python tools/test_local_scope_vectors.py
+          python tools/test_local_scope_emission_vectors.py
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
       - name: Check independent archive fixtures
@@ -107,6 +109,7 @@ jobs:
           python tools/script_empty_array_reference.py reference
           python tools/script_local_scope_reference.py reference
           python tools/generate_local_scope_vectors.py reference --check
+          python tools/generate_local_scope_emission_vectors.py reference --check
           python tools/generate_string_access_vectors.py reference --check
           python tools/generate_object_size_vectors.py reference --check
           python tools/generate_struct_vectors.py reference --check

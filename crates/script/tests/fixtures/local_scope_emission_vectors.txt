@@ -1,0 +1,164 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+# Actual selected x86 slot/if/if-else/break/continue emitters; driver O0/O2 agree.
+# Modeled condition/body dispatch/string IDs/opcode writer/temp allocation; no parser/VM/freeing.
+# O opcode requests, colon local-name/remove-count operands; p source-position calls.
+# Native EmitOpcode optimizer and native code alignment are not executed.
+# P/B/D pre parent/then/else; R/F/G post; block fields follow local_scope_vectors.txt.
+# I 0 fresh b; 1 later b; 2 prior b; 3 fresh b,c; 4 prior b; 5 prior c; 6 inherited a.
+# E 0 common b; 1 disjoint; 2 common b,c with different orders; 3 prior c; 4 inherited else.
+# T continuing created target_public: synthetic count profiles, not whole source loops.
+I 0
+P 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 2 2 2 3 0 n:1 n:3
+F 0 2 2 3 7 0 n:1 n:3 n:2
+O 94 22:2 23:1 p:1
+I 1
+P 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 2 2 3 3 0 n:1 n:3 n:2
+F 0 2 2 3 7 0 n:1 n:3 n:2
+O 94 22:2 23:1 p:1
+I 2
+P 0 3 2 3 7 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+F 0 3 3 3 7 0 n:1 n:3 n:2
+O 22:2 94 p:1
+I 3
+P 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+R 0 2 2 2 3 0 n:1 n:3
+F 0 2 2 4 15 0 n:1 n:3 n:2 n:4
+O 94 22:2 22:4 23:2 p:1
+I 4
+P 0 3 2 3 7 0 n:1 n:3 n:2
+B 0 2 3 4 3 0 n:1 n:3 n:2 n:4
+R 0 3 2 3 7 0 n:1 n:3 n:2
+F 0 3 3 4 15 0 n:1 n:3 n:2 n:4
+O 22:2 94 22:4 23:1 p:1
+I 5
+P 0 3 2 3 7 0 n:1 n:3 n:4
+B 0 2 3 4 3 0 n:1 n:3 n:4 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:4
+F 0 3 3 4 15 0 n:1 n:3 n:4 n:2
+O 22:4 94 22:2 23:1 p:1
+I 6
+P 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+F 0 2 2 2 3 0 n:1 n:3
+O 94 p:1
+E 0
+P 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+D 0 2 3 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+F 0 3 3 3 7 0 n:1 n:3 n:2
+G 0 3 3 3 7 0 n:1 n:3 n:2
+O 94 22:2 98 22:2 p:2
+E 1
+P 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 0 2 2 3 3 0 n:1 n:3 n:4
+R 0 2 2 2 3 0 n:1 n:3
+F 0 2 2 3 7 0 n:1 n:3 n:2
+G 0 2 2 3 7 0 n:1 n:3 n:4
+O 94 22:2 23:1 98 22:4 23:1 p:2
+E 2
+P 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+D 0 2 4 4 3 0 n:1 n:3 n:2 n:4
+R 0 4 2 4 15 0 n:1 n:3 n:2 n:4
+F 0 4 4 4 15 0 n:1 n:3 n:2 n:4
+G 0 4 4 4 15 0 n:1 n:3 n:2 n:4
+O 94 22:2 22:4 98 22:2 22:4 p:2
+E 3
+P 0 3 2 3 7 0 n:1 n:3 n:4
+B 0 2 3 4 3 0 n:1 n:3 n:4 n:2
+D 0 2 3 3 3 0 n:1 n:3 n:4
+R 0 3 2 3 7 0 n:1 n:3 n:4
+F 0 3 3 4 15 0 n:1 n:3 n:4 n:2
+G 0 3 3 3 7 0 n:1 n:3 n:4
+O 22:4 94 22:2 23:1 98 p:2
+E 4
+P 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+F 0 2 2 3 7 0 n:1 n:3 n:2
+G 0 2 2 2 3 0 n:1 n:3
+O 94 22:2 23:1 98 p:2
+T 0 2 0
+R 2 2 2 2 3 0 n:1 n:3
+O 23:2 98 p:1
+T 0 2 1
+R 2 2 2 2 3 0 n:1 n:3
+O 23:1 98 p:1
+T 0 2 2
+R 2 2 2 2 3 0 n:1 n:3
+O 98 p:1
+T 0 3 0
+R 2 2 2 3 3 0 n:1 n:3 n:4
+O 23:3 98 p:1
+T 0 3 1
+R 2 2 2 3 3 0 n:1 n:3 n:4
+O 23:2 98 p:1
+T 0 3 2
+R 2 2 2 3 3 0 n:1 n:3 n:4
+O 23:1 98 p:1
+T 0 4 0
+R 2 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:4 98 p:1
+T 0 4 1
+R 2 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:3 98 p:1
+T 0 4 2
+R 2 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:2 98 p:1
+T 0 5 0
+R 2 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:5 98 p:1
+T 0 5 1
+R 2 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:4 98 p:1
+T 0 5 2
+R 2 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:3 98 p:1
+T 1 2 0
+R 1 2 2 2 3 0 n:1 n:3
+O 98 p:1
+T 1 2 1
+R 1 2 2 2 3 0 n:1 n:3
+O 98 p:1
+T 1 2 2
+R 1 2 2 2 3 0 n:1 n:3
+O 98 p:1
+T 1 3 0
+R 1 2 2 3 3 0 n:1 n:3 n:4
+O 23:1 98 p:1
+T 1 3 1
+R 1 2 2 3 3 0 n:1 n:3 n:4
+O 23:1 98 p:1
+T 1 3 2
+R 1 2 2 3 3 0 n:1 n:3 n:4
+O 23:1 98 p:1
+T 1 4 0
+R 1 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:2 98 p:1
+T 1 4 1
+R 1 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:2 98 p:1
+T 1 4 2
+R 1 2 2 4 3 0 n:1 n:3 n:4 n:5
+O 23:2 98 p:1
+T 1 5 0
+R 1 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:3 98 p:1
+T 1 5 1
+R 1 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:3 98 p:1
+T 1 5 2
+R 1 2 2 5 3 0 n:1 n:3 n:4 n:5 n:6
+O 23:3 98 p:1

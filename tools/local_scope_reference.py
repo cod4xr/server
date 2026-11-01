@@ -20,6 +20,8 @@ EXTERNALS = {
     "Scr_EvalBinaryOperator", "gScrVarPub", "memcpy", "Hunk_AllocateTempMemoryHigh",
     "RemoveRefToValue", "Scr_CastBool", "scrCompileGlob", "gScrCompilePub",
 }
+DRIVERS = ("local_scope_platform.c", "local_scope_services.c", "local_scope_ast.c", "local_scope_cases.c",
+           "local_scope_loop_cases.c")
 
 
 def function(source: str, name: str) -> str:
@@ -31,12 +33,15 @@ def function(source: str, name: str) -> str:
     return source[start:start + following.start()]
 
 
-def assembly(reference: ReferenceSource) -> str:
+def assembly(reference: ReferenceSource, functions: tuple[str, ...] = FUNCTIONS,
+             externals: set[str] = EXTERNALS) -> str:
     source = reference.files["src/asmsource/_scr_compiler.asm"]
-    body = "\n".join(function(source, name) for name in FUNCTIONS)
+    body = "\n".join(function(source, name) for name in functions)
     externs = re.findall(r"(?m)^\s*extern (\w+)\s*$", source)
     used = {name for name in externs if re.search(r"\b" + re.escape(name) + r"\b", body)}
-    if used != EXTERNALS:
+    labels = set(re.findall(r"(?m)^(\w+):", body))
+    used.update(set(re.findall(r"\bcall (\w+)", body)) - labels)
+    if used != externals:
         raise ValueError("Selected native scope service boundary changed")
     # Tables must retain their actual labels/entries; do not reimplement dispatch.
     data = source[source.index("SECTION .data"):]
@@ -49,7 +54,7 @@ def assembly(reference: ReferenceSource) -> str:
             pieces.append(data[match.start():end])
     return ("BITS 32\nSECTION .text\n"
             + "\n".join("extern " + name for name in sorted(used)) + "\n"
-            + "\n".join("global " + name for name in FUNCTIONS) + "\n"
+            + "\n".join("global " + name for name in functions) + "\n"
             + body + "\nSECTION .rdata\n" + "\n".join(pieces))
 
 
@@ -59,7 +64,9 @@ def checked(command: list[str], directory: Path) -> None:
         raise ValueError(result.stderr.decode("utf-8", errors="replace")[:4000])
 
 
-def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm") -> bytes:
+def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
+        functions: tuple[str, ...] = FUNCTIONS, externals: set[str] = EXTERNALS,
+        drivers: tuple[str, ...] = DRIVERS) -> bytes:
     """Build temporary freestanding 32-bit tools; never create Cargo targets/caches."""
     if sys.platform not in ("win32", "linux"):
         raise ValueError("Native scope harness currently supports Windows/Linux x86 hosts")
@@ -67,10 +74,8 @@ def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm") ->
         directory = Path(scratch).resolve()
         if directory.parent != Path(tempfile.gettempdir()).resolve() or not directory.name.startswith("cod4x-local-scope-"):
             raise ValueError("Native scope scratch escaped its temporary directory")
-        (directory / "native.asm").write_text(assembly(reference), encoding="utf-8")
-        driver = "\n\n".join((ROOT / "tools/oracles" / name).read_text(encoding="utf-8") for name in (
-            "local_scope_platform.c", "local_scope_services.c", "local_scope_cases.c",
-            "local_scope_loop_cases.c"))
+        (directory / "native.asm").write_text(assembly(reference, functions, externals), encoding="utf-8")
+        driver = "\n\n".join((ROOT / "tools/oracles" / name).read_text(encoding="utf-8") for name in drivers)
         (directory / "driver.c").write_text(driver, encoding="utf-8")
         windows = sys.platform == "win32"
         format_name = "win32" if windows else "elf32"

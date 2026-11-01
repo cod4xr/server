@@ -1,5 +1,16 @@
 # Project contract
 
+Assessment 0090 adds 36 selected executed native local-slot/if/if-else/transfer
+emission cases with independent state/opcode-request expectations and six admission
+regressions. Body/condition/string/writer/allocation services remain modeled;
+native opcode optimization/alignment, parser/VM/freeing do not run. Later direct
+declarations do not preserve earlier private branch cells; already-created outer
+cells survive. Common branches join; disjoint ones clean separately. Continue uses
+current public count; break uses target public count, then both reset created
+using the current public count. Do not conflate those inputs. Keep old planning
+fixtures byte-identical; run both generators/admission suites and existing guards.
+Source lifetime planning/cleanup and indexed writes remain open under ADR 0088.
+
 Assessment 0089 records 34 executed selected x86 local-name planning cases,
 98 scoped removal-emission/VM source mutations and six trace-admission regressions.
 The driver models ASTs/allocations/globals and executes actual pinned analysis;
