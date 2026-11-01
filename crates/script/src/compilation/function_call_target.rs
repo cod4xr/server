@@ -44,6 +44,8 @@ pub(super) fn named_call(
         KernelBuiltin::IsVector
     } else if name.eq_ignore_ascii_case(b"isstring") {
         KernelBuiltin::IsString
+    } else if name.eq_ignore_ascii_case(b"isdefined") {
+        KernelBuiltin::IsDefined
     } else {
         return Err(unknown(callee));
     };

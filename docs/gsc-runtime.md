@@ -523,6 +523,12 @@ indexing/size with 896 native outcomes, source/process/rooting/resource tests an
 45 selected-role mutations. Translation/mixed coercion, string switches,
 objects/cycles/scheduling and general library/game roots remain integration work.
 
+ADR 0062 adds isdefined for the implemented primitive categories, with a required
+first argument and evaluated extras. Optional script parameters retain Undefined;
+local/developer resolution still precedes fallback. Source/resource/process tests
+and isolated archival comparison evidence cover this subset, without claiming
+entity/thread lifetimes or the original native builtin/VM/error service execution.
+
 The current planning estimate is roughly 10–12 major workstreams, not a count of
 small coding tasks or a delivery promise. This working breakdown uses twelve;
 several interact and each requires multiple implementation/validation changes.

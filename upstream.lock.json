@@ -23,6 +23,7 @@
     "src/scr_vm_functions.c": "caadd3bfd2ba0d6fcee8aeb2dffc9c0f55c6ce9f973248236a7bdb7e80e5c4f1",
     "src/scr_vm_main.c": "0c727f72635e9c21c1993547d865cf40dc282ab6ad2f7552155b16747e93aa51",
     "src/cscr_vm.cpp": "8cdf37dda67c830e17690f3477d635e64013777198550035ebcab4b03d8fccbf",
+    "src/asmsource/_g_scr_main_mp.asm": "fee7e0950633ed0845ead2637993f9031d9b0d2f709dca9892fa8afc25a0c749",
     "src/asmsource/_scr_yacc.asm": "abb859c80e02fe67196277562607412cdd0969f440fea3176a5890fd3375be1a",
     "src/asmsource/_scr_compiler.asm": "c7a7a0f6a613d5527c41a5a941e400297b8767fba85d3e3d6d7972df59d015da",
     "src/asmsource/_scr_vm.asm": "364d29c723327105116498dd6369ea710d27e00078738f4bb12de97b89c9567e",

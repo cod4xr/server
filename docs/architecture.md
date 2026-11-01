@@ -43,6 +43,12 @@ context. Both use the legacy first-NUL prefix; result allocation/collection reta
 all operand roots until success, and global work admits scans. Bound source keeps
 index-first evaluation and operator maps. Arrays/objects remain unimplemented.
 
+ADR 0062 adds primitive definedness with a required first argument and evaluated,
+discarded extras. Exhaustive value/arity policies require explicit decisions for
+future object/entity values; no native lifetime checks are fabricated. Local and
+developer resolution still precede fallback. Global stack/fuel bounds include all
+operand pushes; resumable preloaded stacks need their own future work contract.
+
 ## Dependency direction
 
 The server and future client are peers above shared engine libraries. Shared

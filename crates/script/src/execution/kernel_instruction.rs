@@ -48,7 +48,7 @@ pub enum KernelInstruction {
         arguments: usize,
     },
     /// Calls a sealed pure builtin after all supplied arguments have evaluated.
-    /// Runtime arity failures remain located at this instruction; no frame is added.
+    /// Builtin-specific arity failures stay at this instruction; no frame is added.
     Builtin {
         /// Statically known pure builtin, without host/plugin dispatch.
         function: KernelBuiltin,

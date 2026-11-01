@@ -3,6 +3,16 @@
 Date: 2026-10-31. Scope: implemented protocol, ordinary transport, query-only
 runtime, and structured/development logging. The complete server remains open.
 
+2026-11-01 primitive-definedness addendum: all required Windows workspace gates
+passed with 243 frontend/142 legacy script tests and one new process test. 56
+Rust outcomes replay from 351 isolated archival comparison/modeled-admission rows;
+295 rows remain explicitly helper-only. All 46 selected-role mutations reject.
+Wide 65,536-operand, 256-extra-string source, optional values, evaluation/order/
+shadowing and exact resource tests pass. Policy checks 666 sources/eight crates,
+largest 287 lines. Existing vector/index/Undefined/function/predicate/string-value
+fixtures regenerate unchanged; upstream CI now includes these families. Linux/
+hosted CI/full-mod acceptance stays open; ADR 0062.
+
 2026-11-01 string-access addendum: all required Windows workspace gates passed,
 including 239 frontend/140 legacy script tests and two new process tests. The
 896 native string index/size outcomes reproduce at O0/O2 and all replay in Rust;

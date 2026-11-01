@@ -126,6 +126,8 @@ mod bound_module_visibility;
 mod bound_module_width;
 #[path = "bound_reference_contracts.rs"]
 mod bound_reference_contracts;
+#[path = "builtin_defined_source.rs"]
+mod builtin_defined_source;
 #[path = "builtin_source.rs"]
 mod builtin_source;
 #[path = "builtin_source_contracts.rs"]

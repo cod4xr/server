@@ -70,7 +70,7 @@ fn unresolved_external_receiver_thread_and_builtin_calls_fail_explicitly() {
             FunctionCompileErrorKind::UnknownFunction,
         ),
         (
-            "main(){return isdefined(1);}",
+            "main(){return getentarray();}",
             FunctionCompileErrorKind::UnknownFunction,
         ),
         (

@@ -36,6 +36,12 @@ cleanup/unwinding. Selected source guards reject 45 mutations. Rust/source/proce
 tests cover first-NUL semantics, raw bytes, wide input, exact work, complete roots
 and private located failures; see ADR 0061. General array/object size stays open.
 
+Primitive isdefined follows tag-based definedness and required-first/evaluated-
+extra rules. Its 351-row corpus executes isolated archival comparisons with
+modeled parameter admission, not the native function/VM/lifetime/error services.
+56 rows execute in Rust and 295 stay helper-only. Wide source/typed count tests
+are capacity expansion. See ADR 0062; entity/thread definedness stays open.
+
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported
 releases must be recorded individually. There is currently no demonstrated live

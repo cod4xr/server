@@ -336,7 +336,7 @@ role/mutation guards, not native compiler/VM execution). Retain identity exhaust
 foreign/drop/nonreuse/parallel uniqueness, type/arity/order, exact/one-less limits,
 wide/deep/hostile/recovery tests. Heap/closures/self/scheduler/module loading/reload/
 full-mod/Linux behavior remains open; see ADR 0050.
-Four sealed pure predicates (isint/isfloat/isvector/isstring) resolve after active
+The four exact-one predicates (isint/isfloat/isvector/isstring) resolve after active
 local script lookup; never bypass developer rejection or grant unknown host calls.
 Disabled developer declarations do not shadow; builtin reference literals remain
 unsupported. All arguments execute before exact-one arity checking at the caller
@@ -349,10 +349,19 @@ helper-only rows for unavailable value tags/UINT32_MAX, and selected role mutati
 Do not describe all native tags as implemented values or helper stubs as VM/plugin/
 error-unwind execution. Preserve shadow/case/developer/arity/order/maps/privacy,
 wide/deep/hostile/exact-one-less/isolated/quota/recovery tests. General builtins,
-heap/entity lifetime, isdefined, host services, full-mod/Linux gates remain open;
+heap/entity lifetime, host services, full-mod/Linux gates remain open;
 see ADRs 0051/0058/0059. isstring checks plain tag 2, not localized tag 3, and its native
 result service is Scr_AddInt. Preserve the 46 result/type/arity/lookup mutations.
 Reference hashes were checked against pinned Git blobs.
+
+ADR 0062 adds sealed IsDefined for existing primitive values, after local lookup.
+It requires a first argument, accepts/discards evaluated extras, and tests tags
+rather than numeric truth. Retain old exact-one predicate behavior. Verified stack/
+global fuel bound discard work; preserve older prefixes and rightmost source
+evaluation. Run generate_defined_vectors.py --check and script_defined_reference.py:
+351 isolated archival comparison/modeled-admission outcomes, 56 Rust rows and 295
+explicit helper-only rows; 46 selected-role mutations reject. These do not execute
+the native function/ABI/parameter-error services or entity/thread lifetimes.
 Primitive integer switch now owns case inventory/section tasks/exit joins/balanced
 dispatch under compilation/function_switch. Evaluate keys once, require integers
 without float coercion, preserve source-order fallthrough/default/adjacent labels

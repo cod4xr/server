@@ -14,6 +14,7 @@ import script_function_reference as function_references
 import script_predicate_reference as predicates
 import script_switch_reference as switches
 import script_string_access_reference as string_access
+import script_defined_reference as definedness
 import script_expression_reference as expressions
 import script_for_reference as for_loops
 import script_lexer_reference as lexical
@@ -115,6 +116,7 @@ def main() -> None:
     predicates.verify(*predicates.inputs(reference))
     arrays.verify(*arrays.inputs(reference))
     string_access.verify(*string_access.inputs(reference))
+    definedness.verify(*definedness.inputs(reference))
     switches.verify(*switches.inputs(reference))
     syntax.verify_symbols(reference.files["src/asmsource/_scr_compiler.asm"],
                           reference.files["src/cscr_variable.h"])

@@ -74,6 +74,13 @@ jobs:
           python tools/generate_numeric_vectors.py reference --check
           python tools/generate_string_operation_vectors.py reference --check
           python tools/generate_arithmetic_vectors.py reference --check
+          python tools/generate_vector_vectors.py reference --check
+          python tools/generate_vector_index_vectors.py reference --check
+          python tools/generate_undefined_vectors.py reference --check
+          python tools/generate_function_reference_vectors.py reference --check
+          python tools/generate_predicate_vectors.py reference --check
+          python tools/script_predicate_reference.py reference
+          python tools/generate_string_value_vectors.py reference --check
           python tools/generate_lexical_tables.py reference --check
           python tools/generate_literal_vectors.py reference --check
           python tools/generate_syntax_tables.py reference --check
@@ -81,3 +88,5 @@ jobs:
           python tools/script_array_reference.py reference
           python tools/generate_string_access_vectors.py reference --check
           python tools/script_string_access_reference.py reference
+          python tools/generate_defined_vectors.py reference --check
+          python tools/script_defined_reference.py reference

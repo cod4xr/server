@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Primitive `isdefined` preserves Undefined, optional parameters, evaluated extra
+  arguments and local-function shadowing. Wide stack/source/process tests and
+  isolated archival instruction evidence cover the subset; entity lifetimes stay
+  open; ADR 0062.
+
 - Plain-string byte indexing and `.size` preserve the legacy first-NUL prefix,
   with explicit work/heap budgets and complete roots during result allocation.
   All 896 native helper outcomes replay through Rust; source/process tests cover
@@ -372,6 +377,13 @@ python tools/generate_identifier_vectors.py ../cod4x-reference --check
 python tools/generate_numeric_vectors.py ../cod4x-reference --check
 python tools/generate_string_operation_vectors.py ../cod4x-reference --check
 python tools/generate_arithmetic_vectors.py ../cod4x-reference --check
+python tools/generate_vector_vectors.py ../cod4x-reference --check
+python tools/generate_vector_index_vectors.py ../cod4x-reference --check
+python tools/generate_undefined_vectors.py ../cod4x-reference --check
+python tools/generate_function_reference_vectors.py ../cod4x-reference --check
+python tools/generate_predicate_vectors.py ../cod4x-reference --check
+python tools/script_predicate_reference.py ../cod4x-reference
+python tools/generate_string_value_vectors.py ../cod4x-reference --check
 python tools/generate_lexical_tables.py ../cod4x-reference --check
 python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check
@@ -379,6 +391,8 @@ python tools/generate_array_vectors.py ../cod4x-reference --check
 python tools/script_array_reference.py ../cod4x-reference
 python tools/generate_string_access_vectors.py ../cod4x-reference --check
 python tools/script_string_access_reference.py ../cod4x-reference
+python tools/generate_defined_vectors.py ../cod4x-reference --check
+python tools/script_defined_reference.py ../cod4x-reference
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check

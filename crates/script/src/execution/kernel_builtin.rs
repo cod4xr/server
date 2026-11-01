@@ -15,6 +15,9 @@ pub enum KernelBuiltin {
     IsVector,
     /// Original isstring: true only for plain string values, not localized strings.
     IsString,
+    /// Tests the available value subset for Undefined. Requires a first argument;
+    /// extras are evaluated and discarded. Entity/thread lifetime checks stay unsupported.
+    IsDefined,
 }
 
 pub(super) fn apply(
@@ -23,7 +26,14 @@ pub(super) fn apply(
     stack: &mut KernelStack,
     pc: usize,
 ) -> Result<KernelValue, KernelError> {
-    if arguments != 1 {
+    let accepted = match function {
+        KernelBuiltin::IsInt
+        | KernelBuiltin::IsFloat
+        | KernelBuiltin::IsVector
+        | KernelBuiltin::IsString => arguments == 1,
+        KernelBuiltin::IsDefined => arguments >= 1,
+    };
+    if !accepted {
         return Err(kernel_error::at(
             pc,
             KernelErrorKind::ArgumentCount {
@@ -33,11 +43,24 @@ pub(super) fn apply(
         ));
     }
     let value = stack.pop(pc)?;
+    // Every discarded value required an earlier admitted push instruction. This
+    // work is bounded by the verified stack and the invocation's global fuel.
+    for _ in 1..arguments {
+        stack.pop(pc)?;
+    }
     let result = match function {
         KernelBuiltin::IsInt => matches!(value, KernelValue::Number(LegacyNumber::Integer(_))),
         KernelBuiltin::IsFloat => matches!(value, KernelValue::Number(LegacyNumber::Float(_))),
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
         KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
+        KernelBuiltin::IsDefined => match value {
+            KernelValue::Undefined => false,
+            KernelValue::Number(_)
+            | KernelValue::Vector(_)
+            | KernelValue::Function(_)
+            | KernelValue::String(_)
+            | KernelValue::LocalizedString(_) => true,
+        },
     };
     Ok(KernelValue::Number(LegacyNumber::Integer(i32::from(
         result,

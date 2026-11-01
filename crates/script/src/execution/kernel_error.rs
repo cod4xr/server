@@ -98,7 +98,7 @@ pub enum KernelErrorKind {
     },
     /// Argument count does not satisfy the selected primitive invocation profile.
     ArgumentCount {
-        /// Layout parameters: exact internal count or legacy script maximum.
+        /// Exact/internal count, legacy script maximum, or documented builtin minimum.
         expected: u64,
         /// Supplied primitive arguments.
         actual: u64,
