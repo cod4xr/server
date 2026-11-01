@@ -1,5 +1,14 @@
 # Project contract
 
+Assessment 0079 guards selected native include/link roles (65 mutations) with
+script_include_reference.py, wired into syntax checks/CI. Direct and imported
+positions differ; do not transitively re-export imported names or overwrite local
+definitions. Preserve canonical duplicate/missing include rejection and existing
+developer/builtin/qualified lookup distinctions. Includes remain disabled until
+one-hop alias admission and precedence/source-map/wide/cyclic/budget behavior is
+implemented and verified. This source guard does not execute native compiler/
+loader/cleanup/VM behavior. Read assessment 0079 before enabling directives.
+
 ADR 0078 adds explicit offline --execute-gsc-package ENTRY with repeatable
 --gsc-module NAME PATH. Paths come only from operator arguments, never script
 names. Reject directives/unsupported active bodies and missing/duplicate/invalid
