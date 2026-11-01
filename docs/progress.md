@@ -507,8 +507,27 @@ mutations. See ADR 0036. Normal target reused, no dependency/cache additions.
 Builtin signatures, native evaluation/push order, receivers/frames, stack markers,
 full cleanup/unwinding/GSC/mod conformance and Linux remain open.
 
-Next: structured conditional/block compilation and control-flow local initialization facts,
-plus source-grounded native argument adaptation. Full objects, calls, scheduling,
+Scalar-local ordinary blocks and if/if-else now pass full Windows workspace gates.
+Flat lowering emits checked forward conditional/unconditional relocations and
+retains original condition/operation spans. Stable wide slots carry separate
+initialization snapshots: restore incoming facts before else and intersect only
+paths reaching the join. Both source branches remain checked, including constant
+conditions. Immediate nonfinal returns and later structurally unreachable source
+are rejected under this explicit restricted profile. No fabricated arguments run.
+Snapshot flag payload shares compiler metadata plus a separate live-byte quota;
+initial fill/copy/restore/merge visits share global work. Eleven new tests cover
+path results, initialization/return failures, maps, exact/one-less admission,
+70,000 local snapshots, forward distances beyond 65,535 instructions and 12,000
+nested branches with successful/failed flat cleanup. All 131 frontend/48 legacy
+tests and doctests pass; warnings-denied Clippy/rustdoc, formatting and repository
+policy pass. Largest source remains 287 lines. Existing pinned syntax profiles
+and 99 structural replays regenerate. See ADR 0037. The normal target is reused;
+no dependencies or alternate caches added. Native compiler execution/full scope,
+constant folding/diagnostic order, loops/switch, full GSC/mod acceptance and Linux
+validation remain open.
+
+Next: bounded scalar loop lowering with conservative initialization exits,
+plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
 workstreams, each containing many implementation/testing tasks, not an exact task

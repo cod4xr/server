@@ -9,7 +9,7 @@ use crate::execution::VerifiedKernelProgram;
 pub enum ScalarSourceProfile {
     /// Zero parameters and empty/single-return body, validated by bounded pure execution.
     PureReturn,
-    /// Parameters, name assignments/compound/postfix statements, empty statements and final return.
+    /// Scalar locals, assignments/updates, ordinary blocks, conditionals and returns.
     /// Publication verifies code without executing fabricated argument values.
     LocalStatements,
 }
@@ -17,7 +17,7 @@ pub enum ScalarSourceProfile {
 /// Successful restricted source compiler accounting, excluding allocator overhead/RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ScalarCompilationUsage {
-    /// Body/queue/task/literal/identifier-byte/resolution work charged to the compiler.
+    /// Body/task/literal/name/snapshot/resolution work charged to the compiler.
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.
     pub instructions: u64,
@@ -31,6 +31,8 @@ pub struct ScalarCompilationUsage {
     pub local_bindings: u64,
     /// Identifier bytes charged across declaration/read/initialization visits.
     pub identifier_bytes: u64,
+    /// Peak admitted live initialization snapshot flag payload.
+    pub peak_control_bytes: u64,
     /// Actual pure validation instructions; None when this profile does not pre-execute.
     pub validation_steps: Option<u64>,
 }

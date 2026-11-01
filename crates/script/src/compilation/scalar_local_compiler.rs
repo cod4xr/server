@@ -15,12 +15,13 @@ use crate::declaration::LegacyFunctionSyntax;
 use crate::execution::KernelFunctionLayout;
 use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacyStatementSyntax};
 
-/// Compiles the explicit straight-line scalar parameter/name-assignment profile.
+/// Compiles the explicit scalar-local statement profile with structural branch joins.
 ///
 /// Accepts parameters, ordinary/compound assignments and integer-only postfix
-/// statements for plain names, empty statements, and an optional final return.
+/// statements for plain names, empty statements, ordinary blocks, conditionals and returns.
 /// Fallthrough returns Undefined. Names use legacy identity;
-/// unknown/uninitialized reads, duplicate parameters and nonfinal returns fail.
+/// Reads require initialization on every reaching structural path. Duplicate
+/// parameters, unreachable statements and nonfinal immediate returns fail.
 /// Other statements/targets/values remain unsupported, including skipped source.
 /// Caller module/developer binding and native argument adaptation remain separate.
 /// Code/maps own no source/names and publish after verification without executing

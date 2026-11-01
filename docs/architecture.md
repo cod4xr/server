@@ -274,6 +274,21 @@ marker/check roles and undefined child-variable creation evidence. These policie
 do not define builtin signatures, expression evaluation/push order, native stack
 markers, receivers/frames or error unwinding; see ADR 0036.
 
+Scalar-local blocks/conditionals share one function-local name table with wide
+stable slots, plus flat owned initialization snapshots and structural reachability.
+The iterative task stack lowers both source branches; it restores incoming facts
+before else and merges only paths reaching the join. Return terminates its path;
+the restricted profile still requires return to be final in its immediate list.
+Conditional and unconditional relocations are private single-use tokens, resolved
+to real instructions and independently verified before code/maps publish.
+Snapshot flag payload has a separate live-byte quota and shares compiler metadata;
+initialization/copy/restore/merge visits share global work. Capturing charges two
+flag visits per slot (initial fill and indexed copy); restoring/merging charges
+one visit per current slot. Logical work/payload accounting does not measure hash
+capacity iteration, allocator/RSS or aggregate CPU. Constant-condition folding,
+full native scope/error-order parity, loops/switch and richer values remain open;
+see ADR 0037. Original pure-return validation remains unchanged.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

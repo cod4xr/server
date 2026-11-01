@@ -14,6 +14,7 @@ use crate::execution::{KernelBranchCondition, KernelInstruction};
 pub(super) struct ScalarBuilder<'tree, 'source> {
     pub(super) ledger: ScalarCompilationLedger,
     pub(super) locals: Option<ScalarLocalBindings<'source>>,
+    pub(super) reachable: bool,
     tasks: Vec<ScalarTask<'tree, 'source>>,
     instructions: Vec<PendingScalarInstruction>,
     active_task: bool,
@@ -24,6 +25,7 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         Self {
             ledger: ScalarCompilationLedger::new(budget),
             locals: None,
+            reachable: true,
             tasks: Vec::new(),
             instructions: Vec::new(),
             active_task: false,
@@ -69,6 +71,22 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         Ok(())
     }
 
+    pub(super) fn admit_control(
+        &mut self,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        self.ledger.control(bytes, span.clone())?;
+        let live = self
+            .tasks
+            .len()
+            .checked_add(usize::from(self.active_task))
+            .ok_or_else(|| {
+                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            })?;
+        self.ledger.admit(self.instructions.len(), live, span)
+    }
+
     pub(super) fn next_task(&mut self) -> Option<ScalarTask<'tree, 'source>> {
         let task = self.tasks.pop();
         self.active_task = task.is_some();
@@ -97,6 +115,11 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
             span,
         )
         .map(ScalarPatchSite)
+    }
+
+    pub(super) fn jump(&mut self, span: Range<u64>) -> Result<ScalarPatchSite, ScalarCompileError> {
+        self.append(PendingScalarKind::Jump { target: None }, span)
+            .map(ScalarPatchSite)
     }
 
     fn append(
@@ -138,7 +161,10 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
             scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::InvalidBranchBinding)
         })?;
         match &mut instruction.kind {
-            PendingScalarKind::Branch { target: slot, .. } if slot.is_none() && target > site.0 => {
+            PendingScalarKind::Branch { target: slot, .. }
+            | PendingScalarKind::Jump { target: slot }
+                if slot.is_none() && target > site.0 =>
+            {
                 *slot = Some(target);
             }
             _ => {
@@ -173,7 +199,11 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
                     condition,
                     target: Some(target),
                 } => KernelInstruction::Branch { condition, target },
-                PendingScalarKind::Branch { target: None, .. } => {
+                PendingScalarKind::Jump {
+                    target: Some(target),
+                } => KernelInstruction::Jump(target),
+                PendingScalarKind::Branch { target: None, .. }
+                | PendingScalarKind::Jump { target: None } => {
                     return Err(scalar_compile_error::at(
                         pending.span,
                         ScalarCompileErrorKind::InvalidBranchBinding,

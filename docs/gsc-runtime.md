@@ -223,6 +223,19 @@ exact/empty internal entry points retain their own contracts. Source-compiled
 scalar parameter functions use this profile in tests, but function-call linking,
 builtin validation, native evaluation/push order, receivers/frames/scheduling and
 whole error-unwinding/VM compatibility remain open; see ADR 0036.
+The scalar-local profile now also lowers ordinary blocks and if/if-else through
+flat tasks and checked forward relocations. Function-wide slots retain stable wide
+indices. Initialization snapshots restore incoming facts before else and merge
+only branches that reach the join; a returning branch does not constrain a
+surviving path. Both syntactic branches are checked even for constant conditions.
+Return remains final in its immediate body, and later structurally unreachable
+statements fail. Snapshot flag storage shares compiler metadata plus a separate
+live-byte quota; flag initialization/copy/restore/merge visits share global work.
+Tests cover exact/one-less limits, 70,000 local snapshots, long forward jumps,
+and 12,000 nested branches with successful and failed flat cleanup. This restricted
+policy does not prove native scope/constant-folding/diagnostic order or whole
+compiler execution. Loops, switch, developer blocks and general values/calls remain
+open; see ADR 0037. Pure-return compilation keeps its narrower validation contract.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

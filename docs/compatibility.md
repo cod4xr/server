@@ -348,6 +348,16 @@ tie selected parameter/safe-set/checkclearparams/creation roles to the pinned
 code without executing original compiler/VM routines. Builtin arity, native
 argument evaluation/push order, frames/receivers, cleanup/unwinding and whole
 GSC/mod compatibility remain open; see ADR 0036.
+Scalar-local ordinary blocks and if/if-else now lower to owned verified branches.
+Stable function-local slots use conservative initialization joins over structural
+paths reaching a read; returning paths are excluded, incoming facts are restored
+before else, and constant-condition source is still checked on both sides.
+Immediate nonfinal returns and later structurally unreachable statements fail.
+Eleven added tests cover actual path results, initialization/return policy, maps,
+exact resource boundaries, 70,000 local snapshots, long forward jumps and 12,000
+nested branches with bounded failure cleanup. Flag payload/work is explicitly
+admitted. This is not original compiler execution or full native scope/constant
+folding/diagnostic-order parity; loops/switch and richer values remain open. See ADR 0037.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

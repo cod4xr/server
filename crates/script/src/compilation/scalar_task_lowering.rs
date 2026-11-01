@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::compilation::ScalarCompileError;
 use crate::compilation::scalar_builder::ScalarBuilder;
+use crate::compilation::scalar_conditional;
 use crate::compilation::scalar_expression_lowering;
 use crate::compilation::scalar_local_names;
 use crate::compilation::scalar_local_statements;
@@ -26,6 +27,28 @@ pub(super) fn drain(builder: &mut ScalarBuilder<'_, '_>) -> Result<(), ScalarCom
                 span,
             } => scalar_expression_lowering::logical(builder, operator, right, span)?,
             ScalarTask::EndLogical { site, span } => builder.bind(site, span)?,
+            ScalarTask::BeginIf {
+                consequence,
+                alternative,
+                span,
+            } => {
+                scalar_conditional::begin(builder, consequence, alternative, span)?;
+            }
+            ScalarTask::AfterThen {
+                false_site,
+                incoming,
+                alternative,
+                span,
+            } => {
+                scalar_conditional::after_then(builder, false_site, incoming, alternative, span)?;
+            }
+            ScalarTask::AfterElse {
+                end_site,
+                then_facts,
+                span,
+            } => {
+                scalar_conditional::after_else(builder, end_site, then_facts, span)?;
+            }
         }
     }
     Ok(())

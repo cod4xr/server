@@ -6,6 +6,16 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_conditional_budgets.rs"]
+mod local_conditional_budgets;
+#[path = "local_conditional_stress.rs"]
+mod local_conditional_stress;
+
+#[path = "local_conditional_execution.rs"]
+mod local_conditional_execution;
+#[path = "local_conditional_initialization.rs"]
+mod local_conditional_initialization;
+
 #[path = "local_compound_source.rs"]
 mod local_compound_source;
 #[path = "local_postfix_source.rs"]

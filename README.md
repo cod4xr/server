@@ -122,10 +122,10 @@ The complete server rewrite remains open.
 - Scalar-kernel local loads/stores with immutable parameter/local layouts, exact
   internal argument binding, uninitialized-read errors, isolated invocations, and
   local count/byte budgets. General source binding, native GSC arity, and call frames remain open.
-- A separate straight-line scalar source profile now binds parameters/local names,
+- A separate scalar-local source profile now binds parameters/local names,
   ordinary assignments/reassignments, empty statements and final/fallthrough returns.
   It preserves initialization checks and owns verified code/maps without fabricated
-  argument execution. Tests compile/invoke 70,000 locals; general control flow,
+  argument execution. Tests compile/invoke 70,000 locals; remaining general control flow,
   calls/objects/threads, native arity and full GSC/mod acceptance remain open.
 - All ten scalar plain-name compound assignments reuse the checked numeric
   operations and source maps. Targets must already be initialized; object/index
@@ -136,6 +136,10 @@ The complete server rewrite remains open.
 - Explicit scalar legacy script-argument invocation fills missing parameter
   slots with initialized `undefined` and rejects extras under the guarded source
   profile. Call frames, builtin signatures and native unwinding remain open.
+- Ordinary scalar blocks and `if`/`else` lower with wide checked branch targets.
+  Initialization joins include only paths reaching each read; both source branches
+  are checked. Snapshot storage/work is bounded. Tests cover 70,000 local snapshots
+  and 12,000 nested branches; loops/switch and native scope/constant-folding parity remain open.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

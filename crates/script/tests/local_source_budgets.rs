@@ -52,6 +52,7 @@ fn exact_and_one_less_compiler_limits_cover_local_names_payload_and_all_lowering
             ScalarCompilationResource::MetadataBytes => budget.max_metadata_bytes -= 1,
             ScalarCompilationResource::LocalBindings => budget.max_local_bindings -= 1,
             ScalarCompilationResource::IdentifierBytes => budget.max_identifier_bytes -= 1,
+            ScalarCompilationResource::ControlBytes => budget.max_control_bytes = 0,
         }
         let error = scalar_compile_support::compile_local(text, budget).expect_err("One less");
         assert!(

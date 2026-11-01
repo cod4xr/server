@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_local_assignment;
+use crate::compilation::scalar_statement_body;
 use crate::compilation::scalar_task::ScalarTask;
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelInstruction, KernelValue};
@@ -13,6 +15,12 @@ pub(super) fn lower<'tree, 'source>(
     syntax: LegacySyntaxNode<'tree, 'source>,
     last: bool,
 ) -> Result<(), ScalarCompileError> {
+    if !builder.reachable {
+        return Err(scalar_compile_error::at(
+            syntax.span(),
+            ScalarCompileErrorKind::UnreachableStatement,
+        ));
+    }
     let view = LegacyStatementSyntax::from_node(syntax).map_err(|_| {
         scalar_compile_error::at(syntax.span(), ScalarCompileErrorKind::InvalidStructure)
     })?;
@@ -39,10 +47,34 @@ pub(super) fn lower<'tree, 'source>(
                     ScalarCompileErrorKind::ReturnNotLast,
                 ));
             }
-            queue_return(builder, value, view.statement_syntax().span())
+            queue_return(builder, value, view.statement_syntax().span())?;
+            builder.reachable = false;
+            Ok(())
         }
         LegacyStatementKind::Update { target, kind } => {
             scalar_local_assignment::postfix(builder, view.statement_syntax(), target, kind)
+        }
+        LegacyStatementKind::Block { body } => scalar_statement_body::queue(builder, body),
+        LegacyStatementKind::If {
+            condition,
+            consequence,
+            alternative,
+        } => {
+            let span = scalar_body::child(
+                view.statement_syntax(),
+                0,
+                if alternative.is_some() { 7 } else { 5 },
+            )?
+            .span();
+            builder.push_task(
+                ScalarTask::BeginIf {
+                    consequence,
+                    alternative,
+                    span: span.clone(),
+                },
+                span,
+            )?;
+            builder.push_task(ScalarTask::Visit(condition), condition.span())
         }
         _ => Err(scalar_compile_error::at(
             view.span(),

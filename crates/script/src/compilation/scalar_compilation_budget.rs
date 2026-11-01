@@ -3,16 +3,16 @@ use crate::execution::{KernelExecutionBudget, KernelVerificationBudget};
 use crate::literal::LegacyLiteralBudget;
 use crate::statement::StatementListBudget;
 
-/// Independent resource scopes for the restricted pure scalar function compiler.
+/// Independent resource scopes for the restricted scalar function compilers.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ScalarCompilationBudget {
-    /// Body/queue/task actions, numeric literal/identifier bytes, and code resolution.
+    /// Body/queue/task actions, literal/name bytes, snapshot flag visits and resolution.
     pub max_steps: u64,
     /// Complete emitted scalar instruction count.
     pub max_instructions: u64,
     /// Maximum live iterative lowering frames.
     pub max_task_frames: u64,
-    /// Logical pending/task/binding-pair payload and overlapping resolved code/map
+    /// Logical pending/task/binding-pair/snapshot payload and overlapping resolved code/map
     /// bytes; excludes source/CST, hash/vector capacity/control overhead,
     /// allocator overhead, body-index storage, and kernel scopes.
     pub max_metadata_bytes: u64,
@@ -20,6 +20,8 @@ pub struct ScalarCompilationBudget {
     pub max_local_bindings: u64,
     /// Identifier bytes charged across declaration/read/initialization visits.
     pub max_identifier_bytes: u64,
+    /// Live initialization snapshot flag payload, also included in metadata bytes.
+    pub max_control_bytes: u64,
     /// Separately admitted immediate body index for the local-statements profile.
     pub body: StatementListBudget,
     /// Per-token conversion limits; strings are unsupported before decoding.
@@ -40,6 +42,7 @@ impl Default for ScalarCompilationBudget {
             max_metadata_bytes: 256 * 1024 * 1024,
             max_local_bindings: 1_000_000,
             max_identifier_bytes: 128 * 1024 * 1024,
+            max_control_bytes: 128 * 1024 * 1024,
             body: StatementListBudget::default(),
             literal: LegacyLiteralBudget::default(),
             verification: KernelVerificationBudget::default(),

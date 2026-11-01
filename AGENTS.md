@@ -155,6 +155,15 @@ the admitted local vector directly without an unaccounted padded argument array.
 Guard parameter walks, safe-set markers/consumption/checks and Undefined creation
 through generate_syntax_tables.py --check. This is not builtin validation, native
 evaluation/push order, call frames or full unwind/VM parity; see ADR 0036.
+Scalar-local blocks and if/else now share stable wide slots and flat lowering.
+Restore incoming facts before else; intersect only paths reaching the join and
+retain source checks for both branches, including constant conditions. Preserve
+immediate nonfinal-return rejection and reject structurally unreachable source.
+Admit live snapshot flag bytes against control and total metadata quotas, charge
+initialization/copy/restore/merge visits globally, and release exactly once. Bind
+private conditional/unconditional relocations once and verify real targets before
+publication. This restricted structural policy does not establish native scopes,
+constant folding, diagnostic order, loops/switch or full compilation; see ADR 0037.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

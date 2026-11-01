@@ -14,6 +14,7 @@ pub(super) struct ScalarCompilationLedger {
     pub(super) budget: ScalarCompilationBudget,
     pub(super) usage: ScalarCompilationUsage,
     binding_bytes: u64,
+    control_bytes: u64,
 }
 
 impl ScalarCompilationLedger {
@@ -21,6 +22,7 @@ impl ScalarCompilationLedger {
         Self {
             budget,
             binding_bytes: 0,
+            control_bytes: 0,
             usage: ScalarCompilationUsage {
                 compiler_steps: 0,
                 instructions: 0,
@@ -30,6 +32,7 @@ impl ScalarCompilationLedger {
                 validation_steps: None,
                 local_bindings: 0,
                 identifier_bytes: 0,
+                peak_control_bytes: 0,
             },
         }
     }
@@ -96,6 +99,36 @@ impl ScalarCompilationLedger {
         Ok(())
     }
 
+    pub(super) fn control(
+        &mut self,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        let next = self.control_bytes.checked_add(bytes).ok_or_else(|| {
+            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+        })?;
+        check(
+            ScalarCompilationResource::ControlBytes,
+            next,
+            self.budget.max_control_bytes,
+            span,
+        )?;
+        self.control_bytes = next;
+        self.usage.peak_control_bytes = self.usage.peak_control_bytes.max(next);
+        Ok(())
+    }
+
+    pub(super) fn release_control(
+        &mut self,
+        bytes: u64,
+        span: Range<u64>,
+    ) -> Result<(), ScalarCompileError> {
+        self.control_bytes = self.control_bytes.checked_sub(bytes).ok_or_else(|| {
+            scalar_compile_error::at(span, ScalarCompileErrorKind::InvalidControlState)
+        })?;
+        Ok(())
+    }
+
     pub(super) fn admit(
         &mut self,
         instructions: usize,
@@ -150,9 +183,12 @@ impl ScalarCompilationLedger {
         bytes: u64,
         span: Range<u64>,
     ) -> Result<(), ScalarCompileError> {
-        let bytes = bytes.checked_add(self.binding_bytes).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
-        })?;
+        let bytes = bytes
+            .checked_add(self.binding_bytes)
+            .and_then(|bytes| bytes.checked_add(self.control_bytes))
+            .ok_or_else(|| {
+                scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::SizeOverflow)
+            })?;
         self.metadata(bytes, span)
     }
 

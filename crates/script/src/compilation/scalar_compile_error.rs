@@ -23,6 +23,8 @@ pub enum ScalarCompilationResource {
     LocalBindings,
     /// Identifier bytes across name visits.
     IdentifierBytes,
+    /// Live initialization snapshot flag payload.
+    ControlBytes,
 }
 
 /// Fixed scalar compilation category, without source text, values, or names.
@@ -40,10 +42,14 @@ pub enum ScalarCompileErrorKind {
     UnsupportedLocalTarget,
     /// This restricted profile rejects repeated canonical parameter names.
     DuplicateParameter,
-    /// A name has no initialized slot at this point in the straight-line source.
+    /// A name is not initialized on every structural path reaching this read.
     UninitializedLocal,
     /// This restricted profile permits return only as the final immediate statement.
     ReturnNotLast,
+    /// A prior structural return prevents this source statement from being reached.
+    UnreachableStatement,
+    /// A private initialization snapshot/accounting invariant did not hold.
+    InvalidControlState,
     /// A private local slot/table invariant did not hold.
     InvalidLocalBinding,
     /// Identifier admission failed without retaining its spelling.
