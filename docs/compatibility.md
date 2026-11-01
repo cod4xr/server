@@ -367,6 +367,15 @@ and native branch/backward opcode roles; nineteen in-memory mutations are reject
 Original compiler/VM routines and the native timing watchdog are not executed.
 Constant folding/scope/diagnostic order, for/break/continue/switch, general values
 and full GSC/mod compatibility remain open; see ADR 0038.
+Scalar while break/continue now preserve nearest-loop targeting, terminating-path
+joins and conservative exit initialization. Illegal contexts/unreachable source
+fail with original keyword/statement spans. Tests cover actual nested transfers,
+caller isolation/fuel/maps, exact compiler quotas, 20,000 linked break fixups with
+wide destinations and 12,000 nested contexts with failed cleanup. Selected pinned
+compiler context/legality/fixup/restore and VM jump roles are guarded; 38 in-memory
+profile mutations are rejected. This does not execute native compiler/VM routines
+or establish native block cleanup/scope/watchdog/error-order parity. For/switch
+contexts and full GSC/mod acceptance remain open; see ADR 0039.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

@@ -18,7 +18,8 @@ use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacySta
 /// Compiles the explicit scalar-local statement profile with structural branch joins.
 ///
 /// Accepts parameters, ordinary/compound assignments and integer-only postfix
-/// statements for plain names, empty statements, blocks, conditionals, while and returns.
+/// statements for plain names, empty statements, blocks, conditionals, while,
+/// scoped break/continue and returns.
 /// Fallthrough returns Undefined. Names use legacy identity;
 /// Reads require initialization on every reaching structural path. Duplicate
 /// parameters, unreachable statements and nonfinal immediate returns fail.

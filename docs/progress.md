@@ -544,7 +544,27 @@ are rejected. See ADR 0038. No dependencies or alternate target directories adde
 Native routines/watchdog timing, scopes/constant folding/diagnostic order,
 for/break/continue/switch, richer values, full GSC/mod acceptance and Linux remain open.
 
-Next: scoped while break/continue transfers with bounded fixup ownership,
+Scalar while break/continue now pass full Windows workspace gates. The nearest
+active loop context saves/restores outer ownership in already admitted end tasks.
+Transfers terminate structural paths, preserve conditional initialization joins,
+and retain original keyword maps/fuel. Illegal outside-loop contexts and later
+unreachable source fail explicitly. Break fixups link within complete admitted
+pending instruction records, bind once with monotonic/forward checks and charge
+every visit globally; no second fixup allocation/native fixed array is introduced.
+Emission/admission and relocation binding/resolution now occupy separate leaf
+modules. Six added tests cover nested targeting, returning/continuing joins,
+privacy/maps/fuel/caller isolation, exact/one-less quotas, 20,000 linked fixups
+with wide exits, and 12,000 nested contexts carrying pending outer breaks through
+successful execution and bounded failure cleanup. All 146 frontend/48 legacy
+tests and doctests pass; formatting, warnings-denied Clippy/rustdoc and repository
+policy pass (441 sources/eight crates, largest 287 lines). Selected pinned
+compiler context/legality/fixup/restore and VM jump profiles plus 99 structural
+replays regenerate; 38 in-memory source mutations are rejected. See ADR 0039.
+No dependencies or alternate target directories added. Native routines/block
+cleanup/scope/watchdog/error order, for/switch, full GSC/mod acceptance and Linux
+validation remain open.
+
+Next: staged scalar for loops with continue-to-update initialization joins,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

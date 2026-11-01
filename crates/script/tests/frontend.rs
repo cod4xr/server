@@ -6,6 +6,16 @@ mod expression_support;
 mod scalar_compile_support;
 mod statement_support;
 
+#[path = "local_transfer_budgets.rs"]
+mod local_transfer_budgets;
+#[path = "local_transfer_stress.rs"]
+mod local_transfer_stress;
+
+#[path = "local_transfer_execution.rs"]
+mod local_transfer_execution;
+#[path = "local_transfer_rejections.rs"]
+mod local_transfer_rejections;
+
 #[path = "local_while_budgets.rs"]
 mod local_while_budgets;
 #[path = "local_while_stress.rs"]

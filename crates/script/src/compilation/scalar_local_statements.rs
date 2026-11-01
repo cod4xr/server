@@ -3,6 +3,7 @@ use crate::compilation::scalar_body;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_local_assignment;
+use crate::compilation::scalar_loop_transfer::{self, ScalarLoopTransfer};
 use crate::compilation::scalar_statement_body;
 use crate::compilation::scalar_task::ScalarTask;
 use crate::compilation::scalar_while;
@@ -81,6 +82,16 @@ pub(super) fn lower<'tree, 'source>(
             let span = scalar_body::child(view.statement_syntax(), 0, 5)?.span();
             scalar_while::queue(builder, condition, body, span)
         }
+        LegacyStatementKind::Break => scalar_loop_transfer::lower(
+            builder,
+            ScalarLoopTransfer::Break,
+            view.statement_syntax().span(),
+        ),
+        LegacyStatementKind::Continue => scalar_loop_transfer::lower(
+            builder,
+            ScalarLoopTransfer::Continue,
+            view.statement_syntax().span(),
+        ),
         _ => Err(scalar_compile_error::at(
             view.span(),
             ScalarCompileErrorKind::UnsupportedBody,

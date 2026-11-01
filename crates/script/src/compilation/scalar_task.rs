@@ -3,6 +3,7 @@ use std::ops::Range;
 
 use crate::binding::LegacyIdentifier;
 use crate::compilation::scalar_initialization::ScalarInitializationSnapshot;
+use crate::compilation::scalar_loop_transfer::ScalarWhileContext;
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::LegacyLogicalOperator;
 use crate::syntax::LegacySyntaxNode;
@@ -11,7 +12,7 @@ use crate::syntax::LegacySyntaxNode;
 pub(super) struct ScalarPatchSite(pub(super) usize);
 
 /// Compiler-private loop destination, distinct from an unresolved forward site.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub(super) struct ScalarLoopHead(pub(super) usize);
 
 pub(super) enum ScalarTask<'tree, 'source> {
@@ -63,6 +64,7 @@ pub(super) enum ScalarTask<'tree, 'source> {
         head: ScalarLoopHead,
         exit_site: ScalarPatchSite,
         incoming: ScalarInitializationSnapshot,
+        outer_loop: Option<ScalarWhileContext>,
         span: Range<u64>,
     },
 }
@@ -93,6 +95,10 @@ pub(super) enum PendingScalarKind {
     },
     Jump {
         target: Option<usize>,
+    },
+    Break {
+        target: Option<usize>,
+        next: Option<ScalarPatchSite>,
     },
 }
 

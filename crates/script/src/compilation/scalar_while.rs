@@ -4,6 +4,7 @@ use std::ops::Range;
 use crate::compilation::scalar_builder::ScalarBuilder;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_initialization::{self, ScalarInitializationSnapshot};
+use crate::compilation::scalar_loop_transfer::{self, ScalarWhileContext};
 use crate::compilation::scalar_task::{ScalarLoopHead, ScalarPatchSite, ScalarTask};
 use crate::compilation::{ScalarCompileError, ScalarCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -35,11 +36,13 @@ pub(super) fn begin_body<'tree, 'source>(
 ) -> Result<(), ScalarCompileError> {
     let incoming = scalar_initialization::capture(builder, span.clone())?;
     let exit_site = builder.branch(KernelBranchCondition::IfFalse, span.clone())?;
+    let outer_loop = scalar_loop_transfer::enter(builder, head);
     builder.push_task(
         ScalarTask::AfterWhileBody {
             head,
             exit_site,
             incoming,
+            outer_loop,
             span: span.clone(),
         },
         span,
@@ -58,6 +61,7 @@ pub(super) fn after_body(
     head: ScalarLoopHead,
     exit_site: ScalarPatchSite,
     incoming: ScalarInitializationSnapshot,
+    outer_loop: Option<ScalarWhileContext>,
     span: Range<u64>,
 ) -> Result<(), ScalarCompileError> {
     if head.0 >= builder.instruction_position() {
@@ -68,5 +72,6 @@ pub(super) fn after_body(
     }
     builder.emit(KernelInstruction::Jump(head.0), span.clone())?;
     builder.bind(exit_site, span.clone())?;
+    scalar_loop_transfer::leave(builder, head, outer_loop, span.clone())?;
     scalar_initialization::restore(builder, incoming, span)
 }

@@ -250,6 +250,19 @@ remain unchanged. Source guards tie selected compiler/header/VM branch/backward
 roles to the pinned source without executing original routines. Native loop
 watchdog timing, scopes/constant folding/error-order parity, for/break/continue,
 switch, richer values/calls and scheduling remain open; see ADR 0038.
+Scalar while now additionally supports scoped break/continue. The nearest active
+context is saved/restored in already admitted flat tasks; both transfers terminate
+their current structural path and stay excluded from subsequent conditional joins.
+Break fixups form a monotonic single-use chain inside admitted pending instruction
+records, avoiding a second allocation/array. Each bound link consumes global work;
+unresolved links cannot enter a verified program. Continue targets the actual
+condition head and shares instruction fuel. Six tests cover nested targets, joins,
+illegal/unreachable source, maps/fuel/caller isolation, exact compiler limits,
+20,000 fixups with wide exit destinations and 12,000 nested contexts including
+failed cleanup with saved pending outer fixups. Source guards reject 38 in-memory
+compiler-profile mutations without executing original routines. For/switch contexts,
+native block cleanup/scope/watchdog/diagnostic order, richer values/calls and full
+GSC acceptance remain open; see ADR 0039.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

@@ -143,7 +143,10 @@ The complete server rewrite remains open.
 - Scalar `while` now reevaluates conditions through verified backward jumps and
   bounded execution fuel. Exit initialization conservatively permits zero
   iterations. Tests cover 70,000 local snapshots, long backward jumps and 12,000
-  nested loops. `for`, `break`/`continue`, switch and native watchdog timing remain open.
+  nested loops. `for`, switch and native watchdog timing remain open.
+- Scoped scalar while `break`/`continue` preserve nearest-loop targets and
+  terminating-path initialization joins. Break links share admitted instruction
+  records; tests resolve 20,000 fixups and lower 12,000 nested contexts.
 
 The protocol crate has no third-party dependencies, socket I/O, global state,
 platform FFI, or dependency on the original server binary. Logging and process

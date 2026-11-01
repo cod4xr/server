@@ -50,6 +50,12 @@ pub enum ScalarCompileErrorKind {
     UnreachableStatement,
     /// A private initialization snapshot/accounting invariant did not hold.
     InvalidControlState,
+    /// Break requires an active loop in this restricted profile.
+    IllegalBreak,
+    /// Continue requires an active loop in this restricted profile.
+    IllegalContinue,
+    /// A private loop destination/context invariant did not hold.
+    InvalidLoopContext,
     /// A private local slot/table invariant did not hold.
     InvalidLocalBinding,
     /// Identifier admission failed without retaining its spelling.

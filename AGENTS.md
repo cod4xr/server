@@ -171,6 +171,14 @@ reuse snapshot/task/work admission and original operation/keyword spans. Guard
 selected while/compiler/VM roles via generate_syntax_tables.py --check, without
 claiming native routine/watchdog timing/scope parity. For, break/continue, switch
 and general runtime behavior remain separate work; see ADR 0038.
+Scalar while break/continue now preserve nearest-loop contexts and terminate
+their structural paths. Save outer context ownership in admitted flat tasks;
+continue targets the actual condition and break chains link within complete
+pending instruction records. Bind each link once with monotonic/forward checks
+and global work charging. Reject illegal/unreachable source and retain keyword
+maps/fuel; no unresolved link may publish. Keep emission/admission and relocation
+binding/resolution in separate leaf modules. Guard selected native context/fixup/
+restore roles without claiming native block cleanup/for/switch/VM parity; see ADR 0039.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

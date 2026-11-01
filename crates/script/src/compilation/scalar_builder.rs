@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use std::mem;
 use std::ops::Range;
 
 use crate::compilation::scalar_compilation_ledger::ScalarCompilationLedger;
 use crate::compilation::scalar_compile_error;
 use crate::compilation::scalar_local_bindings::ScalarLocalBindings;
+use crate::compilation::scalar_loop_transfer::ScalarWhileContext;
 use crate::compilation::scalar_task::{
     PendingScalarInstruction, PendingScalarKind, ScalarPatchSite, ScalarTask,
 };
@@ -15,8 +15,9 @@ pub(super) struct ScalarBuilder<'tree, 'source> {
     pub(super) ledger: ScalarCompilationLedger,
     pub(super) locals: Option<ScalarLocalBindings<'source>>,
     pub(super) reachable: bool,
+    pub(super) active_loop: Option<ScalarWhileContext>,
     tasks: Vec<ScalarTask<'tree, 'source>>,
-    instructions: Vec<PendingScalarInstruction>,
+    pub(super) instructions: Vec<PendingScalarInstruction>,
     active_task: bool,
 }
 
@@ -26,6 +27,7 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
             ledger: ScalarCompilationLedger::new(budget),
             locals: None,
             reachable: true,
+            active_loop: None,
             tasks: Vec::new(),
             instructions: Vec::new(),
             active_task: false,
@@ -126,6 +128,15 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
             .map(ScalarPatchSite)
     }
 
+    pub(super) fn break_jump(
+        &mut self,
+        next: Option<ScalarPatchSite>,
+        span: Range<u64>,
+    ) -> Result<ScalarPatchSite, ScalarCompileError> {
+        self.append(PendingScalarKind::Break { target: None, next }, span)
+            .map(ScalarPatchSite)
+    }
+
     fn append(
         &mut self,
         kind: PendingScalarKind,
@@ -149,74 +160,5 @@ impl<'tree, 'source> ScalarBuilder<'tree, 'source> {
         self.instructions
             .push(PendingScalarInstruction { kind, span });
         Ok(index)
-    }
-
-    #[expect(
-        clippy::needless_pass_by_value,
-        reason = "Binding consumes the private relocation token so its caller cannot reuse it."
-    )]
-    pub(super) fn bind(
-        &mut self,
-        site: ScalarPatchSite,
-        span: Range<u64>,
-    ) -> Result<(), ScalarCompileError> {
-        let target = self.instructions.len();
-        let instruction = self.instructions.get_mut(site.0).ok_or_else(|| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::InvalidBranchBinding)
-        })?;
-        match &mut instruction.kind {
-            PendingScalarKind::Branch { target: slot, .. }
-            | PendingScalarKind::Jump { target: slot }
-                if slot.is_none() && target > site.0 =>
-            {
-                *slot = Some(target);
-            }
-            _ => {
-                return Err(scalar_compile_error::at(
-                    span,
-                    ScalarCompileErrorKind::InvalidBranchBinding,
-                ));
-            }
-        }
-        Ok(())
-    }
-
-    pub(super) fn resolve(
-        &mut self,
-        span: Range<u64>,
-    ) -> Result<(Vec<KernelInstruction>, Vec<Range<u64>>), ScalarCompileError> {
-        self.ledger.resolution(span.clone())?;
-        let count = self.instructions.len();
-        let mut code = Vec::new();
-        let mut spans = Vec::new();
-        code.try_reserve_exact(count).map_err(|_| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
-        })?;
-        spans.try_reserve_exact(count).map_err(|_| {
-            scalar_compile_error::at(span.clone(), ScalarCompileErrorKind::AllocationFailed)
-        })?;
-        for pending in mem::take(&mut self.instructions) {
-            self.ledger.charge(1, pending.span.clone())?;
-            let instruction = match pending.kind {
-                PendingScalarKind::Ready(instruction) => instruction,
-                PendingScalarKind::Branch {
-                    condition,
-                    target: Some(target),
-                } => KernelInstruction::Branch { condition, target },
-                PendingScalarKind::Jump {
-                    target: Some(target),
-                } => KernelInstruction::Jump(target),
-                PendingScalarKind::Branch { target: None, .. }
-                | PendingScalarKind::Jump { target: None } => {
-                    return Err(scalar_compile_error::at(
-                        pending.span,
-                        ScalarCompileErrorKind::InvalidBranchBinding,
-                    ));
-                }
-            };
-            code.push(instruction);
-            spans.push(pending.span);
-        }
-        Ok((code, spans))
     }
 }

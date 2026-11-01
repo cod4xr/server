@@ -299,6 +299,18 @@ conservative structural policy does not implement native constant folding or loo
 watchdog timing. All snapshot/name/metadata scopes remain shared. For, break/
 continue, switch and full native scope/runtime parity remain open; see ADR 0038.
 
+Scalar while break/continue now use the nearest active compiler context. Saved
+outer contexts live inside flat end tasks; transfer paths terminate structurally
+and do not constrain conditional joins. Continue jumps to the real condition
+head. Break sites link through private pending instruction records and bind once
+to the loop exit with checked monotonic indices and globally charged visits.
+Complete pending-record/task sizes share existing metadata admission; no separate
+fixup vector or native fixed case array is introduced. Emission/admission and
+binding/resolution now occupy separate leaf modules. Code publication still
+requires independent kernel verification. Function-wide scalar slots imply no
+native block-variable cleanup; full scope/for/switch/runtime parity remains open.
+See ADR 0039.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

@@ -13,6 +13,7 @@ import script_lexer_reference as lexical
 import script_statement_reference as statements
 import script_syntax_reference as syntax
 import script_update_reference as updates
+import script_loop_transfer_reference as transfers
 import script_while_reference as loops
 
 
@@ -83,6 +84,8 @@ def main() -> None:
                    reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
     loops.verify(reference.files["src/asmsource/_scr_compiler.asm"],
                  reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
+    transfers.verify(reference.files["src/asmsource/_scr_compiler.asm"],
+                     reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"])
     arguments.verify(reference.files["src/asmsource/_scr_compiler.asm"],
                      reference.files["src/asmsource/_scr_vm.asm"], reference.files["src/scr_vm.h"],
                      reference.files["src/cscr_variable.cpp"],
@@ -112,7 +115,8 @@ def main() -> None:
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"Verified grammar/declaration/symbol/expression/statement/update/argument/while profiles and {len(rows) - 2} structural replays")
+    print("Verified grammar/declaration/symbol/expression/statement/update/argument/while/transfer "
+          f"profiles and {len(rows) - 2} structural replays")
 
 
 if __name__ == "__main__":

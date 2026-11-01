@@ -57,9 +57,10 @@ pub(super) fn drain(builder: &mut ScalarBuilder<'_, '_>) -> Result<(), ScalarCom
                 head,
                 exit_site,
                 incoming,
+                outer_loop,
                 span,
             } => {
-                scalar_while::after_body(builder, head, exit_site, incoming, span)?;
+                scalar_while::after_body(builder, head, exit_site, incoming, outer_loop, span)?;
             }
         }
     }
