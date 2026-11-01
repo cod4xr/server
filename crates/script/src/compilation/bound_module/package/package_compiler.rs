@@ -7,7 +7,8 @@ use crate::compilation::bound_module::package::{
     ScriptPackageError, ScriptPackageUsage,
 };
 use crate::compilation::bound_module::package::{
-    package_catalogue, package_inventory, package_lowering, package_sort, package_totals,
+    package_catalogue, package_imports, package_includes, package_inventory, package_lowering,
+    package_sort, package_totals,
 };
 use crate::compilation::bound_module::{CompiledModule, ModuleCompileError};
 use crate::compilation::function_compile_error;
@@ -15,10 +16,11 @@ use crate::compilation::function_compile_error;
 /// Compiles a closed supplied module catalog into one owned verified primitive image.
 ///
 /// Immediate file-qualified/local calls and function references share global wide
-/// targets and runtime budgets. Unqualified lookup stays local; ordinary code cannot
-/// reference developer-only definitions. All declarations retain input/source order.
+/// targets and runtime budgets. Optional one-hop includes supply local imported aliases;
+/// direct definitions and named builtin calls retain their native lookup distinctions.
+/// Ordinary code cannot reference developer-only definitions. Declarations keep input/source order.
 /// Names/code/maps survive source/tree/symbol destruction. No filesystem access,
-/// include expansion, methods/threads, host services or partial activation occurs.
+/// automatic dependency loading, methods/threads, host services or partial activation occurs.
 /// Caller-owned parsing/binding and whole-image kernel proof have separate budgets.
 /// # Errors
 /// Invalid/duplicate/empty names, unknown/unsupported/developer calls, source errors,
@@ -30,13 +32,31 @@ pub fn compile_bound_primitive_package(
     budget: ScriptPackageBudget,
 ) -> Result<CompiledScriptPackage, ScriptPackageError> {
     let totals = package_totals::count(inputs, budget)?;
-    let mut ledger = ModuleCompilationLedger::aggregate(totals, budget.compilation)
+    let mut ledger = ModuleCompilationLedger::aggregate(totals.compilation, budget.compilation)
         .map_err(|cause| ScriptPackageError::at(None, None, cause))?;
     let catalogue = package_catalogue::build(inputs, budget, &mut ledger)?;
     let order = package_sort::build(&catalogue.names, &mut ledger)?;
+    let resolved = package_includes::resolve(
+        inputs,
+        &catalogue.names,
+        &order,
+        totals.includes,
+        budget,
+        &mut ledger,
+    )?;
+    package_imports::admit(&resolved, &mut ledger)?;
+    let imported_functions = resolved.aliases;
     let (mut staged, declarations) = {
-        let inventory =
-            package_inventory::build(inputs, &catalogue.names, &order, budget.path, &mut ledger)?;
+        let mut inventory = package_inventory::build(
+            inputs,
+            &catalogue.names,
+            &order,
+            budget.path,
+            resolved.aliases,
+            &mut ledger,
+        )?;
+        package_imports::install(inputs, &mut inventory.scope, &resolved, &mut ledger)?;
+        drop(resolved);
         let staged = package_lowering::lower(inputs, &inventory.scope, &mut ledger)?;
         (staged, inventory.declarations)
     };
@@ -65,6 +85,8 @@ pub fn compile_bound_primitive_package(
     let usage = ScriptPackageUsage {
         modules: inputs.len() as u64,
         canonical_module_bytes: catalogue.canonical_bytes,
+        include_edges: totals.includes,
+        imported_functions,
         compilation: ledger.usage,
         retained_metadata_bytes: retained_names,
     };

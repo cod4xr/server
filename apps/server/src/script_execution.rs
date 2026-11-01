@@ -8,12 +8,18 @@ use crate::app_error::AppError;
 use crate::script_image::ScriptImage;
 use crate::script_runtime;
 
+#[derive(Clone, Copy)]
+pub(crate) enum ScriptDirectiveProfile {
+    SingleModule,
+    ClosedPackage,
+}
+
 pub(crate) fn run(
     source: &SourceText<'_>,
     module: &LegacyModuleSyntax<'_, '_>,
     symbols: &LegacyModuleSymbols<'_, '_, '_>,
 ) -> Result<(), AppError> {
-    check_directives(module, None)?;
+    check_directives(module, None, ScriptDirectiveProfile::SingleModule)?;
     let compiled = compilation::compile_bound_primitive_module(symbols, ModuleCompilationBudget::default()).map_err(|error| {
         let location = source.location(error.cause.span.start).ok();
         tracing::error!(event = "script.failed", phase = "compile", kind = "module", cause = ?error.cause.kind,
@@ -55,8 +61,9 @@ pub(crate) fn run(
 pub(crate) fn check_directives(
     module: &LegacyModuleSyntax<'_, '_>,
     index: Option<u64>,
+    profile: ScriptDirectiveProfile,
 ) -> Result<(), AppError> {
-    if !module.includes().is_empty() {
+    if matches!(profile, ScriptDirectiveProfile::SingleModule) && !module.includes().is_empty() {
         return Err(feature_at(
             index,
             "directives",

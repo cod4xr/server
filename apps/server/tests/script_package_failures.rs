@@ -61,11 +61,14 @@ fn package_runtime_errors_and_fuel_exhaustion_keep_callee_locations() {
 }
 
 #[test]
-fn all_supplied_directives_are_rejected_before_execution_including_unused_files() {
+fn unresolved_includes_and_animation_directives_in_unused_files_prevent_execution() {
     let root = FixtureFile::from_bytes(b"main(){return 1;}");
-    for directive in [
-        b"#include maps\\PrivateCommon;".as_slice(),
-        b"#using_animtree(\"PrivateAnim\");",
+    for (directive, phase) in [
+        (b"#include maps\\PrivateCommon;".as_slice(), "compile"),
+        (
+            b"#using_animtree(\"PrivateAnim\");".as_slice(),
+            "directives",
+        ),
     ] {
         let lib = FixtureFile::from_bytes(directive);
         let output = execute(
@@ -74,7 +77,7 @@ fn all_supplied_directives_are_rejected_before_execution_including_unused_files(
             &["--json-logs"],
         );
         let error = failed(&output, &[&root, &lib]);
-        assert_eq!(error["fields"]["phase"], "directives");
+        assert_eq!(error["fields"]["phase"], phase);
         assert_eq!(error["fields"]["module"], 1);
     }
 }

@@ -46,7 +46,10 @@ pub fn compile(
     let definitions: Vec<_> = inputs
         .iter()
         .zip(&symbols)
-        .map(|((name, _), symbols)| ScriptModuleDefinition::new(name, symbols))
+        .zip(&modules)
+        .map(|(((name, _), symbols), module)| {
+            ScriptModuleDefinition::new(name, symbols).with_includes(module.includes())
+        })
         .collect();
     compilation::compile_bound_primitive_package(&definitions, budget)
 }

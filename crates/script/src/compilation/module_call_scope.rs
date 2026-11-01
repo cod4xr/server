@@ -22,13 +22,22 @@ impl ModuleCallScope<'_> {
         token: LegacyLexeme<'_>,
         ledger: &mut FunctionCompilationLedger,
     ) -> Result<usize, FunctionCompileError> {
+        self.resolve_with(token, |visits, span| ledger.identifier(visits, span))
+    }
+
+    /// Shares exact lookup visits with function-name or package-link admission.
+    pub(super) fn resolve_with(
+        self,
+        token: LegacyLexeme<'_>,
+        mut charge: impl FnMut(u64, Range<u64>) -> Result<(), FunctionCompileError>,
+    ) -> Result<usize, FunctionCompileError> {
         let raw = token.as_bytes();
         let span = token.span();
         let visits = (raw.len() as u64)
             .checked_mul(2)
             .ok_or_else(|| invalid(span.clone(), FunctionCompileErrorKind::SizeOverflow))?;
         // Prepay complete validation/counting before calling the binding helper.
-        ledger.identifier(visits, span.clone())?;
+        charge(visits, span.clone())?;
         let path = LegacyScriptPath::new(raw, self.path_budget)
             .map_err(|cause| {
                 invalid(
@@ -43,7 +52,7 @@ impl ModuleCallScope<'_> {
             .ok_or_else(|| invalid(span.clone(), FunctionCompileErrorKind::SizeOverflow))?;
         let (mut low, mut high) = (0, self.order.len());
         while low < high {
-            ledger.identifier(comparison, span.clone())?;
+            charge(comparison, span.clone())?;
             let middle = low + (high - low) / 2;
             let module = self.order[middle];
             let stored = self

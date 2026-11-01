@@ -56,6 +56,10 @@ fn package_global_limits_admit_exact_usage_and_reject_each_one_less() -> Result<
             ModuleCompilationResource::Steps => budget.compilation.max_steps -= 1,
             ModuleCompilationResource::Instructions => budget.compilation.max_instructions -= 1,
             ModuleCompilationResource::MetadataBytes => budget.compilation.max_metadata_bytes -= 1,
+            ModuleCompilationResource::IncludeEdges
+            | ModuleCompilationResource::ImportedFunctions => {
+                return Err("Include quotas have dedicated tests".into());
+            }
             ModuleCompilationResource::CallArguments => {
                 return Err("Per-call limit checked separately".into());
             }

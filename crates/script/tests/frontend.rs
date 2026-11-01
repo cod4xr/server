@@ -5,6 +5,16 @@ mod package_calls;
 mod package_compile_support;
 #[path = "package_heap.rs"]
 mod package_heap;
+#[path = "package_includes_calls.rs"]
+mod package_includes_calls;
+#[path = "package_includes_heap.rs"]
+mod package_includes_heap;
+#[path = "package_includes_limits.rs"]
+mod package_includes_limits;
+#[path = "package_includes_visibility.rs"]
+mod package_includes_visibility;
+#[path = "package_includes_width.rs"]
+mod package_includes_width;
 #[path = "package_limits.rs"]
 mod package_limits;
 #[path = "package_names.rs"]

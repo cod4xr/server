@@ -1,16 +1,24 @@
 # Compatibility contract
 
+ADR 0080 adds closed-package includes with 13 core/four process tests and 77
+selected archival source-role mutations. Tests cover original import scopes,
+direct/builtin/import distinctions, developer rules, non-exported aliases,
+duplicates/collisions, cycles, wide counts/names, ownership/heap and failed budgets.
+These do not execute the native compiler/loader or establish its full error-order,
+cleanup, mount/preprocessing or stock/mod compatibility. Single-file includes and
+animation directives remain rejected.
+
 ADR 0078 runs explicitly supplied packages through the real offline process, with
 eleven process/two private tests for source/entry/developer/error/log/output and
 aggregate admission behavior. It preserves current single-file/query modes and
-rejects includes/animation directives in every file. This is not filesystem mount,
+rejects animation directives; ADR 0080 adds closed-catalog includes. This is not filesystem mount,
 automatic dependency/preprocessing, native loader or stock/mod compatibility.
 
 ADR 0077 adds closed supplied-file GSC compilation/execution with canonical module
 lookup, local namespaces, strict qualified misses and developer visibility.
 Thirteen integration tests cover wide/deep/owned/error/budget/heap boundaries;
 38 mutations guard selected native source roles, without executing the native
-compiler. Filesystem/include/deferred loading, cleanup and stock/mod parity are
+compiler. Automatic filesystem/deferred loading, cleanup and stock/mod parity are
 not established. Existing single-module qualified calls remain unsupported.
 
 ADR 0076 canonicalizes NUL-free ASCII virtual script names under native helper

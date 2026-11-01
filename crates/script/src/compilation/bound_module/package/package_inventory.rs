@@ -8,7 +8,7 @@ use crate::compilation::bound_module::module_compilation_ledger::ModuleCompilati
 use crate::compilation::bound_module::module_storage;
 use crate::compilation::bound_module::package::{ScriptModuleDefinition, ScriptPackageError};
 use crate::compilation::function_call_scope::{
-    FunctionCallName, FunctionCallScope, FunctionCallTarget,
+    FunctionCallName, FunctionCallOrigin, FunctionCallScope, FunctionCallTarget,
 };
 use crate::compilation::function_compile_error;
 use crate::compilation::module_call_scope::ModuleCallScope;
@@ -23,6 +23,7 @@ pub(super) fn build<'scope, 'module, 'tree, 'source: 'scope>(
     names: &'scope [CanonicalScriptPath],
     order: &'scope [usize],
     path_budget: ScriptPathBudget,
+    aliases: u64,
     ledger: &mut ModuleCompilationLedger,
 ) -> Result<PackageInventory<'scope>, ScriptPackageError> {
     let mut scope: FunctionCallScope<'scope> = FunctionCallScope {
@@ -34,8 +35,15 @@ pub(super) fn build<'scope, 'module, 'tree, 'source: 'scope>(
             path_budget,
         }),
     };
-    let count = usize::try_from(ledger.usage.functions)
+    let targets = ledger
+        .usage
+        .functions
+        .checked_add(aliases)
+        .ok_or_else(|| error(None, None, FunctionCompileErrorKind::SizeOverflow, ledger))?;
+    let count = usize::try_from(targets)
         .map_err(|_| error(None, None, FunctionCompileErrorKind::SizeOverflow, ledger))?;
+    // Reserve direct and imported keys while empty. Growing after direct insertion
+    // could rehash borrowed names outside the individual prepaid alias visits.
     scope.names.try_reserve(count).map_err(|_| {
         error(
             None,
@@ -66,6 +74,7 @@ pub(super) fn build<'scope, 'module, 'tree, 'source: 'scope>(
                     .insert(
                         FunctionCallName { module, name },
                         FunctionCallTarget {
+                            origin: FunctionCallOrigin::Direct,
                             function,
                             visibility: binding.visibility(),
                         },

@@ -8,7 +8,7 @@ use crate::compilation::bound_module::module_compilation_ledger::ModuleCompilati
 use crate::compilation::bound_module::module_storage;
 use crate::compilation::bound_module::{CompiledModuleDeclaration, ModuleCompileError};
 use crate::compilation::function_call_scope::{
-    FunctionCallName, FunctionCallScope, FunctionCallTarget,
+    FunctionCallName, FunctionCallOrigin, FunctionCallScope, FunctionCallTarget,
 };
 use crate::compilation::function_compile_error;
 
@@ -64,6 +64,7 @@ pub(super) fn build<'source>(
                 .insert(
                     FunctionCallName { module: 0, name },
                     FunctionCallTarget {
+                        origin: FunctionCallOrigin::Direct,
                         function,
                         visibility: binding.visibility(),
                     },

@@ -64,7 +64,11 @@ pub(crate) fn declare<'tree, 'source>(
             AppError::ScriptDeclaration(error)
         })?;
         ledger.declared(&syntax)?;
-        crate::script_execution::check_directives(&syntax, Some(module as u64))?;
+        crate::script_execution::check_directives(
+            &syntax,
+            Some(module as u64),
+            crate::script_execution::ScriptDirectiveProfile::ClosedPackage,
+        )?;
         declarations.push(syntax);
     }
     Ok(declarations)

@@ -1,5 +1,12 @@
 # Architecture and expansion
 
+ADR 0080 resolves opt-in includes inside an explicit canonical catalog. Direct
+function inventory precedes one-hop aliases; imported origins retain original
+targets/scopes/maps and are not qualified or transitive exports. Alias capacity
+is admitted/reserved before inserting names, avoiding later global rehash work.
+Edges, aliases, name visits and temporary records share explicit compiler budgets.
+The CLI supplies parsed directives; filesystem dependency discovery stays separate.
+
 ADR 0078 exposes closed-package execution through explicit offline CLI inputs.
 The script_package folder owns named input admission, aggregate source/frontend
 budgets and orchestration. A private borrowed ScriptImage shares runtime roots,
@@ -11,7 +18,8 @@ ADR 0077 links caller-supplied bound GSC files into one owned verified image.
 Module-indexed local name keys and a separately sorted canonical path index keep
 source order stable and prevent name leakage across files. Namespace rows/payload,
 sort/lookup work and overlapping scratch share compiler admission; runtime frames,
-fuel and heap contexts span all file calls. Callers own include/directive handling;
+fuel and heap contexts span all file calls. Callers reject directives or supply
+opt-in includes under ADR 0080;
 this API grants no host filesystem authority or loader compatibility.
 
 ADR 0076 separates canonical virtual script identity from filesystem access.

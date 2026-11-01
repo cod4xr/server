@@ -1,17 +1,29 @@
 # Project contract
 
-Assessment 0079 guards selected native include/link roles (65 mutations) with
+ADR 0080 adds opt-in with_includes slices and closed-package CLI include resolution.
+Keep direct and imported origins distinct: named calls select direct/builtin/import;
+script references select direct/import; qualified lookup exports direct names only.
+Never transitively export aliases or overwrite local/other imported definitions.
+Preserve developer rules, cycles, original body scopes/maps and private directive
+locations. Preflight edge/alias quotas, all names/binding visits and simultaneous
+staging/duplicate-set metadata; reserve the full name table while empty to avoid
+later uncharged rehashes. Report alias counts separately from executable bodies.
+Keep 13 core/four process tests, 70k aliases/edges/name bytes, ownership/heap pressure
+and every-shorter work/exact resource failures. Run include guards (77 mutations),
+syntax checks and the three-file example (42). Single-file includes and animation
+directives stay rejected. No filesystem discovery/mount/preprocessor/native whole
+compiler/loader/cleanup/stock-mod parity is implied; full GSC/S5 stays open.
+
+Assessment 0079 guards selected native include/link roles (now 77 mutations) with
 script_include_reference.py, wired into syntax checks/CI. Direct and imported
 positions differ; do not transitively re-export imported names or overwrite local
 definitions. Preserve canonical duplicate/missing include rejection and existing
-developer/builtin/qualified lookup distinctions. Includes remain disabled until
-one-hop alias admission and precedence/source-map/wide/cyclic/budget behavior is
-implemented and verified. This source guard does not execute native compiler/
-loader/cleanup/VM behavior. Read assessment 0079 before enabling directives.
+developer/builtin/qualified lookup distinctions. ADR 0080 implements closed imports;
+this source guard does not execute native compiler/loader/cleanup/VM behavior.
 
 ADR 0078 adds explicit offline --execute-gsc-package ENTRY with repeatable
 --gsc-module NAME PATH. Paths come only from operator arguments, never script
-names. Reject directives/unsupported active bodies and missing/duplicate/invalid
+names. Reject animation directives/unresolved includes/unsupported active bodies and missing/duplicate/invalid
 identities before stdout/execution. Keep one shared ScriptImage runtime/result/
 logging path, global frames/fuel/heaps and private numeric module/source locations.
 CLI rows/raw names and aggregate snapshot/index/parser/scanner/declaration/symbol
@@ -20,7 +32,7 @@ Preserve eleven process/two private tests, 17 exact/one-less frontend scopes, ra
 name-compaction bypass rejection, combined-snapshot limits and flushed JSON files.
 Run the documented example (integer 1001). Keep source phases in script_package/,
 fallible variable staging, one normal target and existing offline/query behavior.
-No automatic/include/mount/preprocess/stock-mod/complete GSC compatibility implied.
+No automatic/mount/preprocess/stock-mod/complete GSC compatibility implied.
 
 ADR 0077 adds an explicit supplied bound-module package compiler. Preserve local
 namespaces, native canonical path identity, all-active forward/recursive inventory,
@@ -32,7 +44,7 @@ atomic failed publication, exact/every-shorter work tests, 66k modules/functions
 70k name bytes, 12k frames and heap pressure. Run script_package_reference.py
 (38 selected source-role mutations), syntax guards and script_package example.
 Symbols carry no include/animation directives: callers must separately reject or
-resolve them. No filesystem loader, include/deferred/native compiler/VM/cleanup,
+supply opt-in includes under ADR 0080. No filesystem loader/deferred/native compiler/VM/cleanup,
 source-array/scheduler/stock-mod parity is implied. Single-module qualified calls
 stay unsupported. No new crate/dependency/opcode is needed; full GSC/S5 stays open.
 

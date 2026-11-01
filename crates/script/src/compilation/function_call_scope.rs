@@ -14,6 +14,13 @@ pub(super) struct FunctionCallName<'source> {
 pub(super) struct FunctionCallTarget {
     pub(super) function: usize,
     pub(super) visibility: LegacyFunctionVisibility,
+    pub(super) origin: FunctionCallOrigin,
+}
+
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub(super) enum FunctionCallOrigin {
+    Direct,
+    Imported,
 }
 
 pub(super) struct FunctionCallScope<'source> {

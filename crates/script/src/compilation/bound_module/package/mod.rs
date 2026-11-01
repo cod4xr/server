@@ -2,6 +2,8 @@
 mod compiled_script_package;
 mod package_catalogue;
 mod package_compiler;
+mod package_imports;
+mod package_includes;
 mod package_inventory;
 mod package_lowering;
 mod package_sort;

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Guard selected native include roles before choosing a closed-package import policy."""
+"""Guard selected native include/emission roles, without executing the compiler."""
 import argparse
 from pathlib import Path
 import re
@@ -9,6 +9,12 @@ from script_update_reference import block
 
 
 ROLES = {
+    "ScriptCompile_650": ("call TempMalloc\n", "call EmitThreadInternal\n"),
+    "ScriptCompile_640": ("mov dword [gScrCompilePub+0x20024], 0x0\n", "jmp ScriptCompile_220\n"),
+    "ScriptCompile_220": ("test eax, eax\n\tjz ScriptCompile_170\n",),
+    "ScriptCompile_170": (
+        "call Scr_ShutdownAllocNode\n", "call Hunk_ClearTempMemoryHigh\n",
+        "mov edx, [gScrCompilePub+0x4]\n", "test edx, edx\n\tjle ScriptCompile_270\n"),
     "ScriptCompile_30": (
         "call SL_ConvertToString\n", "call Scr_CreateCanonicalFilename\n", "mov esi, eax\n"),
     "ScriptCompile_80": (

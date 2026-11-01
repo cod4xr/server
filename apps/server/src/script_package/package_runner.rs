@@ -35,8 +35,11 @@ pub(crate) fn run(
         ));
     }
     let mut definitions = frontend::rows(inputs.len())?;
-    for (input, symbol) in inputs.iter().zip(&symbols) {
-        definitions.push(ScriptModuleDefinition::new(input.name.as_bytes(), symbol));
+    for ((input, symbol), module) in inputs.iter().zip(&symbols).zip(&modules) {
+        definitions.push(
+            ScriptModuleDefinition::new(input.name.as_bytes(), symbol)
+                .with_includes(module.includes()),
+        );
     }
     let compiled = compilation::compile_bound_primitive_package(&definitions, ScriptPackageBudget::default())
         .map_err(|error| {
@@ -130,6 +133,8 @@ fn report(compiled: &compilation::CompiledScriptPackage, ledger: &ScriptPackageF
         binding_metadata_bytes =
             initial.symbol.max_metadata_bytes - ledger.symbol.max_metadata_bytes,
         canonical_module_bytes = package.canonical_module_bytes,
+        include_edges = package.include_edges,
+        imported_functions = package.imported_functions,
         declarations = usage.declarations,
         functions = usage.functions,
         instructions = usage.instructions,

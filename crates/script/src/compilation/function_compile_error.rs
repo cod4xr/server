@@ -32,6 +32,10 @@ pub enum FunctionCompilationResource {
 /// Fixed function compilation category, without source text, values, or names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FunctionCompileErrorKind {
+    /// One source module includes the same canonical catalog module more than once.
+    DuplicateInclude,
+    /// An imported name collides with a direct definition or another imported name.
+    IncludeFunctionConflict,
     /// A supplied package module name canonicalizes to an empty identity.
     EmptyModuleName,
     /// Two supplied package modules share one canonical virtual identity.

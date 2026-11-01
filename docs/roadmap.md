@@ -52,9 +52,14 @@ source-array execution. This does not close S5 or a full-GSC workstream.
 
 ## Next concrete work
 
+ADR 0080 adds closed-catalog includes through the package compiler and offline
+command, with checked one-hop import scopes and native source-role evidence.
+It does not implement source discovery/mount/preprocessing or close the module
+loading/full-GSC/stock-mod acceptance gates.
+
 ADR 0077 implements closed caller-supplied multi-file compilation/execution with
 qualified calls/references, local namespaces and shared admission. Its wide/deep/
-heap/source-role checks do not close filesystem/include loading, source ownership,
+heap/source-role checks do not close automatic filesystem loading, source ownership,
 scheduling, host libraries or stock/mod acceptance. S5 remains open.
 
 1. Continue remaining delta/user-command/snapshot codecs and legacy/profile

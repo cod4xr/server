@@ -40,6 +40,10 @@ impl Default for ModuleCompilationBudget {
 /// Bound-module compiler resource; all but `CallArguments` are aggregate scopes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ModuleCompilationResource {
+    /// Supplied include directives in the closed-package API.
+    IncludeEdges,
+    /// One-hop imported name aliases, additional to direct function definitions.
+    ImportedFunctions,
     /// Supplied named modules in the explicit package API.
     Modules,
     /// Complete raw virtual-module-name bytes in the explicit package API.

@@ -16,18 +16,24 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Closed GSC packages now resolve explicitly supplied `#include` dependencies,
+  with direct/indirect calls, original file scopes, developer checks and separate
+  import budgets. Tests cover 70,000 aliases/edges and full long-name identities.
+  ADR 0080 includes a three-file example returning 42. Automatic file loading,
+  preprocessing, animation directives and full stock/mod execution remain open.
+
 - The offline server command runs explicitly supplied GSC packages through the
   normal readable/JSON logs and typed result output. Use `--execute-gsc-package`
   with repeatable `--gsc-module NAME PATH`; ADR 0078 includes a runnable example.
   Combined frontend budgets and private file/source failures are tested. Automatic
-  loading, includes, game services and complete GSC execution remain open.
+  loading, animation directives, game services and complete GSC execution remain open.
 
 - Supplied GSC files now compile into one owned verified package with qualified
   calls/function references, local namespaces and shared budgets. Tests cover
   66,000 modules/functions, 70,000-byte names, deep cross-file frames and heap
   pressure. Run `cargo run -p cod4x-script --example script_package --locked` for
   the two-file example (integer 1001). ADR 0077 scopes evidence; filesystem loading,
-  includes, source arrays, scheduling and full stock/mod execution remain open.
+  source arrays, scheduling and full stock/mod execution remain open.
 
 - Canonical virtual script names now match the selected native ASCII helper,
   with borrowed lookup views, fallible ownership, explicit work/length budgets

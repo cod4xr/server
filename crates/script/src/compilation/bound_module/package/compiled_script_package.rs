@@ -26,6 +26,10 @@ pub struct ScriptPackageUsage {
     pub modules: u64,
     /// Owned canonical virtual-name payload bytes.
     pub canonical_module_bytes: u64,
+    /// Explicit include directives resolved within the supplied closed catalog.
+    pub include_edges: u64,
+    /// One-hop imported name aliases; these are not additional executable bodies.
+    pub imported_functions: u64,
     /// Namespace/code generation/proof counters under shared compiler admission.
     pub compilation: ModuleCompilationUsage,
     /// All retained names/module boundaries/maps, excluding immutable kernel code.
@@ -42,7 +46,7 @@ pub struct ScriptPackageLocation {
 }
 
 /// Owned closed script package with one verified function-reference identity.
-/// This does not load files, resolve includes, activate game state or provide host services.
+/// This does not load files, discover dependencies, activate game state or provide host services.
 pub struct CompiledScriptPackage {
     pub(super) image: CompiledModule,
     pub(super) names: Vec<CanonicalScriptPath>,

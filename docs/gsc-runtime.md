@@ -1,21 +1,29 @@
 # Expanded GSC runtime contract
 
+ADR 0080 links explicit include directives against the supplied closed catalog,
+with one-hop aliases, original function scopes/maps, checked developer/builtin
+distinctions and separate edge/alias admission. Thirteen core/four process tests
+and 77 native source-role mutations scope this behavior. The three-file example
+returns 42. Automatic loading, preprocessing, source arrays/scheduling, host
+libraries and full stock/mod acceptance remain open.
+
 ADR 0078 provides --execute-gsc-package with explicit --gsc-module NAME PATH
 inputs, shared aggregate frontend/compiler/runtime admission and the normal
 readable/JSON logging and typed stdout. Its real-process example returns integer
-1001. Caller-supplied file authority is explicit; directives/automatic loading,
+1001. Caller-supplied file authority is explicit; animation directives/automatic loading,
 source arrays, scheduling, host libraries and stock/mod acceptance remain open.
 
 ADR 0077 adds closed supplied-file compilation into one owned verified image,
 including qualified calls/references, local namespaces, developer rules and shared
 compiler/runtime/heap admission. The script_package example runs two real sources;
 wide/deep/ownership/resource tests and 38 native source-role mutations scope the
-evidence. Caller source-loading phases must reject or resolve directives separately.
-Filesystem loading/includes, source arrays, scheduling and stock/mod parity remain open.
+evidence. Callers reject directives or supply opt-in includes under ADR 0080.
+Automatic filesystem loading, source arrays, scheduling and stock/mod parity remain open.
 
 ADR 0076 adds budgeted canonical virtual script identities and owned names for
 future file-qualified lookup. Native/model/resource/wide/privacy tests cover naming;
-module catalogs and cross-file calls/references follow ADR 0077; includes/loading remain open.
+module catalogs/cross-file calls follow ADR 0077 and closed includes follow ADR 0080;
+automatic loading remains open.
 
 ADR 0075 establishes the next ownership requirement: native acyclic holder release
 removes array aliases before a later COW decision; cycles retain them. The 210-trace

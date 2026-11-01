@@ -2,7 +2,7 @@
 
 Date: 2026-11-01
 
-Status: selected archival source roles guarded; include execution remains disabled.
+Status: selected archival source roles guarded; closed include execution later follows ADR 0080.
 
 ## Scope and evidence
 
