@@ -12,7 +12,7 @@ and CLI strings follow in ADR 0057. Byte equality is source grounded; binary hos
 bytes do not establish native NUL/interner behavior. Runtime/rooting tests cover
 12,000 frames, 100,000 loop allocations in four slots, every pressure resource,
 exact-one-less work/scratch, failures/lifetimes and hostile streams. See ADR 0055;
-localized/mixed coercion, string indexing, objects/scheduling/full mods stay open.
+translation/mixed coercion, string indexing, objects/scheduling/full mods stay open.
 Typed code literals/cache now pass 13 further tests, including owned binary bytes,
 70,000 rows, cached-only roots, complete standalone/module overlap, exact-one-less
 proof/runtime limits, independent heaps and repeated large values; see ADR 0056.
@@ -22,7 +22,12 @@ Nine source tests cover ownership, 70,000 distinct rows, 100,000-byte values, ac
 calls/loops/maps, developer policy and exact compiler/proof budgets. Three process
 tests cover JSON/human privacy, byte output, located failures and complete large
 results. This is not native interning/ref cleanup, localized/mixed coercion, full
-mods or client-visible capacity expansion. Isolated scalar source profiles stay
+mods or client-visible capacity expansion. ADR 0059 now adds raw localized values,
+same-type equality and escaped output, with 3,024 actual C identity/type/arithmetic
+outcomes (144 results/2,880 type errors). Six kernel and six source tests plus two
+process tests cover tags/ownership/rooting/maps/budgets/privacy, 70,000 mixed rows
+and loop pressure. Native byte interning/ref cleanup and actual translation remain
+open. Isolated scalar source profiles stay
 restricted; the complete GSC and server gates remain open.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
@@ -540,13 +545,13 @@ Active script definitions shadow them; existing developer policy and canonical
 names remain enforced. Exact-one arity checks run after supplied arguments, so
 unselected wrong counts do not fail and argument errors retain precedence. Typed
 instructions share existing resource limits without native 255-count ceilings,
-new host/plugin authority or frames. Of 832 actual C O0/O2 count/tag outcomes, 168
-currently representable/bounded cases execute in Rust; 664 are explicitly helper-
+new host/plugin authority or frames. Of 832 actual C O0/O2 count/tag outcomes, 196
+currently representable/bounded cases execute in Rust; 636 are explicitly helper-
 only, not full native value/VM coverage. Selected source guards reject 46 mutations.
 Source tests reach 256 arguments and 12,000 nested calls; typed fixtures include
 70,000 arguments. Exact count/byte/fuel/proof, unsupported authority, maps/privacy,
 developer/shadowing/order/arity/hostile/recovery checks remain required. isstring
-checks plain tag 2; localized tag 3 remains helper-only. See ADRs 0051/0058;
+checks plain tag 2 and rejects the now-implemented localized tag 3. See ADRs 0051/0058/0059;
 general builtins, heap/isdefined/entity lifetime, scheduler/game services, full-mod
 and Linux gates stay open.
 

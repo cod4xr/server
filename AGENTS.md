@@ -1,9 +1,8 @@
 # Project contract
 
-The heap string store now backs typed execution, bound plain GSC literals and
-escaped offline byte output. Preserve complete-root
-ownership, stale/foreign/generation
-checks, atomic failed collection and independent retained/work/scratch budgets.
+The heap string store backs typed execution, bound plain/localized GSC literals
+and escaped offline byte output. Preserve complete-root ownership, stale/foreign/
+generation checks, atomic failed collection and independent retained/work/scratch budgets.
 VM integration must root all live frames, cached literals, external handles and
 pending results and share work across the call tree; see ADRs 0054/0055. Immutable
 code rejects runtime StringId constants even when unreachable. Never describe
@@ -15,8 +14,14 @@ scratch admission; root every active cached literal. Reset cache per invocation
 without resetting global work or coupling code to one heap. Bound plain source
 lowering and CLI strings now follow ADR 0057: preflight exact decoded bytes before
 allocation, account staging/proof copies, preserve source maps and keep payloads
-out of logs. Keep isolated scalar profiles distinct. Localized/mixed coercion,
-string indexing/switches and full arrays/objects/scheduling remain open.
+out of logs. ADR 0059 adds distinct localized values: validate/root both tags,
+reject runtime handles as constants, preserve plain/localized type errors, and
+never imply raw localized bytes perform translation/catalog lookup. Identical
+validated immutable handles compare without payload visits; distinct handles need
+budgeted content comparison. Run generate_string_value_vectors.py --check (3,024
+actual C outcomes) and retain strict default oracle string services. Keep isolated
+scalar profiles distinct. Translation/mixed coercion, string indexing/switches and
+full arrays/objects/scheduling remain open.
 
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a
@@ -321,13 +326,13 @@ instruction, including errors; skipped wrong counts remain valid. Proof still
 requires reachable supplied operands. Share existing fuel/stack/count/byte/compiler
 budgets without argument arrays, frames, per-call resets or native 255-count caps.
 Run generate_predicate_vectors.py --check and script_predicate_reference.py: 832
-actual C count/tag outcomes, 168 executable Rust subset outcomes, 664 explicitly
+actual C count/tag outcomes, 196 executable Rust subset outcomes, 636 explicitly
 helper-only rows for unavailable value tags/UINT32_MAX, and selected role mutations.
 Do not describe all native tags as implemented values or helper stubs as VM/plugin/
 error-unwind execution. Preserve shadow/case/developer/arity/order/maps/privacy,
 wide/deep/hostile/exact-one-less/isolated/quota/recovery tests. General builtins,
 heap/entity lifetime, isdefined, host services, full-mod/Linux gates remain open;
-see ADRs 0051/0058. isstring checks plain tag 2, not localized tag 3, and its native
+see ADRs 0051/0058/0059. isstring checks plain tag 2, not localized tag 3, and its native
 result service is Scr_AddInt. Preserve the 46 result/type/arity/lookup mutations.
 Reference hashes were checked against pinned Git blobs.
 Primitive integer switch now owns case inventory/section tasks/exit joins/balanced

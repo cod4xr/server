@@ -53,6 +53,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
         let value = match tag {
             0 => Some(KernelValue::Undefined),
             2 => Some(KernelValue::String(string)),
+            3 => Some(KernelValue::LocalizedString(string)),
             4 => Some(KernelValue::Vector(LegacyVector::from_components([0.0; 3]))),
             5 => Some(KernelValue::Number(LegacyNumber::Float(f32::NAN))),
             6 => Some(KernelValue::Number(LegacyNumber::Integer(0))),
@@ -112,7 +113,7 @@ fn native_predicate_subset_replays_through_verified_pure_instructions() -> Resul
     }
     assert_eq!(
         (rows, replayed, successes, helper_only),
-        (832, 168, 24, 664)
+        (832, 196, 28, 636)
     );
     Ok(())
 }

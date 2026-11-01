@@ -30,7 +30,12 @@ metadata admission and carry tables through staged code into proof. Compiler sco
 include prior staged tables while lowering later bodies; kernel proof copies have
 separate explicit admission. Isolated scalar profiles remain unchanged. The offline
 application owns its heap through result resolution, borrowing escaped result bytes
-for stdout and logging only categories/counts. String indexing/switches, localization/
+for stdout and logging only categories/counts. ADR 0059 adds a distinct localized
+value/literal tag with the same checked storage/cache/rooting. Only same-tag string
+equality and plain concatenation are supported; mixed/localized arithmetic rejects
+explicitly. Raw localized output performs no lookup or translation. The C oracle
+checks 3,024 synthetic-identity outcomes without relaxing default string services.
+String indexing/switches, translation/
 mixed coercion, general objects and host/scheduling integration remain open.
 
 ## Dependency direction
@@ -468,7 +473,8 @@ permits only these known pure calls. Function-reference construction stays scrip
 only. Runtime checks arity after all arguments evaluate and shares existing stack/
 fuel/storage admission without allocating an argument array or callee frame.
 Source maps/compiler quotas remain unchanged. ADR 0058 adds plain-only isstring
-with actual native helper/type/result evidence. See ADR 0051; this is not a general
+with actual native helper/type/result evidence. ADR 0059 adds localized tag 3 to
+the replay subset while retaining its false isstring result. See ADR 0051; this is not a general
 plugin/callback system, heap, scheduler or game-service implementation.
 
 Integer switches keep case records in admitted control metadata and save outer

@@ -2,6 +2,7 @@
 """Build/run actual vector helpers with shared bounded harness service boundaries."""
 
 from pathlib import Path
+from enum import Enum
 import re
 import subprocess
 import sys
@@ -13,7 +14,33 @@ from reference_source import ReferenceSource, declaration
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(reference: ReferenceSource, driver_names: tuple[str, ...], cc: str) -> bytes:
+class StringReferences(Enum):
+    """Concrete test-service boundaries; neither creates a native string pool."""
+    UNAVAILABLE = "unavailable"
+    SYNTHETIC_IDENTITIES = "synthetic_identities"
+
+
+def services(profile: StringReferences) -> str:
+    source = (ROOT / "tools/oracles/vector_services.c").read_text(encoding="utf-8")
+    if profile == StringReferences.UNAVAILABLE:
+        return source
+    if profile != StringReferences.SYNTHETIC_IDENTITIES:
+        raise ValueError("Unknown string-reference oracle profile")
+    original = "static void SL_RemoveRefToString(unsigned int v) { (void)v; abort(); }"
+    replacement = (
+        "static unsigned int string_reference_removals;\n"
+        "static unsigned int removed_string_labels[2];\n"
+        "static void SL_RemoveRefToString(unsigned int v)\n"
+        "{ if (v < 1 || v > 6 || string_reference_removals >= 2) abort();\n"
+        "  removed_string_labels[string_reference_removals++] = v; }"
+    )
+    if source.count(original) != 1:
+        raise ValueError("Original strict string-reference service changed")
+    return source.replace(original, replacement, 1)
+
+
+def run(reference: ReferenceSource, driver_names: tuple[str, ...], cc: str, *,
+        string_references: StringReferences = StringReferences.UNAVAILABLE) -> bytes:
     header = reference.files["src/scr_vm.h"]
     variables = reference.files["src/cscr_variable.cpp"]
     macros = []
@@ -30,7 +57,7 @@ def run(reference: ReferenceSource, driver_names: tuple[str, ...], cc: str) -> b
     parts = [PRELUDE, "#include <setjmp.h>\ntypedef float vec3_t[3];",
              declaration(header, r"enum \$[A-Z0-9]+\s*\{\s*VAR_UNDEFINED.*?\};"),
              declaration(header, r"union VariableUnion\s*\{.*?\};"), "\n".join(macros),
-             (ROOT / "tools/oracles/vector_services.c").read_text(encoding="utf-8"),
+             services(string_references),
              reference.function("src/q_math.c", "VectorCompare")]
     names = ("Scr_CastVector", "Scr_CastWeakerPair", "Scr_CastWeakerStringPair",
              "Scr_EvalPlus", "Scr_EvalMinus", "Scr_EvalMultiply", "Scr_EvalDivide",

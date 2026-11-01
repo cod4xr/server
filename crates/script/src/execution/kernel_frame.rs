@@ -81,8 +81,8 @@ impl KernelFrame {
             .copied()
             .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
         match instruction {
-            KernelInstruction::StringLiteral(index) => {
-                self.load_literal(program, index, heap, parents, pc)?;
+            KernelInstruction::StringLiteral(_) | KernelInstruction::LocalizedStringLiteral(_) => {
+                self.load_literal(program, instruction, heap, parents, pc)?;
                 self.pc = advance(pc)?;
             }
             KernelInstruction::FunctionReference(function) => {

@@ -61,9 +61,9 @@ fn source_literal_and_operator_failures_preserve_exact_spans_without_private_pay
 }
 
 #[test]
-fn localized_active_bodies_prevent_publication_but_disabled_developer_tables_stay_absent()
+fn unsupported_localized_size_body_prevents_publication_and_developer_tables_stay_scoped()
 -> Result<(), String> {
-    let text = br#"main(){return "ordinary";}/# hidden(){return &"PrivateLocalized";}#/"#;
+    let text = br#"main(){return "ordinary";}/# hidden(){return &"PrivateLocalized".size;}#/"#;
     let module = module_compile_support::compile(
         text,
         LegacyDeveloperMode::Disabled,
@@ -76,7 +76,7 @@ fn localized_active_bodies_prevent_publication_but_disabled_developer_tables_sta
         LegacyDeveloperMode::Enabled,
         ModuleCompilationBudget::default(),
     )
-    .expect_err("Complete publication rejects active localized body");
+    .expect_err("Complete publication rejects active unsupported size access");
     assert_eq!(error.declaration_index(), Some(1));
     assert_eq!(
         error.cause.kind,

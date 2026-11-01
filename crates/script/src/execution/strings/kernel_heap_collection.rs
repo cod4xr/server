@@ -12,7 +12,7 @@ pub(super) fn collect(
         .ok_or(KernelErrorKind::SizeOverflow)?;
     for value in values.clone() {
         context.charge(1)?;
-        if matches!(value, KernelValue::String(_)) {
+        if value.string_id().is_some() {
             count = count.checked_add(1).ok_or(KernelErrorKind::SizeOverflow)?;
         }
     }
@@ -30,7 +30,7 @@ pub(super) fn collect(
         .map_err(|_| KernelErrorKind::AllocationFailed)?;
     for value in values {
         context.charge(1)?;
-        if let KernelValue::String(id) = value {
+        if let Some(id) = value.string_id() {
             roots.push(id);
         }
     }

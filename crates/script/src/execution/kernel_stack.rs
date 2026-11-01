@@ -64,7 +64,10 @@ impl KernelStack {
             KernelValue::Undefined
             | KernelValue::Vector(_)
             | KernelValue::Function(_)
-            | KernelValue::String(_) => Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber)),
+            | KernelValue::String(_)
+            | KernelValue::LocalizedString(_) => {
+                Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber))
+            }
         }
     }
 

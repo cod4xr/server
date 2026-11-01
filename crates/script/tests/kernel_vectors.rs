@@ -53,7 +53,8 @@ fn result_matches(value: KernelValue, kind: &str, bits: &str) -> Result<(), Stri
         KernelValue::Undefined
         | KernelValue::Vector(_)
         | KernelValue::Function(_)
-        | KernelValue::String(_) => {
+        | KernelValue::String(_)
+        | KernelValue::LocalizedString(_) => {
             return Err("Expected numeric execution result".to_owned());
         }
     }

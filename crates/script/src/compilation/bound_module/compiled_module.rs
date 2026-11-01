@@ -8,7 +8,7 @@ use crate::execution::{KernelModuleUsage, VerifiedKernelModule};
 /// Successful aggregate source-module accounting; excludes allocator rounding/RSS.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub struct ModuleCompilationUsage {
-    /// Complete active plain-string literal row count.
+    /// Complete active plain/localized literal row count.
     pub string_literals: u64,
     /// Logical complete staged literal rows/payload before separate proof copying.
     pub staged_string_bytes: u64,

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelErrorKind, KernelHeapContext, KernelInstruction, KernelValue};
+use crate::heap::StringId;
 use crate::legacy::{LegacyArithmetic, LegacyComparison, LegacyNumber};
 
 pub(in crate::execution) fn validate_arguments(
@@ -10,10 +11,7 @@ pub(in crate::execution) fn validate_arguments(
     if let Some(context) = context {
         return context.validate(arguments);
     }
-    if arguments
-        .iter()
-        .any(|value| matches!(value, KernelValue::String(_)))
-    {
+    if arguments.iter().any(|value| value.string_id().is_some()) {
         return Err(KernelErrorKind::HeapContextRequired);
     }
     Ok(())
@@ -36,8 +34,15 @@ pub(in crate::execution) fn apply(
     let Some((left, right)) = stack.binary_values() else {
         return Ok(None);
     };
-    if !matches!(left, KernelValue::String(_)) && !matches!(right, KernelValue::String(_)) {
+    if left.string_id().is_none() && right.string_id().is_none() {
         return Ok(None);
+    }
+    if let (KernelValue::LocalizedString(left), KernelValue::LocalizedString(right)) = (left, right)
+    {
+        return match instruction {
+            KernelInstruction::Compare(comparison) => compare(context, left, right, comparison),
+            _ => Err(KernelErrorKind::UnmatchingTypes),
+        };
     }
     let (KernelValue::String(left), KernelValue::String(right)) = (left, right) else {
         return Err(KernelErrorKind::UnmatchingTypes);
@@ -52,18 +57,31 @@ pub(in crate::execution) fn apply(
         }
         KernelInstruction::Compare(
             comparison @ (LegacyComparison::Equal | LegacyComparison::NotEqual),
-        ) => {
-            let context = context.ok_or(KernelErrorKind::HeapContextRequired)?;
-            let equal = context.equal(left, right)?;
-            let result = if comparison == LegacyComparison::Equal {
-                equal
-            } else {
-                !equal
-            };
-            Ok(Some(KernelValue::Number(LegacyNumber::Integer(i32::from(
-                result,
-            )))))
-        }
+        ) => compare(context, left, right, comparison),
         _ => Err(KernelErrorKind::UnmatchingTypes),
     }
+}
+
+fn compare(
+    context: Option<&mut KernelHeapContext<'_>>,
+    left: StringId,
+    right: StringId,
+    comparison: LegacyComparison,
+) -> Result<Option<KernelValue>, KernelErrorKind> {
+    if !matches!(
+        comparison,
+        LegacyComparison::Equal | LegacyComparison::NotEqual
+    ) {
+        return Err(KernelErrorKind::UnmatchingTypes);
+    }
+    let context = context.ok_or(KernelErrorKind::HeapContextRequired)?;
+    let equal = context.equal(left, right)?;
+    let result = if comparison == LegacyComparison::Equal {
+        equal
+    } else {
+        !equal
+    };
+    Ok(Some(KernelValue::Number(LegacyNumber::Integer(i32::from(
+        result,
+    )))))
 }

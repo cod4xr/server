@@ -65,7 +65,7 @@ fn offline_source_string_results_escape_bytes_and_keep_payloads_out_of_human_and
 fn offline_source_string_failures_keep_payloads_private_and_retain_compiler_runtime_locations() {
     for (text, phase, cause) in [
         (
-            br#"main(){return &"PrivateLocalized";}"#.as_slice(),
+            br#"main(){return &"PrivateLocalized".size;}"#.as_slice(),
             "compile",
             "UnsupportedPrimary",
         ),

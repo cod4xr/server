@@ -24,6 +24,8 @@ pub enum KernelInstruction {
     Constant(KernelValue),
     /// Pushes a checked immutable table row through the invocation's heap/cache.
     StringLiteral(usize),
+    /// Pushes the same owned literal bytes with the distinct legacy localized tag.
+    LocalizedStringLiteral(usize),
     /// Pushes an initialized local slot; the layout bounds every operand.
     LoadLocal(usize),
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
@@ -110,7 +112,8 @@ impl KernelInstruction {
             Self::Constant(_)
             | Self::LoadLocal(_)
             | Self::FunctionReference(_)
-            | Self::StringLiteral(_) => (0, 1),
+            | Self::StringLiteral(_)
+            | Self::LocalizedStringLiteral(_) => (0, 1),
             Self::Arithmetic(_)
             | Self::Compare(_)
             | Self::Integer(_)

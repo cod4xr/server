@@ -17,7 +17,7 @@ pub enum FunctionSourceProfile {
 /// Successful restricted source compiler accounting, excluding allocator overhead/RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FunctionCompilationUsage {
-    /// Owned plain-string literal rows retained for the resulting function.
+    /// Owned plain/localized literal rows retained for the resulting function.
     pub string_literals: u64,
     /// Logical literal row/payload bytes, included in compiler metadata admission.
     pub retained_string_bytes: u64,

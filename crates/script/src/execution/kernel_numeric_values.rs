@@ -53,7 +53,8 @@ fn number(value: KernelValue) -> Result<LegacyNumber, KernelErrorKind> {
         KernelValue::Undefined
         | KernelValue::Vector(_)
         | KernelValue::Function(_)
-        | KernelValue::String(_) => Err(KernelErrorKind::ExpectedNumber),
+        | KernelValue::String(_)
+        | KernelValue::LocalizedString(_) => Err(KernelErrorKind::ExpectedNumber),
     }
 }
 
@@ -61,8 +62,9 @@ fn operand(value: KernelValue) -> Result<LegacyVectorOperand, KernelErrorKind> {
     match value {
         KernelValue::Number(value) => Ok(LegacyVectorOperand::Number(value)),
         KernelValue::Vector(value) => Ok(LegacyVectorOperand::Vector(value)),
-        KernelValue::Undefined | KernelValue::Function(_) | KernelValue::String(_) => {
-            Err(KernelErrorKind::ExpectedNumber)
-        }
+        KernelValue::Undefined
+        | KernelValue::Function(_)
+        | KernelValue::String(_)
+        | KernelValue::LocalizedString(_) => Err(KernelErrorKind::ExpectedNumber),
     }
 }

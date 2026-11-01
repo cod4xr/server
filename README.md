@@ -31,7 +31,11 @@ The complete server rewrite remains open.
 - Bound GSC plain-string literals now compile into owned tables and execute through
   locals, calls, loops and byte equality. Source tests reach 70,000 rows and large
   binary payloads; offline output escapes bytes and keeps contents out of logs.
-  Isolated scalar profiles, localized/mixed coercion and full GSC remain distinct; ADR 0057.
+  Isolated scalar profiles and full GSC remain distinct; ADR 0057.
+- Localized `&"..."` values retain a distinct tag through source/calls/returns,
+  same-type equality and pressure reclamation. A 3,024-case native oracle checks
+  comparisons and localized arithmetic; 70,000 mixed source rows execute without
+  native pool/short limits. Output preserves raw keys; translation remains open; ADR 0059.
 
 - Allocation-free, safe Rust message reader and writer, with CoD4X's separate
   byte and bit cursors, little-endian signed integers, and binary32 values.
@@ -198,8 +202,8 @@ The complete server rewrite remains open.
   plugins. Active script definitions shadow these pure builtins; wrong argument
   counts fail at invocation after argument evaluation. General builtins/game
   services, the complete value heap and full-mod compatibility remain open.
-  The four actual C helpers produce 832 reference outcomes; 168 currently
-  representable cases replay in Rust. Localized strings remain separate; ADR 0058.
+  The four actual C helpers produce 832 reference outcomes; 196 currently
+  representable cases replay in Rust. isstring distinguishes localized values; ADRs 0058/0059.
 - Integer `switch` preserves default placement, adjacent labels, fallthrough,
   nearest break/continue ownership and initialization joins. Tests cover 66,000
   cases with balanced dispatch and 12,000 nested switches. Full int32 keys are an
@@ -282,9 +286,12 @@ Compile the supported primitive subset and execute its local `main` offline:
 ```sh
 cargo run -p cod4x-server -- --execute-gsc examples/gsc/primitive_demo.gsc
 cargo run -p cod4x-server -- --execute-gsc examples/gsc/strings_demo.gsc
+cargo run -p cod4x-server -- --execute-gsc examples/gsc/localized_demo.gsc
 ```
 
-The examples print `integer 18` and `string b"[[[Rust]]]"` to stdout. Readable
+The examples print `integer 18`, `string b"[[[Rust]]]"`, and
+`localized_string b"MENU_EXAMPLE"` to stdout. The last is raw key data, without
+translation/catalog lookup. Readable
 development logs report compiler
 and runtime resources on stderr; `--json-logs` selects structured stderr. Results
 stay outside logs, and function results reveal only their category. The command
@@ -292,7 +299,7 @@ compiles all active local bodies, uses canonical `main` lookup and the selected
 developer mode, and applies default compiler/proof/global execution budgets.
 Missing main parameters receive `undefined`. Includes and animation-tree directives
 fail explicitly until resolution exists. Plain string bytes are escaped on stdout;
-localized/mixed coercion, string indexing/switches, objects, general builtins/game
+translation/mixed coercion, string indexing/switches, objects, general builtins/game
 services and full-mod support remain open. This command opens no server listener.
 `--inspect-gsc` remains structural inspection without compilation/execution.
 

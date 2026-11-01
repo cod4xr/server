@@ -71,8 +71,8 @@ impl<'heap> KernelHeapContext<'heap> {
     ) -> Result<(), KernelErrorKind> {
         for value in arguments {
             self.charge(1)?;
-            if let KernelValue::String(id) = value {
-                self.heap.get(*id).map_err(kernel_heap_error::map)?;
+            if let Some(id) = value.string_id() {
+                self.heap.get(id).map_err(kernel_heap_error::map)?;
             }
         }
         for index in 0..self.external_roots.len() {
@@ -177,6 +177,10 @@ impl<'heap> KernelHeapContext<'heap> {
         right: StringId,
     ) -> Result<bool, KernelErrorKind> {
         self.charge(4)?;
+        if left == right {
+            self.heap.get(left).map_err(kernel_heap_error::map)?;
+            return Ok(true);
+        }
         let left_length = self.heap.get(left).map_err(kernel_heap_error::map)?.len();
         let right_length = self.heap.get(right).map_err(kernel_heap_error::map)?.len();
         let visits = if left_length == right_length {

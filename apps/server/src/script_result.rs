@@ -13,6 +13,7 @@ pub(crate) fn kind(value: KernelValue) -> &'static str {
         KernelValue::Vector(_) => "vector",
         KernelValue::Function(_) => "function",
         KernelValue::String(_) => "string",
+        KernelValue::LocalizedString(_) => "localized_string",
     }
 }
 
@@ -23,6 +24,7 @@ pub(crate) enum ScriptResult<'a> {
     Vector([f32; 3]),
     Function,
     String(&'a [u8]),
+    LocalizedString(&'a [u8]),
 }
 
 impl<'a> ScriptResult<'a> {
@@ -37,6 +39,7 @@ impl<'a> ScriptResult<'a> {
             KernelValue::Vector(value) => Self::Vector(value.components()),
             KernelValue::Function(_) => Self::Function,
             KernelValue::String(id) => Self::String(heap.get(id)?),
+            KernelValue::LocalizedString(id) => Self::LocalizedString(heap.get(id)?),
         })
     }
 
@@ -56,6 +59,9 @@ fn write_result(output: &mut impl Write, value: &ScriptResult<'_>) -> io::Result
         }
         ScriptResult::Function => writeln!(output, "function")?,
         ScriptResult::String(bytes) => writeln!(output, "string b\"{}\"", bytes.escape_ascii())?,
+        ScriptResult::LocalizedString(bytes) => {
+            writeln!(output, "localized_string b\"{}\"", bytes.escape_ascii())?;
+        }
     }
     output.flush()
 }

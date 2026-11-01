@@ -32,12 +32,18 @@ ADR 0057 now implements bound source plain literals and offline escaped output.
 Nine source tests cover 70,000 rows, 100,000-byte values, calls/loops/ownership,
 exact compiler/proof resources and maps. Three real process tests cover byte output,
 JSON/human privacy and failures. The normal target strings_demo.gsc command prints
-string b"[[[Rust]]]". Localized/mixed coercion, string indexing/switches, objects/
+string b"[[[Rust]]]". Translation/mixed coercion, string indexing/switches, objects/
 scheduling/library/game services and full mod acceptance remain open.
 ADR 0058 adds plain-only isstring with 832 actual native predicate outcomes,
 168 Rust replays (24 results/144 arity failures), 664 helper-only cases and 46
 source-role mutations. Five source tests cover categories/shadowing/maps/order/
 skipped calls and 256 string arguments; typed fixtures reach 70,000 handles.
+ADR 0059 now adds localized values and raw escaped output. The native value oracle
+replays all 3,024 comparisons/arithmetic outcomes; predicate coverage expands to
+196 Rust replays (28 results/168 arity errors), leaving 636 helper-only rows.
+Six kernel/six source/two process tests cover lifetimes, mixed tags, pressure,
+70,000 mixed rows and privacy. A separate 1 MiB alias test proves constant logical
+comparison work after handle validation; distinct handles still pay content work.
 
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.

@@ -1,5 +1,5 @@
 # Actual C isint/isfloat/isvector/isstring; O0/O2; count/type/result/error services stubbed.
-# Enum tag codes include markers; only U/plain-string/vector/float/int/function have Rust values.
+# Enum tags include markers; U/plain/localized-string/vector/float/int/function have Rust values.
 # No native compiler/VM/plugin/error-unwinding execution claim.
 # P predicate type_tag supplied_count status [boolean]
 # SPDX-License-Identifier: AGPL-3.0-or-later

@@ -176,6 +176,8 @@ mod lexical_vectors;
 mod literal_boundaries;
 #[path = "literal_vectors.rs"]
 mod literal_vectors;
+#[path = "localized_source_pressure.rs"]
+mod localized_source_pressure;
 mod module_compile_support;
 #[path = "primary_forms.rs"]
 mod primary_forms;
@@ -185,6 +187,8 @@ mod primary_literals;
 mod reference_views;
 #[path = "source_boundaries.rs"]
 mod source_boundaries;
+#[path = "source_localized_strings.rs"]
+mod source_localized_strings;
 #[path = "source_locations.rs"]
 mod source_locations;
 #[path = "source_strings_diagnostics.rs"]

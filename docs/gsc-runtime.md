@@ -447,8 +447,8 @@ and argument-error timing; proof still admits every reachable operand. Pure
 instructions share global fuel and actual-size stack/code admission without an
 argument array, extra frame or inherited 255-argument cap. New C files were hashed
 against their pinned Git blobs. Actual extracted functions produce 832 O0/O2
-count/tag outcomes: 168 run through verified Rust instructions (24 successes/144
-arity failures), while 664 remain explicit helper-only evidence for unavailable
+count/tag outcomes: 196 run through verified Rust instructions (28 successes/168
+arity failures), while 636 remain explicit helper-only evidence for unavailable
 native tags and UINT32_MAX declared counts. This does not allocate native values
 or execute the original VM/compiler/error unwinder. Selected registration/type/
 arity/lookup/developer/argument guards reject 46 mutations; 99 structural replays
@@ -515,8 +515,10 @@ work/fuel/lifetimes, 4,096 hostile inventories and real source maps. ADR 0056 no
 adds owned typed literal tables and invocation caches with complete proof/work/
 scratch admission, 70,000-row and repeated-large-value tests. ADR 0057 now adds
 bound plain-source literals and offline escaped output, with source-level wide/
-large/pressure/resource/map tests and process privacy/output checks. Localization/
-mixed coercion, string indexing,
+large/pressure/resource/map tests and process privacy/output checks. ADR 0059 now
+adds distinct localized values, same-type equality and raw escaped output, with
+3,024 actual C comparison/arithmetic outcomes, complete predicate tag replays and
+mixed 70,000-row/source/rooting/resource tests. Translation/mixed coercion, string indexing,
 objects/cycles/scheduling and general library/game roots remain integration work.
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of

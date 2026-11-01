@@ -60,7 +60,7 @@ pub struct VerifiedKernelProgram {
 }
 
 impl VerifiedKernelProgram {
-    /// Verifies and copies code plus exact owned plain-string literal tables.
+    /// Verifies and copies code plus exact owned plain/localized literal bytes.
     /// Runtime IDs are created only by an explicit borrowed heap context.
     ///
     /// # Errors

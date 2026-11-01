@@ -110,12 +110,18 @@ mod kernel_reference_verification;
 mod kernel_reference_width;
 #[path = "legacy_vectors.rs"]
 mod legacy_vectors;
+#[path = "localized_roots.rs"]
+mod localized_roots;
+#[path = "localized_values.rs"]
+mod localized_values;
 #[path = "numeric_boundaries.rs"]
 mod numeric_boundaries;
 #[path = "numeric_vectors.rs"]
 mod numeric_vectors;
 #[path = "predicate_vectors.rs"]
 mod predicate_vectors;
+#[path = "string_equality_work.rs"]
+mod string_equality_work;
 #[path = "string_heap_budgets.rs"]
 mod string_heap_budgets;
 #[path = "string_heap_hostile.rs"]
@@ -132,6 +138,8 @@ mod string_heap_vectors;
 mod string_operation_vectors;
 #[path = "string_operations.rs"]
 mod string_operations;
+#[path = "string_value_vectors.rs"]
+mod string_value_vectors;
 #[path = "undefined_vectors.rs"]
 mod undefined_vectors;
 #[path = "wait_boundaries.rs"]

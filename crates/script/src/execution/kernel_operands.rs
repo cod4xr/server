@@ -14,13 +14,18 @@ pub(super) fn verify(
     literals: usize,
 ) -> Result<(), KernelError> {
     match instruction {
-        KernelInstruction::StringLiteral(literal) if literal >= literals => Err(kernel_error::at(
-            pc,
-            KernelErrorKind::InvalidStringLiteral {
-                literal: literal as u64,
-            },
-        )),
-        KernelInstruction::Constant(KernelValue::String(_)) => {
+        KernelInstruction::StringLiteral(literal)
+        | KernelInstruction::LocalizedStringLiteral(literal)
+            if literal >= literals =>
+        {
+            Err(kernel_error::at(
+                pc,
+                KernelErrorKind::InvalidStringLiteral {
+                    literal: literal as u64,
+                },
+            ))
+        }
+        KernelInstruction::Constant(KernelValue::String(_) | KernelValue::LocalizedString(_)) => {
             Err(kernel_error::at(pc, KernelErrorKind::RuntimeStringConstant))
         }
         KernelInstruction::Jump(target) | KernelInstruction::Branch { target, .. }

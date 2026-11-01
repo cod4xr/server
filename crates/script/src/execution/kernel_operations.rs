@@ -85,6 +85,7 @@ pub(super) fn apply(
         }
         KernelInstruction::Call { .. }
         | KernelInstruction::StringLiteral(_)
+        | KernelInstruction::LocalizedStringLiteral(_)
         | KernelInstruction::CallIndirect { .. }
         | KernelInstruction::FunctionReference(_)
         | KernelInstruction::Jump(_)

@@ -17,12 +17,14 @@ pub(super) fn emit(
     polarity: LegacyLiteralPolarity,
     span: Range<u64>,
 ) -> Result<bool, FunctionCompileError> {
-    if !builder.mode.bound()
-        || polarity != LegacyLiteralPolarity::Unchanged
-        || !matches!(token.kind(), LegacyLexemeKind::Token(code) if code.as_u16() == 0x103)
-    {
+    if !builder.mode.bound() || polarity != LegacyLiteralPolarity::Unchanged {
         return Ok(false);
     }
+    let kind = match token.kind() {
+        LegacyLexemeKind::Token(code) if code.as_u16() == 0x103 => LegacyStringKind::Plain,
+        LegacyLexemeKind::Token(code) if code.as_u16() == 0x104 => LegacyStringKind::Localized,
+        _ => return Ok(false),
+    };
     let error =
         |kind| function_compile_error::at(token.span(), FunctionCompileErrorKind::Literal(kind));
     let budget = builder.ledger.budget.literal;
@@ -31,12 +33,8 @@ pub(super) fn emit(
             LegacyLiteralResource::EncodedBytes,
         )));
     }
-    let length = LegacyString::decoded_length(
-        token.as_bytes(),
-        LegacyStringKind::Plain,
-        budget.max_string_bytes,
-    )
-    .map_err(error)?;
+    let length = LegacyString::decoded_length(token.as_bytes(), kind, budget.max_string_bytes)
+        .map_err(error)?;
     builder.admit_literal(length as u64, span.clone())?;
     builder.ledger.charge(length as u64, span.clone())?;
     if builder.string_literals.len() == builder.string_literals.capacity() {
@@ -53,7 +51,7 @@ pub(super) fn emit(
             FunctionCompileErrorKind::InvalidStructure,
         ));
     };
-    if value.kind() != LegacyStringKind::Plain || value.as_bytes().len() != length {
+    if value.kind() != kind || value.as_bytes().len() != length {
         return Err(function_compile_error::at(
             span,
             FunctionCompileErrorKind::InvalidStructure,
@@ -61,6 +59,10 @@ pub(super) fn emit(
     }
     let index = builder.string_literals.len();
     builder.string_literals.push(value.into_bytes());
-    builder.emit(KernelInstruction::StringLiteral(index), span)?;
+    let instruction = match kind {
+        LegacyStringKind::Plain => KernelInstruction::StringLiteral(index),
+        LegacyStringKind::Localized => KernelInstruction::LocalizedStringLiteral(index),
+    };
+    builder.emit(instruction, span)?;
     Ok(true)
 }

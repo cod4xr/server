@@ -42,7 +42,7 @@ def main() -> None:
         raise ValueError("Predicate helpers disagree between O0/O2")
     expected = (
         "# Actual C isint/isfloat/isvector/isstring; O0/O2; count/type/result/error services stubbed.\n"
-        "# Enum tag codes include markers; only U/plain-string/vector/float/int/function have Rust values.\n"
+        "# Enum tags include markers; U/plain/localized-string/vector/float/int/function have Rust values.\n"
         "# No native compiler/VM/plugin/error-unwinding execution claim.\n"
         "# P predicate type_tag supplied_count status [boolean]\n"
         "# SPDX-License-Identifier: AGPL-3.0-or-later\n"
