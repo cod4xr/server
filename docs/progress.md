@@ -14,6 +14,18 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0096 extends the selected native switch oracle to fifteen scenarios
+with four plain-string/mixed-label cases. Actual pinned emitter/comparator/
+scope instructions execute with explicit modeled remaining services at driver
+O0/O2. Integer 1 and modeled string ID 1 remain distinct; key sorting is unsigned
+descending while user-transfer records retain declaration order. Earlier eleven
+rows and other four fixture families remain unchanged. Three new admissions
+bring five scope suites to 38; switch source mutations increase from 39 to 59.
+No native string intern/ref/free/VM/developer execution or Rust source string
+switch activation follows. Latest complete Rust acceptance remains 0095. Next
+is explicit heap-aware string/mixed dispatch with owned code labels, without
+fabricated heaps or embedded native IDs. Full GSC workstreams remain open.
+
 ADR 0095 connects bound source/package indexed assignment through initialized
 plain locals to the accepted typed writable cells and physical lifetime plan.
 Normal RHS/key/target order, real COW before invalid-key errors and direct versus

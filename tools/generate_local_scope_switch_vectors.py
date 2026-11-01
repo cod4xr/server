@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Record selected actual x86 integer-switch/local/transfer emission and state."""
+"""Record selected actual x86 switch/local/transfer emission and modeled string IDs."""
 import argparse
 from pathlib import Path
 
@@ -30,13 +30,15 @@ def main() -> None:
         "# S 0 no default; 1 disjoint default; 2 common default; 3 fallthrough; 4 empty case;\n"
         "# 5 existing outer local; 6 nested common if/else; 7 extra private name; 8 loop continue.\n"
         "# 9 nested both-break arms (unreachable remove count 255); 10 partial nested break/fallthrough.\n"
+        "# 11 single string ID; 12 mixed integer/string; 13/14 distinct string IDs in opposite source order.\n"
+        "# J serialized sorted keys; T modeled user-string transfers in source order (11..14 only).\n"
     ).encode("ascii") + output
     if args.check:
         if OUTPUT.read_bytes() != expected:
             raise SystemExit("Native switch-scope fixtures differ")
     else:
         OUTPUT.write_bytes(expected)
-    print("Verified 11 selected native switch-scope cases against independent expectations at driver O0/O2")
+    print("Verified 15 selected native switch-scope cases against independent expectations at driver O0/O2")
 
 
 if __name__ == "__main__":

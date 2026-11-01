@@ -7,7 +7,13 @@ Word GetInternalVariableIndex(Word value)
     if (!IsValidArrayIndex(value)) unexpected("scope switch integer domain");
     return (value + 0x800000) & 0xffffff;
 }
-void SL_TransferRefToUser(void) { unexpected("scope string case"); }
+static Word sorted_keys[16], sorted_count, transferred_strings[16], transfer_count;
+void SL_TransferRefToUser(Word id, Word user)
+{
+    if (id < 1 || id > 5 || user != 1 || transfer_count == 16)
+        unexpected("scope case string transfer profile");
+    transferred_strings[transfer_count++] = id;
+}
 void va(void) { unexpected("scope switch diagnostic"); }
 void qsort(void *base, Word count, Word size, int (*compare)(const void *, const void *))
 {
@@ -20,4 +26,7 @@ void qsort(void *base, Word count, Word size, int (*compare)(const void *, const
                 bytes[(j - 1) * size + k] = bytes[j * size + k];
                 bytes[j * size + k] = value;
             }
+    sorted_count = count;
+    for (Word i = 0; i < count; ++i)
+        memcpy(&sorted_keys[i], bytes + i * size, sizeof(Word));
 }

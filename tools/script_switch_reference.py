@@ -23,6 +23,16 @@ COMPILER = {
     ),
     "EmitSwitchStatement_460": ("call IsValidArrayIndex\n", "jnz EmitSwitchStatement_630\n", "call CompileError\n"),
     "EmitSwitchStatement_630": ("call GetInternalVariableIndex\n",),
+    "EmitSwitchStatement_470": (
+        "mov esi, [esi+0x4]\n", "cmp dword [gScrCompilePub+0x20024], 0x2\n",
+        "jz EmitSwitchStatement_610\n", "cmp byte [scrCompileGlob+0x1c], 0x0\n",
+        "jnz EmitSwitchStatement_620\n",
+    ),
+    "EmitSwitchStatement_650": (
+        "mov dword [esp+0x4], 0x1\n", "mov [esp], esi\n", "call SL_TransferRefToUser\n",
+    ),
+    "CompareCaseInfo": ("cmp [eax], edx\n", "ja CompareCaseInfo_10\n", "setb al\n"),
+    "CompareCaseInfo_10": ("mov eax, 0xffffffff\n",),
     "EmitSwitchStatement_580": ("mov [ebx], ax\n", "CompareCaseInfo", "call qsort\n"),
     "EmitSwitchStatement_380": ("mov edx, [edi]\n\tadd edi, 0x8\n\tcmp edx, [edi]\n\tjz EmitSwitchStatement_370\n",),
     "EmitSwitchStatement_390": (
@@ -38,6 +48,10 @@ VM = {
         "_cstring_cannot_switch_on",
     ),
     "VM_ExecuteInternal_1170": ("call IsValidArrayIndex\n", "jz VM_ExecuteInternal_2350\n", "call GetInternalVariableIndex\n"),
+    "VM_ExecuteInternal_1160": (
+        "mov eax, [eax]\n", "mov [ebp-0x2c], eax\n", "call SL_RemoveRefToString\n",
+        "jmp VM_ExecuteInternal_1580\n",
+    ),
 }
 
 

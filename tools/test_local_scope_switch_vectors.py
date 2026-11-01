@@ -58,6 +58,24 @@ class LocalScopeSwitchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(self.changed_case(9, b"23:255", b"23:1"))
 
+    def test_integer_and_string_case_identities_do_not_collapse(self) -> None:
+        for old, new in ((b"J 8388609 1 0", b"J 1 1 0"),
+                         (b"J 8388609 1 0", b"J 1 8388609 0")):
+            with self.subTest(new=new), self.assertRaises(ValueError):
+                validate(self.changed_case(12, old, new))
+
+    def test_string_source_order_changes_transfers_but_not_sorted_keys(self) -> None:
+        for scenario, old, new in ((13, b"T 1 2", b"T 2 1"), (14, b"T 2 1", b"T 1 2"),
+                                   (14, b"J 2 1 0", b"J 1 2 0")):
+            with self.subTest(scenario=scenario, old=old), self.assertRaises(ValueError):
+                validate(self.changed_case(scenario, old, new))
+
+    def test_default_sentinel_and_each_string_transfer_are_retained(self) -> None:
+        for scenario, old, new in ((11, b"J 1 0", b"J 1"), (13, b"T 1 2", b"T 1"),
+                                   (13, b"T 1 2", b"T 1 2 2")):
+            with self.subTest(scenario=scenario, old=old), self.assertRaises(ValueError):
+                validate(self.changed_case(scenario, old, new))
+
 
 if __name__ == "__main__":
     unittest.main()

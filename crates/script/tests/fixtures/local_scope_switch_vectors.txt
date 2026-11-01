@@ -7,6 +7,8 @@
 # S 0 no default; 1 disjoint default; 2 common default; 3 fallthrough; 4 empty case;
 # 5 existing outer local; 6 nested common if/else; 7 extra private name; 8 loop continue.
 # 9 nested both-break arms (unreachable remove count 255); 10 partial nested break/fallthrough.
+# 11 single string ID; 12 mixed integer/string; 13/14 distinct string IDs in opposite source order.
+# J serialized sorted keys; T modeled user-string transfers in source order (11..14 only).
 S 0
 P 0 2 2 2 3 0 n:1 n:3
 R 0 2 2 2 3 0 n:1 n:3
@@ -90,3 +92,42 @@ B 2 2 2 3 7 0 n:1 n:3 n:2
 B 2 3 3 3 7 0 n:1 n:3 n:2
 O 124 94 22:2 23:1 98 22:2 98 125 p:4
 Q 2
+S 11
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+O 124 22:2 98 22:2 98 125 p:3
+Q 1
+J 1 0
+T 1
+S 12
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+O 124 22:2 98 22:2 98 22:2 98 125 p:4
+Q 1
+J 8388609 1 0
+T 1
+S 13
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+O 124 22:2 98 22:2 98 22:2 98 125 p:4
+Q 1
+J 2 1 0
+T 1 2
+S 14
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+B 2 3 3 3 7 0 n:1 n:3 n:2
+O 124 22:2 98 22:2 98 22:2 98 125 p:4
+Q 1
+J 2 1 0
+T 2 1

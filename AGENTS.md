@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0096 extends the executed native switch family from eleven to fifteen
+scenarios with modeled plain-string identities, mixed integer/string labels,
+serialized key words and user-transfer records. Native comparator order is
+unsigned descending; integer/string identities and source/serialized order are
+distinct. Keep all old eleven scenario rows and other four families unchanged.
+String services remain modeled: no native interning/ref/freeing/VM/developer-mode
+claim and no Rust string-switch activation. Run five generators, 38 admissions,
+59 switch/98 local mutations, 99 structural/suite/policy checks. Latest complete
+Rust acceptance remains 0095 (390 frontend/257 legacy). Before source activation,
+review owned label bytes, mixed-key typing, explicit heaps, duplicates, cleanup,
+private locations, budgets, large cases and package/CLI paths separately.
+
 ADR 0095 implements initialized plain-local source indexed assignment and clear
 through ADR 0088's checked writable cells and ADR 0094's physical lifetimes.
 Evaluate RHS/key before borrowing the owning location; never clone a receiver
