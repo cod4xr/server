@@ -12,6 +12,10 @@ use crate::execution::{
 /// Successful verification accounting, excluding allocator rounding and process RSS.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct KernelProgramUsage {
+    /// Retained immutable literal rows, including unused ones.
+    pub string_literals: u64,
+    /// Logical literal Vec rows plus complete payload bytes, without spare capacity/RSS.
+    pub retained_string_bytes: u64,
     /// Declared parameter-prefix count; invocation entry points select binding policy.
     pub parameters: u64,
     /// Complete layout slots, including parameters and uninitialized slots.
@@ -24,7 +28,7 @@ pub struct KernelProgramUsage {
     pub max_stack_values: u64,
     /// Logical retained instruction bytes, without temporary verifier slots.
     pub retained_code_bytes: u64,
-    /// Logical admitted code plus full temporary state/worklist slots.
+    /// Logical admitted code/literals plus full temporary state/worklist slots.
     pub verification_metadata_bytes: u64,
 }
 
@@ -48,12 +52,28 @@ pub struct KernelOutcome {
 /// Construction stays inside this private execution boundary. No public mutation,
 /// source/host ownership, native bytecode, or serialized ABI is supplied.
 pub struct VerifiedKernelProgram {
+    pub(super) string_literals: Vec<Vec<u8>>,
+    pub(super) literal_offset: usize,
     pub(super) layout: KernelFunctionLayout,
     pub(super) instructions: Vec<KernelInstruction>,
     pub(super) usage: KernelProgramUsage,
 }
 
 impl VerifiedKernelProgram {
+    /// Verifies and copies code plus exact owned plain-string literal tables.
+    /// Runtime IDs are created only by an explicit borrowed heap context.
+    ///
+    /// # Errors
+    /// Rejects invalid operands/flow, code/table/payload/work exhaustion and fallible
+    /// allocation without publishing a partial proof or modifying input tables.
+    pub fn verify_with_literals(
+        instructions: &[KernelInstruction],
+        layout: KernelFunctionLayout,
+        literals: &[Vec<u8>],
+        budget: KernelVerificationBudget,
+    ) -> Result<Self, KernelError> {
+        kernel_verifier::verify_linked(instructions, layout, literals, budget, None)
+    }
     /// Admits, copies, and iteratively verifies all operands/reachable stack flow.
     /// This convenience uses a zero-parameter, zero-local layout.
     ///

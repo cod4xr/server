@@ -22,6 +22,10 @@ pub(super) fn execute(
     let local_values = admission.count();
     strings::validate_arguments(arguments, heap.as_deref_mut())
         .map_err(|kind| kernel_error::general(kind).with_locals(local_values))?;
+    if let Some(heap) = heap.as_deref_mut() {
+        heap.prepare_literals(program.usage.string_literals)
+            .map_err(|kind| kernel_error::general(kind).with_locals(local_values))?;
+    }
     execute_admitted(program, arguments, budget, admission, heap)
         .map_err(|error| error.with_locals(local_values))
 }

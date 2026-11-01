@@ -41,6 +41,10 @@ pub(super) fn execute(
         .map_err(|cause| ledger.error(Some(index), None, cause))?;
     strings::validate_arguments(arguments, heap.as_deref_mut())
         .map_err(|kind| ledger.error(Some(index), None, kernel_error::general(kind)))?;
+    if let Some(heap) = heap.as_deref_mut() {
+        heap.prepare_literals(module.usage.string_literals)
+            .map_err(|kind| ledger.error(Some(index), None, kernel_error::general(kind)))?;
+    }
     let mut frames = Vec::new();
     reserve(&mut frames).map_err(|cause| ledger.error(Some(index), None, cause))?;
     let machine = KernelFrame::new(

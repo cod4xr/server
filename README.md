@@ -24,6 +24,10 @@ The complete server rewrite remains open.
   reclamation traces live frames and external roots under global work/scratch limits.
   Tests cover 12,000 frames, 100,000 VM loop allocations in four slots and supplied
   strings in compiled GSC. Source literals and CLI string output remain open; ADR 0055.
+- Verified code owns plain-string literal tables independently of runtime heaps.
+  Per-invocation caches admit initialization/work/metadata and preserve cached-only
+  roots during collection. Tests cover 70,000 rows, repeated 1 MiB values, independent
+  heaps, module reuse and exact resource limits. Source lowering/CLI remain open; ADR 0056.
 
 - Allocation-free, safe Rust message reader and writer, with CoD4X's separate
   byte and bit cursors, little-endian signed integers, and binary32 values.

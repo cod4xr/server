@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
 use crate::execution::kernel_flow_state::KernelFlowState;
+use crate::execution::kernel_literals;
 use crate::execution::kernel_operands;
 use crate::execution::kernel_verification_ledger::KernelVerificationLedger;
 use crate::execution::{
@@ -13,12 +14,13 @@ pub(super) fn verify(
     layout: KernelFunctionLayout,
     budget: KernelVerificationBudget,
 ) -> Result<VerifiedKernelProgram, KernelError> {
-    verify_linked(input, layout, budget, None)
+    verify_linked(input, layout, &[], budget, None)
 }
 
 pub(super) fn verify_linked(
     input: &[KernelInstruction],
     layout: KernelFunctionLayout,
+    literals: &[Vec<u8>],
     budget: KernelVerificationBudget,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
@@ -33,7 +35,9 @@ pub(super) fn verify_linked(
     )?;
     let mut ledger = KernelVerificationLedger::new(input.len(), layout, budget)
         .map_err(|error| error.with_locals(layout.local_values()))?;
-    verify_flow(input, layout, &mut ledger, functions).map_err(|error| {
+    let result = kernel_literals::copy(literals, &mut ledger)
+        .and_then(|strings| verify_flow(input, layout, &mut ledger, functions, strings));
+    result.map_err(|error| {
         error
             .with_usage(
                 ledger.usage.verification_steps,
@@ -48,10 +52,18 @@ fn verify_flow(
     layout: KernelFunctionLayout,
     ledger: &mut KernelVerificationLedger,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
+    string_literals: Vec<Vec<u8>>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     for (pc, instruction) in input.iter().copied().enumerate() {
         ledger.visit(pc)?;
-        kernel_operands::verify(instruction, pc, input.len(), layout, functions)?;
+        kernel_operands::verify(
+            instruction,
+            pc,
+            input.len(),
+            layout,
+            functions,
+            string_literals.len(),
+        )?;
     }
     let mut instructions = Vec::new();
     instructions
@@ -80,6 +92,8 @@ fn verify_flow(
         }
     }
     Ok(VerifiedKernelProgram {
+        string_literals,
+        literal_offset: 0,
         layout,
         instructions,
         usage: ledger.usage,

@@ -7,7 +7,9 @@ pub(super) fn collect(
     context: &mut KernelHeapContext<'_>,
     values: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<(), KernelErrorKind> {
-    let mut count = context.external_roots.len() as u64;
+    let mut count = (context.external_roots.len() as u64)
+        .checked_add(context.literals.active.len() as u64)
+        .ok_or(KernelErrorKind::SizeOverflow)?;
     for value in values.clone() {
         context.charge(1)?;
         if matches!(value, KernelValue::String(_)) {
@@ -35,6 +37,10 @@ pub(super) fn collect(
     for index in 0..context.external_roots.len() {
         context.charge(1)?;
         roots.push(context.external_roots[index]);
+    }
+    for index in 0..context.literals.active.len() {
+        context.charge(1)?;
+        roots.push(context.literals.active_id(index)?);
     }
     if roots.len() != count {
         return Err(KernelErrorKind::InvalidExecutionState);

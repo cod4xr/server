@@ -24,23 +24,32 @@ pub(super) fn verify(
                 kernel_error::general(KernelErrorKind::AllocationFailed),
             )
         })?;
+    let mut literal_offset = 0_usize;
     for (index, definition) in definitions.iter().enumerate() {
         let function = Some(index as u64);
         let budget = admission
-            .function_budget(definition.instructions.len())
+            .function_budget(*definition)
             .map_err(|cause| KernelModuleError::verification(function, cause))?;
-        let proof = kernel_verifier::verify_linked(
+        let mut proof = kernel_verifier::verify_linked(
             definition.instructions,
             definition.layout,
+            definition.string_literals,
             budget,
             Some(definitions),
         )
         .map_err(|cause| {
-            KernelModuleError::verification(
-                function,
-                admission.error(cause, definition.instructions.len()),
-            )
+            KernelModuleError::verification(function, admission.error(cause, budget))
         })?;
+        proof.literal_offset = literal_offset;
+        literal_offset = literal_offset
+            .checked_add(proof.string_literals.len())
+            .ok_or_else(|| {
+                KernelModuleError::verification(
+                    function,
+                    kernel_error::general(KernelErrorKind::SizeOverflow)
+                        .with_usage(admission.usage.verification_steps, 0),
+                )
+            })?;
         admission
             .record(proof.usage)
             .map_err(|cause| KernelModuleError::verification(function, cause))?;

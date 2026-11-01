@@ -13,6 +13,11 @@ bytes do not establish native NUL/interner behavior. Runtime/rooting tests cover
 12,000 frames, 100,000 loop allocations in four slots, every pressure resource,
 exact-one-less work/scratch, failures/lifetimes and hostile streams. See ADR 0055;
 localized/mixed coercion, string indexing, objects/scheduling/full mods stay open.
+Typed code literals/cache now pass 13 further tests, including owned binary bytes,
+70,000 rows, cached-only roots, complete standalone/module overlap, exact-one-less
+proof/runtime limits, independent heaps and repeated large values; see ADR 0056.
+These are Rust ownership/resource tests, not native compiler/interner execution.
+Source literal lowering and CLI output remain unsupported pending integration.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported

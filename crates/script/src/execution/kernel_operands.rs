@@ -11,8 +11,15 @@ pub(super) fn verify(
     count: usize,
     layout: KernelFunctionLayout,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
+    literals: usize,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::StringLiteral(literal) if literal >= literals => Err(kernel_error::at(
+            pc,
+            KernelErrorKind::InvalidStringLiteral {
+                literal: literal as u64,
+            },
+        )),
         KernelInstruction::Constant(KernelValue::String(_)) => {
             Err(kernel_error::at(pc, KernelErrorKind::RuntimeStringConstant))
         }

@@ -2,8 +2,8 @@
 use std::fmt;
 
 use crate::execution::strings::KernelHeapUsage;
-use crate::execution::strings::kernel_heap_collection;
 use crate::execution::strings::kernel_heap_error;
+use crate::execution::strings::kernel_literal_cache::KernelLiteralCache;
 use crate::execution::{KernelErrorKind, KernelResource, KernelValue};
 use crate::heap::{
     HeapError, HeapErrorKind, HeapWorkBudget, HeapWorkUsage, StringHeap, StringHeapUsage, StringId,
@@ -16,7 +16,11 @@ use crate::heap::{
 /// rooting in subsequent invocations. Invocation failures can retain allocations
 /// or successful reclamation; individual store operations remain atomic.
 /// Work accumulates when this context is reused; it never resets per callee.
+/// Each invocation prepares a fresh admitted literal cache; cached-only strings
+/// remain roots until the next invocation. Cache, root IDs and mark flags share
+/// the supplied scratch ceiling. Dropping a cache does not drop heap payload.
 pub struct KernelHeapContext<'heap> {
+    pub(super) literals: KernelLiteralCache,
     pub(super) heap: &'heap mut StringHeap,
     pub(super) external_roots: &'heap [StringId],
     pub(super) budget: HeapWorkBudget,
@@ -33,6 +37,7 @@ impl<'heap> KernelHeapContext<'heap> {
         budget: HeapWorkBudget,
     ) -> Self {
         Self {
+            literals: KernelLiteralCache::empty(),
             heap,
             external_roots,
             budget,
@@ -91,6 +96,9 @@ impl<'heap> KernelHeapContext<'heap> {
     }
 
     pub(super) fn scratch(&mut self, bytes: u64) -> Result<(), KernelErrorKind> {
+        let bytes = bytes
+            .checked_add(self.literals.bytes)
+            .ok_or(KernelErrorKind::SizeOverflow)?;
         check(
             KernelResource::HeapScratchBytes,
             bytes,
@@ -111,6 +119,7 @@ impl<'heap> KernelHeapContext<'heap> {
                 .budget
                 .max_scratch_bytes
                 .checked_sub(root_bytes)
+                .and_then(|bytes| bytes.checked_sub(self.literals.bytes))
                 .ok_or(KernelErrorKind::InvalidExecutionState)?,
         })
     }
@@ -126,28 +135,6 @@ impl<'heap> KernelHeapContext<'heap> {
                 .checked_add(usage.scratch_bytes)
                 .ok_or(KernelErrorKind::SizeOverflow)?,
         )
-    }
-
-    pub(super) fn concatenate(
-        &mut self,
-        left: StringId,
-        right: StringId,
-        roots: impl Iterator<Item = KernelValue> + Clone,
-    ) -> Result<StringId, KernelErrorKind> {
-        match self.attempt(left, right) {
-            Ok(id) => return Ok(id),
-            Err(KernelErrorKind::BudgetExceeded {
-                resource:
-                    KernelResource::StringValues
-                    | KernelResource::StringPayloadBytes
-                    | KernelResource::StringSlots
-                    | KernelResource::StringMetadataBytes,
-                ..
-            }) => {}
-            Err(kind) => return Err(kind),
-        }
-        kernel_heap_collection::collect(self, roots)?;
-        self.attempt(left, right)
     }
 
     pub(super) fn record_error(
@@ -174,6 +161,7 @@ impl<'heap> KernelHeapContext<'heap> {
                 KernelResource::HeapScratchBytes => {
                     *requested = root_bytes
                         .checked_add(*requested)
+                        .and_then(|bytes| bytes.checked_add(self.literals.bytes))
                         .ok_or(KernelErrorKind::SizeOverflow)?;
                     *maximum = self.budget.max_scratch_bytes;
                 }
@@ -181,17 +169,6 @@ impl<'heap> KernelHeapContext<'heap> {
             }
         }
         Ok(kind)
-    }
-
-    fn attempt(&mut self, left: StringId, right: StringId) -> Result<StringId, KernelErrorKind> {
-        let result = self.heap.concatenate(left, right, self.remaining(0)?);
-        match result {
-            Ok(result) => {
-                self.record(result.usage, 0)?;
-                Ok(result.id)
-            }
-            Err(error) => Err(self.record_error(error, 0)?),
-        }
     }
 
     pub(super) fn equal(

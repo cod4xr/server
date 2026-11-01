@@ -6,6 +6,6 @@ pub struct KernelHeapUsage {
     pub steps: u64,
     /// Successfully completed pressure collections, including ones freeing no values.
     pub collections: u64,
-    /// Peak simultaneously admitted temporary root-ID bytes plus logical mark flags.
+    /// Peak simultaneous literal cache/indices, temporary root IDs and logical mark flags.
     pub peak_scratch_bytes: u64,
 }

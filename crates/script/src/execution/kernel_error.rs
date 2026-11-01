@@ -19,7 +19,7 @@ pub enum KernelResource {
     SingleStringBytes,
     /// Shared heap operation/root discovery work across the call tree.
     HeapWorkSteps,
-    /// Simultaneous logical root IDs and mark flags.
+    /// Simultaneous logical literal cache, active indices, root IDs and mark flags.
     HeapScratchBytes,
     /// Complete verified module function inventory.
     Functions,
@@ -50,6 +50,11 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// A literal operand is outside its complete immutable per-function table.
+    InvalidStringLiteral {
+        /// Rejected wide row index, without payload or source spelling.
+        literal: u64,
+    },
     /// Immutable code cannot retain nonowning references into a mutable heap.
     RuntimeStringConstant,
     /// String arguments/operations require an explicit caller-owned heap context.

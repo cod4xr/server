@@ -81,6 +81,10 @@ impl KernelFrame {
             .copied()
             .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
         match instruction {
+            KernelInstruction::StringLiteral(index) => {
+                self.load_literal(program, index, heap, parents, pc)?;
+                self.pc = advance(pc)?;
+            }
             KernelInstruction::FunctionReference(function) => {
                 let module = module
                     .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;

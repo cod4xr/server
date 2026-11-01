@@ -90,6 +90,16 @@ mod kernel_heap_values;
 mod kernel_heap_vectors;
 #[path = "kernel_integer_admission.rs"]
 mod kernel_integer_admission;
+#[path = "kernel_literals_cache.rs"]
+mod kernel_literals_cache;
+#[path = "kernel_literals_failure.rs"]
+mod kernel_literals_failure;
+#[path = "kernel_literals_limits.rs"]
+mod kernel_literals_limits;
+#[path = "kernel_literals_proof.rs"]
+mod kernel_literals_proof;
+#[path = "kernel_literals_width.rs"]
+mod kernel_literals_width;
 #[path = "kernel_module_hostile.rs"]
 mod kernel_module_hostile;
 #[path = "kernel_module_verification.rs"]

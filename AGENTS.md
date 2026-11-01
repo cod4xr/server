@@ -8,6 +8,12 @@ VM integration must root all live frames, cached literals, external handles and
 pending results and share work across the call tree; see ADRs 0054/0055. Immutable
 code rejects runtime StringId constants even when unreachable. Never describe
 the component workload or helper fixtures as native VM/object-collector parity.
+Typed immutable literal tables/cache now follow ADR 0056. Admit owned rows/payload
+and all proof work, check unreachable operands, and keep runtime handles out of
+code constants. Cache initialization/active indices, root IDs and mark flags share
+scratch admission; root every active cached literal. Reset cache per invocation
+without resetting global work or coupling code to one heap. Source literal lowering
+and CLI string output remain open until separately implemented and validated.
 
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a

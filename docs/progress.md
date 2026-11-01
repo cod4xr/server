@@ -24,7 +24,11 @@ and its component scope. ADR 0055 now integrates typed heap-backed execution and
 supplied source arguments: 15 kernel tests plus two source tests cover reclamation
 across 12,000 frames, 100,000 loop allocations in four slots, global work/scratch,
 errors/lifetimes, native plain-concat results/expansion and hostile inventories.
-Source literals/cache and CLI output remain open; no GSC workstream is closed.
+Source literal lowering and CLI output remain open; no GSC workstream is closed.
+ADR 0056 now adds owned typed literal tables/cache with 13 tests, including
+70,000 rows, 1,001 evaluations of one 1 MiB value without repeated payload copying,
+cached-only roots, independent heaps and exact complete proof/runtime resources.
+Source lowering still supplies empty tables; source and CLI strings remain open.
 
 - `crates/protocol`: byte/bit messages, envelope classification/framing, command
   extraction/tokens, info strings, static Huffman codec, and legacy index streams.

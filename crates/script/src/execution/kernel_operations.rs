@@ -84,6 +84,7 @@ pub(super) fn apply(
             return Ok(());
         }
         KernelInstruction::Call { .. }
+        | KernelInstruction::StringLiteral(_)
         | KernelInstruction::CallIndirect { .. }
         | KernelInstruction::FunctionReference(_)
         | KernelInstruction::Jump(_)

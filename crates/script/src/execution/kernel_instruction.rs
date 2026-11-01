@@ -22,6 +22,8 @@ pub enum KernelInstruction {
     /// Pushes copied data. Runtime string handles are rejected even when unreachable;
     /// immutable code cannot silently root references into a mutable heap.
     Constant(KernelValue),
+    /// Pushes a checked immutable table row through the invocation's heap/cache.
+    StringLiteral(usize),
     /// Pushes an initialized local slot; the layout bounds every operand.
     LoadLocal(usize),
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
@@ -105,7 +107,10 @@ impl KernelInstruction {
             ),
             Self::Call { arguments, .. } | Self::Builtin { arguments, .. } => (arguments, 1),
             Self::MakeVector => (3, 1),
-            Self::Constant(_) | Self::LoadLocal(_) | Self::FunctionReference(_) => (0, 1),
+            Self::Constant(_)
+            | Self::LoadLocal(_)
+            | Self::FunctionReference(_)
+            | Self::StringLiteral(_) => (0, 1),
             Self::Arithmetic(_)
             | Self::Compare(_)
             | Self::Integer(_)

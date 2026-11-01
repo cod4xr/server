@@ -21,6 +21,7 @@ pub fn definition(
 ) -> KernelFunctionDefinition<'_> {
     KernelFunctionDefinition {
         instructions: code,
+        string_literals: &[],
         layout: KernelFunctionLayout::new(parameters, locals).expect("Valid layout"),
     }
 }

@@ -14,12 +14,14 @@ use crate::execution::{
 };
 
 /// Borrowed internal function input, without source names, imports or host authority.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 pub struct KernelFunctionDefinition<'a> {
     /// Instructions copied only after complete inventory admission.
     pub instructions: &'a [KernelInstruction],
     /// Parameter-prefix and complete local slot counts.
     pub layout: KernelFunctionLayout,
+    /// Owned by the caller until proof copies all rows and exact payload bytes.
+    pub string_literals: &'a [Vec<u8>],
 }
 
 /// Owned immutable call/reference inventory. This is not source linking/module activation.
@@ -36,8 +38,8 @@ pub struct KernelFunctionDefinition<'a> {
 /// let result = KernelValue::Number(LegacyNumber::Integer(42));
 /// let callee = [KernelInstruction::Constant(result), KernelInstruction::Return];
 /// let definitions = [
-///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default() },
-///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default() },
+///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default(), string_literals: &[] },
+///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default(), string_literals: &[] },
 /// ];
 /// let module = VerifiedKernelModule::verify(&definitions, KernelModuleVerificationBudget::default())?;
 /// assert_eq!(module.execute(0, &[], KernelCallBudget::default())?.value, result);
@@ -47,6 +49,17 @@ pub struct VerifiedKernelModule {
     pub(super) identity: KernelModuleIdentity,
     pub(super) functions: Vec<VerifiedKernelProgram>,
     pub(super) usage: KernelModuleUsage,
+}
+
+impl fmt::Debug for KernelFunctionDefinition<'_> {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("KernelFunctionDefinition")
+            .field("instructions", &self.instructions.len())
+            .field("layout", &self.layout)
+            .field("string_literals", &self.string_literals.len())
+            .finish_non_exhaustive()
+    }
 }
 
 impl VerifiedKernelModule {

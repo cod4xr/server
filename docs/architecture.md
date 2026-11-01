@@ -19,6 +19,14 @@ charged and failed invocations can retain completed collection/allocations. Plai
 addition/equality use checked bytes; source literals/cache/CLI output and general
 object/scheduler roots remain open. Results stay in caller-owned storage.
 
+ADR 0056 adds independently owned immutable typed literal tables and checked
+operands. Complete module proof assigns flattened cache offsets without borrowed
+descriptor arrays; payload/records and proof work are admitted globally. Context
+cache initialization and active-index capacity share scratch with root IDs/flags.
+Lazy loads publish one checked heap ID per used row and retain cached-only roots.
+Reusing a context discards its previous invocation cache without resetting work.
+Source lowering still supplies empty literal tables; CLI strings remain open.
+
 ## Dependency direction
 
 The server and future client are peers above shared engine libraries. Shared

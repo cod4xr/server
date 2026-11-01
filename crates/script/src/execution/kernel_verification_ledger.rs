@@ -44,6 +44,8 @@ impl KernelVerificationLedger {
         Ok(Self {
             budget,
             usage: KernelProgramUsage {
+                string_literals: 0,
+                retained_string_bytes: 0,
                 parameters: layout.parameters(),
                 local_values: layout.local_values(),
                 instructions: count,
@@ -56,18 +58,44 @@ impl KernelVerificationLedger {
     }
 
     pub(super) fn visit(&mut self, pc: usize) -> Result<(), KernelError> {
+        self.charge(1, Some(pc as u64))
+    }
+
+    pub(super) fn charge(
+        &mut self,
+        amount: u64,
+        instruction: Option<u64>,
+    ) -> Result<(), KernelError> {
         let next = self
             .usage
             .verification_steps
-            .checked_add(1)
-            .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::SizeOverflow))?;
+            .checked_add(amount)
+            .ok_or_else(|| kernel_error::general(KernelErrorKind::SizeOverflow))?;
         kernel_error::check(
             KernelResource::VerificationSteps,
             next,
             self.budget.max_steps,
-            Some(pc as u64),
+            instruction,
         )?;
         self.usage.verification_steps = next;
+        Ok(())
+    }
+
+    pub(super) fn retain_strings(&mut self, count: u64, bytes: u64) -> Result<(), KernelError> {
+        let total = self
+            .usage
+            .verification_metadata_bytes
+            .checked_add(bytes)
+            .ok_or_else(|| kernel_error::general(KernelErrorKind::SizeOverflow))?;
+        kernel_error::check(
+            KernelResource::VerificationMetadataBytes,
+            total,
+            self.budget.max_metadata_bytes,
+            None,
+        )?;
+        self.usage.verification_metadata_bytes = total;
+        self.usage.string_literals = count;
+        self.usage.retained_string_bytes = bytes;
         Ok(())
     }
 
