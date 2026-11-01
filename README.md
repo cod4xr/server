@@ -16,18 +16,24 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC ordinary struct fields support reads, simple writes and Undefined
+  deletion with shared aliases and original RHS-before-receiver order. Names use
+  separate immutable tables without runtime string caches. Source tests retain
+  70,000 fields, run 100,000 cyclic updates in four object slots and traverse a
+  12,000-edge graph. Native helper evidence stays explicitly scoped; ADR 0067.
+
 - Bound GSC `spawnstruct()` creates empty shared structs, evaluates extra arguments
   and preserves roots under allocation pressure. Tests retain 70,000 live values
   and run 100,000 loop allocations under two slots. Offline object output is opaque
-  and logs report numeric storage/collection usage; ADR 0066. Fields remain open.
+  and logs report numeric storage/collection usage; ADR 0066.
 
 - Explicit-root shared struct storage uses wide checked identities, owned binary
   field keys, metered hash probes and atomic graph/string reclamation. Tests cover
   70,000 objects/fields, cyclic graphs, 100,000 churn cycles and hostile operations.
   A runnable workload measures logical storage/work; ADR 0063. An explicit object
   context now transports checked host references through calls/returns and roots
-  their nested strings during pressure collection; ADR 0064. Source constructors,
-  field operations, arrays and the full object VM remain open.
+  their nested strings during pressure collection; ADR 0064. Arrays and the full
+  object VM remain open.
 
 - Primitive/ordinary-struct `isdefined` preserves Undefined, optional parameters, evaluated extra
   arguments and local-function shadowing. Wide stack/source/process tests and

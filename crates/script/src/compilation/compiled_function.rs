@@ -21,6 +21,10 @@ pub struct FunctionCompilationUsage {
     pub string_literals: u64,
     /// Logical literal row/payload bytes, included in compiler metadata admission.
     pub retained_string_bytes: u64,
+    /// Complete owned field-name rows, separate from runtime string literals.
+    pub field_names: u64,
+    /// Logical field-name rows and canonical byte payload during lowering.
+    pub retained_field_bytes: u64,
     /// Body/task/literal/name/snapshot/resolution work charged to the compiler.
     pub compiler_steps: u64,
     /// Emitted instructions and source-map entries.

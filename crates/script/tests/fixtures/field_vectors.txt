@@ -1,0 +1,42 @@
+# Actual C field get/index/set/clear helpers; O0/O2; low 32-bit union words only.
+# Modeled lookup, reference callbacks and removal; no native allocator/free/ABI/compiler/VM claim.
+# Raw setter stores Undefined; source/VM Undefined assignment deletes (guarded separately).
+# Vector pointers/entities excluded. Function words are helper-only, not callable Rust references.
+# F input_tag input_word output_tag output_word
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+F 0 00000000 0 00000000
+F 0 00000001 0 00000001
+F 0 80000000 0 80000000
+F 0 ffffffff 0 ffffffff
+F 0 7fffffff 0 7fffffff
+F 0 3f800000 0 3f800000
+F 0 80000001 0 80000001
+F 0 7fc00001 0 7fc00001
+F 1 00000001 1 00000001
+F 2 00000001 2 00000001
+F 3 00000001 3 00000001
+F 5 00000000 5 00000000
+F 5 00000001 5 00000001
+F 5 80000000 5 80000000
+F 5 ffffffff 5 ffffffff
+F 5 7fffffff 5 7fffffff
+F 5 3f800000 5 3f800000
+F 5 80000001 5 80000001
+F 5 7fc00001 5 7fc00001
+F 6 00000000 6 00000000
+F 6 00000001 6 00000001
+F 6 80000000 6 80000000
+F 6 ffffffff 6 ffffffff
+F 6 7fffffff 6 7fffffff
+F 6 3f800000 6 3f800000
+F 6 80000001 6 80000001
+F 6 7fc00001 6 7fc00001
+F 9 00000000 9 00000000
+F 9 00000001 9 00000001
+F 9 80000000 9 80000000
+F 9 ffffffff 9 ffffffff
+F 9 7fffffff 9 7fffffff
+F 9 3f800000 9 3f800000
+F 9 80000001 9 80000001
+F 9 7fc00001 9 7fc00001

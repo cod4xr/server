@@ -22,6 +22,7 @@ pub fn definition(
     KernelFunctionDefinition {
         instructions: code,
         string_literals: &[],
+        field_names: &[],
         layout: KernelFunctionLayout::new(parameters, locals).expect("Valid layout"),
     }
 }

@@ -22,6 +22,22 @@ pub(super) fn copy(
 ) -> Result<Vec<Vec<u8>>, KernelError> {
     ledger.charge(literals.len() as u64, None)?;
     ledger.retain_strings(literals.len() as u64, retained_bytes(literals)?)?;
+    copy_rows(literals, ledger)
+}
+
+pub(super) fn copy_fields(
+    names: &[Vec<u8>],
+    ledger: &mut KernelVerificationLedger,
+) -> Result<Vec<Vec<u8>>, KernelError> {
+    ledger.charge(names.len() as u64, None)?;
+    ledger.retain_fields(names.len() as u64, retained_bytes(names)?)?;
+    copy_rows(names, ledger)
+}
+
+fn copy_rows(
+    literals: &[Vec<u8>],
+    ledger: &mut KernelVerificationLedger,
+) -> Result<Vec<Vec<u8>>, KernelError> {
     let mut owned = Vec::new();
     owned
         .try_reserve_exact(literals.len())

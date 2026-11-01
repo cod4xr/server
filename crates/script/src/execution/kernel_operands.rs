@@ -12,8 +12,17 @@ pub(super) fn verify(
     layout: KernelFunctionLayout,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
     literals: usize,
+    field_names: usize,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::LoadField(name) | KernelInstruction::StoreField(name)
+            if name >= field_names =>
+        {
+            Err(kernel_error::at(
+                pc,
+                KernelErrorKind::InvalidFieldName { name: name as u64 },
+            ))
+        }
         KernelInstruction::Constant(KernelValue::Object(_)) => {
             Err(kernel_error::at(pc, KernelErrorKind::RuntimeObjectConstant))
         }

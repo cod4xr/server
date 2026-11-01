@@ -67,6 +67,12 @@ pub enum KernelInstruction {
     /// Replaces a plain string with its byte length before the first NUL, or a
     /// checked ordinary struct with integer one. Arrays/other categories reject.
     Size,
+    /// Replaces a checked struct receiver with the named field value or Undefined.
+    /// The operand indexes this function's immutable field-name table.
+    LoadField(usize),
+    /// Consumes bottom-to-top RHS/struct receiver and writes the named field.
+    /// Undefined removes the field; no value is pushed. Names are code-owned bytes.
+    StoreField(usize),
     /// Pops right then left operands. Plain-string addition requires a heap context;
     /// mixed string coercion and other string arithmetic remain unsupported.
     Arithmetic(LegacyArithmetic),
@@ -128,8 +134,10 @@ impl KernelInstruction {
             | Self::BitwiseNot
             | Self::IntegerUpdate(_)
             | Self::Size
+            | Self::LoadField(_)
             | Self::RequireInteger => (1, 1),
             Self::Duplicate => (1, 2),
+            Self::StoreField(_) => (2, 0),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),
             Self::Jump(_) => (0, 0),
         };

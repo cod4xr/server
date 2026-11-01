@@ -14,13 +14,14 @@ pub(super) fn verify(
     layout: KernelFunctionLayout,
     budget: KernelVerificationBudget,
 ) -> Result<VerifiedKernelProgram, KernelError> {
-    verify_linked(input, layout, &[], budget, None)
+    verify_linked(input, layout, &[], &[], budget, None)
 }
 
 pub(super) fn verify_linked(
     input: &[KernelInstruction],
     layout: KernelFunctionLayout,
     literals: &[Vec<u8>],
+    field_names: &[Vec<u8>],
     budget: KernelVerificationBudget,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
@@ -35,8 +36,10 @@ pub(super) fn verify_linked(
     )?;
     let mut ledger = KernelVerificationLedger::new(input.len(), layout, budget)
         .map_err(|error| error.with_locals(layout.local_values()))?;
-    let result = kernel_literals::copy(literals, &mut ledger)
-        .and_then(|strings| verify_flow(input, layout, &mut ledger, functions, strings));
+    let result = kernel_literals::copy(literals, &mut ledger).and_then(|strings| {
+        let names = kernel_literals::copy_fields(field_names, &mut ledger)?;
+        verify_flow(input, layout, &mut ledger, functions, strings, names)
+    });
     result.map_err(|error| {
         error
             .with_usage(
@@ -53,6 +56,7 @@ fn verify_flow(
     ledger: &mut KernelVerificationLedger,
     functions: Option<&[KernelFunctionDefinition<'_>]>,
     string_literals: Vec<Vec<u8>>,
+    field_names: Vec<Vec<u8>>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     for (pc, instruction) in input.iter().copied().enumerate() {
         ledger.visit(pc)?;
@@ -63,6 +67,7 @@ fn verify_flow(
             layout,
             functions,
             string_literals.len(),
+            field_names.len(),
         )?;
     }
     let mut instructions = Vec::new();
@@ -93,6 +98,7 @@ fn verify_flow(
     }
     Ok(VerifiedKernelProgram {
         string_literals,
+        field_names,
         literal_offset: 0,
         layout,
         instructions,

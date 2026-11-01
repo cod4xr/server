@@ -6,6 +6,8 @@ mod bound_object_arguments;
 mod expression_list_support;
 mod expression_support;
 mod function_compile_support;
+#[path = "source_fields.rs"]
+mod source_fields;
 #[path = "source_struct_construction.rs"]
 mod source_struct_construction;
 #[path = "source_struct_queries.rs"]
@@ -195,6 +197,12 @@ mod primary_literals;
 mod reference_views;
 #[path = "source_boundaries.rs"]
 mod source_boundaries;
+#[path = "source_field_collection.rs"]
+mod source_field_collection;
+#[path = "source_field_limits.rs"]
+mod source_field_limits;
+#[path = "source_field_width.rs"]
+mod source_field_width;
 #[path = "source_localized_strings.rs"]
 mod source_localized_strings;
 #[path = "source_locations.rs"]

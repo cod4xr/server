@@ -120,6 +120,12 @@ impl ModuleCompilationLedger {
         self.usage.staged_string_bytes = add(
             self.usage.staged_string_bytes,
             usage.retained_string_bytes,
+            span.clone(),
+        )?;
+        self.usage.field_names = add(self.usage.field_names, usage.field_names, span.clone())?;
+        self.usage.staged_field_bytes = add(
+            self.usage.staged_field_bytes,
+            usage.retained_field_bytes,
             span,
         )?;
         Ok(())
@@ -207,7 +213,11 @@ impl ModuleCompilationLedger {
         add(
             add(
                 self.base_bytes,
-                self.usage.staged_string_bytes,
+                add(
+                    self.usage.staged_string_bytes,
+                    self.usage.staged_field_bytes,
+                    span.clone(),
+                )?,
                 span.clone(),
             )?,
             module_metadata::staged(self.usage.instructions, span.clone())?,

@@ -51,6 +51,13 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// A field operand is outside this function's immutable field-name table.
+    InvalidFieldName {
+        /// Rejected wide table index, without field bytes.
+        name: u64,
+    },
+    /// A field read/write requires a checked ordinary shared struct receiver.
+    ExpectedFieldObject,
     /// A literal operand is outside its complete immutable per-function table.
     InvalidStringLiteral {
         /// Rejected wide row index, without payload or source spelling.

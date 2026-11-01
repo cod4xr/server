@@ -34,6 +34,7 @@ pub(super) fn verify(
             definition.instructions,
             definition.layout,
             definition.string_literals,
+            definition.field_names,
             budget,
             Some(definitions),
         )

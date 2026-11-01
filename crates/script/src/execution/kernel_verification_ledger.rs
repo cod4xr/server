@@ -46,6 +46,8 @@ impl KernelVerificationLedger {
             usage: KernelProgramUsage {
                 string_literals: 0,
                 retained_string_bytes: 0,
+                field_names: 0,
+                retained_field_bytes: 0,
                 parameters: layout.parameters(),
                 local_values: layout.local_values(),
                 instructions: count,
@@ -82,6 +84,20 @@ impl KernelVerificationLedger {
     }
 
     pub(super) fn retain_strings(&mut self, count: u64, bytes: u64) -> Result<(), KernelError> {
+        self.retain_bytes(bytes)?;
+        self.usage.string_literals = count;
+        self.usage.retained_string_bytes = bytes;
+        Ok(())
+    }
+
+    pub(super) fn retain_fields(&mut self, count: u64, bytes: u64) -> Result<(), KernelError> {
+        self.retain_bytes(bytes)?;
+        self.usage.field_names = count;
+        self.usage.retained_field_bytes = bytes;
+        Ok(())
+    }
+
+    fn retain_bytes(&mut self, bytes: u64) -> Result<(), KernelError> {
         let total = self
             .usage
             .verification_metadata_bytes
@@ -94,8 +110,6 @@ impl KernelVerificationLedger {
             None,
         )?;
         self.usage.verification_metadata_bytes = total;
-        self.usage.string_literals = count;
-        self.usage.retained_string_bytes = bytes;
         Ok(())
     }
 

@@ -4,6 +4,8 @@
 mod defined_limits;
 #[path = "defined_vectors.rs"]
 mod defined_vectors;
+#[path = "field_tables.rs"]
+mod field_tables;
 #[path = "kernel_object_lifetime.rs"]
 mod kernel_object_lifetime;
 #[path = "kernel_object_limits.rs"]
@@ -97,6 +99,12 @@ mod kernel_verification;
 mod arithmetic_boundaries;
 #[path = "arithmetic_vectors.rs"]
 mod arithmetic_vectors;
+#[path = "field_pressure.rs"]
+mod field_pressure;
+#[path = "field_vectors.rs"]
+mod field_vectors;
+#[path = "field_verification.rs"]
+mod field_verification;
 #[path = "function_reference_vectors.rs"]
 mod function_reference_vectors;
 #[path = "kernel_builtin_limits.rs"]

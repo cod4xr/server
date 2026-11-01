@@ -37,11 +37,14 @@ impl KernelModuleAdmission {
         let mut instructions = 0_u64;
         let mut string_literals = 0_u64;
         let mut string_bytes = 0_u64;
+        let mut field_names = 0_u64;
+        let mut field_bytes = 0_u64;
         let mut work = 0;
         for definition in definitions {
             // Prepay this table's initial scan and its later metadata-prefix scan.
             let visits = (definition.string_literals.len() as u64)
-                .checked_mul(2)
+                .checked_add(definition.field_names.len() as u64)
+                .and_then(|rows| rows.checked_mul(2))
                 .ok_or_else(|| {
                     kernel_error::general(KernelErrorKind::SizeOverflow).with_usage(work, 0)
                 })?;
@@ -62,6 +65,14 @@ impl KernelModuleAdmission {
                     .map_err(|error| error.with_usage(work, 0))?,
             )
             .map_err(|error| error.with_usage(work, 0))?;
+            field_names = add(field_names, definition.field_names.len() as u64)
+                .map_err(|error| error.with_usage(work, 0))?;
+            field_bytes = add(
+                field_bytes,
+                kernel_literals::retained_bytes(definition.field_names)
+                    .map_err(|error| error.with_usage(work, 0))?,
+            )
+            .map_err(|error| error.with_usage(work, 0))?;
             instructions = add(instructions, definition.instructions.len() as u64)
                 .map_err(|error| error.with_usage(work, 0))?;
             kernel_error::check(
@@ -75,6 +86,7 @@ impl KernelModuleAdmission {
         let retained = bytes(instructions, size_of::<KernelInstruction>())
             .and_then(|code| add(table, code))
             .and_then(|bytes| add(bytes, string_bytes))
+            .and_then(|bytes| add(bytes, field_bytes))
             .map_err(|error| error.with_usage(work, 0))?;
         kernel_error::check(
             KernelResource::VerificationMetadataBytes,
@@ -88,6 +100,8 @@ impl KernelModuleAdmission {
             usage: KernelModuleUsage {
                 string_literals,
                 retained_string_bytes: string_bytes,
+                field_names,
+                retained_field_bytes: field_bytes,
                 functions: count,
                 instructions,
                 verification_steps: work,
@@ -115,7 +129,10 @@ impl KernelModuleAdmission {
         let prefix = self
             .usage
             .retained_bytes
-            .checked_sub(add(usage.retained_code_bytes, usage.retained_string_bytes)?)
+            .checked_sub(add(
+                add(usage.retained_code_bytes, usage.retained_string_bytes)?,
+                usage.retained_field_bytes,
+            )?)
             .ok_or_else(|| kernel_error::general(KernelErrorKind::InvalidExecutionState))?;
         let peak = add(prefix, usage.verification_metadata_bytes)?;
         self.usage.verification_steps =
@@ -176,7 +193,10 @@ impl KernelModuleAdmission {
                     definition.instructions.len() as u64,
                     size_of::<KernelInstruction>(),
                 )?,
-                kernel_literals::retained_bytes(definition.string_literals)?,
+                add(
+                    kernel_literals::retained_bytes(definition.string_literals)?,
+                    kernel_literals::retained_bytes(definition.field_names)?,
+                )?,
             )?)
             .ok_or_else(|| kernel_error::general(KernelErrorKind::InvalidExecutionState))
     }

@@ -18,6 +18,8 @@ mod function_compilation_ledger;
 mod function_compile_error;
 mod function_conditional;
 mod function_expression_lowering;
+mod function_field_assignment;
+mod function_field_names;
 mod function_for;
 mod function_for_clause;
 mod function_for_update;

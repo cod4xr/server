@@ -6,6 +6,7 @@ use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_expression_lowering;
+use crate::compilation::function_field_assignment;
 use crate::compilation::function_local_bindings::FunctionLocalDeclaration;
 use crate::compilation::function_local_names;
 use crate::compilation::function_task::FunctionTask;
@@ -23,6 +24,9 @@ pub(super) fn assign<'tree, 'source>(
     target: LegacySyntaxNode<'tree, 'source>,
     value: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<(), FunctionCompileError> {
+    if function_field_assignment::assign(builder, statement, target, value)? {
+        return Ok(());
+    }
     let token = target_name(target)?;
     let (name, slot) =
         function_local_names::declare(builder, token, FunctionLocalDeclaration::Assignment)?;

@@ -8,6 +8,10 @@ pub struct KernelModuleUsage {
     pub string_literals: u64,
     /// Retained literal rows and payload, also included in `retained_bytes`.
     pub retained_string_bytes: u64,
+    /// Complete immutable field-name rows, including unused rows.
+    pub field_names: u64,
+    /// Retained field-name rows/payload, also included in retained bytes.
+    pub retained_field_bytes: u64,
     /// Retained verified function count.
     pub functions: u64,
     /// Retained complete instruction count.

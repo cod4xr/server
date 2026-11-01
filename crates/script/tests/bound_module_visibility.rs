@@ -18,7 +18,7 @@ use cod4x_script::legacy::LegacyNumber;
 
 #[test]
 fn disabled_unsupported_bodies_remain_metadata_without_executable_placeholders() {
-    let text = b"main(){return 1;}/# PrivateHidden(){return &\"PrivateUnsupported\".missing;}#/";
+    let text = b"main(){return 1;}/# PrivateHidden(){return &\"PrivateUnsupported\".self;}#/";
     let module = module_compile_support::compile(
         text,
         LegacyDeveloperMode::Disabled,

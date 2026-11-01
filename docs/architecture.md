@@ -1,11 +1,17 @@
 # Architecture and expansion
 
+ADR 0067 adds immutable per-function field-name tables independently of literal
+caches. Bound-source field reads/simple writes use checked shared storage and
+explicit zero/one-value heap dispatch; operands remain rooted through pressure
+retry. Compiler and proof budgets include complete name/string staging. Arrays,
+compound field writes, general object operators and scheduling remain separate.
+
 ADR 0066 connects bound-source spawnstruct to explicit object-context allocation.
 Constructor operands remain rooted until the empty object is published; admitted
 memory pressure runs one complete collection pair before retry. Common heap
 dispatch, string operations and object allocation remain separate leaf modules.
 The offline application owns both stores, prints opaque object kinds and records
-numeric storage/collection metrics. Struct fields and array ownership remain open.
+numeric storage/collection metrics. Array ownership remains open.
 
 ADR 0063 adds a separately assessed shared struct graph with flat object/field
 arenas, opaque checked identities, owned exact keys and a purpose-specific metered
@@ -18,8 +24,8 @@ snapshots in pure/string-only invocations. ADR 0064 adds optional object-aware
 reference transport and roots every frame/caller/external object graph plus direct
 and cached strings during pressure. Object then string collection share cumulative
 work and simultaneous cache/root/mark/queue scratch, with separate success counts.
-Returned snapshots need explicit host roots before later invocations. Struct field
-operations, general object operators and legacy array COW remain open; empty struct
+Returned snapshots need explicit host roots before later invocations. General
+object operators and legacy array COW remain open; empty struct
 construction now follows ADR 0066.
 
 The script heap now owns immutable byte strings in growable slots with opaque

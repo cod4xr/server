@@ -12,6 +12,10 @@ pub struct ModuleCompilationUsage {
     pub string_literals: u64,
     /// Logical complete staged literal rows/payload before separate proof copying.
     pub staged_string_bytes: u64,
+    /// Complete active immutable field-name row count.
+    pub field_names: u64,
+    /// Logical staged field-name rows/payload before separate proof copying.
+    pub staged_field_bytes: u64,
     /// All retained declaration records, including disabled developer code.
     pub declarations: u64,
     /// Active executable functions.

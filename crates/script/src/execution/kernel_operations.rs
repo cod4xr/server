@@ -87,6 +87,8 @@ pub(super) fn apply(
             return Ok(());
         }
         KernelInstruction::Call { .. }
+        | KernelInstruction::LoadField(_)
+        | KernelInstruction::StoreField(_)
         | KernelInstruction::StringLiteral(_)
         | KernelInstruction::LocalizedStringLiteral(_)
         | KernelInstruction::CallIndirect { .. }

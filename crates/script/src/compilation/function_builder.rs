@@ -27,6 +27,7 @@ pub(super) struct FunctionBuilder<'tree, 'source> {
     tasks: Vec<FunctionTask<'tree, 'source>>,
     pub(super) instructions: Vec<PendingFunctionInstruction>,
     pub(super) string_literals: Vec<Vec<u8>>,
+    pub(super) field_names: Vec<Vec<u8>>,
     active_task: bool,
 }
 
@@ -57,6 +58,7 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             tasks: Vec::new(),
             instructions: Vec::new(),
             string_literals: Vec::new(),
+            field_names: Vec::new(),
             active_task: false,
         }
     }
@@ -100,6 +102,10 @@ impl<'tree, 'source> FunctionBuilder<'tree, 'source> {
             .ok_or_else(|| {
                 function_compile_error::at(span.clone(), FunctionCompileErrorKind::SizeOverflow)
             })?;
+        self.admit_tables(span)
+    }
+
+    pub(super) fn admit_tables(&mut self, span: Range<u64>) -> Result<(), FunctionCompileError> {
         let live = self
             .tasks
             .len()

@@ -5,8 +5,8 @@ use crate::execution::kernel_executor;
 use crate::execution::kernel_locals::KernelArgumentBinding;
 use crate::execution::kernel_verifier;
 use crate::execution::{
-    KernelError, KernelExecutionBudget, KernelFunctionLayout, KernelHeapContext, KernelInstruction,
-    KernelValue, KernelVerificationBudget,
+    KernelError, KernelExecutionBudget, KernelFunctionDefinition, KernelFunctionLayout,
+    KernelHeapContext, KernelInstruction, KernelValue, KernelVerificationBudget,
 };
 
 /// Successful verification accounting, excluding allocator rounding and process RSS.
@@ -16,6 +16,10 @@ pub struct KernelProgramUsage {
     pub string_literals: u64,
     /// Logical literal Vec rows plus complete payload bytes, without spare capacity/RSS.
     pub retained_string_bytes: u64,
+    /// Complete immutable field-name rows, including unused ones; not cache slots.
+    pub field_names: u64,
+    /// Logical field-name Vec rows and payload, excluding allocator/spare capacity/RSS.
+    pub retained_field_bytes: u64,
     /// Declared parameter-prefix count; invocation entry points select binding policy.
     pub parameters: u64,
     /// Complete layout slots, including parameters and uninitialized slots.
@@ -53,6 +57,7 @@ pub struct KernelOutcome {
 /// source/host ownership, native bytecode, or serialized ABI is supplied.
 pub struct VerifiedKernelProgram {
     pub(super) string_literals: Vec<Vec<u8>>,
+    pub(super) field_names: Vec<Vec<u8>>,
     pub(super) literal_offset: usize,
     pub(super) layout: KernelFunctionLayout,
     pub(super) instructions: Vec<KernelInstruction>,
@@ -72,7 +77,26 @@ impl VerifiedKernelProgram {
         literals: &[Vec<u8>],
         budget: KernelVerificationBudget,
     ) -> Result<Self, KernelError> {
-        kernel_verifier::verify_linked(instructions, layout, literals, budget, None)
+        kernel_verifier::verify_linked(instructions, layout, literals, &[], budget, None)
+    }
+
+    /// Verifies/copies all code, string rows and independent field-name rows.
+    /// Names never enter the runtime string cache or retain mutable heap handles.
+    /// # Errors
+    /// Rejects all invalid operands/flow, work/storage exhaustion and fallible
+    /// allocation without a partial proof or changes to borrowed input tables.
+    pub fn verify_definition(
+        definition: KernelFunctionDefinition<'_>,
+        budget: KernelVerificationBudget,
+    ) -> Result<Self, KernelError> {
+        kernel_verifier::verify_linked(
+            definition.instructions,
+            definition.layout,
+            definition.string_literals,
+            definition.field_names,
+            budget,
+            None,
+        )
     }
     /// Admits, copies, and iteratively verifies all operands/reachable stack flow.
     /// This convenience uses a zero-parameter, zero-local layout.

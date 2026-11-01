@@ -42,6 +42,8 @@ pub(crate) fn run(
         instructions = usage.instructions,
         string_literals = usage.string_literals,
         staged_string_bytes = usage.staged_string_bytes,
+        field_names = usage.field_names,
+        staged_field_bytes = usage.staged_field_bytes,
         compiler_steps = usage.compiler_steps,
         peak_metadata_bytes = usage.peak_metadata_bytes,
         verification_steps = usage.verification.verification_steps,

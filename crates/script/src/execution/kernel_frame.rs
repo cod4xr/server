@@ -142,16 +142,21 @@ impl KernelFrame {
             }
             _ => {
                 let roots = self.values().chain(parents);
-                let value = heap::apply(instruction, &self.stack, heap, roots)
+                let value = heap::apply(program, instruction, &self.stack, heap, roots)
                     .map_err(|kind| kernel_error::at(pc, kind))?;
-                if let Some(value) = value {
-                    let (consumed, _) = instruction
+                if let heap::KernelHeapStep::Applied(value) = value {
+                    let (consumed, produced) = instruction
                         .stack_effect()
                         .map_err(|kind| kernel_error::at(pc, kind))?;
+                    if produced != usize::from(value.is_some()) {
+                        return Err(kernel_error::at(pc, KernelErrorKind::InvalidExecutionState));
+                    }
                     for _ in 0..consumed {
                         self.stack.pop(pc)?;
                     }
-                    self.stack.push(value, pc)?;
+                    if let Some(value) = value {
+                        self.stack.push(value, pc)?;
+                    }
                 } else {
                     kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;
                 }

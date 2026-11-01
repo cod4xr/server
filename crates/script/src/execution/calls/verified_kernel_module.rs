@@ -22,6 +22,8 @@ pub struct KernelFunctionDefinition<'a> {
     pub layout: KernelFunctionLayout,
     /// Owned by the caller until proof copies all rows and exact payload bytes.
     pub string_literals: &'a [Vec<u8>],
+    /// Exact immutable field-name bytes, independent of runtime string caches.
+    pub field_names: &'a [Vec<u8>],
 }
 
 /// Owned immutable call/reference inventory. This is not source linking/module activation.
@@ -38,8 +40,8 @@ pub struct KernelFunctionDefinition<'a> {
 /// let result = KernelValue::Number(LegacyNumber::Integer(42));
 /// let callee = [KernelInstruction::Constant(result), KernelInstruction::Return];
 /// let definitions = [
-///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default(), string_literals: &[] },
-///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default(), string_literals: &[] },
+///     KernelFunctionDefinition { instructions: &caller, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[] },
+///     KernelFunctionDefinition { instructions: &callee, layout: KernelFunctionLayout::default(), string_literals: &[], field_names: &[] },
 /// ];
 /// let module = VerifiedKernelModule::verify(&definitions, KernelModuleVerificationBudget::default())?;
 /// assert_eq!(module.execute(0, &[], KernelCallBudget::default())?.value, result);

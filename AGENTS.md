@@ -1,5 +1,17 @@
 # Project contract
 
+ADR 0067 adds ordinary bound-source field reads/simple writes and Undefined
+deletion. Keep independent owned field-name tables out of runtime string caches;
+admit complete staging/proof rows and bytes with wide per-function operands.
+Preserve RHS-before-receiver, missing Undefined, checked receivers and void store
+stack effects. Root operands through field-pressure retries and retain complete
+global work/scratch accounting. Check generate_field_vectors.py --check (35 actual
+helper traces; 27 Rust replays/eight function-word helper-only) and
+script_field_reference.py (99 mutations). Lookup/ref/removal services are modeled;
+do not claim native freeing/ABI/compiler/VM parity. Keep wide/cyclic/deep/exact
+budget/source/process tests. Compound field writes, arrays, methods/self, entity
+lifetimes and scheduling remain open.
+
 ADR 0066 adds sealed SpawnStruct and bound-source spawnstruct through explicit
 object contexts. Resolve active local/developer definitions before fallback;
 evaluate extras and keep every operand rooted until allocation succeeds. Retry
@@ -9,7 +21,7 @@ generate_struct_vectors.py --check (32 actual helper traces with modeled allocat
 output and selected native ref counters) and script_struct_reference.py (22
 mutations). Do not claim native allocation/cleanup/ABI/VM parity. Keep wide/churn/
 temporary-root/exact-budget/source/process tests and opaque object stdout/numeric
-metrics; never log IDs, fields, source payloads or private paths. Fields/arrays,
+metrics; never log IDs, fields, source payloads or private paths. Arrays,
 general object operators and scheduling remain open.
 
 ADR 0063 implements explicit-root shared struct storage only. Preserve flat checked

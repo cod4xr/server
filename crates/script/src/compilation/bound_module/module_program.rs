@@ -36,6 +36,7 @@ pub(super) fn verify(
         definitions.push(KernelFunctionDefinition {
             instructions: &function.instructions,
             string_literals: &function.string_literals,
+            field_names: &function.field_names,
             layout: function.layout,
         });
     }
