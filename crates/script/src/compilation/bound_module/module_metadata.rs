@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::ops::Range;
 
-use crate::binding::LegacyIdentifier;
 use crate::compilation::bound_module::staged_function::StagedFunctionCode;
 use crate::compilation::bound_module::{CompiledModuleDeclaration, CompiledModuleFunction};
-use crate::compilation::function_call_scope::FunctionCallTarget;
+use crate::compilation::function_call_scope::{FunctionCallName, FunctionCallTarget};
 use crate::compilation::function_compile_error;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelFunctionDefinition, KernelInstruction};
@@ -14,7 +13,7 @@ pub(super) fn base(
     functions: u64,
     span: Range<u64>,
 ) -> Result<u64, FunctionCompileError> {
-    let active_size = size_of::<(LegacyIdentifier<'_>, FunctionCallTarget)>()
+    let active_size = size_of::<(FunctionCallName<'_>, FunctionCallTarget)>()
         + size_of::<CompiledModuleFunction>()
         + size_of::<StagedFunctionCode>()
         + size_of::<KernelFunctionDefinition<'_>>();

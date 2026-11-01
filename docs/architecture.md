@@ -1,10 +1,17 @@
 # Architecture and expansion
 
+ADR 0077 links caller-supplied bound GSC files into one owned verified image.
+Module-indexed local name keys and a separately sorted canonical path index keep
+source order stable and prevent name leakage across files. Namespace rows/payload,
+sort/lookup work and overlapping scratch share compiler admission; runtime frames,
+fuel and heap contexts span all file calls. Callers own include/directive handling;
+this API grants no host filesystem authority or loader compatibility.
+
 ADR 0076 separates canonical virtual script identity from filesystem access.
 Binding owns validated borrowed views, canonical iterators and fallible owned
 names under configurable input/output/work budgets. Linkers must separately admit
-query Hash/Eq/iteration visits. Cross-file scope/linking and host file loading remain
-open; native wrapper lengths are not authoritative engine storage ceilings.
+query Hash/Eq/iteration visits. Closed cross-file linking follows ADR 0077; host
+file loading remains open. Native wrapper lengths are not storage ceilings.
 
 ADR 0075 adds native lifetime evidence, without a runtime change. Logical acyclic
 holder release must update outgoing array ownership before later COW, independently

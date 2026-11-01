@@ -55,6 +55,9 @@ fn global_declaration_function_work_instruction_and_metadata_admission_is_exact(
             ModuleCompilationResource::CallArguments => {
                 return Err("Call quota has its own per-site test".into());
             }
+            ModuleCompilationResource::Modules | ModuleCompilationResource::ModuleNameBytes => {
+                return Err("Package namespace quotas have dedicated tests".into());
+            }
         }
         let error = module_compile_support::compile(SOURCE, LegacyDeveloperMode::Disabled, budget)
             .expect_err("One less aggregate resource");

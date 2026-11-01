@@ -4,6 +4,7 @@ use std::fmt;
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifierError;
+use crate::binding::ScriptPathErrorKind;
 use crate::compilation::ModuleCompilationResource;
 use crate::execution::KernelError;
 use crate::literal::LegacyLiteralError;
@@ -31,6 +32,14 @@ pub enum FunctionCompilationResource {
 /// Fixed function compilation category, without source text, values, or names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum FunctionCompileErrorKind {
+    /// A supplied package module name canonicalizes to an empty identity.
+    EmptyModuleName,
+    /// Two supplied package modules share one canonical virtual identity.
+    DuplicateModule,
+    /// No supplied canonical source module matches the qualified path.
+    UnknownModule,
+    /// Qualified virtual-name validation/admission failed without exposing its bytes.
+    ScriptPath(ScriptPathErrorKind),
     /// This source profile accepts no parameters.
     UnsupportedParameters,
     /// A statement is outside the selected restricted source profile.
@@ -39,7 +48,7 @@ pub enum FunctionCompileErrorKind {
     UnsupportedPrimary,
     /// A call is outside the bound immediate local/indirect/pure-builtin profile.
     UnsupportedCall,
-    /// No active local definition or permitted pure builtin matches the identifier.
+    /// No selected module definition or permitted unqualified builtin matches the name.
     UnknownFunction,
     /// Ordinary code cannot reference a developer-only function.
     DeveloperFunctionReference,

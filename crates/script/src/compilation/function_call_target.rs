@@ -35,6 +35,9 @@ pub(super) fn named_call(
     if let Some(target) = find(builder, callee)? {
         return Ok(FunctionNamedCallTarget::Script(target.function));
     }
+    if callee.module().is_some() {
+        return Err(unknown(callee));
+    }
     let name = callee.name().as_bytes();
     let builtin = if name.eq_ignore_ascii_case(b"isint") {
         KernelBuiltin::IsInt
@@ -74,12 +77,28 @@ fn find(
     builder: &mut FunctionBuilder<'_, '_>,
     callee: LegacyFunctionNameSyntax<'_, '_>,
 ) -> Result<Option<FunctionCallTarget>, FunctionCompileError> {
-    if callee.module().is_some() {
+    let FunctionLoweringMode::BoundModule {
+        scope,
+        caller,
+        module,
+    } = builder.mode
+    else {
         return Err(function_compile_error::at(
             callee.span(),
-            FunctionCompileErrorKind::UnsupportedCall,
+            FunctionCompileErrorKind::InvalidStructure,
         ));
-    }
+    };
+    let module = if let Some(path) = callee.module() {
+        let Some(modules) = scope.modules else {
+            return Err(function_compile_error::at(
+                callee.span(),
+                FunctionCompileErrorKind::UnsupportedCall,
+            ));
+        };
+        modules.resolve(path, &mut builder.ledger)?
+    } else {
+        module
+    };
     let token = callee.name();
     builder
         .ledger
@@ -87,13 +106,7 @@ fn find(
     let name = LegacyIdentifier::from_lexeme(token).map_err(|cause| {
         function_compile_error::at(token.span(), FunctionCompileErrorKind::Identifier(cause))
     })?;
-    let FunctionLoweringMode::BoundModule { scope, caller } = builder.mode else {
-        return Err(function_compile_error::at(
-            callee.span(),
-            FunctionCompileErrorKind::InvalidStructure,
-        ));
-    };
-    let Some(target) = scope.find(name) else {
+    let Some(target) = scope.find(module, name) else {
         return Ok(None);
     };
     if caller == LegacyFunctionVisibility::Ordinary

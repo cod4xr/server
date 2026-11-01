@@ -1,5 +1,12 @@
 # Compatibility contract
 
+ADR 0077 adds closed supplied-file GSC compilation/execution with canonical module
+lookup, local namespaces, strict qualified misses and developer visibility.
+Thirteen integration tests cover wide/deep/owned/error/budget/heap boundaries;
+38 mutations guard selected native source roles, without executing the native
+compiler. Filesystem/include/deferred loading, cleanup and stock/mod parity are
+not established. Existing single-module qualified calls remain unsupported.
+
 ADR 0076 canonicalizes NUL-free ASCII virtual script names under native helper
 rules. Of 579 actual O0/O2 outcomes, 574 replay through Rust; five NUL-containing
 inputs intentionally reject ambiguous prefix identities. Twenty source-role

@@ -7,8 +7,10 @@ mod module_compilation_ledger;
 mod module_compile_error;
 mod module_inventory;
 mod module_metadata;
+mod module_package_ledger;
 mod module_program;
 mod module_storage;
+mod package;
 mod staged_function;
 
 pub use bound_module_compiler::compile_bound_primitive_module;
@@ -16,3 +18,7 @@ pub use compiled_module::{CompiledModule, ModuleCompilationUsage};
 pub use compiled_module_function::{CompiledModuleDeclaration, CompiledModuleFunction};
 pub use module_compilation_budget::{ModuleCompilationBudget, ModuleCompilationResource};
 pub use module_compile_error::ModuleCompileError;
+pub use package::{
+    CompiledScriptModule, CompiledScriptPackage, ScriptModuleDefinition, ScriptPackageBudget,
+    ScriptPackageError, ScriptPackageLocation, ScriptPackageUsage, compile_bound_primitive_package,
+};

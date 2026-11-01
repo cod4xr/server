@@ -1,5 +1,19 @@
 # Project contract
 
+ADR 0077 adds an explicit supplied bound-module package compiler. Preserve local
+namespaces, native canonical path identity, all-active forward/recursive inventory,
+developer rules and strict qualified misses (no builtin fallback). Own complete
+names/maps/code after source drop; share compiler/function/runtime/heap budgets.
+Prepay namespace canonicalization/copy/sort/lookup and simultaneous scratch before
+fallible allocation. Keep private numeric module/local-declaration/source locations,
+atomic failed publication, exact/every-shorter work tests, 66k modules/functions,
+70k name bytes, 12k frames and heap pressure. Run script_package_reference.py
+(38 selected source-role mutations), syntax guards and script_package example.
+Symbols carry no include/animation directives: callers must separately reject or
+resolve them. No filesystem loader, include/deferred/native compiler/VM/cleanup,
+source-array/scheduler/stock-mod parity is implied. Single-module qualified calls
+stay unsupported. No new crate/dependency/opcode is needed; full GSC/S5 stays open.
+
 ADR 0076 adds budgeted NUL-free ASCII LegacyScriptPath/CanonicalScriptPath virtual
 names and native canonical-byte iteration. Preserve the helper's segment/control/
 separator/case quirks, complete owned bytes, canonical identity, redacted Debug and
@@ -8,8 +22,8 @@ Linkers must prepay linear Hash/Eq/iterator visits separately. Run
 generate_script_path_vectors.py --check (579 actual O0/O2 outcomes: 574 Rust
 replays/five intentionally rejected NUL identities), script_path_reference.py
 (20 mutations), 4096 model/wide/exact-failure tests and syntax guards. Non-ASCII
-ctype/interner/loader/native unwinding and cross-file linking remain outside this
-component; empty virtual names need later catalog admission.
+ctype/interner/loader/native unwinding remain outside this component. ADR 0077
+adds closed cross-file linking and rejects empty canonical catalog identities.
 
 ADR 0075 adds generate_array_lifetime_vectors.py --check (210 O0/O2 actual selected
 ref/clear/child-free/parent-free/COW traces with modeled monotonic allocation/setup)

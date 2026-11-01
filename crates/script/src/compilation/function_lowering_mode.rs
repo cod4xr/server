@@ -17,6 +17,7 @@ pub(super) enum FunctionLoweringMode<'scope, 'source> {
     BoundModule {
         scope: &'scope FunctionCallScope<'source>,
         caller: LegacyFunctionVisibility,
+        module: usize,
     },
 }
 

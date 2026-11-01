@@ -44,13 +44,16 @@ mod function_switch;
 mod function_task;
 mod function_task_lowering;
 mod function_while;
+mod module_call_scope;
 mod primitive_function_compiler;
 mod scalar_return_compiler;
 
 pub use bound_module::{
-    CompiledModule, CompiledModuleDeclaration, CompiledModuleFunction, ModuleCompilationBudget,
-    ModuleCompilationResource, ModuleCompilationUsage, ModuleCompileError,
-    compile_bound_primitive_module,
+    CompiledModule, CompiledModuleDeclaration, CompiledModuleFunction, CompiledScriptModule,
+    CompiledScriptPackage, ModuleCompilationBudget, ModuleCompilationResource,
+    ModuleCompilationUsage, ModuleCompileError, ScriptModuleDefinition, ScriptPackageBudget,
+    ScriptPackageError, ScriptPackageLocation, ScriptPackageUsage, compile_bound_primitive_module,
+    compile_bound_primitive_package,
 };
 pub use compiled_function::{CompiledFunction, FunctionCompilationUsage, FunctionSourceProfile};
 pub use function_compilation_budget::FunctionCompilationBudget;

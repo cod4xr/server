@@ -15,7 +15,7 @@ use crate::compilation::{
 pub(super) struct ModuleCompilationLedger {
     pub(super) budget: ModuleCompilationBudget,
     pub(super) usage: ModuleCompilationUsage,
-    base_bytes: u64,
+    pub(super) base_bytes: u64,
 }
 
 impl ModuleCompilationLedger {
@@ -209,7 +209,7 @@ impl ModuleCompilationLedger {
         Ok(())
     }
 
-    fn prefix(&self, span: Range<u64>) -> Result<u64, FunctionCompileError> {
+    pub(super) fn prefix(&self, span: Range<u64>) -> Result<u64, FunctionCompileError> {
         add(
             add(
                 self.base_bytes,
@@ -225,7 +225,11 @@ impl ModuleCompilationLedger {
         )
     }
 
-    fn metadata(&mut self, requested: u64, span: Range<u64>) -> Result<(), FunctionCompileError> {
+    pub(super) fn metadata(
+        &mut self,
+        requested: u64,
+        span: Range<u64>,
+    ) -> Result<(), FunctionCompileError> {
         self.check(
             ModuleCompilationResource::MetadataBytes,
             requested,
@@ -236,7 +240,7 @@ impl ModuleCompilationLedger {
         Ok(())
     }
 
-    fn check(
+    pub(super) fn check(
         &self,
         resource: ModuleCompilationResource,
         requested: u64,

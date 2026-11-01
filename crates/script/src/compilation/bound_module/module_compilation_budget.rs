@@ -40,6 +40,10 @@ impl Default for ModuleCompilationBudget {
 /// Bound-module compiler resource; all but `CallArguments` are aggregate scopes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ModuleCompilationResource {
+    /// Supplied named modules in the explicit package API.
+    Modules,
+    /// Complete raw virtual-module-name bytes in the explicit package API.
+    ModuleNameBytes,
     /// All retained source declaration records.
     Declarations,
     /// Active local function targets.

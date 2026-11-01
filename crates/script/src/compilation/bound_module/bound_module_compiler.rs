@@ -77,6 +77,7 @@ pub fn compile_bound_primitive_module(
         let mode = FunctionLoweringMode::BoundModule {
             scope: &inventory.scope,
             caller: binding.visibility(),
+            module: 0,
         };
         let (staged, map) = staged_function::lower(binding.declaration(), index, mode, limits)
             .map_err(|cause| ModuleCompileError::at(Some(index), ledger.function_error(cause)))?;

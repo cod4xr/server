@@ -7,7 +7,9 @@ use crate::compilation::FunctionCompileErrorKind;
 use crate::compilation::bound_module::module_compilation_ledger::ModuleCompilationLedger;
 use crate::compilation::bound_module::module_storage;
 use crate::compilation::bound_module::{CompiledModuleDeclaration, ModuleCompileError};
-use crate::compilation::function_call_scope::{FunctionCallScope, FunctionCallTarget};
+use crate::compilation::function_call_scope::{
+    FunctionCallName, FunctionCallScope, FunctionCallTarget,
+};
 use crate::compilation::function_compile_error;
 
 pub(super) struct ModuleInventory<'source> {
@@ -24,6 +26,7 @@ pub(super) fn build<'source>(
         .map_err(|cause| ModuleCompileError::at(None, ledger.locate(cause)))?;
     let mut scope = FunctionCallScope {
         names: HashMap::new(),
+        modules: None,
         largest_name_bytes: 0,
     };
     let count = usize::try_from(ledger.usage.functions).map_err(|_| {
@@ -59,7 +62,7 @@ pub(super) fn build<'source>(
             if scope
                 .names
                 .insert(
-                    name,
+                    FunctionCallName { module: 0, name },
                     FunctionCallTarget {
                         function,
                         visibility: binding.visibility(),

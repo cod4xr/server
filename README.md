@@ -16,10 +16,17 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Supplied GSC files now compile into one owned verified package with qualified
+  calls/function references, local namespaces and shared budgets. Tests cover
+  66,000 modules/functions, 70,000-byte names, deep cross-file frames and heap
+  pressure. Run `cargo run -p cod4x-script --example script_package --locked` for
+  the two-file example (integer 1001). ADR 0077 scopes evidence; filesystem loading,
+  includes, source arrays, scheduling and full stock/mod execution remain open.
+
 - Canonical virtual script names now match the selected native ASCII helper,
   with borrowed lookup views, fallible ownership, explicit work/length budgets
   and 70,000-byte tests. Native/error/model/privacy evidence is scoped in ADR 0076.
-  This naming component prepares cross-file compilation; linking/loading remain open.
+  Closed cross-file compilation follows ADR 0077; filesystem loading remains open.
 
 - Populated array copies now stage complete keys/entries/index changes before
   switching one managed value. They preserve shared struct identity and reverse

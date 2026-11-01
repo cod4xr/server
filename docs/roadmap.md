@@ -52,6 +52,11 @@ source-array execution. This does not close S5 or a full-GSC workstream.
 
 ## Next concrete work
 
+ADR 0077 implements closed caller-supplied multi-file compilation/execution with
+qualified calls/references, local namespaces and shared admission. Its wide/deep/
+heap/source-role checks do not close filesystem/include loading, source ownership,
+scheduling, host libraries or stock/mod acceptance. S5 remains open.
+
 1. Continue remaining delta/user-command/snapshot codecs and legacy/profile
    inventory above implemented channel, Huffman, XOR, and index primitives.
 2. Add coverage-guided parser fuzzing and deterministic impairment workloads.
