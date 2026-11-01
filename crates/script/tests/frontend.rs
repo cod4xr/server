@@ -1,5 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Source/frontend compatibility suite; leaf files retain focused tests and helpers.
+#[path = "script_path_budgets.rs"]
+mod script_path_budgets;
+#[path = "script_path_model.rs"]
+mod script_path_model;
+#[path = "script_path_names.rs"]
+mod script_path_names;
+#[path = "script_path_vectors.rs"]
+mod script_path_vectors;
 
 #[path = "bound_object_arguments.rs"]
 mod bound_object_arguments;

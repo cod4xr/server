@@ -12,6 +12,7 @@ import script_array_reference as arrays
 import script_array_write_reference as array_writes
 import script_array_alias_reference as array_aliases
 import script_array_lifetime_reference as array_lifetimes
+import script_path_reference as script_paths
 import script_call_link_reference as call_links
 import script_function_reference as function_references
 import script_predicate_reference as predicates
@@ -124,6 +125,7 @@ def main() -> None:
     array_writes.verify(*array_writes.inputs(reference))
     array_aliases.verify(array_aliases.inputs(reference))
     array_lifetimes.verify(array_lifetimes.inputs(reference))
+    script_paths.verify(script_paths.inputs(reference))
     string_access.verify(*string_access.inputs(reference))
     definedness.verify(*definedness.inputs(reference))
     fields.verify(*fields.inputs(reference))

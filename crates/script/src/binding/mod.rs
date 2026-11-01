@@ -6,6 +6,7 @@ mod legacy_function_binding;
 mod legacy_identifier;
 mod legacy_identifier_error;
 mod legacy_module_symbols;
+mod script_paths;
 mod symbol_budget;
 mod symbol_builder;
 mod symbol_error;
@@ -18,5 +19,9 @@ pub use legacy_function_binding::{
 pub use legacy_identifier::LegacyIdentifier;
 pub use legacy_identifier_error::LegacyIdentifierError;
 pub use legacy_module_symbols::{LegacyModuleSymbols, LegacySymbolUsage};
+pub use script_paths::{
+    CanonicalScriptPath, CanonicalScriptPathBytes, LegacyScriptPath, ScriptPathBudget,
+    ScriptPathError, ScriptPathErrorKind, ScriptPathResource, ScriptPathResult, ScriptPathUsage,
+};
 pub use symbol_budget::SymbolBudget;
 pub use symbol_error::{SymbolError, SymbolErrorKind, SymbolResource};

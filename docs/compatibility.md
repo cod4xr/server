@@ -1,5 +1,11 @@
 # Compatibility contract
 
+ADR 0076 canonicalizes NUL-free ASCII virtual script names under native helper
+rules. Of 579 actual O0/O2 outcomes, 574 replay through Rust; five NUL-containing
+inputs intentionally reject ambiguous prefix identities. Twenty source-role
+mutations and 4096 independent model cases guard the component. Non-ASCII ctype,
+interner/loader/filesystem/native unwinding or full file-link compatibility is not claimed.
+
 ADR 0075 adds 210 actual selected native lifetime/COW traces at O0/O2, an independent
 owner-release model and 61 source-role mutations. Acyclic holder release clears
 outgoing aliases immediately; cycles/downstream holders retain them, affecting

@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Canonical virtual script names now match the selected native ASCII helper,
+  with borrowed lookup views, fallible ownership, explicit work/length budgets
+  and 70,000-byte tests. Native/error/model/privacy evidence is scoped in ADR 0076.
+  This naming component prepares cross-file compilation; linking/loading remain open.
+
 - Populated array copies now stage complete keys/entries/index changes before
   switching one managed value. They preserve shared struct identity and reverse
   key order. Tests cover 70,000 entries/owners, bounded 100,000-copy churn and an

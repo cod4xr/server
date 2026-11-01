@@ -1,5 +1,16 @@
 # Project contract
 
+ADR 0076 adds budgeted NUL-free ASCII LegacyScriptPath/CanonicalScriptPath virtual
+names and native canonical-byte iteration. Preserve the helper's segment/control/
+separator/case quirks, complete owned bytes, canonical identity, redacted Debug and
+atomic failed admission. No filesystem authority or inherited 64/1024-byte ceiling.
+Linkers must prepay linear Hash/Eq/iterator visits separately. Run
+generate_script_path_vectors.py --check (579 actual O0/O2 outcomes: 574 Rust
+replays/five intentionally rejected NUL identities), script_path_reference.py
+(20 mutations), 4096 model/wide/exact-failure tests and syntax guards. Non-ASCII
+ctype/interner/loader/native unwinding and cross-file linking remain outside this
+component; empty virtual names need later catalog admission.
+
 ADR 0075 adds generate_array_lifetime_vectors.py --check (210 O0/O2 actual selected
 ref/clear/child-free/parent-free/COW traces with modeled monotonic allocation/setup)
 and script_array_lifetime_reference.py (61 mutations), also wired into syntax/CI.

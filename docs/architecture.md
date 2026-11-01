@@ -1,5 +1,11 @@
 # Architecture and expansion
 
+ADR 0076 separates canonical virtual script identity from filesystem access.
+Binding owns validated borrowed views, canonical iterators and fallible owned
+names under configurable input/output/work budgets. Linkers must separately admit
+query Hash/Eq/iteration visits. Cross-file scope/linking and host file loading remain
+open; native wrapper lengths are not authoritative engine storage ceilings.
+
 ADR 0075 adds native lifetime evidence, without a runtime change. Logical acyclic
 holder release must update outgoing array ownership before later COW, independently
 of deferred payload reclamation. Ordinary frame/field lifetimes affect that count;

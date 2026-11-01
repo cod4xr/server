@@ -1,5 +1,9 @@
 # Expanded GSC runtime contract
 
+ADR 0076 adds budgeted canonical virtual script identities and owned names for
+future file-qualified lookup. Native/model/resource/wide/privacy tests cover naming;
+module catalogs, cross-file calls/references/includes and loading remain open.
+
 ADR 0075 establishes the next ownership requirement: native acyclic holder release
 removes array aliases before a later COW decision; cycles retain them. The 210-trace
 helper corpus/model does not implement this in nested/source execution. Ordinary
