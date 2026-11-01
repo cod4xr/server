@@ -21,9 +21,9 @@ pub use heap_budget::{HeapWorkBudget, StringHeapBudget};
 pub use heap_error::{HeapError, HeapErrorKind, HeapResource};
 pub use heap_usage::{HeapAllocation, HeapWorkUsage, StringCollection, StringHeapUsage};
 pub use objects::{
-    ObjectAllocation, ObjectCollection, ObjectFieldResult, ObjectHeap, ObjectHeapBudget,
-    ObjectHeapError, ObjectHeapErrorKind, ObjectHeapUsage, ObjectId, ObjectResource,
-    ObjectStringCollection,
+    ObjectAllocation, ObjectCollection, ObjectCycleAnalysis, ObjectFieldResult, ObjectHeap,
+    ObjectHeapBudget, ObjectHeapError, ObjectHeapErrorKind, ObjectHeapUsage, ObjectId,
+    ObjectResource, ObjectStringCollection,
 };
 pub use string_heap::StringHeap;
 pub use string_id::StringId;

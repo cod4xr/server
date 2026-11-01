@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- An opt-in reference-cycle graph probe reports cycle-retained garbage and unique
+  live boundary targets under explicit work/scratch budgets. It matches 4,096
+  independent model graphs and runs reproducible wide/churn workloads; ADR 0070.
+  Normal collection is unchanged; this is array-ownership assessment support.
+
 - Bound GSC ordinary struct fields support reads, simple writes and Undefined
   deletion with shared aliases and original RHS-before-receiver order. Names use
   separate immutable tables without runtime string caches. Source tests retain

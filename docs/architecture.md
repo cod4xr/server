@@ -1,5 +1,10 @@
 # Architecture and expansion
 
+ADR 0070 adds a read-only complete-root cycle-boundary probe in objects/cycles.
+Iterative garbage indegree peeling identifies cycle-retained closure and unique
+live targets with admitted work/flags/counts/queue/output scratch. Normal collection
+is unchanged; managed array ownership and alias-marker integration remain separate.
+
 ADR 0069 dispatches ordinary struct equality/inequality through checked object
 references with fixed work and no graph traversal. Pure/string-only ownership
 boundaries and immutable constants remain enforced. Array comparison/ownership

@@ -1,5 +1,14 @@
 # Project contract
 
+ADR 0070 adds opt-in read-only ObjectHeap::analyze_cycles. Preserve complete-root
+reachability, garbage-only indegree peeling, downstream cycle closure and unique
+live boundary snapshots. Prepay all graph/output work and simultaneous flags/
+degree/queue/output scratch; results are nonowning and Debug redacts IDs/payloads.
+Keep topology/native-model, 4096 independent RC-model graphs, wide, failed-prefix/
+exact-scratch tests and object_cycle_workload. Ordinary collection is unchanged.
+This does not implement array COW, managed ownership or logical alias pinning;
+those and array source activation remain open.
+
 Array ownership assessment now includes generate_array_alias_vectors.py --check
 (20 actual selected nonfreeing ref-drop/COW/key traces with modeled graph setup)
 and script_array_alias_reference.py (14 mutations). Native-retained cycle aliases

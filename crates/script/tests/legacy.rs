@@ -175,6 +175,14 @@ mod numeric_vectors;
 mod object_comparison_limits;
 #[path = "object_comparison_vectors.rs"]
 mod object_comparison_vectors;
+#[path = "object_cycle_limits.rs"]
+mod object_cycle_limits;
+#[path = "object_cycle_model.rs"]
+mod object_cycle_model;
+#[path = "object_cycle_topology.rs"]
+mod object_cycle_topology;
+#[path = "object_cycle_vectors.rs"]
+mod object_cycle_vectors;
 #[path = "predicate_vectors.rs"]
 mod predicate_vectors;
 #[path = "string_equality_work.rs"]

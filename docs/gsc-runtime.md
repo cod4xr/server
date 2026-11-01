@@ -1,5 +1,10 @@
 # Expanded GSC runtime contract
 
+ADR 0070 implements opt-in budgeted reference-cycle boundary analysis, validated
+against native trace topologies, 4,096 independent graph models and wide/churn/
+resource workloads. It does not change ordinary collection, implement alias
+markers or activate arrays; managed ownership and array COW remain open.
+
 Array ownership assessment now includes 20 selected native cycle-alias traces:
 root release can retain aliases that still trigger COW/key-order reversal. A
 collector must preserve that observable behavior when reclaiming cycle payload.

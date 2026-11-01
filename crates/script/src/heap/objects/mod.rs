@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+mod cycles;
 mod field_index;
 mod field_insertion;
 mod field_removal;
@@ -19,6 +20,7 @@ mod object_tests;
 mod object_usage;
 mod object_work;
 
+pub use cycles::ObjectCycleAnalysis;
 pub use object_budget::ObjectHeapBudget;
 pub use object_error::{ObjectHeapError, ObjectHeapErrorKind, ObjectResource};
 pub use object_heap::ObjectHeap;
