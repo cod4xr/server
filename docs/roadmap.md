@@ -45,7 +45,8 @@ operators and the S5 gate remain open;
 arrays need legacy copy-on-write before source activation.
 
 ADR 0072 implements only host-owned empty-array values, snapshots and empty
-detachment. ADR 0073 adds checked typed unique entries. Populated/nested COW,
+detachment. ADR 0073 adds checked typed unique entries; ADR 0074 stages copies of
+current populated values. Nested COW,
 cycle-alias markers and frame/field/scheduler ownership still gate
 source-array execution. This does not close S5 or a full-GSC workstream.
 

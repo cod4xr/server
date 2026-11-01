@@ -3,10 +3,11 @@
 Date: 2026-11-01
 
 Status: proposal for complete ownership/COW. ADR 0072 implements only managed
-host-owned empty data, snapshots and empty detachment. Populated/nested COW,
-frame/scheduler ownership, alias-marker publication and source/VM activation remain open.
+host-owned empty data, snapshots and empty detachment. Nested COW, frame/scheduler
+ownership, alias-marker publication and source/VM activation remain open.
 ADR 0073 adds typed unique-value entries for current primitives/shared structs;
-it does not complete populated/nested copy or VM ownership.
+ADR 0074 adds staged copies of those populated entries, without nested arrays or
+VM ownership. The remaining sections retain proposal status for unimplemented work.
 
 ## Required behavior
 
@@ -81,8 +82,8 @@ need their own native-profile tests.
 
 ## Acceptance before activation
 
-The next implementation candidate for current primitive/shared-struct entries is
-a staged populated copy. Preflight the source sibling chain, keys/value references,
+ADR 0074 implements staged copies for current primitive/shared-struct entries.
+Preflight the source sibling chain, keys/value references,
 free-slot selections, final quotas and checked counters; then allocate owned key/
 field records and reserve destination arenas before publication. Prepending copied
 entries while walking source siblings reproduces reversal without recursive IR.
@@ -94,8 +95,8 @@ admitted patches. Rebuild the full index only for existing growth/tombstone rule
 This avoids copying/scanning the entire unrelated field/index heap for every shared
 write. Charge each overlay/index probe, possible arena move and simultaneous staging
 record/index scratch. Prepay cleanup/publication visits; no fallible step may remain
-after switching the managed location. This is a candidate, not an implemented
-transaction API or proof of nested-copy/cycle-alias behavior.
+after switching the managed location. This component is not a general transaction
+API or proof of nested-copy/cycle-alias behavior.
 
 Replay existing 306 array helper traces and 20 cycle-alias traces with clear
 helper/model/native VM distinctions. Implement simple/nested local and field

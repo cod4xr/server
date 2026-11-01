@@ -1,10 +1,17 @@
 # Architecture and expansion
 
+ADR 0074 stages current-value populated copies before switching the selected
+managed location. Flat owned field records, precomputed free slots and sparse
+index patches preserve atomic failures without duplicating unrelated storage.
+Actual bucket-fill preflight reuses tombstones; growth/necessary rehash stages a
+complete index. All simultaneous scratch and visits are admitted. Ordinary struct
+graphs remain shared; nested arrays, cycle markers and VM ownership remain open.
+
 ADR 0073 reuses the flat field arena/index/links for typed array entries without
 growing struct field records or adding a duplicate collector. Private tagged owned
 keys preserve full u64 indices/binary bytes; borrowed queries allocate no temporary
 encoding. Only checked unique managed locations mutate; snapshots read/enumerate.
-Existing graph/string roots now include populated entries. Populated/nested COW,
+Existing graph/string roots now include populated entries. Nested COW,
 nested array values and VM/frame/scheduler ownership still gate source arrays.
 
 ADR 0072 implements managed host-owned empty-array locations separately from
@@ -13,13 +20,13 @@ classification/count rows; location identities use an independent full namespace
 Explicit copy/retain/release and empty detachment preflight work/resources and
 fallible growth before publication. Collection/analysis include owned locations
 as roots and clear classification on parent reuse. Struct-only storage keeps zero
-array rows. Populated/nested COW, frame/field/scheduler ownership, cycle-alias
+array rows. Nested COW, frame/field/scheduler ownership, cycle-alias
 markers and source/VM activation remain open under proposal 0071.
 
 ADR 0070 adds a read-only complete-root cycle-boundary probe in objects/cycles.
 Iterative garbage indegree peeling identifies cycle-retained closure and unique
 live targets with admitted work/flags/counts/queue/output scratch. Struct-only
-collection is unchanged; populated-array ownership and alias markers remain open.
+collection is unchanged; nested/VM ownership and alias markers remain open.
 
 ADR 0069 dispatches ordinary struct equality/inequality through checked object
 references with fixed work and no graph traversal. Pure/string-only ownership

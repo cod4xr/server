@@ -1,9 +1,15 @@
 # Expanded GSC runtime contract
 
+ADR 0074 adds staged populated copying for current primitive/shared-struct entries,
+preserving legacy key reversal and shared identities with complete admission before
+publication. Wide/churn/model/resource/native-state tests cover the component.
+Nested arrays, cycle-alias markers and VM/frame/field/scheduler ownership still
+gate source activation; this does not close the complete GSC workstream.
+
 ADR 0073 adds typed unique-value array entries using existing metered fields/index.
 Reads/enumeration borrow nonowning snapshots; writes/deletes require one owner and
 retain raw Undefined until explicit deletion. Wide/churn/model/resource/native-state
-tests assess storage, not source array execution. Populated/nested COW, nested
+tests assess storage, not source array execution. Nested COW, nested
 array values, cycle-alias markers and VM ownership still gate source activation.
 
 ADR 0072 implements the managed empty-data portion of proposal 0071: explicit

@@ -12,8 +12,8 @@ impl ObjectHeap {
     /// Selects unique data for a managed empty-array value, detaching aliases.
     ///
     /// This complete empty-data profile does not implement populated/nested copy,
-    /// cycle-alias markers or source arrays. Populated data must use a future
-    /// populated-copy operation; raw shared-struct field APIs still reject arrays.
+    /// cycle-alias markers or source arrays. Populated data uses
+    /// [`Self::make_array_unique`]; raw shared-struct field APIs still reject arrays.
     /// # Errors
     /// Invalid references, nonempty data, limits/overflow or allocation
     /// publish no detachment/counter change. Spare capacity may grow.

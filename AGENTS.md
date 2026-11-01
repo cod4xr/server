@@ -1,5 +1,17 @@
 # Project contract
 
+ADR 0074 adds atomic staged make_array_unique for current primitive/shared-struct
+entries. Copy only the selected location; preserve values/shared identity and
+reverse sibling order. Preflight links/references/final quotas, every copy/hash/
+probe/move and simultaneous record/index scratch before infallible publication.
+Unique selection is three steps/zero scratch. Simulate actual Empty/Deleted bucket
+placements using metered sparse occupancy; rebuild only on growth or actual fill,
+never conservatively scan unrelated heaps on repeated tiny copies. Keep all 20
+native state replays explicitly HOST-ALIAS modeled (not retained-cycle markers),
+wide entries/owners, 100k bounded churn, 12k shared graph, independent model,
+resource/prefix/scratch/privacy/collision tests and array_copy_workload. Nested
+arrays, cycle-alias markers and VM/frame/field/scheduler ownership still gate source.
+
 ADR 0073 adds typed integer/byte-key entries through checked UNIQUE managed values.
 Reads use nonowning data snapshots; shared writes/deletes return SharedArray.
 Reuse the field arena/index/links, preserve complete lossless encodings, prepaid
@@ -8,8 +20,8 @@ in quotas; public APIs never expose encoded buffers. Keep raw Undefined storage
 distinct from future VM assignment deletion. Populated data must reject the empty
 copy API as ExpectedEmptyArray. Retain order/native U/V/F state replays, wide/churn/
 model/hostile/exact-budget tests, forced collisions/malformed-key preflight and
-array_entry_workload. Nested values, populated/nested COW, cycle markers and array
-source activation remain open. Do not turn the unique API into shared mutation.
+array_entry_workload. Populated copies follow ADR 0074; nested values/COW, cycle
+markers and source activation remain open. Do not turn the unique API into shared mutation.
 
 ADR 0072 implements managed host-owned EMPTY array values and nonowning data
 snapshots, explicit copy/retain/release and empty detachment only. Raw handle
@@ -18,10 +30,10 @@ namespaces/generations, wide counts, fallible atomic admission, optional per-par
 metadata and metered root scans including vacancies. Shared struct APIs and VM
 wrong tags must reject array data. Keep key/domain, wide, 100k bounded churn,
 independent ownership-model, exact-failure, mixed collection and private tests,
-plus array_value_workload. Source arrays remain rejected. Populated/nested COW,
+plus array_value_workload. Source arrays remain rejected. Nested COW,
 retained-cycle markers and frame/field/scheduler ownership remain proposal 0071
-work. The four empty native state replays use host aliases, not native cycle
-ownership; keep that scope distinct from 16 populated helper-only alias traces.
+work; current populated copies follow ADR 0074. Its 20 native state replays and
+these four empty replays use host aliases, not native retained-cycle ownership.
 
 ADR 0070 adds opt-in read-only ObjectHeap::analyze_cycles. Preserve complete-root
 reachability, garbage-only indegree peeling, downstream cycle closure and unique

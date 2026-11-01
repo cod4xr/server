@@ -1,11 +1,18 @@
 # Compatibility contract
 
+ADR 0074 adds staged populated copies for current primitives/shared structs.
+All 20 native alias/COW states now replay with explicit host-owned aliases;
+retained-cycle topology/markers remain unimplemented. Thirteen integration/two
+private tests cover order/values/identity, resource failures, an independent model,
+wide counts, bounded churn and copy work beside unrelated data. No native
+allocation/freeing/ABI/compiler/VM/GC or nested-array parity is claimed.
+
 ADR 0073 adds typed unique-entry storage for current primitives/shared structs.
 Ten integration tests and two private tests cover wide keys, bounded churn, a
 16,384-operation independent model, exact failures, roots and malformed input.
 Three native U/V/F semantic-state replays cover ordering/raw Undefined/removal;
 they do not establish native allocation/free-list/cleanup/VM parity. Shared writes
-reject, and populated/nested COW, nested values and source arrays remain open.
+reject; populated copies follow ADR 0074. Nested values/COW and source arrays remain open.
 
 ADR 0072 adds checked host-owned empty-array locations and empty detachment only.
 Four zero-key native alias states replay with explicit host aliases; they do not

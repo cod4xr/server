@@ -1,5 +1,24 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
+#[path = "array_copy_budgets.rs"]
+mod array_copy_budgets;
+#[path = "array_copy_churn.rs"]
+mod array_copy_churn;
+#[path = "array_copy_index_work.rs"]
+mod array_copy_index_work;
+#[path = "array_copy_model.rs"]
+mod array_copy_model;
+#[path = "array_copy_roots.rs"]
+mod array_copy_roots;
+mod array_copy_support;
+#[path = "array_copy_values.rs"]
+mod array_copy_values;
+#[path = "array_copy_vectors.rs"]
+mod array_copy_vectors;
+#[path = "array_copy_width.rs"]
+mod array_copy_width;
+#[path = "array_copy_work.rs"]
+mod array_copy_work;
 #[path = "array_entry_budgets.rs"]
 mod array_entry_budgets;
 #[path = "array_entry_hostile.rs"]

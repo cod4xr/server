@@ -16,9 +16,16 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Populated array copies now stage complete keys/entries/index changes before
+  switching one managed value. They preserve shared struct identity and reverse
+  key order. Tests cover 70,000 entries/owners, bounded 100,000-copy churn and an
+  independent ownership/order model; tiny-copy work stays bounded beside 65,532
+  unrelated fields. ADR 0074 and `array_copy_workload` record scope. Nested arrays,
+  cycle-alias markers and source/VM ownership remain open.
+
 - Typed array entries now support integer/byte keys, primitives/shared structs,
-  checked reads and unique-value writes/removals. Shared writes reject; populated
-  COW and nested/source arrays remain open. Tests cover 70,000 mixed keys, 100,000
+  checked reads and unique-value writes/removals. Shared direct writes reject;
+  populated copies follow ADR 0074; nested/source arrays remain open. Tests cover 70,000 mixed keys, 100,000
   updates in one field slot, an independent model, exact failures and nested
   ordinary struct/string roots. ADR 0073 and `array_entry_workload` record scope.
 

@@ -20,8 +20,9 @@ use crate::heap::{HeapWorkBudget, HeapWorkUsage, StringHeap};
 /// raw location handle adds no owner. Array data snapshots remain nonowning.
 /// Indexed array writes require unique managed locations; entry values currently
 /// support primitives/shared structs, not nested arrays. Keys retain full bytes/indices.
-/// Empty-data detachment does not provide populated/nested COW, source arrays,
-/// frame/scheduler ownership, cycle-alias markers or native GC/lifetime parity.
+/// Populated copies preserve current values and reverse sibling order; nested COW,
+/// source arrays, frame/scheduler ownership, cycle-alias markers and native
+/// GC/lifetime parity remain outside this component.
 /// The associated string store remains separately owned; use `reclaim_strings` with
 /// every additional string root, after object collection when cycles should release
 /// strings. Logical quotas exclude allocator/spare capacity/fixed fields and RSS.
