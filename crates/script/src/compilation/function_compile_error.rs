@@ -25,7 +25,7 @@ pub enum FunctionCompilationResource {
     LocalBindings,
     /// Identifier bytes across name visits.
     IdentifierBytes,
-    /// Live initialization facts and switch case record payload.
+    /// Live control/lifetime planning, initialization facts and case records.
     ControlBytes,
 }
 
@@ -58,7 +58,7 @@ pub enum FunctionCompileErrorKind {
     DeveloperFunctionReference,
     /// Parentheses require a singleton; the primitive profile additionally accepts triples.
     UnsupportedGroupArity,
-    /// This profile permits only plain-name local assignment targets.
+    /// The target is outside this profile's plain-local, bound field or local-index authority.
     UnsupportedLocalTarget,
     /// Initializer/update clauses accept only primitive assignment/update or empty syntax.
     UnsupportedForClause,

@@ -1,5 +1,15 @@
 # Expanded GSC runtime contract
 
+ADR 0095 adds source indexed assignment/clear through initialized plain local
+cells, using ADR 0088's checked instructions and ADR 0094's physical lifetimes.
+Normal assignment evaluates RHS/key before borrowing the owning location.
+Literal Undefined clears; grouped/called Undefined admits a transient child.
+Independent populated results survive calls/returns and later collection.
+`examples/gsc/array_writes.gsc` returns integer 42. Exact/failure budgets, COW
+sibling order, pressure graphs, wide/deep storage and CLI/package paths are tested.
+Nested/stored arrays, never-initialized targets, indexed compound/postfix and
+root/game writes remain closed; full GSC and general logical lifetimes remain open.
+
 ADR 0094 adds iterative, metered local lifetime planning/cleanup to bound modules
 and packages. Declaration/public/physical cells remain separate from initialized
 facts. Branch, loop, switch-fallthrough, break and continue rules preserve their
@@ -7,7 +17,8 @@ distinct native evidence; removed bindings become uninitialized. Tests cover
 exact/failure budgets, 70k private aliases, 12k nested branches and bounded 100k
 churn. `examples/gsc/local_scopes.gsc` returns integer 42. Native helper requests
 do not establish whole compiler/VM/freeing parity. Source indexed writes and
-general stored/nested ownership remain rejected pending the next acceptance.
+general stored/nested ownership remain rejected at that checkpoint; ADR 0095
+separately expands initialized-local source writes.
 
 ADR 0088 accepts typed StoreArrayLocal/ClearArrayLocal with initialized targets,
 registry-checked receiver borrowing, COW before key validation and real transient

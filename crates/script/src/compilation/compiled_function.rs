@@ -39,7 +39,7 @@ pub struct FunctionCompilationUsage {
     pub local_bindings: u64,
     /// Identifier bytes charged across declaration/read/initialization visits.
     pub identifier_bytes: u64,
-    /// Peak admitted live initialization facts and switch case record payload.
+    /// Peak admitted control/lifetime planning, initialization and case payload.
     pub peak_control_bytes: u64,
     /// Actual pure validation instructions; None when this profile does not pre-execute.
     pub validation_steps: Option<u64>,

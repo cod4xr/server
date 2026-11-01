@@ -12,6 +12,72 @@ use std::process::Command;
 use content_support::FixtureFile;
 
 #[test]
+fn supplied_package_array_writes_return_populated_data_across_includes_with_readable_logs() {
+    let root = FixtureFile::from_bytes(b"#include lib;main(){a=make();a[1]=20;return a[0]+a[1];}");
+    let lib = FixtureFile::from_bytes(b"make(){a=[];a[0]=22;return a;}");
+    let output = script_package_support::execute(
+        "root",
+        &[("root", &root), ("lib", &lib)],
+        &["--human-logs", "--color", "never"],
+    );
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"integer 42\n");
+    assert!(script_package_support::logs(&output, &[&root, &lib]).contains("live_array_values=0"));
+}
+
+#[test]
+fn failed_source_write_reports_its_private_location_and_zero_live_vm_owners_after_cow() {
+    let file = FixtureFile::from_bytes(
+        b"main(){/* PrivateSource */a=[];a[0]=1;\n b=a;\n a[-1]=9;\n return 0;}",
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args(["--json-logs", "--execute-gsc"])
+        .arg(&file.0)
+        .output()
+        .expect("Failed source write");
+    let event = script_package_support::failed(&output, &[&file]);
+    let fields = &event["fields"];
+    assert_eq!(fields["phase"], "execute");
+    assert_eq!(fields["cause"], "ArrayIndexOutOfRange");
+    assert_eq!(fields["line"], 3);
+    assert_eq!(fields["live_array_values"], 0);
+    assert_eq!(fields["live_arrays"], 2);
+}
+
+#[test]
+fn offline_source_writes_populate_independent_arrays_and_keep_results_and_logs_private() {
+    let file = FixtureFile::from_bytes(include_bytes!("../../../examples/gsc/array_writes.gsc"));
+    let output = Command::new(env!("CARGO_BIN_EXE_cod4x-server"))
+        .args(["--json-logs", "--execute-gsc"])
+        .arg(&file.0)
+        .output()
+        .expect("Offline writable source");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"integer 42\n");
+    let text = script_package_support::logs(&output, &[&file]);
+    let event = text
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .find(|record| record["fields"]["event"] == "script.executed")
+        .expect("Completion event");
+    assert_eq!(event["fields"]["live_array_values"], 0);
+    assert!(
+        event["fields"]["live_fields"]
+            .as_u64()
+            .expect("Numeric field count")
+            >= 3
+    );
+}
+
+#[test]
 fn supplied_package_scopes_keep_calls_and_switch_loop_exits_owned_and_logs_readable() {
     let root = FixtureFile::from_bytes(b"#include lib;main(){return run();}");
     let source =

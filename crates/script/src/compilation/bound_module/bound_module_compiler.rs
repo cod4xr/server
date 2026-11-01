@@ -15,8 +15,11 @@ use crate::compilation::function_lowering_mode::FunctionLoweringMode;
 /// Compiles active local definitions through a complete primitive call inventory.
 ///
 /// Reuses primitive statements with immediate local/indirect calls, local function
-/// references and sealed pure predicates. Arguments lower rightmost-first before
+/// references and sealed builtins. Arguments lower rightmost-first before
 /// indirect target expressions; invocation checks arity.
+/// Bound source includes metered local lifetimes and nonnested indexed assignment
+/// through initialized plain locals. Heap operations require an explicit runtime
+/// heap context; stored Array values and root/game writes remain unsupported.
 /// Ordinary code cannot reference developer-only targets. Disabled declarations
 /// remain metadata, including unsupported bodies that are not compiled. No source/
 /// tree/name/symbol borrow escapes. Empty/all-disabled inventories contain no entry.

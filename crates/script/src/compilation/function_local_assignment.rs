@@ -2,6 +2,7 @@
 use std::ops::Range;
 
 use crate::binding::LegacyIdentifier;
+use crate::compilation::function_array_assignment;
 use crate::compilation::function_body;
 use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
@@ -25,6 +26,9 @@ pub(super) fn assign<'tree, 'source>(
     target: LegacySyntaxNode<'tree, 'source>,
     value: LegacySyntaxNode<'tree, 'source>,
 ) -> Result<(), FunctionCompileError> {
+    if function_array_assignment::assign(builder, target, value)? {
+        return Ok(());
+    }
     if function_field_assignment::assign(builder, statement, target, value)? {
         return Ok(());
     }

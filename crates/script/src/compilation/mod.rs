@@ -7,6 +7,7 @@
 
 mod bound_module;
 mod compiled_function;
+mod function_array_assignment;
 mod function_body;
 mod function_builder;
 mod function_call;

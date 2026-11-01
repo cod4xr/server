@@ -14,6 +14,28 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0095 connects bound source/package indexed assignment through initialized
+plain locals to the accepted typed writable cells and physical lifetime plan.
+Normal RHS/key/target order, real COW before invalid-key errors and direct versus
+computed Undefined paths are preserved. No new opcode/crate/dependency/target
+directory. Twenty-two source tests cover observable sibling order across fifteen
+control programs, indirect calls, indexed for clauses/continue, explicit/missing
+Undefined, temporary child quotas, all exact/shorter compiler/runtime budgets,
+same-context recovery, independent populated results, operand-only RHS pressure,
+70k fields/key bytes, bounded 100k updates beside 70,001 host owners under 4 KiB,
+and populated 12,001-frame return/unwind. Three real CLI tests cover numeric 42,
+included populated returns/readable logs and private located COW failure with
+zero VM owners. The historical gate keeps its identity but replaces the old
+plain-local write rejection with a nested target; other excluded targets remain
+closed. Debug/release workspace runs pass 389 frontend/257 legacy tests; the
+final additional for-clause case brings the current frontend inventory to 390,
+with complete current frontend suites passing in both profiles. All prior names
+remain preserved. All-target Clippy/rustdoc, native array/scope fixtures/mutations,
+35 scope admissions, 99 structural and twelve suite policies pass; repository
+policy checks 1054 sources/eight crates/largest 287. Linux/hosted CI are unrun.
+Full arrays/ordinary logical lifetimes, engine/entity APIs, scheduling, expanded
+services and full GSC remain open; no entire workstream closes.
+
 ADR 0094 implements iterative metered declaration/public/created scope planning
 and private-local cleanup for bound source/packages. Indexed initialized flags
 prevent cleared partial-break bindings from becoming readable. Branch/loop/switch

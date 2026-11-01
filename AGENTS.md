@@ -1,5 +1,19 @@
 # Project contract
 
+ADR 0095 implements initialized plain-local source indexed assignment and clear
+through ADR 0088's checked writable cells and ADR 0094's physical lifetimes.
+Evaluate RHS/key before borrowing the owning location; never clone a receiver
+to make it writable. Only direct literal Undefined clears without a transient
+child; grouped/called Undefined uses normal child admission/removal. Keep literal
+budgets and private bracket locations. Independent populated result graphs must
+survive last-array release and paired collection without host/full-string cache
+backing. Preserve 22 source tests, three CLI/package/error processes, old test
+identities, native 306 traces/141+61 mutations and all full Windows gates.
+The old empty-array gate identity now uses a nested target in place of the newly
+admitted initialized-local case. Stored/nested Array edges, never-initialized
+targets, indexed compound/postfix, root/game writes and scheduler ownership stay
+closed. Full GSC/general logical RC/cycles and gameplay remain open.
+
 ADR 0094 implements iterative metered bound-source local lifetime planning and
 private-cell cleanup, separately from definite initialization. Keep declaration,
 public, created and initialized states distinct; retain dynamic prefix expansion,

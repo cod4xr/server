@@ -16,17 +16,24 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Bound GSC now writes and clears entries through initialized plain local array
+  cells. Source tests cover observable COW order, literal/computed Undefined,
+  pressure roots, 70,000 entries/key bytes, 100,000 bounded updates and populated
+  results through 12,001 frames. `examples/gsc/array_writes.gsc` returns integer 42.
+  ADR 0095 scopes this profile; nested ownership, indexed compound/postfix and
+  root/game writes remain open.
+
 - Bound GSC modules/packages now clean private local aliases across branches,
   loops and switch exits/fallthrough using separate declaration and initialization
   facts. Wide/deep and exact-budget tests cover the lifetime rules. The offline
   `examples/gsc/local_scopes.gsc` example returns integer 42. ADR 0094 scopes this
-  component; source indexed writes and complete GSC remain open.
+  component; ADR 0095 adds initialized-local writes, and complete GSC remains open.
 
 - The typed GSC VM now mutates initialized local array cells with checked COW,
   distinct literal/computed Undefined behavior and prepaid failure cleanup.
   Tests replay 32 native delete outcomes, preserve operand/result graphs through
   collection, and cover 70,000 entries and bounded 100,000 updates. ADR 0088
-  scopes this component; source indexed assignment awaits its separate acceptance.
+  scopes this typed component; ADR 0095 adds the bounded source profile.
 
 - Bound GSC now constructs independent empty arrays with `[]`, including package
   calls and explicit owner transfer on return. The offline command runs

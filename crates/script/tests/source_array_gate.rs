@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #![allow(
     clippy::expect_used,
-    reason = "Tests keep unfinished array lifetime/COW behavior out of executable modules."
+    reason = "Tests retain the earlier gate identity while guarding excluded indexed targets."
 )]
 use crate::module_compile_support;
 use cod4x_script::binding::LegacyDeveloperMode;
@@ -12,9 +12,12 @@ use cod4x_script::syntax::{
 };
 
 #[test]
+// Retain this regression's inventory identity from ADR 0087. ADR 0095 replaces
+// its old plain-local case with a nested target; dedicated tests cover activation.
 fn indexed_writes_and_game_replacement_remain_rejected_after_empty_array_activation() {
     for source in [
-        "main(a){a[0]=1;return 0;}",
+        "main(a){a[0][1]=1;return 0;}",
+        "main(o){o.a[0]=1;return 0;}",
         "main(a){a[0]+=1;return 0;}",
         "main(a){a[0]++;return 0;}",
         "main(){game[0]=1;return 0;}",
@@ -24,7 +27,7 @@ fn indexed_writes_and_game_replacement_remain_rejected_after_empty_array_activat
             LegacyDeveloperMode::Disabled,
             ModuleCompilationBudget::default(),
         )
-        .expect_err("Read-only access must not enable indexed writes");
+        .expect_err("Nested, compound, postfix and root indexed targets remain closed");
         assert_eq!(
             error.cause.kind,
             FunctionCompileErrorKind::UnsupportedLocalTarget

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Compiler-private physical local scopes; source mutation activation is separate.
+//! Compiler-private metered physical local scopes and alias cleanup.
 
 mod scope_branches;
 mod scope_condition;

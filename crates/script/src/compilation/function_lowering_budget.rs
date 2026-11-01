@@ -23,7 +23,7 @@ pub struct FunctionLoweringBudget {
     pub max_local_bindings: u64,
     /// Identifier bytes across declarations/reads/call resolution/initialization.
     pub max_identifier_bytes: u64,
-    /// Live initialization facts and switch case records, also counted in metadata.
+    /// Live control/lifetime planning, initialization and case records, also in metadata.
     pub max_control_bytes: u64,
     /// Supplied argument expressions at any one bound-module call site.
     pub max_call_arguments: u64,
