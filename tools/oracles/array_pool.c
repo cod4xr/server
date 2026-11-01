@@ -13,8 +13,11 @@ unsigned int AllocVariable(void)
 unsigned int FindVariableIndexInternal(unsigned int parent, unsigned int name)
 {
     for (unsigned int i = 0; i < record_count; ++i)
-        if (records[i].parent == parent && records[i].name == name)
-            return records[i].index;
+        if (records[i].parent == parent && records[i].name == name) {
+            unsigned int id = variable_pool[records[i].index + VARIABLELIST_CHILD_BEGIN].hash.id;
+            if (variable_pool[id + VARIABLELIST_CHILD_BEGIN].w.status & VAR_STAT_MASK)
+                return records[i].index;
+        }
     return 0;
 }
 
@@ -23,6 +26,8 @@ unsigned int FindVariableIndexInternal2(unsigned int name, unsigned int hash)
     unsigned int result = 0;
     for (unsigned int i = 0; i < record_count; ++i) {
         if (records[i].name == name && records[i].initial_hash == hash) {
+            unsigned int id = variable_pool[records[i].index + VARIABLELIST_CHILD_BEGIN].hash.id;
+            if (!(variable_pool[id + VARIABLELIST_CHILD_BEGIN].w.status & VAR_STAT_MASK)) continue;
             assert(result == 0);
             result = records[i].index;
         }
@@ -41,6 +46,8 @@ unsigned int GetNewVariableIndexInternal3(unsigned int parent, unsigned int name
     records[record_count].name = name;
     records[record_count].index = index;
     records[record_count++].initial_hash = hash;
+    ++gScrVarPub.totalObjectRefCount;
+    ++gScrVarPub.numScriptValues;
     variable_pool[index + VARIABLELIST_CHILD_BEGIN].hash.id = (uint16_t)id;
     VariableValueInternal *entry = &variable_pool[id + VARIABLELIST_CHILD_BEGIN];
     entry->w.status = (name << VAR_NAME_BITS) | VAR_STAT_HEAD;
@@ -48,6 +55,7 @@ unsigned int GetNewVariableIndexInternal3(unsigned int parent, unsigned int name
     VariableValueInternal *owner = &variable_pool[parent + VARIABLELIST_PARENT_BEGIN];
     if (VAR_TYPE(owner) == VAR_ARRAY) {
         ++owner->u.o.u.size;
+        if (owner->u.o.u.size > peak_array_size) peak_array_size = owner->u.o.u.size;
         VariableValue key = Scr_GetArrayIndexValue(name);
         AddRefToValue(key.type, key.u);
     }
@@ -60,6 +68,7 @@ static void reset_pool(void)
     memset(records, 0, sizeof records);
     memset(&gScrVarPub, 0, sizeof gScrVarPub);
     record_count = object_count = string_refs = vector_refs = captured_count = captured_pending = 0;
+    string_removals = peak_array_size = 0;
 }
 
 static VariableValueInternal *child(unsigned int parent, unsigned int name)

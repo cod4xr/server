@@ -55,7 +55,7 @@ static void copy_case(unsigned int count, unsigned int nested_count, unsigned in
     assert(child(duplicate, 102)->u.u.stringValue == 103);
     assert(child(duplicate, 104)->u.u.stringValue == 105);
     assert(child(duplicate, 106)->u.u.stringValue == 0x80000000);
-    assert(!vector_refs && gScrVarPub.totalObjectRefCount == 1);
+    assert(!vector_refs && gScrVarPub.totalObjectRefCount == gScrVarPub.numScriptValues + 1);
     assert(gScrVarPub.varUsagePos == NULL);
     printf("C %u %u %u %u %u", count, nested_count, rotation, object_count,
            string_refs - refs_before);
@@ -80,7 +80,7 @@ static void copy_case(unsigned int count, unsigned int nested_count, unsigned in
     CopyArray(duplicate, repeated);
     assert(child(repeated, 101)->u.u.pointerValue == shared);
     assert(variable_pool[shared + VARIABLELIST_PARENT_BEGIN].u.o.refCount == 2);
-    assert(gScrVarPub.totalObjectRefCount == 2);
+    assert(gScrVarPub.totalObjectRefCount == gScrVarPub.numScriptValues + 2);
     printf("R %u %u %u", count, nested_count, rotation);
     show_keys(repeated);
     puts("");
@@ -106,10 +106,20 @@ static void replacement_case(void)
 int main(int argc, char **argv)
 {
     if (argc == 2) {
+        if (strcmp(argv[1], "clear-undefined") == 0) rejected_undefined_clear();
         char *end;
         unsigned long tag = strtoul(argv[1], &end, 10);
         assert(*argv[1] && !*end && tag >= 1 && tag <= VAR_INCLUDE_CODEPOS && tag != VAR_STACK);
         rejected_local((unsigned int)tag);
+        abort();
+    }
+    if (argc == 4 && strcmp(argv[1], "clear-index") == 0) {
+        char *end;
+        unsigned long tag = strtoul(argv[2], &end, 10);
+        assert(*argv[2] && !*end && tag <= VAR_FUNCTION && tag != VAR_STRING);
+        unsigned long word = strtoul(argv[3], &end, 16);
+        assert(*argv[3] && !*end && word <= UINT32_MAX);
+        rejected_clear_index((unsigned int)tag, (unsigned int)word);
         abort();
     }
     assert(argc == 1);
@@ -121,5 +131,6 @@ int main(int argc, char **argv)
                 copy_case(count, nested, rotation);
     copy_case(64, 64, 63);
     lvalue_cases();
+    removal_cases();
     return 0;
 }

@@ -3,6 +3,17 @@
 Date: 2026-10-31. Scope: implemented protocol, ordinary transport, query-only
 runtime, and structured/development logging. The complete server remains open.
 
+2026-11-01 array-write research addendum: all required Windows workspace gates
+passed, with unchanged 243 frontend/142 legacy script tests. The expanded array
+corpus reproduces 306 helper traces at O0/O2; all 262 prior rows remain an unchanged
+ordered subsequence. Selected native clear/set/remove/evaluate/unlink/free paths
+execute with modeled allocation/lookup/ref/output services; VM branch sequences
+are modeled. 69 copy/key and 141 write/grammar/compiler/VM mutations reject;
+99 structural replays remain unchanged. Free-list publication is checked without
+allocator reuse/collision relocation/object or vector destruction claims. Policy
+checks 669 sources/eight crates, largest 287 lines. Rust arrays/objects, real native
+source/VM execution, Linux/hosted CI remain open; ADR 0060.
+
 2026-11-01 primitive-definedness addendum: all required Windows workspace gates
 passed with 243 frontend/142 legacy script tests and one new process test. 56
 Rust outcomes replay from 351 isolated archival comparison/modeled-admission rows;

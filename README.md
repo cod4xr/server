@@ -389,6 +389,7 @@ python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check
 python tools/generate_array_vectors.py ../cod4x-reference --check
 python tools/script_array_reference.py ../cod4x-reference
+python tools/script_array_write_reference.py ../cod4x-reference
 python tools/generate_string_access_vectors.py ../cod4x-reference --check
 python tools/script_string_access_reference.py ../cod4x-reference
 python tools/generate_defined_vectors.py ../cod4x-reference --check

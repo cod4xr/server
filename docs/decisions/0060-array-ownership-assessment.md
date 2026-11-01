@@ -31,7 +31,7 @@ entries rather than the highest integer index plus one. Native size/ref fields
 are 16-bit; encoded names are 24-bit. None is a Rust engine storage ceiling.
 
 The generator runs extracted key/allocation/copy/sibling/key-enumeration/local-slot
-reference functions at O0/O2 and records 262 identical traces. Native packed type
+reference functions at O0/O2 and initially recorded 262 identical traces. Native packed type
 declarations compile on the host ABI, without asserting a native pointer/ABI layout.
 Pool allocation, collision-free lookup, reference services and key output are
 explicit bounded test models. Invalid targets run in separate processes whose
@@ -41,6 +41,32 @@ Stack-tag assertions, removal, native interning/allocation/GC and compiler/VM/ga
 execution are outside this corpus. The selected source-role guard rejects 69
 scoped replacements/reorderings/constant mutations, including read-only branches;
 guarded source is not execution evidence for those branches.
+
+The corpus now records 306 traces after adding actual clear/set/remove/evaluate
+and no-collision unlink/free helpers. It covers integer/string
+head/middle/tail/missing keys, shared/unique arrays, string-reference callbacks,
+temporary key creation and initialized Undefined parents. All 262 older rows remain
+an unchanged ordered subsequence. The new compiler/VM/grammar/write-helper source
+guard rejects 141 mutations in addition to the existing 69 copy/key-role mutations.
+
+Source-derived write rules require care. General assignment evaluates RHS before
+the lvalue; indexed lvalues evaluate index before parent reference setup. Literal
+Undefined uses ClearArray directly, whereas the general VM array-index setter also
+removes a computed Undefined after constructing its lvalue. Thus a missing-key
+computed delete can temporarily create an entry, and an initialized Undefined
+parent can autovivify to an empty array; direct clear rejects that parent. Grouped
+primaries retain a separate syntax tag from direct Undefined. The general raw C
+setter can retain an Undefined entry, but it must not be mistaken for the complete
+VM array-assignment path. Invalid clear keys reject after shared-array detachment;
+helper callbacks record that state without resuming or unwinding a GSC thread.
+
+These compiler/VM branches are guarded source, not executed native routines. The
+driver explicitly models their helper call sequences. Allocation, hash lookup,
+reference and output services remain modeled. Native free-list publication is
+checked across three deletions and reinsertion, while allocation stays monotonic;
+collision relocation and allocator reuse are not exercised. Child deletion cases
+use Integer/Undefined values, not object/vector destruction. Entity/read-only game
+branches and whole-source execution stay open.
 
 ## Storage alternatives and requirements
 
@@ -77,7 +103,8 @@ This assessment adds no Rust array/object execution and closes no complete legac
 GSC workstream. It does not alter existing string ownership or introduce a new
 crate, dependency, native runtime linkage or serialized instruction ABI.
 
-Windows verification passed repository policy (650 sources/eight crates), rustfmt,
+Windows verification passed repository policy (669 sources/eight crates), rustfmt,
 warnings-denied all-target Clippy and rustdoc, and full debug/release workspace
-tests. The native corpus/69 mutation checks and all 99 existing structural replays
+tests. The 306 native helper traces, 69 copy/key mutations, 141 write-role mutations
+and all 99 existing structural replays
 regenerate. Linux/hosted CI and native game-client execution were not run.

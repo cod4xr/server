@@ -33,13 +33,22 @@ Returning oracle error callbacks are not native unwinding/interner/GC evidence.
 Array semantics are assessed in ADR 0060; no Rust array store or VM instructions
 exist yet. Preserve native local-slot copy-on-write, recursive nested-array copies,
 shared struct identity and copy-induced sibling-order reversal. Run
-generate_array_vectors.py --check (262 actual helper traces at O0/O2 with modeled
-pool/ref/output services) and script_array_reference.py (69 selected-role mutations).
+generate_array_vectors.py --check (306 helper traces at O0/O2 with modeled
+pool/ref/output services and selected native unlink/free paths),
+script_array_reference.py (69 mutations), and script_array_write_reference.py
+(141 compiler/VM/grammar/write-role mutations). Native free-list publication is
+checked; collision relocation, allocator reuse and object/vector destruction stay open.
 Separate-process checked error exits do not execute an unwinder; native entity,
 allocation/GC/compiler/VM behavior and general deletion remain outside that corpus.
 Do not copy packed key names/16-bit size/ref fields into authoritative storage.
 Assess ownership and measured wide/churn/deep/cycle/resource workloads before
 choosing or activating object storage; raw copied IDs are not managed owners.
+Literal and computed Undefined array writes both delete, but use different setup
+paths: direct clear rejects an initialized Undefined parent while general indexed
+setup can create an empty array/temporary key. The raw setter retaining Undefined
+is not the VM array-assignment rule. Keep RHS-before-lvalue, index-before-parent,
+copy-before-invalid-key errors and modeled-sequence versus native execution claims
+distinct; object/vector destruction and real source/VM execution remain open.
 
 This repository is a standalone Rust rewrite of the CoD4X dedicated server.
 Existing CoD4/CoD4X clients, maps, and mods are compatibility targets. ApX is a

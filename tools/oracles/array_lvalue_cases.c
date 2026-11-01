@@ -62,7 +62,7 @@ static void detach_case(unsigned int count, unsigned int aliases)
         }
     }
     assert(Scr_EvalArrayRef(original_local) == original);
-    assert(ref_removals == aliases && gScrVarPub.totalObjectRefCount == aliases);
+    assert(ref_removals == aliases && gScrVarPub.totalObjectRefCount == gScrVarPub.numScriptValues + aliases);
 }
 
 static void rejected_local(unsigned int type)
@@ -74,6 +74,7 @@ static void rejected_local(unsigned int type)
     rejected_slot = variable_pool[FindVariableIndexInternal(owner, 1)
                                      + VARIABLELIST_CHILD_BEGIN].hash.id;
     rejected_type = type;
+    error_profile = LOCAL_TYPE;
     ref_removals = error_calls = error_category = 0;
     (void)Scr_EvalArrayRef(rejected_slot);
     abort();

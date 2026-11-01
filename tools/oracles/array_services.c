@@ -5,15 +5,19 @@ static VariableValueInternal variable_pool[VARIABLELIST_CHILD_BEGIN + VARIABLELI
 static struct { VariableValueInternal *variableList; } gScrVarGlob = { variable_pool };
 static struct {
     const char *varUsagePos;
-    unsigned int totalObjectRefCount, entId, entFieldName;
+    unsigned int totalObjectRefCount, numScriptValues, entId, entFieldName;
     int error_index;
 } gScrVarPub;
-static struct { unsigned int leakCount[VARIABLELIST_PARENT_SIZE + VARIABLELIST_PARENT_BEGIN]; }
+static struct {
+    unsigned int leakCount[VARIABLELIST_CHILD_BEGIN + VARIABLELIST_CHILD_SIZE];
+    const char *varUsage[VARIABLELIST_CHILD_BEGIN + VARIABLELIST_CHILD_SIZE];
+}
     *gScrVarDebugPub;
 static struct {
     unsigned int parent, name, index, initial_hash;
 } records[RECORD_LIMIT];
 static unsigned int record_count, object_count, string_refs, vector_refs;
+static unsigned int string_removals, peak_array_size;
 static VariableValue captured_keys[CAPTURE_LIMIT];
 static unsigned int captured_count, captured_pending;
 

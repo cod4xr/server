@@ -6,6 +6,11 @@ static struct { unsigned int id; } gScrClassMap[CLASS_NUM_COUNT];
 static const char *var_typename[VAR_COUNT];
 static unsigned int ref_removals, error_calls, error_category;
 static unsigned int rejected_type, rejected_slot;
+enum ErrorProfile { UNEXPECTED_ERROR, LOCAL_TYPE, CLEAR_UNDEFINED, CLEAR_INDEX };
+static enum ErrorProfile error_profile;
+static unsigned int rejected_word, rejected_original;
+static _Noreturn void validate_error(void);
+static void SL_RemoveRefToString(unsigned int label);
 
 static void RemoveRefToObject(unsigned int id)
 {
@@ -18,7 +23,9 @@ static void RemoveRefToObject(unsigned int id)
 }
 static const char *va(const char *format, ...)
 {
-    assert(strcmp(format, "%s is not an array") == 0);
+    assert(strcmp(format, "%s is not an array") == 0
+           || strcmp(format, "array index %d out of range") == 0
+           || strcmp(format, "%s is not an array index") == 0);
     return format;
 }
 static _Noreturn void Scr_Error(const char *message)
@@ -29,13 +36,10 @@ static _Noreturn void Scr_Error(const char *message)
         error_category = 2;
     else if (strcmp(message, "vector components cannot be individually changed") == 0)
         error_category = 3;
+    else if (strcmp(message, "array index %d out of range") == 0) error_category = 4;
+    else if (strcmp(message, "%s is not an array index") == 0) error_category = 5;
     else abort();
-    assert(rejected_type > 0 && rejected_slot > 0);
-    assert(gScrVarPub.error_index == 1 && error_calls == 1 && !ref_removals);
-    assert(object_count == 2 && record_count == 1);
-    assert(VAR_TYPE((&variable_pool[rejected_slot + VARIABLELIST_CHILD_BEGIN])) == rejected_type);
-    printf("E %u %u %u\n", rejected_type, error_category, error_calls);
-    exit(EXIT_SUCCESS);
+    validate_error();
 }
 static unsigned int FindArrayVariable(unsigned int parent, unsigned int name)
 {
@@ -47,7 +51,8 @@ static VariableValue GetEntityFieldValue(unsigned int classnum, unsigned int ent
 }
 static void RemoveRefToValue(unsigned int type, VariableUnion value)
 {
-    (void)type; (void)value; abort();
+    if (type == VAR_STRING) SL_RemoveRefToString(value.stringValue);
+    else assert(type == VAR_UNDEFINED || type == VAR_INTEGER || type == VAR_FLOAT);
 }
 static unsigned int GetNewVariable(unsigned int parent, unsigned int name)
 {

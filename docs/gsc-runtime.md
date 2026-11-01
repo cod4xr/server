@@ -534,10 +534,15 @@ small coding tasks or a delivery promise. This working breakdown uses twelve;
 several interact and each requires multiple implementation/validation changes.
 Partial scalar/source support does not close any full legacy acceptance gate.
 
-Array ownership research now records 262 actual C helper traces at O0/O2 under
+Array ownership research now records 306 C helper traces at O0/O2 under
 explicit modeled pool/reference services. These cover key domains/order, recursive
-array copies, shared structs and local-slot copy-on-write/autovivification; 69
-source-role mutations reject. Rust array/object storage and VM execution remain
+array copies, shared structs, local-slot copy-on-write/autovivification and
+clear/set/remove helpers and selected native unlink/free paths. Allocation/hash/
+ref/output services and VM call sequences are modeled; collision relocation and
+allocator reuse stay open. 69 copy/key and 141 write/grammar/compiler/VM role
+mutations reject. Literal and
+computed Undefined deletion have distinct parent/temporary-key setup paths.
+Rust array/object storage and VM execution remain
 unimplemented. The ownership/storage acceptance assessment is ADR 0060.
 
 | Workstream | Required completion evidence |

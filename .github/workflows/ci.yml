@@ -86,6 +86,7 @@ jobs:
           python tools/generate_syntax_tables.py reference --check
           python tools/generate_array_vectors.py reference --check
           python tools/script_array_reference.py reference
+          python tools/script_array_write_reference.py reference
           python tools/generate_string_access_vectors.py reference --check
           python tools/script_string_access_reference.py reference
           python tools/generate_defined_vectors.py reference --check
