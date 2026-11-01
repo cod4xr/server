@@ -365,6 +365,22 @@ uninitialized locals, operator locations and error privacy. Existing instruction
 proof, byte/local/fuel budgets remain in force; there is no new allocation or
 value category. This is not object/string/builtin/native cleanup/full-VM parity;
 see ADR 0046.
+VerifiedKernelModule now admits a complete primitive function inventory with
+forward/recursive direct Call targets, strict static target/arity checks (including
+unreachable code), owned copied proof and per-function control-flow verification.
+All code/table/current-verifier payload and verification work share global budgets.
+The standalone verifier rejects unresolved calls. The iterative executor shares
+frame stepping with standalone execution, preserves private copied arguments and
+missing Undefined suffixes, and releases each frame on return. Global instruction
+fuel, separate conservative setup work and aggregate reserved frame/operand/local
+count/byte admission prevent per-call budget resets. Fixed errors preserve
+function/instruction, global work and peak admitted counts without value contents.
+Fourteen added typed-runtime tests cover calls/defaults/returns/privacy/recovery,
+exact/one-less global limits, repeated shallow calls, 12,001 frames, 66,000 functions
+70,000-argument calls/missing suffixes and 4,096 hostile inventories. This is not native call ABI, argument evaluation/
+push order, source arity diagnostics, ref/error cleanup or original VM execution.
+Source calls/import linking, methods/indirect calls, heap values, scheduling and
+full GSC/mod acceptance remain open; see ADR 0047.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

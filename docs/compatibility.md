@@ -445,6 +445,18 @@ branches, missing arguments, stored Undefined versus uninitialized locals,
 operator maps and private errors. Existing numeric/vector corpora retain their
 distinct language rules. Native object/string/ref/error services remain stubbed;
 this does not prove native cleanup/VM execution or complete value parity. ADR 0046.
+Typed direct-call inventories now verify all target/arity operands and per-function
+flow before atomic proof publication. Runtime tests cover forward/mutual/recursive
+calls, ordered/copied/default arguments, caller operands/locals and fresh error
+recovery. Exact/one-less global verification/instruction/setup/frame/operand/local
+count/byte limits, repeated shallow calls, 12,001 flat frames, 66,000 functions,
+wide locals, 70,000-argument calls/missing suffixes and 4,096 hostile inventories
+exercise configured expansion. These
+are Rust typed-runtime tests, not original compiler/VM execution. Call argument
+stack order is an internal convention; static excess-argument rejection is this
+verified profile's rule, not native source diagnostic/evaluation-order parity.
+Source linking/calls, methods/receivers, indirect calls, scheduling/native cleanup
+and whole-GSC/mod acceptance remain open. See ADR 0047.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

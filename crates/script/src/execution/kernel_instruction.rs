@@ -25,6 +25,15 @@ pub enum KernelInstruction {
     LoadLocal(usize),
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
     StoreLocal(usize),
+    /// Calls a function in the complete verified module. Stack arguments run
+    /// bottom-to-top last to first; parameter zero is popped first. Missing
+    /// suffixes become Undefined. Not a native/source evaluation/serialized ABI.
+    Call {
+        /// Wide module-local function index, checked even in unreachable code.
+        function: usize,
+        /// Supplied prefix count; cannot exceed the target's parameter count.
+        arguments: usize,
+    },
     /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.
     /// Components must be numbers; this does not specify source evaluation order.
     MakeVector,
@@ -68,6 +77,7 @@ pub enum KernelInstruction {
 impl KernelInstruction {
     pub(super) fn stack_effect(self) -> (usize, usize) {
         match self {
+            Self::Call { arguments, .. } => (arguments, 1),
             Self::MakeVector => (3, 1),
             Self::Constant(_) | Self::LoadLocal(_) => (0, 1),
             Self::Arithmetic(_)

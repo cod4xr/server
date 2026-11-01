@@ -7,6 +7,14 @@ use crate::legacy::{LegacyNumberError, LegacyVectorError};
 /// Program/execution resource, independent of native script capacity constants.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelResource {
+    /// Complete verified module function inventory.
+    Functions,
+    /// Simultaneously live direct-call frames.
+    Frames,
+    /// Logical live direct-call frame-table payload.
+    ExecutionFrameBytes,
+    /// Conservative frame setup/argument-copy/reservation work.
+    CallSetupWork,
     /// Input code instructions.
     Instructions,
     /// Verification scans/visits/edges.
@@ -30,6 +38,15 @@ pub enum KernelResource {
 pub enum KernelErrorKind {
     /// There is no entry instruction.
     EmptyProgram,
+    /// There is no function in the module inventory.
+    EmptyModule,
+    /// Standalone proof has no inventory with which to resolve a call.
+    UnlinkedCall,
+    /// A call or entry function index lies outside the complete module inventory.
+    InvalidFunction {
+        /// Rejected module-local function index.
+        function: u64,
+    },
     /// Parameter-prefix count exceeds total local slots.
     InvalidFunctionLayout {
         /// Requested parameter count.

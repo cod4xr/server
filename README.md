@@ -165,6 +165,9 @@ The complete server rewrite remains open.
   component writes stay unsupported under legacy rules; general indexable heaps remain open.
 - Both source profiles preserve equality between two Undefined values and reject
   mixed/ordered Undefined pairs, checked against 402 actual C-helper outcomes.
+- A separate verified primitive module API now executes direct/recursive calls
+  using owned frames and global instruction/setup/memory budgets. Tests cover
+  12,001 frames and 66,000 functions. Source calls/linking/methods/threads remain open.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

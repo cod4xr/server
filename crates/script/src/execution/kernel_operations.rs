@@ -75,7 +75,8 @@ pub(super) fn apply(
             stack.pop(pc)?;
             return Ok(());
         }
-        KernelInstruction::Jump(_)
+        KernelInstruction::Call { .. }
+        | KernelInstruction::Jump(_)
         | KernelInstruction::Branch { .. }
         | KernelInstruction::Return => {
             return Err(kernel_error::at(pc, KernelErrorKind::InvalidExecutionState));

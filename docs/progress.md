@@ -693,7 +693,29 @@ Clippy/rustdoc and repository policy (491 sources/eight crates, largest 287 line
 See ADR 0046; no dependency/target/storage changes. Full value/native VM/mod/Linux
 acceptance remains open.
 
-Next: bounded owned direct-call frames and general value ownership,
+Primitive direct calls now use a complete immutable VerifiedKernelModule proof
+and iterative private runtime frames. All target/arity operands, including
+unreachable calls, and each function's stack/flow must verify before publication.
+Inventory/code/work/overlapping retained table/code/verifier payload share global
+admission. Runtime shares frame stepping with standalone execution, global fuel,
+separate conservative initialization/copy/reservation work, and aggregate frame/
+reserved-operand/local count/byte budgets. Missing parameter suffixes become
+initialized Undefined; nonparameter locals stay uninitialized. Returns release
+frame admission; failures drop private state with function/PC/global work/counts
+and no private values. Static arity rejection and the argument stack convention
+are this typed profile, not native source diagnostic/evaluation/push-order parity.
+Fourteen added tests cover forward/mutual/recursive calls, defaults/order/caller
+operands/isolation, located error recovery, malformed later/unreachable operands,
+exact/one-less aggregate proof/runtime limits, shallow loops, 12,001 flat frames,
+66,000 functions, 70,000-argument calls/missing suffixes and 4,096 hostile inventories.
+All 173 frontend/74 legacy tests and doctests pass in workspace Windows debug/
+release with formatting, warnings-denied Clippy/rustdoc and repository policy
+(510 sources/eight crates, largest 287 lines). See ADR 0047. No dependencies or
+alternate targets. Source calls/linking, methods/indirect calls, heap/scheduling,
+native/full GSC/mod compatibility and Linux acceptance remain open. No full legacy
+workstream gate is closed by this kernel implementation.
+
+Next: source-grounded local call compilation/linking and general value ownership,
 plus broader source-grounded call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining

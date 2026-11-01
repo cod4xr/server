@@ -385,6 +385,20 @@ Arithmetic, truth, instruction proof, source maps and memory/fuel admission reta
 their existing contracts. Actual C-helper outcomes cover both operand orders;
 the stubbed native service boundaries remain explicit. See ADR 0046.
 
+Primitive direct calls now live under execution/calls. Immutable module proof
+resolves every typed call target/arity against a complete borrowed inventory,
+including unreachable instructions, before copying/publishing all functions.
+Inventory/functions/code/work and overlapping table/retained-code/verifier
+payload share global admission; individual stack/local proof limits remain
+explicit. Standalone proof rejects unresolved calls. Runtime frame stepping is
+shared with standalone execution; an iterative frame vector supplies copied
+locals, aggregate reserved operand/local/frame payload limits, global fuel and
+separate conservative setup work. Return releases frame admission before reuse;
+failed invocation drops private state. Compact fixed errors retain function/PC,
+global work and peak admitted counts without allocating error boxes. This API
+does not resolve source imports/names, activate modules, reproduce native call
+ABI/cleanup or grant host/scheduler authority. See ADR 0047.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

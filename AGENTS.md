@@ -239,6 +239,17 @@ Keep comparison and arithmetic leaves separate, numeric/vector rules unchanged,
 and errors fixed/redacted. Verify generate_undefined_vectors.py --check alongside
 vector/index corpora; service stubs are not native VM/cleanup proof. Preserve both
 source profiles, lazy flow and initialized-Undefined distinctions; see ADR 0046.
+Primitive direct calls require a complete immutable module proof. Check every
+target/arity even when unreachable; standalone proof must reject unresolved calls.
+Global inventory/code/work/overlapping proof payload admission must precede
+publication. Keep calls leaves in execution/calls and share frame stepping with
+standalone execution. Invocation uses iterative private frames, global instruction
+fuel, separate setup/relocation work and aggregate frame/operand/local count/bytes;
+release admission on return and publish no partial result on failure. Preserve
+missing Undefined suffixes, explicit internal argument order and fixed private
+function/PC errors. Typed Call's static arity rule is not native source diagnostic/
+evaluation/push/cleanup parity. Source linking, methods/indirect calls, heap and
+scheduling stay separate. Retain wide/deep/hostile/quota tests; see ADR 0047.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

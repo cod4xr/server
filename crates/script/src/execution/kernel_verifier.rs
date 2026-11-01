@@ -1,16 +1,26 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
 use crate::execution::kernel_flow_state::KernelFlowState;
+use crate::execution::kernel_operands;
 use crate::execution::kernel_verification_ledger::KernelVerificationLedger;
 use crate::execution::{
-    KernelError, KernelErrorKind, KernelFunctionLayout, KernelInstruction, KernelResource,
-    KernelVerificationBudget, VerifiedKernelProgram,
+    KernelError, KernelErrorKind, KernelFunctionDefinition, KernelFunctionLayout,
+    KernelInstruction, KernelResource, KernelVerificationBudget, VerifiedKernelProgram,
 };
 
 pub(super) fn verify(
     input: &[KernelInstruction],
     layout: KernelFunctionLayout,
     budget: KernelVerificationBudget,
+) -> Result<VerifiedKernelProgram, KernelError> {
+    verify_linked(input, layout, budget, None)
+}
+
+pub(super) fn verify_linked(
+    input: &[KernelInstruction],
+    layout: KernelFunctionLayout,
+    budget: KernelVerificationBudget,
+    functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     if input.is_empty() {
         return Err(kernel_error::general(KernelErrorKind::EmptyProgram));
@@ -23,7 +33,7 @@ pub(super) fn verify(
     )?;
     let mut ledger = KernelVerificationLedger::new(input.len(), layout, budget)
         .map_err(|error| error.with_locals(layout.local_values()))?;
-    verify_flow(input, layout, &mut ledger).map_err(|error| {
+    verify_flow(input, layout, &mut ledger, functions).map_err(|error| {
         error
             .with_usage(
                 ledger.usage.verification_steps,
@@ -37,32 +47,11 @@ fn verify_flow(
     input: &[KernelInstruction],
     layout: KernelFunctionLayout,
     ledger: &mut KernelVerificationLedger,
+    functions: Option<&[KernelFunctionDefinition<'_>]>,
 ) -> Result<VerifiedKernelProgram, KernelError> {
     for (pc, instruction) in input.iter().copied().enumerate() {
         ledger.visit(pc)?;
-        if let KernelInstruction::Jump(target) | KernelInstruction::Branch { target, .. } =
-            instruction
-            && target >= input.len()
-        {
-            return Err(kernel_error::at(
-                pc,
-                KernelErrorKind::InvalidTarget {
-                    target: target as u64,
-                },
-            ));
-        }
-        if let KernelInstruction::LoadLocal(slot) | KernelInstruction::StoreLocal(slot) =
-            instruction
-            && slot >= layout.local_values
-        {
-            return Err(kernel_error::at(
-                pc,
-                KernelErrorKind::InvalidLocal {
-                    slot: slot as u64,
-                    local_values: layout.local_values(),
-                },
-            ));
-        }
+        kernel_operands::verify(instruction, pc, input.len(), layout, functions)?;
     }
     let mut instructions = Vec::new();
     instructions

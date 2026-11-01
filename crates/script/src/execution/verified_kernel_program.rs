@@ -73,7 +73,8 @@ impl VerifiedKernelProgram {
     /// source definite assignment, name binding, or native argument semantics.
     ///
     /// # Errors
-    /// Rejects invalid operands/flow/stack shapes, resource/size failure, and fallible
+    /// Rejects calls without a complete module inventory, invalid operands/flow/stack
+    /// shapes, resource/size failure, and fallible
     /// allocation failure without changing input or publishing a partial proof.
     pub fn verify_function(
         instructions: &[KernelInstruction],
