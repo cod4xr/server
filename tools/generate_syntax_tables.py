@@ -15,6 +15,7 @@ import script_array_lifetime_reference as array_lifetimes
 import script_path_reference as script_paths
 import script_package_reference as script_packages
 import script_include_reference as script_includes
+import script_root_reference as script_roots
 import script_call_link_reference as call_links
 import script_function_reference as function_references
 import script_predicate_reference as predicates
@@ -130,6 +131,7 @@ def main() -> None:
     script_paths.verify(script_paths.inputs(reference))
     script_packages.verify(reference.files["src/asmsource/_scr_compiler.asm"])
     script_includes.verify(reference.files["src/asmsource/_scr_compiler.asm"], reference.files["src/scr_vm.h"])
+    script_roots.verify(script_roots.inputs(reference))
     string_access.verify(*string_access.inputs(reference))
     definedness.verify(*definedness.inputs(reference))
     fields.verify(*fields.inputs(reference))

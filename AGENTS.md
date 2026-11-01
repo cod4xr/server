@@ -1,5 +1,16 @@
 # Project contract
 
+Assessment 0082 guards native game/level/self/anim roles with script_root_reference.py
+(146 mutations), structural checks and CI. Game is a value cell initialized as an
+array, level/anim are ordinary parents, and self comes from the thread receiver.
+Preserve value/tag/ref tails and GetGameRef's writable owning location; never use
+an ArrayId snapshot as a mutable game binding or default all self lookups to level.
+Next root views must be explicit, checked, invocation-scoped and included in GC
+roots. Game reads clone ADR 0081 owners; no borrowed host handle may become a VM
+owner by raw Copy. Keep ordinary/entity/animation/thread scopes separate. Missing
+context must fail honestly without fabricated world state. This guard executes
+no native VM/ABI/lifetimes and activates no Rust roots or source arrays.
+
 ADR 0081 adds managed host-array transport through VM cells and direct/indirect
 calls. Raw handles are snapshots: explicit copies create locations, moves transfer
 them, callee return releases dead aliases and successful top-level arrays transfer

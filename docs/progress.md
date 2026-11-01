@@ -14,6 +14,13 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0082 records native root roles and adds script_root_reference.py with
+146 rejected mutations, structural-check/CI integration and explicit implementation
+constraints. Game is a managed value-cell role, level/anim are ordinary parents,
+and self is a thread receiver. No Rust root instruction/source activation follows
+yet. Root and 99 structural checks plus policy (925 sources/eight crates/largest
+287) pass; the last complete Windows Rust gates remain 097fb90 below.
+
 ADR 0081 implements checked managed host-array transport across VM cells and
 direct/indirect calls, host result transfer, immediate dead-callee release and
 prepaid cleanup including pending registration/return values. A private explicit
