@@ -6,7 +6,7 @@ use crate::execution::heap::array_owners::KernelArrayOwners;
 use crate::execution::heap::kernel_heap_error;
 use crate::execution::heap::kernel_literal_cache::KernelLiteralCache;
 use crate::execution::heap::kernel_object_validation;
-use crate::execution::{KernelErrorKind, KernelValue};
+use crate::execution::{KernelErrorKind, KernelScriptRoots, KernelValue};
 use crate::heap::{
     HeapErrorKind, HeapWorkBudget, ObjectHeap, ObjectHeapUsage, ObjectId, StringHeap,
     StringHeapUsage, StringId,
@@ -31,7 +31,11 @@ use crate::heap::{
 /// Error cleanup uses work reserved before publication, even when execution or
 /// heap fuel is exhausted. Array constructors, indexing and owned fields remain
 /// unsupported; this transport does not implement nested/object lifetimes.
+/// Fixed script roots are opt-in through [`Self::with_script_roots`]. Ordinary
+/// root-only graphs survive collection; game reads borrow the host binding and
+/// create separately owned VM copies. Missing roots never fabricate world state.
 pub struct KernelHeapContext<'heap> {
+    pub(super) script_roots: Option<KernelScriptRoots>,
     pub(super) array_owners: KernelArrayOwners,
     pub(super) literals: KernelLiteralCache,
     pub(super) heap: &'heap mut StringHeap,
@@ -52,6 +56,7 @@ impl<'heap> KernelHeapContext<'heap> {
         budget: HeapWorkBudget,
     ) -> Self {
         Self {
+            script_roots: None,
             array_owners: KernelArrayOwners::default(),
             literals: KernelLiteralCache::empty(),
             heap,
@@ -112,6 +117,7 @@ impl<'heap> KernelHeapContext<'heap> {
         arguments: &[KernelValue],
     ) -> Result<(), KernelErrorKind> {
         kernel_object_validation::binding(self)?;
+        self.validate_script_roots()?;
         for value in arguments {
             self.charge(1)?;
             if let KernelValue::Object(id) = value {

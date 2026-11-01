@@ -1,5 +1,13 @@
 # Expanded GSC runtime contract
 
+ADR 0083 adds explicit host root bindings for level/self/anim ordinary objects and
+a managed game-array value, shared across bound module/package calls. Root-only
+graphs survive collection, game reads clone VM owners, missing contexts fail only
+when used, and offline execution creates no world. The script_roots example
+returns 61. Wide/deep/churn/resource/pressure/hostile/process tests scope the
+profile; entities/methods/threads, native logical lifetimes, general source arrays
+and full stock/mod acceptance remain open.
+
 ADR 0081 transports host-managed arrays through VM cells and direct/indirect
 calls, with explicit cloning/moves/releases, callee cleanup before caller resume,
 host-owned returns and prepaid failure cleanup. A narrow metered registry admits

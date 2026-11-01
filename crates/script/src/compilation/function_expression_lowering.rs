@@ -12,10 +12,10 @@ use crate::compilation::function_reference_value;
 use crate::compilation::function_string_literal;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
-use crate::execution::{KernelBranchCondition, KernelInstruction};
+use crate::execution::{KernelBranchCondition, KernelInstruction, KernelScriptRoot};
 use crate::expression::{
     LegacyExpressionKind, LegacyExpressionSyntax, LegacyInfixOperator, LegacyLogicalOperator,
-    LegacyPrefixOperator, LegacyPrimaryKind, LegacyPrimarySyntax,
+    LegacyObjectRoot, LegacyPrefixOperator, LegacyPrimaryKind, LegacyPrimarySyntax,
 };
 use crate::legacy::{LegacyArithmetic, LegacyComparison, LegacyIntegerOperator};
 use crate::syntax::LegacySyntaxNode;
@@ -87,6 +87,15 @@ fn primary<'tree, 'source>(
         function_compile_error::at(node.span(), FunctionCompileErrorKind::InvalidStructure)
     })?;
     match primary.kind() {
+        LegacyPrimaryKind::Object(root) if builder.mode.bound() => {
+            let root = match root {
+                LegacyObjectRoot::CurrentObject => KernelScriptRoot::CurrentObject,
+                LegacyObjectRoot::Level => KernelScriptRoot::Level,
+                LegacyObjectRoot::Game => KernelScriptRoot::Game,
+                LegacyObjectRoot::Animation => KernelScriptRoot::Animation,
+            };
+            builder.emit(KernelInstruction::LoadScriptRoot(root), node.span())
+        }
         LegacyPrimaryKind::Reference { syntax } if builder.mode.primitive() => {
             function_reference::read(builder, syntax)
         }

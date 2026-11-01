@@ -4,7 +4,8 @@
 //! Instructions are typed internal data, with no serialized/native bytecode ABI.
 //! An explicit heap context adds string operations and optional shared-object roots.
 //! This kernel owns no scheduler, host services, filesystem, logging or server state.
-//! Legacy numeric FP assumptions still apply; struct fields and arrays remain open.
+//! Legacy numeric FP assumptions apply; ordinary fields and managed array transport
+//! are checked subsets. General source arrays and logical object lifetimes remain open.
 //! The separate verified-module API adds iterative primitive calls and opaque references.
 
 mod calls;
@@ -31,6 +32,7 @@ mod kernel_module_identity;
 mod kernel_numeric_values;
 mod kernel_operands;
 mod kernel_operations;
+mod kernel_script_root;
 mod kernel_stack;
 mod kernel_value;
 mod kernel_verification_ledger;
@@ -41,12 +43,13 @@ pub use calls::{
     KernelCallBudget, KernelCallOutcome, KernelCallUsage, KernelFunctionDefinition,
     KernelModuleError, KernelModuleUsage, KernelModuleVerificationBudget, VerifiedKernelModule,
 };
-pub use heap::{KernelHeapContext, KernelHeapUsage};
+pub use heap::{KernelHeapContext, KernelHeapUsage, KernelScriptRoots};
 pub use kernel_budget::{KernelExecutionBudget, KernelVerificationBudget};
 pub use kernel_builtin::KernelBuiltin;
 pub use kernel_error::{KernelError, KernelErrorKind, KernelResource};
 pub use kernel_function_layout::KernelFunctionLayout;
 pub use kernel_function_reference::KernelFunctionReference;
 pub use kernel_instruction::{KernelBranchCondition, KernelInstruction};
+pub use kernel_script_root::KernelScriptRoot;
 pub use kernel_value::KernelValue;
 pub use verified_kernel_program::{KernelOutcome, KernelProgramUsage, VerifiedKernelProgram};

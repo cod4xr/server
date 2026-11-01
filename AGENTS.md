@@ -1,5 +1,19 @@
 # Project contract
 
+ADR 0083 adds LoadScriptRoot and explicit KernelScriptRoots for bound source and
+typed execution. Keep level/current receiver/anim as checked ordinary objects and
+game as a borrowed host-managed location whose reads clone ADR 0081 VM owners.
+Validate all supplied bindings before entry, include root-only graphs in every GC
+inventory, share all work/scratch and never embed heap IDs in immutable code.
+Plain direct/indirect/package calls share the fixed view. Missing context fails
+only on executed root reads; the offline command must not fabricate a world.
+Preserve 14 core/two process tests, exact/every-shorter scopes, combined cache/
+registry/root/mark pressure, 70k fields, 100k two-slot game reads and 12k frames
+with first array creation at the leaf. Run script_roots (61), root/structural
+guards and full Windows gates. This ordinary-root profile activates no entities,
+methods/threads, anim assets, game replacement/lifecycle, source array operations,
+nested owned fields, logical RC/cycle aliases or complete GSC/S5/join support.
+
 Assessment 0082 guards native game/level/self/anim roles with script_root_reference.py
 (146 mutations), structural checks and CI. Game is a value cell initialized as an
 array, level/anim are ordinary parents, and self comes from the thread receiver.
@@ -9,7 +23,7 @@ Next root views must be explicit, checked, invocation-scoped and included in GC
 roots. Game reads clone ADR 0081 owners; no borrowed host handle may become a VM
 owner by raw Copy. Keep ordinary/entity/animation/thread scopes separate. Missing
 context must fail honestly without fabricated world state. This guard executes
-no native VM/ABI/lifetimes and activates no Rust roots or source arrays.
+no native VM/ABI/lifetimes; ADR 0083 adds the bounded Rust root profile separately.
 
 ADR 0081 adds managed host-array transport through VM cells and direct/indirect
 calls. Raw handles are snapshots: explicit copies create locations, moves transfer

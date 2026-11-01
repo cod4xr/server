@@ -40,6 +40,13 @@ The complete server rewrite remains open.
   and 70,000-byte tests. Native/error/model/privacy evidence is scoped in ADR 0076.
   Closed cross-file compilation follows ADR 0077; filesystem loading remains open.
 
+- Bound GSC now reads explicit host-supplied level/self/anim objects and a managed
+  game-array binding, with root graphs protected during collection. Fields and
+  calls retain those identities; game reads use checked VM ownership. Run the
+  `script_roots` example (61); ordinary offline execution supplies no world.
+  ADR 0083 scopes the profile. Entities/methods/threads, general source arrays,
+  native logical lifetimes and complete GSC remain open.
+
 - Managed host arrays now travel through VM locals, operands, direct/indirect
   calls and returns with explicit ownership and prepaid failure cleanup. Tests
   cover 70,000 locals, 12,001 frames, 100,000 overwrites, independent ownership

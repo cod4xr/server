@@ -14,6 +14,19 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0083 implements explicit host level/self/anim ordinary roots and a managed
+game binding for bound source/typed execution. It validates complete inventories,
+roots otherwise unused graphs, clones game owners and reports missing context
+without an implicit world. Fourteen core/two process tests cover identities,
+package calls, ownership, every shorter resource scope, combined pressure, 70k
+fields, 100k reads in two slots and first game creation 12k calls deep. The real
+source example returns 61. Full Windows formatting, denied-warning all-target
+Clippy/rustdoc, debug/release tests, policy (941 sources/eight crates/largest 303)
+and diff checks pass: 323 frontend/236 legacy/15 private script tests/two doctests
+plus both new process tests. The 146 root mutations and 99 structural replays pass;
+Linux/hosted CI remains unrun. No source arrays, entities/methods/threads, logical
+RC, full GSC or joins follow.
+
 Assessment 0082 records native root roles and adds script_root_reference.py with
 146 rejected mutations, structural-check/CI integration and explicit implementation
 constraints. Game is a managed value-cell role, level/anim are ordinary parents,

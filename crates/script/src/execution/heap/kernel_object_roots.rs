@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::{KernelErrorKind, KernelHeapContext, KernelValue};
+use crate::execution::{KernelErrorKind, KernelHeapContext, KernelScriptRoots, KernelValue};
 use crate::heap::{ObjectId, StringId};
 
 pub(super) struct ObjectRoots {
@@ -12,7 +12,12 @@ pub(super) fn gather(
     context: &mut KernelHeapContext<'_>,
     values: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<ObjectRoots, KernelErrorKind> {
-    let mut objects = context.external_objects.len() as u64;
+    let script_objects = context
+        .script_roots
+        .map(KernelScriptRoots::ordinary_objects);
+    let mut objects = (context.external_objects.len() as u64)
+        .checked_add(script_objects.map_or(0, |roots| roots.len() as u64))
+        .ok_or(KernelErrorKind::SizeOverflow)?;
     let mut strings = (context.external_roots.len() as u64)
         .checked_add(context.literals.active.len() as u64)
         .ok_or(KernelErrorKind::SizeOverflow)?;
@@ -60,6 +65,10 @@ pub(super) fn gather(
         }
     }
     for id in context.external_objects.iter().copied() {
+        context.charge(1)?;
+        roots.objects.push(id);
+    }
+    for id in script_objects.into_iter().flatten() {
         context.charge(1)?;
         roots.objects.push(id);
     }

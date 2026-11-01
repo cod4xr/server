@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::{KernelBuiltin, KernelErrorKind, KernelValue};
+use crate::execution::{KernelBuiltin, KernelErrorKind, KernelScriptRoot, KernelValue};
 use crate::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate,
 };
@@ -28,6 +28,9 @@ pub enum KernelInstruction {
     LocalizedStringLiteral(usize),
     /// Pushes an initialized local slot; the layout bounds every operand.
     LoadLocal(usize),
+    /// Reads a fixed host-supplied root. Game reads clone a managed VM owner;
+    /// ordinary roots retain shared identity. No implicit world is created.
+    LoadScriptRoot(KernelScriptRoot),
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
     StoreLocal(usize),
     /// Calls a function in the complete verified module. Stack arguments run
@@ -124,6 +127,7 @@ impl KernelInstruction {
             Self::MakeVector => (3, 1),
             Self::Constant(_)
             | Self::LoadLocal(_)
+            | Self::LoadScriptRoot(_)
             | Self::FunctionReference(_)
             | Self::StringLiteral(_)
             | Self::LocalizedStringLiteral(_) => (0, 1),

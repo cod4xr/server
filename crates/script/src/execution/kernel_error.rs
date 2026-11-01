@@ -51,6 +51,8 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// Executed special-root access requires explicit caller-supplied bindings.
+    ScriptRootContextRequired,
     /// A private managed-array frame ownership or prepaid-cleanup invariant failed.
     ArrayOwnershipInvariant,
     /// Immutable executable constants cannot retain managed runtime array locations.

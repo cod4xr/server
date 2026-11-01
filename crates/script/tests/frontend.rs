@@ -19,6 +19,8 @@ mod package_includes_width;
 mod package_limits;
 #[path = "package_names.rs"]
 mod package_names;
+#[path = "package_root_context.rs"]
+mod package_root_context;
 #[path = "package_visibility.rs"]
 mod package_visibility;
 #[path = "package_width_depth.rs"]
@@ -31,6 +33,23 @@ mod script_path_model;
 mod script_path_names;
 #[path = "script_path_vectors.rs"]
 mod script_path_vectors;
+mod script_root_support;
+#[path = "source_root_context.rs"]
+mod source_root_context;
+#[path = "source_root_depth.rs"]
+mod source_root_depth;
+#[path = "source_root_execution.rs"]
+mod source_root_execution;
+#[path = "source_root_hostile.rs"]
+mod source_root_hostile;
+#[path = "source_root_limits.rs"]
+mod source_root_limits;
+#[path = "source_root_pressure.rs"]
+mod source_root_pressure;
+#[path = "source_root_pressure_limits.rs"]
+mod source_root_pressure_limits;
+#[path = "source_root_width.rs"]
+mod source_root_width;
 
 #[path = "bound_object_arguments.rs"]
 mod bound_object_arguments;

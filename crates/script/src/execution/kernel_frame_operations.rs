@@ -19,6 +19,14 @@ impl KernelFrame {
         parents: impl Iterator<Item = KernelValue> + Clone,
         pc: usize,
     ) -> Result<(), KernelError> {
+        if let KernelInstruction::LoadScriptRoot(root) = instruction {
+            let value = heap
+                .as_deref_mut()
+                .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::ScriptRootContextRequired))?
+                .script_root(root, owner)
+                .map_err(|kind| kernel_error::at(pc, kind))?;
+            return self.stack.push(value, pc);
+        }
         let roots = self.values().chain(parents);
         let value = heap::apply(
             program,

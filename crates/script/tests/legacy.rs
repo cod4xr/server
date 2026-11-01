@@ -220,6 +220,8 @@ mod kernel_module_verification;
 mod kernel_reference_verification;
 #[path = "kernel_reference_width.rs"]
 mod kernel_reference_width;
+#[path = "kernel_script_roots.rs"]
+mod kernel_script_roots;
 #[path = "kernel_swap.rs"]
 mod kernel_swap;
 #[path = "legacy_vectors.rs"]
@@ -246,6 +248,7 @@ mod object_cycle_topology;
 mod object_cycle_vectors;
 #[path = "predicate_vectors.rs"]
 mod predicate_vectors;
+mod script_root_support;
 #[path = "string_equality_work.rs"]
 mod string_equality_work;
 #[path = "string_heap_budgets.rs"]

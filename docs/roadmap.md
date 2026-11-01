@@ -52,6 +52,10 @@ source-array execution. This does not close S5 or a full-GSC workstream.
 
 ## Next concrete work
 
+ADR 0083 adds checked host root bindings to bound execution, including root-only
+GC graphs and managed game-read ownership. The ordinary-root profile supplies
+no implicit world or entities/methods/threads and closes no full-GSC/S5/join gate.
+
 ADR 0081 supplies managed host-array frame/call ownership with prepaid cleanup,
 including pending values and fully admitted/metered private registry storage.
 It does not activate source array operations or close the ordinary/nested logical
