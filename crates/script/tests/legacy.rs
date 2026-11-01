@@ -54,6 +54,8 @@ mod kernel_verification;
 mod arithmetic_boundaries;
 #[path = "arithmetic_vectors.rs"]
 mod arithmetic_vectors;
+#[path = "function_reference_vectors.rs"]
+mod function_reference_vectors;
 #[path = "kernel_call_arity.rs"]
 mod kernel_call_arity;
 #[path = "kernel_call_execution.rs"]
@@ -65,10 +67,16 @@ mod kernel_call_recursion;
 mod kernel_call_support;
 #[path = "kernel_call_width.rs"]
 mod kernel_call_width;
+#[path = "kernel_function_references.rs"]
+mod kernel_function_references;
 #[path = "kernel_module_hostile.rs"]
 mod kernel_module_hostile;
 #[path = "kernel_module_verification.rs"]
 mod kernel_module_verification;
+#[path = "kernel_reference_verification.rs"]
+mod kernel_reference_verification;
+#[path = "kernel_reference_width.rs"]
+mod kernel_reference_width;
 #[path = "legacy_vectors.rs"]
 mod legacy_vectors;
 #[path = "numeric_boundaries.rs"]

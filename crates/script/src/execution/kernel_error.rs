@@ -40,6 +40,14 @@ pub enum KernelErrorKind {
     EmptyProgram,
     /// Standalone proof has no inventory with which to resolve a call.
     UnlinkedCall,
+    /// Standalone proof cannot resolve a function-reference instruction's module.
+    UnlinkedFunctionReference,
+    /// Fresh immutable module identity space is exhausted; identities never wrap.
+    ModuleIdentityExhausted,
+    /// An indirect call requires an opaque function reference.
+    ExpectedFunctionReference,
+    /// The reference belongs to another/dropped immutable module instance.
+    ForeignFunctionReference,
     /// A call or entry function index lies outside the complete module inventory.
     InvalidFunction {
         /// Rejected module-local function index.
@@ -112,7 +120,7 @@ pub enum KernelErrorKind {
     SizeOverflow,
     /// Fallible complete code/state/stack allocation failed.
     AllocationFailed,
-    /// This operation requires a number; Undefined/vector data is unsupported here.
+    /// This operation requires a number; other primitive data is unsupported here.
     ExpectedNumber,
     /// This primitive pair/comparison has incompatible legacy value types.
     UnmatchingTypes,

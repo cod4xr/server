@@ -116,10 +116,14 @@ mod bound_module_limits;
 mod bound_module_names;
 #[path = "bound_module_order.rs"]
 mod bound_module_order;
+#[path = "bound_module_references.rs"]
+mod bound_module_references;
 #[path = "bound_module_visibility.rs"]
 mod bound_module_visibility;
 #[path = "bound_module_width.rs"]
 mod bound_module_width;
+#[path = "bound_reference_contracts.rs"]
+mod bound_reference_contracts;
 #[path = "call_views.rs"]
 mod call_views;
 #[path = "declaration_budgets.rs"]

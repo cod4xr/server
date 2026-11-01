@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::kernel_error;
 use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmission, KernelLocals};
+use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
-    KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget, KernelInstruction,
-    KernelResource, KernelValue, VerifiedKernelProgram,
+    KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget,
+    KernelFunctionReference, KernelInstruction, KernelResource, KernelValue, VerifiedKernelProgram,
 };
 
 pub(super) struct KernelFrame {
@@ -53,6 +54,7 @@ impl KernelFrame {
         program: &VerifiedKernelProgram,
         steps: &mut u64,
         maximum: u64,
+        module: Option<KernelModuleIdentity>,
     ) -> Result<KernelFrameStep, KernelError> {
         let pc = self.pc;
         let next = steps
@@ -71,6 +73,34 @@ impl KernelFrame {
             .copied()
             .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
         match instruction {
+            KernelInstruction::FunctionReference(function) => {
+                let module = module
+                    .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
+                self.stack.push(
+                    KernelValue::Function(KernelFunctionReference::new(module, function)),
+                    pc,
+                )?;
+                self.pc = advance(pc)?;
+            }
+            KernelInstruction::CallIndirect { arguments } => {
+                let module = module
+                    .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
+                let KernelValue::Function(reference) = self.stack.pop(pc)? else {
+                    return Err(kernel_error::at(
+                        pc,
+                        KernelErrorKind::ExpectedFunctionReference,
+                    ));
+                };
+                let function = reference
+                    .resolve(module)
+                    .map_err(|kind| kernel_error::at(pc, kind))?;
+                self.pc = advance(pc)?;
+                return Ok(KernelFrameStep::Call {
+                    function,
+                    arguments,
+                    pc,
+                });
+            }
             KernelInstruction::Return => {
                 let value = self.stack.pop(pc)?;
                 if !self.stack.empty() {

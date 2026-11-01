@@ -34,18 +34,41 @@ pub(super) fn verify(
             ))
         }
         KernelInstruction::Call { function, .. } => {
-            let functions =
-                functions.ok_or_else(|| kernel_error::at(pc, KernelErrorKind::UnlinkedCall))?;
-            functions.get(function).ok_or_else(|| {
-                kernel_error::at(
-                    pc,
-                    KernelErrorKind::InvalidFunction {
-                        function: function as u64,
-                    },
-                )
-            })?;
+            target(functions, function, pc, KernelErrorKind::UnlinkedCall)
+        }
+        KernelInstruction::FunctionReference(function) => target(
+            functions,
+            function,
+            pc,
+            KernelErrorKind::UnlinkedFunctionReference,
+        ),
+        KernelInstruction::CallIndirect { .. } => {
+            if functions.is_none() {
+                return Err(kernel_error::at(pc, KernelErrorKind::UnlinkedCall));
+            }
+            instruction
+                .stack_effect()
+                .map_err(|kind| kernel_error::at(pc, kind))?;
             Ok(())
         }
         _ => Ok(()),
     }
+}
+
+fn target(
+    functions: Option<&[KernelFunctionDefinition<'_>]>,
+    function: usize,
+    pc: usize,
+    unlinked: KernelErrorKind,
+) -> Result<(), KernelError> {
+    let functions = functions.ok_or_else(|| kernel_error::at(pc, unlinked))?;
+    if functions.get(function).is_none() {
+        return Err(kernel_error::at(
+            pc,
+            KernelErrorKind::InvalidFunction {
+                function: function as u64,
+            },
+        ));
+    }
+    Ok(())
 }

@@ -15,13 +15,19 @@ pub(super) fn compare(
             LegacyComparison::NotEqual => false,
             _ => return Err(KernelErrorKind::UnmatchingTypes),
         },
-        (KernelValue::Undefined, _) | (_, KernelValue::Undefined) => {
-            return Err(KernelErrorKind::UnmatchingTypes);
-        }
         (KernelValue::Number(left), KernelValue::Number(right)) => {
             return Ok(KernelValue::Number(
                 LegacyNumericPair::coerce(left, right).compare(comparison),
             ));
+        }
+        (KernelValue::Function(left), KernelValue::Function(right)) => match comparison {
+            LegacyComparison::Equal => left == right,
+            LegacyComparison::NotEqual => left != right,
+            _ => return Err(KernelErrorKind::UnmatchingTypes),
+        },
+        (KernelValue::Undefined | KernelValue::Function(_), _)
+        | (_, KernelValue::Undefined | KernelValue::Function(_)) => {
+            return Err(KernelErrorKind::UnmatchingTypes);
         }
         (left, right) => LegacyVectorPair::coerce(operand(left)?, operand(right)?)
             .and_then(|pair| pair.compare(comparison))
@@ -34,6 +40,6 @@ fn operand(value: KernelValue) -> Result<LegacyVectorOperand, KernelErrorKind> {
     match value {
         KernelValue::Number(value) => Ok(LegacyVectorOperand::Number(value)),
         KernelValue::Vector(value) => Ok(LegacyVectorOperand::Vector(value)),
-        KernelValue::Undefined => Err(KernelErrorKind::UnmatchingTypes),
+        KernelValue::Undefined | KernelValue::Function(_) => Err(KernelErrorKind::UnmatchingTypes),
     }
 }

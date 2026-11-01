@@ -69,7 +69,12 @@ fn run(
             .ok_or_else(|| ledger.error(Some(function), None, state()))?;
         let step = frame
             .machine
-            .step(proof, &mut ledger.usage.steps, maximum_steps)
+            .step(
+                proof,
+                &mut ledger.usage.steps,
+                maximum_steps,
+                Some(module.identity),
+            )
             .map_err(|cause| {
                 ledger.error(
                     Some(function),

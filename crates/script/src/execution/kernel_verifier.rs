@@ -99,7 +99,9 @@ fn stack_height(
             },
         ));
     }
-    let (pops, pushes) = instruction.stack_effect();
+    let (pops, pushes) = instruction
+        .stack_effect()
+        .map_err(|kind| kernel_error::at(pc, kind))?;
     let after = height.checked_sub(pops).ok_or_else(|| {
         kernel_error::at(
             pc,

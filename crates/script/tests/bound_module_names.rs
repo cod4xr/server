@@ -63,7 +63,7 @@ fn bound_calls_use_legacy_case_identity_without_owning_source_names() {
 }
 
 #[test]
-fn unresolved_external_receiver_indirect_thread_and_builtin_calls_fail_explicitly() {
+fn unresolved_external_receiver_thread_and_builtin_calls_fail_explicitly() {
     for (text, kind) in [
         (
             "main(){return unknown();}",
@@ -79,10 +79,6 @@ fn unresolved_external_receiver_indirect_thread_and_builtin_calls_fail_explicitl
         ),
         (
             "main(){self helper();}helper(){}",
-            FunctionCompileErrorKind::UnsupportedCall,
-        ),
-        (
-            "main(a){return [[a]]();}",
             FunctionCompileErrorKind::UnsupportedCall,
         ),
         (

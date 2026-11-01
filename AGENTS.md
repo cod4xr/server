@@ -264,7 +264,7 @@ Lower call arguments rightmost-first through admitted cursor tasks, with preflig
 count/work and a configurable per-call quota; never allocate an unaccounted
 argument array or clone the full target scope per function. Ordinary callers cannot
 reference developer-only targets; disabled declarations remain explicit metadata.
-Reject external/receiver/indirect/thread/builtin fallback rather than granting host
+Reject external/receiver/thread/builtin fallback rather than granting host
 authority. Resolve owned code/layout/maps for all active bodies, verify once and
 publish atomically. Global declaration/function/work/instruction/metadata admission
 includes tables/staging/current lowering overlap; source/CST/symbol/body/literal/
@@ -274,8 +274,27 @@ Empty/all-disabled inventories must not fabricate functions; empty individual ty
 code remains invalid. Run script_call_link_reference.py and argument/syntax guards;
 these selected source roles do not execute native compiler/VM/linking. Retain
 wide/deep/budget/privacy/mode/unsupported/isolated regressions. Source imports,
-heap/receivers/indirect calls/builtins/scheduling/full-GSC/mod/Linux gates remain
+heap/receivers/builtins/scheduling/full-GSC/mod/Linux gates remain
 open. See ADR 0049, including empty-inventory supersession of ADR 0047.
+Opaque function references use checked nonreused immutable-module identities and
+wide indices, never native pointers or exposed constructors. Mint identity only
+after complete proof; exhaustion fails without wrapping or losing proof work.
+Copies do not own modules. Verify every static reference and checked indirect
+argument-plus-target stack effect, even in unreachable code; standalone proof
+still rejects unresolved module instructions. Invocation checks type/owner before
+sharing existing arity/frame/fuel/setup/count/byte admission. Never implicitly
+resolve foreign/stale references. Equality uses identity for two functions only;
+mixed/ordered function comparisons reject. Preserve redaction/actual size_of costs.
+Bound source lowers local ::function and immediate [[expression]] calls, with
+rightmost arguments evaluated before the target. Reuse developer resolution,
+flat tasks, maps and quotas. Isolated profiles/external/receiver/thread/host calls
+stay separate. Run generate_function_reference_vectors.py --check (2,664 actual
+C comparisons with synthetic labels mapped bijectively to opaque identities, not
+native code pointers/invocation) and script_function_reference.py (selected source
+role/mutation guards, not native compiler/VM execution). Retain identity exhaustion,
+foreign/drop/nonreuse/parallel uniqueness, type/arity/order, exact/one-less limits,
+wide/deep/hostile/recovery tests. Heap/closures/self/scheduler/module loading/reload/
+full-mod/Linux behavior remains open; see ADR 0050.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

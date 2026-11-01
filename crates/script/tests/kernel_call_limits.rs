@@ -5,14 +5,29 @@
 )]
 
 use crate::kernel_call_support::{self, countdown, definition};
-use cod4x_script::execution::{KernelCallBudget, KernelErrorKind, KernelResource, KernelValue};
+use cod4x_script::execution::{
+    KernelBranchCondition, KernelCallBudget, KernelErrorKind, KernelInstruction, KernelResource,
+    KernelValue,
+};
 use cod4x_script::legacy::LegacyNumber;
 
 #[test]
 fn every_aggregate_execution_limit_accepts_exact_usage_and_rejects_one_less() -> Result<(), String>
 {
     let code = countdown(0, 0);
-    let module = kernel_call_support::verify(&[definition(&code, 1, 1)]);
+    exact_limits(&code)?;
+    let mut indirect = code;
+    indirect.insert(7, KernelInstruction::FunctionReference(0));
+    indirect[8] = KernelInstruction::CallIndirect { arguments: 1 };
+    indirect[3] = KernelInstruction::Branch {
+        condition: KernelBranchCondition::IfTrue,
+        target: 12,
+    };
+    exact_limits(&indirect)
+}
+
+fn exact_limits(code: &[KernelInstruction]) -> Result<(), String> {
+    let module = kernel_call_support::verify(&[definition(code, 1, 1)]);
     let arguments = [KernelValue::Number(LegacyNumber::Integer(64))];
     let outcome = module
         .execute(0, &arguments, KernelCallBudget::default())

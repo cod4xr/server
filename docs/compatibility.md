@@ -460,7 +460,7 @@ counts; parameter count remains distinct from complete local slots. Three added
 tests and hostile inventories retain those errors/order/maps/private boundaries.
 Selected original argument source roles do not prove complete native diagnostic/
 evaluation/error-index/ref-cleanup parity; see ADR 0048.
-Source linking/calls, methods/receivers, indirect calls, scheduling/native cleanup
+Imports, methods/receivers, scheduling/native cleanup
 and whole-GSC/mod acceptance remain open. See ADR 0047.
 Local bound source calls now compile into complete primitive inventories under
 shared canonical name resolution, explicit developer inclusion/caller visibility
@@ -473,11 +473,22 @@ Source expansion tests reach 70,000 arguments/parameters, 66,000 functions and
 roles reject 11 mutations; argument roles reject 38 without executing native code.
 Existing 99 structural fixtures remain unchanged. Original compiler/VM/linker,
 native constant folding/scope/diagnostic/ref/unwind parity, imports/animation
-resolution, richer heap values, receivers/indirect/builtin/thread/host behavior,
+resolution, richer heap values, receivers/builtin/thread/host behavior,
 whole mods and Linux remain open. ADR 0049 preserves isolated profile rejection
 and allows empty inventories without fabricated functions; individual empty
 instruction streams still fail. No source-role or Rust subset test closes full
 GSC compatibility by itself.
+Local function-reference values and immediate indirect source calls now share
+canonical target/developer resolution, source maps and compiler quotas. Opaque
+module identities never wrap/reuse; invocation rejects foreign/stale owners and
+shares runtime arity/global frame/fuel/setup/count/byte admission. Tests cover
+copy/return/factories, higher-order recursion, evaluation/type/error order,
+parallel uniqueness/exhaustion, wide/deep/hostile/recovery and exact limits.
+All 2,664 actual C comparisons pass with synthetic identity labels mapped to valid
+Rust references (72 successes/2,592 errors). Selected source-role guards reject
+31 mutations, without native compiler/VM/code-pointer execution. ADR 0050 leaves
+self/receivers, heap/closures, imports/reload, builtins/scheduler/game services,
+full-mod/native cleanup/diagnostic and Linux gates open.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
 
 - Connectionless and sequenced packets in both directions, exact framing,

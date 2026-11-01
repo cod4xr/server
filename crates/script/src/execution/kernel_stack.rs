@@ -61,7 +61,7 @@ impl KernelStack {
     pub(super) fn number(&mut self, pc: usize) -> Result<LegacyNumber, KernelError> {
         match self.pop(pc)? {
             KernelValue::Number(value) => Ok(value),
-            KernelValue::Undefined | KernelValue::Vector(_) => {
+            KernelValue::Undefined | KernelValue::Vector(_) | KernelValue::Function(_) => {
                 Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber))
             }
         }

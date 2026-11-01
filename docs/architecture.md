@@ -416,6 +416,18 @@ staged compiler input. No aggregate RSS or host authorization is implied. Empty
 inventories preserve metadata without fabricated code. See ADR 0049; imports,
 runtime module ownership/reload, heap values, builtins and scheduling remain open.
 
+Opaque function references combine a checked nonreused module identity and wide
+index. A small atomic counter mints identities only after complete module proof;
+it owns no game/script state. Private construction prevents index/owner forgery,
+and references do not keep modules alive. Reference instructions validate targets;
+indirect instructions validate checked argument-plus-callee stack effects and
+invoke only within the owning module. Both paths share iterative frame admission,
+arity, global fuel/setup and live-payload budgets. Source named calls and reference
+values share one canonical resolver; indirect lowering uses admitted tasks to
+evaluate arguments before the target, without a temporary argument array.
+Comparison dispatch isolates function identity from numeric/vector/Undefined rules.
+See ADR 0050; imports/reload, receivers/self, closures, heap and scheduling remain open.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

@@ -4,7 +4,7 @@
 //! Instructions are typed internal data, with no serialized/native bytecode ABI.
 //! This kernel owns no objects, strings, scheduler, host services,
 //! filesystem, logging, or server state. Legacy numeric FP assumptions still apply.
-//! The separate verified-module API adds iterative owned primitive direct-call frames.
+//! The separate verified-module API adds iterative primitive calls and opaque references.
 
 mod calls;
 mod kernel_budget;
@@ -14,9 +14,11 @@ mod kernel_executor;
 mod kernel_flow_state;
 mod kernel_frame;
 mod kernel_function_layout;
+mod kernel_function_reference;
 mod kernel_index_values;
 mod kernel_instruction;
 mod kernel_locals;
+mod kernel_module_identity;
 mod kernel_numeric_values;
 mod kernel_operands;
 mod kernel_operations;
@@ -33,6 +35,7 @@ pub use calls::{
 pub use kernel_budget::{KernelExecutionBudget, KernelVerificationBudget};
 pub use kernel_error::{KernelError, KernelErrorKind, KernelResource};
 pub use kernel_function_layout::KernelFunctionLayout;
+pub use kernel_function_reference::KernelFunctionReference;
 pub use kernel_instruction::{KernelBranchCondition, KernelInstruction};
 pub use kernel_value::KernelValue;
 pub use verified_kernel_program::{KernelOutcome, KernelProgramUsage, VerifiedKernelProgram};

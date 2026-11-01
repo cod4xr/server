@@ -76,6 +76,8 @@ pub(super) fn apply(
             return Ok(());
         }
         KernelInstruction::Call { .. }
+        | KernelInstruction::CallIndirect { .. }
+        | KernelInstruction::FunctionReference(_)
         | KernelInstruction::Jump(_)
         | KernelInstruction::Branch { .. }
         | KernelInstruction::Return => {

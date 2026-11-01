@@ -7,8 +7,10 @@ use crate::execution::calls::{
     KernelCallBudget, KernelCallOutcome, KernelModuleError, KernelModuleUsage,
     KernelModuleVerificationBudget,
 };
+use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::{
-    KernelFunctionLayout, KernelInstruction, KernelProgramUsage, KernelValue, VerifiedKernelProgram,
+    KernelFunctionLayout, KernelFunctionReference, KernelInstruction, KernelProgramUsage,
+    KernelValue, VerifiedKernelProgram,
 };
 
 /// Borrowed internal function input, without source names, imports or host authority.
@@ -20,7 +22,7 @@ pub struct KernelFunctionDefinition<'a> {
     pub layout: KernelFunctionLayout,
 }
 
-/// Owned immutable direct-call inventory. This is not source linking/module activation.
+/// Owned immutable call/reference inventory. This is not source linking/module activation.
 ///
 /// ```
 /// use cod4x_script::execution::{
@@ -42,6 +44,7 @@ pub struct KernelFunctionDefinition<'a> {
 /// # Ok::<(), KernelModuleError>(())
 /// ```
 pub struct VerifiedKernelModule {
+    pub(super) identity: KernelModuleIdentity,
     pub(super) functions: Vec<VerifiedKernelProgram>,
     pub(super) usage: KernelModuleUsage,
 }
@@ -53,7 +56,7 @@ impl VerifiedKernelModule {
     ///
     /// # Errors
     /// Rejects malformed/unresolved operands,
-    /// invalid flow, global/per-function budget exhaustion and allocation failure.
+    /// invalid flow, global/per-function budget or identity exhaustion, and allocation failure.
     /// No partial module escapes; borrowed input remains unchanged.
     pub fn verify(
         definitions: &[KernelFunctionDefinition<'_>],
@@ -74,6 +77,15 @@ impl VerifiedKernelModule {
         self.functions
             .get(usize::try_from(function).ok()?)
             .map(VerifiedKernelProgram::usage)
+    }
+
+    /// Returns an opaque copied reference to one checked function in this module.
+    /// The reference grants no host authority and does not keep the module alive.
+    #[must_use]
+    pub fn function_reference(&self, function: u64) -> Option<KernelFunctionReference> {
+        let index = usize::try_from(function).ok()?;
+        self.functions.get(index)?;
+        Some(KernelFunctionReference::new(self.identity, index))
     }
 
     /// Invokes an entry with a source-parameter-ordered primitive argument prefix.

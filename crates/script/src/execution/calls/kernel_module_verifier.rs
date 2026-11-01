@@ -6,6 +6,7 @@ use crate::execution::calls::{
     VerifiedKernelModule,
 };
 use crate::execution::kernel_error;
+use crate::execution::kernel_module_identity::KernelModuleIdentity;
 use crate::execution::kernel_verifier;
 
 pub(super) fn verify(
@@ -46,6 +47,12 @@ pub(super) fn verify(
         functions.push(proof);
     }
     Ok(VerifiedKernelModule {
+        identity: KernelModuleIdentity::allocate().map_err(|kind| {
+            KernelModuleError::verification(
+                None,
+                kernel_error::general(kind).with_usage(admission.usage.verification_steps, 0),
+            )
+        })?,
         functions,
         usage: admission.usage,
     })

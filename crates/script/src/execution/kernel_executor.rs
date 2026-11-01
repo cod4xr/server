@@ -32,7 +32,7 @@ fn execute_admitted(
     let mut steps = 0;
     loop {
         let step = frame
-            .step(program, &mut steps, budget.max_steps)
+            .step(program, &mut steps, budget.max_steps, None)
             .map_err(|error| error.with_usage(steps, frame.stack.peak()))?;
         match step {
             KernelFrameStep::Return(value) => {

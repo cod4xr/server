@@ -379,7 +379,7 @@ Fourteen added typed-runtime tests cover calls/defaults/returns/privacy/recovery
 exact/one-less global limits, repeated shallow calls, 12,001 frames, 66,000 functions
 70,000-argument calls/missing suffixes and 4,096 hostile inventories. This is not native call ABI, argument evaluation/
 push order, source arity diagnostics, ref/error cleanup or original VM execution.
-Source calls/import linking, methods/indirect calls, heap values, scheduling and
+Import linking, methods, heap values, scheduling and
 full GSC/mod acceptance remain open; see ADR 0047.
 Excess call arguments now fail at invocation, after caller argument instructions
 and before callee allocation/body. Unselected paths do not fail, while every
@@ -413,10 +413,30 @@ forms, exact/one-less scopes, 70,000 arguments/parameters, 66,000 functions and
 reference guards reject 11 mutations; argument timing guards reject 38, while 99
 structural fixture replays stay unchanged. These are source-role guards plus Rust
 execution tests, not original compiler/VM/linker execution. Imports/animation
-resolution, strings/arrays/objects/receivers/indirect calls, builtins/threads/waits/
+resolution, strings/arrays/objects/receivers, builtins/threads/waits/
 host services, full native diagnostics/cleanup/mod and Linux gates remain open.
 See ADR 0049. Its empty-inventory decision supersedes ADR 0047; empty individual
 instruction streams still fail proof.
+Bound source now supports local function-reference values and immediate indirect
+calls. One shared resolver preserves case/developer policy for named calls and
+references. Flat lowering evaluates rightmost arguments before the target expression;
+copied references pass through parameters/locals/returns without heap allocation.
+Each completed immutable kernel module mints a checked nonreused opaque identity.
+References compare by identity, reject mixed/ordered comparisons, and invoke only
+within their owning module. Foreign/dropped owners cannot resolve in a replacement.
+Verifier checks static targets and argument-plus-target arithmetic even in skipped
+code. Execution shares existing iterative frames, arity, fuel/setup/live-payload
+limits; byte formulas use actual value/instruction layout. Tests cover parallel
+identity uniqueness/full-domain exhaustion, foreign/drop/redaction, factories,
+higher-order recursion, evaluation/error order, source restrictions and quotas,
+all exact/one-less runtime limits, 66,000 targets/70,000 arguments, 12,000 nested
+source calls and 4,096 hostile inventories. Actual C O0/O2 comparisons yield 2,664
+cases (72 successful/2,592 errors), using synthetic labels mapped bijectively to
+valid Rust references; native code pointers/allocation/invocation are not tested.
+Selected compiler/header/VM roles reject 31 mutations alongside existing argument,
+grammar and visibility guards. These do not execute the native compiler or VM.
+See ADR 0050. Self/receivers, imports/reload, closures, heap values, scheduling,
+builtins/game services, full legacy diagnostics/cleanup/mod and Linux remain open.
 The compiler/VM, expanded standard library, and language features remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.

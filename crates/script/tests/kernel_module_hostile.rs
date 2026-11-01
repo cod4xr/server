@@ -63,6 +63,7 @@ fn hostile_forward_recursive_and_cyclic_inventories_remain_bounded_after_proof()
                         error.cause.kind,
                         KernelErrorKind::BudgetExceeded { .. }
                             | KernelErrorKind::ArgumentCount { .. }
+                            | KernelErrorKind::ExpectedFunctionReference
                             | KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
                             | KernelErrorKind::ExpectedIndexable
@@ -97,10 +98,20 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
             _ => KernelValue::Vector(LegacyVector::from_components([1.0, 2.0, 3.0])),
         }));
     }
-    code.push(KernelInstruction::Call {
-        function,
-        arguments,
-    });
+    match next(state) % 3 {
+        0 => code.push(KernelInstruction::Call {
+            function,
+            arguments,
+        }),
+        1 => {
+            code.push(KernelInstruction::FunctionReference(function));
+            code.push(KernelInstruction::CallIndirect { arguments });
+        }
+        _ => {
+            code.push(integer(7));
+            code.push(KernelInstruction::CallIndirect { arguments });
+        }
+    }
     match next(state) % 6 {
         0 => code.extend([integer(0), KernelInstruction::Divide]),
         1 => code.extend([

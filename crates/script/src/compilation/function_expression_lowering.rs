@@ -8,6 +8,7 @@ use crate::compilation::function_compile_error;
 use crate::compilation::function_group;
 use crate::compilation::function_literal;
 use crate::compilation::function_reference;
+use crate::compilation::function_reference_value;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::{KernelBranchCondition, KernelInstruction};
@@ -90,6 +91,9 @@ fn primary<'tree, 'source>(
         }
         LegacyPrimaryKind::Call { syntax } if builder.mode.bound() => {
             function_call::queue(builder, syntax)
+        }
+        LegacyPrimaryKind::FunctionReference { syntax } if builder.mode.bound() => {
+            function_reference_value::lower(builder, syntax)
         }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::KernelValue;
+use crate::execution::{KernelErrorKind, KernelValue};
 use crate::legacy::{
     LegacyArithmetic, LegacyComparison, LegacyIntegerOperator, LegacyIntegerUpdate,
 };
@@ -32,6 +32,14 @@ pub enum KernelInstruction {
         /// Wide module-local function index, checked even in unreachable code.
         function: usize,
         /// Supplied operand count. Excess arguments fail when the call executes.
+        arguments: usize,
+    },
+    /// Pushes an opaque reference to this module's checked function index.
+    FunctionReference(usize),
+    /// Pops the top function reference after bottom-to-top last/first arguments.
+    /// The reference must belong to this module; arity checks occur at invocation.
+    CallIndirect {
+        /// Supplied argument count, excluding the top function reference.
         arguments: usize,
     },
     /// Consumes z/y/x in bottom-to-top stack order and pushes an x/y/z vector.
@@ -75,11 +83,17 @@ pub enum KernelInstruction {
 }
 
 impl KernelInstruction {
-    pub(super) fn stack_effect(self) -> (usize, usize) {
-        match self {
+    pub(super) fn stack_effect(self) -> Result<(usize, usize), KernelErrorKind> {
+        let effect = match self {
+            Self::CallIndirect { arguments } => (
+                arguments
+                    .checked_add(1)
+                    .ok_or(KernelErrorKind::SizeOverflow)?,
+                1,
+            ),
             Self::Call { arguments, .. } => (arguments, 1),
             Self::MakeVector => (3, 1),
-            Self::Constant(_) | Self::LoadLocal(_) => (0, 1),
+            Self::Constant(_) | Self::LoadLocal(_) | Self::FunctionReference(_) => (0, 1),
             Self::Arithmetic(_)
             | Self::Compare(_)
             | Self::Integer(_)
@@ -89,6 +103,7 @@ impl KernelInstruction {
             Self::Duplicate => (1, 2),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),
             Self::Jump(_) => (0, 0),
-        }
+        };
+        Ok(effect)
     }
 }

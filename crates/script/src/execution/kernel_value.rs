@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use std::fmt;
 
+use crate::execution::KernelFunctionReference;
 use crate::legacy::{LegacyNumber, LegacyVector};
 
 /// Primitive-kernel values only; not the full GSC value/object/heap representation.
@@ -15,6 +16,8 @@ pub enum KernelValue {
     Number(LegacyNumber),
     /// Inline copied binary32 triple, without native pool/reference IDs.
     Vector(LegacyVector),
+    /// Copied opaque module identity/index, never a native code address or ownership.
+    Function(KernelFunctionReference),
 }
 
 impl fmt::Debug for KernelValue {
@@ -23,6 +26,7 @@ impl fmt::Debug for KernelValue {
             Self::Undefined => "KernelValue::Undefined",
             Self::Number(_) => "KernelValue::Number(..)",
             Self::Vector(_) => "KernelValue::Vector(..)",
+            Self::Function(_) => "KernelValue::Function(..)",
         })
     }
 }

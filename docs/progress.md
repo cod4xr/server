@@ -34,7 +34,7 @@ that block. The separate WSL validation directory was already absent when checke
 The reference checkout is `../cod4x-reference`. Upstream source and all generators
 are pinned/hashes checked. There are no game assets, ApX code, private configs,
 remote deployments, client implementation, decoded map loader, game simulation,
-or GSC VM.
+or complete GSC VM.
 
 ## Verified checkpoints
 
@@ -753,11 +753,38 @@ Windows debug/release tests pass (188 frontend/77 legacy plus doctests), with
 formatting, warnings-denied Clippy/rustdoc and repository policy (537 sources/eight
 crates, largest 287 lines). See ADR 0049, including empty-inventory supersession.
 No dependencies or alternate targets. Native compiler/VM/linker/error/ref cleanup,
-imports/animation resolution, heap/receivers/indirect/builtins/scheduling/host/mod
+imports/animation resolution, heap/receivers/builtins/scheduling/host/mod
 and Linux gates remain open. No full legacy acceptance workstream is closed.
 
-Next: source-grounded function references/indirect calls and general value ownership,
-plus broader source-grounded call/frame work. Full objects, calls, scheduling,
+Local function references and immediate indirect source calls now compile/execute
+under ADR 0050. Canonical local/developer resolution is shared with named calls;
+rightmost arguments execute before the indirect target expression. References copy
+through locals/parameters/returns, use redacted opaque immutable-module identities
+and wide indices, and cannot invoke in foreign/recreated owners. Identity minting
+occurs after complete proof, never wraps/reuses, and preserves failed proof work.
+All static targets and indirect count-plus-target arithmetic are verified even in
+unreachable code. Invocation shares private iterative frames and global arity/fuel/
+setup/live-payload admission; actual sizeof-based budgets reflect representation.
+Eight added frontend tests cover factories/higher-order recursion, evaluation/type/
+arity/error order, developer restrictions/quotas and isolated-profile rejection.
+Seven added legacy tests plus the private identity allocator test cover copies,
+foreign/drop/redaction/parallel uniqueness/full-domain exhaustion, malformed proof,
+66,000 targets/70,000 arguments and 2,664 actual C comparisons (72 successes/2,592
+errors). Existing exact/one-less tests now cover direct and indirect calls; deep
+source tests cover both paths at 12,000 nesting, and hostile inventories include
+indirect/ref/type failures. Synthetic C identity labels map bijectively to valid
+Rust references; these are not native code pointers/allocation/invocation. Selected
+compiler/header/VM guards reject 31 mutations, alongside argument 38/visibility 11
+and unchanged 99 structural replays. Related vector/index/Undefined oracles match.
+Windows workspace debug/release tests pass (196 frontend/84 legacy plus doctests).
+Formatting, warnings-denied workspace Clippy/rustdoc, repository policy (550 source
+files/eight crates, largest 287 lines) and diff checks also pass.
+No dependency or alternate target directory was added. Full legacy acceptance
+workstreams, native compiler/VM/self/ref/unwind parity, imports/reload, heap/closures,
+receivers/builtins/scheduling/game services/mod and Linux gates remain open.
+
+Next: source-grounded builtin/value ownership implementation and broader source
+semantic/call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
 workstreams, each containing many implementation/testing tasks, not an exact task
