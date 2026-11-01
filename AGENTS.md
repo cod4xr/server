@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0100 adds twenty executed native developer local-analysis cases and
+eight admissions. Ordinary developer names/common joins stay child-private; later
+parent declarations do not enlarge earlier public prefixes. Child returns do not
+abort parents, and nested-list planning is separate from 0099's emission error.
+Loop continue unions cross developer children, unlike dynamic-break exports;
+preserve initializer/body/update order. These are planned names, not runtime
+initialization/cleanup. Keep all six earlier families unchanged, run seven
+generators/54 admissions and existing mutations/structural/suite policies. Source
+developer lists remain gated pending checked mode/visibility/discard lowering,
+metered scopes, control/cleanup/private resource/package/CLI acceptance. Full
+Windows Rust remains 0098 (407 frontend/273 legacy); Linux/hosted CI unrun.
+
 Assessment 0099 adds twelve actual selected developer-list/slot emission cases
 with independently expected tables/modes/requests/retained output/globals and
 eight admissions. Disabled lists still validate in mode two, then rewind output;

@@ -1,5 +1,10 @@
 # Expanded GSC runtime contract
 
+Assessment 0100 adds twenty selected native developer local-analysis cases with
+eight admission tests. Ordinary child names, common/disjoint branches, returns,
+nested planning and break/continue loop unions stay distinct. This planning family
+does not execute emission, VM or freeing; source developer blocks remain gated.
+
 Assessment 0099 executes twelve selected native developer-list/slot cases under
 modeled services and guards them with eight trace-admission tests. Disabled bodies
 still validate before output rewind; enabled private slots clean separately from

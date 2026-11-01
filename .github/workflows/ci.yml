@@ -33,6 +33,7 @@ jobs:
           python tools/test_local_scope_switch_vectors.py
           python tools/test_local_scope_constant_vectors.py
           python tools/test_local_scope_developer_vectors.py
+          python tools/test_local_scope_developer_analysis_vectors.py
       - name: Check repository boundaries and source sizes
         run: python tools/check_repository.py
       - name: Check independent archive fixtures
@@ -118,6 +119,7 @@ jobs:
           python tools/generate_local_scope_switch_vectors.py reference --check
           python tools/generate_local_scope_constant_vectors.py reference --check
           python tools/generate_local_scope_developer_vectors.py reference --check
+          python tools/generate_local_scope_developer_analysis_vectors.py reference --check
           python tools/generate_string_access_vectors.py reference --check
           python tools/generate_object_size_vectors.py reference --check
           python tools/generate_struct_vectors.py reference --check

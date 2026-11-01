@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+# Actual selected x86 CalcLocalVars helpers; driver O0/O2 agree.
+# Synthetic AST/IDs, bounded modeled allocator/globals; no parser/emitter/VM/freeing/unwinding.
+# D scenario later-direct-b; R parent/B allocated block/A auxiliary allocation bytes.
+# Block: abort created public total initialized-low initialized-high then n:name IDs.
+# 0 private b/1 b+c/2 common if/3 disjoint if/4 return/5 nested developer list;
+# 6 while break/7 while continue/8 for break/9 for continue, transfers inside developer list.
+# Native analysis does not reject nested developer lists; the selected emission diagnostic is separate.
+D 0 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 0 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 1 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+D 1 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 4 3 0 n:1 n:3 n:2 n:4
+D 2 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+D 2 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 3 3 3 0 n:1 n:3 n:2
+D 3 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:4
+D 3 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:4
+D 4 0
+R 0 2 2 2 3 0 n:1 n:3
+B 3 2 2 3 3 0 n:1 n:3 n:2
+D 4 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 3 2 2 3 3 0 n:1 n:3 n:2
+D 5 0
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 5 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+B 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 6 0
+R 0 2 2 2 3 0 n:1 n:3
+A 4096
+B 0 2 2 2 3 0 n:1 n:3
+B 2 2 2 3 3 0 n:1 n:3 n:2
+D 6 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 2 2 3 0 n:1 n:3
+B 2 2 2 3 3 0 n:1 n:3 n:2
+D 7 0
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 7 1
+R 0 2 2 3 3 0 n:1 n:3 n:2
+A 4096
+B 0 2 3 3 3 0 n:1 n:3 n:2
+B 0 2 2 3 3 0 n:1 n:3 n:2
+D 8 0
+R 0 2 2 4 3 0 n:1 n:3 n:5 n:4
+A 4096
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+B 2 2 3 4 3 0 n:1 n:3 n:5 n:2
+D 8 1
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+A 4096
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+B 2 2 3 4 3 0 n:1 n:3 n:5 n:2
+D 9 0
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 3 4 3 0 n:1 n:3 n:5 n:2
+D 9 1
+R 0 2 2 5 3 0 n:1 n:3 n:5 n:2 n:4
+A 4096
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 5 5 3 0 n:1 n:3 n:5 n:2 n:4
+B 0 2 3 4 3 0 n:1 n:3 n:5 n:2
