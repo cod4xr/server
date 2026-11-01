@@ -7,6 +7,8 @@
 # P parent/B child: abort created public total initialized-low initialized-high, then names.
 # G final-mode source-position diagnostics rewinds add-refs drop-refs canonical-transfers.
 # M body compilation modes; O opcode requests, including discarded; W retained modeled bytes.
+# F external borrowed-name flag; mode-two EmitFunction, no name/link services.
+# F rows: G mode unresolved-file-count diagnostics add-refs canonical-transfers; T modeled removed IDs; W bytes.
 C 0 0 0
 P 0 2 2 2 3 0 n:1 n:3
 B 0 2 2 2 3 0 n:1 n:3
@@ -90,4 +92,20 @@ B 0 0 0 3 0 0 n:1 n:3 n:2
 G 2 123 1 0 0 0 0
 M
 O
+W 170
+F 0 0
+G 2 100 0 0 0
+T 2
+W 170
+F 0 1
+G 2 100 0 0 0
+T
+W 170
+F 1 0
+G 2 99 0 0 0
+T 2 3
+W 170
+F 1 1
+G 2 99 0 0 0
+T
 W 170

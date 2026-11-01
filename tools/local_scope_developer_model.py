@@ -34,10 +34,14 @@ def validate(output: bytes) -> None:
     model = {f"C {scenario} {enabled} 0": expected(scenario, enabled, 0)
              for scenario in range(5) for enabled in range(2)}
     model.update({f"C 1 1 {nesting}": expected(1, 1, nesting) for nesting in (1, 2)})
+    for external in (0, 1):
+        for borrowed in (0, 1):
+            drops = "T" if borrowed else "T 2 3" if external else "T 2"
+            model[f"F {external} {borrowed}"] = [f"G 2 {100 - external} 0 0 0", drops, "W 170"]
     actual = {}
     current = None
     for row in output.decode("ascii").splitlines():
-        if row.startswith("C "):
+        if row.startswith(("C ", "F ")):
             if row not in model or row in actual:
                 raise ValueError("Unknown/duplicate native developer case")
             current = row

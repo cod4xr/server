@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Record twelve selected developer-list/slot executions with modeled services."""
+"""Record selected developer-list/slot and discarded function-name executions."""
 import argparse
 from pathlib import Path
 
@@ -30,13 +30,15 @@ def main() -> None:
         "# P parent/B child: abort created public total initialized-low initialized-high, then names.\n"
         "# G final-mode source-position diagnostics rewinds add-refs drop-refs canonical-transfers.\n"
         "# M body compilation modes; O opcode requests, including discarded; W retained modeled bytes.\n"
+        "# F external borrowed-name flag; mode-two EmitFunction, no name/link services.\n"
+        "# F rows: G mode unresolved-file-count diagnostics add-refs canonical-transfers; T modeled removed IDs; W bytes.\n"
     ).encode("ascii") + output
     if args.check:
         if OUTPUT.read_bytes() != expected:
             raise SystemExit("Native developer-list fixtures differ")
     else:
         OUTPUT.write_bytes(expected)
-    print("Verified 12 selected native developer-list cases against independent expectations at driver O0/O2")
+    print("Verified 12 native developer-list and 4 discarded-function cases at driver O0/O2")
 
 
 if __name__ == "__main__":

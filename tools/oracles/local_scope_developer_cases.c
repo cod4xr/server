@@ -49,10 +49,30 @@ static void developer_case(Word scenario, Word enabled, Word nesting)
     text("O"); for (Word i = 0; i < request_count; ++i) { text(" "); decimal(requests[i]); } text("\n");
     text("W"); for (Word i = 0; i < code_size; ++i) { text(" "); decimal(code[i]); } text("\n");
 }
+static void discarded_function(Word external, Word borrowed)
+{
+    clear(scrCompileGlob, sizeof(scrCompileGlob));
+    clear(gScrCompilePub, sizeof(gScrCompilePub));
+    clear(code, sizeof(code));
+    drops = adds = canonical = diagnostics = request_count = 0;
+    code_size = 1; code[0] = 0xaa;
+    *compile_mode() = 2;
+    *(Word *)(gScrCompilePub + 4) = 100;
+    scrCompileGlob[0x1c] = (unsigned char)borrowed;
+    Word function[] = {external ? 0x15 : 0x14, 2, 3};
+    EmitFunction(function, 7);
+    text("F "); decimal(external); text(" "); decimal(borrowed); text("\n");
+    text("G "); decimal(*compile_mode()); text(" "); decimal(*(Word *)(gScrCompilePub + 4));
+    text(" "); decimal(diagnostics); text(" "); decimal(adds); text(" "); decimal(canonical); text("\n");
+    text("T"); for (Word i = 0; i < drops; ++i) { text(" "); decimal(dropped_names[i]); } text("\n");
+    text("W"); for (Word i = 0; i < code_size; ++i) { text(" "); decimal(code[i]); } text("\n");
+}
 __attribute__((noreturn)) void scope_start(void)
 {
     for (Word scenario = 0; scenario < 5; ++scenario)
         for (Word enabled = 0; enabled < 2; ++enabled) developer_case(scenario, enabled, 0);
     for (Word nesting = 1; nesting < 3; ++nesting) developer_case(1, 1, nesting);
+    for (Word external = 0; external < 2; ++external)
+        for (Word borrowed = 0; borrowed < 2; ++borrowed) discarded_function(external, borrowed);
     scope_exit(0);
 }

@@ -1,5 +1,14 @@
 # Project contract
 
+Assessment 0101 adds four executed mode-two EmitFunction cases to 0099, preserving
+all original twelve outcomes. Local/external owned/borrowed names bypass lookup/
+linking/output on this selected path; release counts and pending-file counters
+are independent. Complete EmitCall/builtin probing/error ordering is not executed.
+Do not fabricate executable targets when validating discarded source. Keep edits
+case-bounded in admission tests, seven families/56 admissions and existing guards.
+Source developer blocks stay gated pending validation/discard/control/visibility/
+resource/package/CLI acceptance. Full Rust remains ADR 0098; Linux/hosted CI unrun.
+
 Assessment 0100 adds twenty executed native developer local-analysis cases and
 eight admissions. Ordinary developer names/common joins stay child-private; later
 parent declarations do not enlarge earlier public prefixes. Child returns do not

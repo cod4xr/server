@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Selected developer mode/validation/cleanup expectations reject damaged traces."""
+import re
 import unittest
 
 from generate_local_scope_developer_vectors import OUTPUT
@@ -13,8 +14,11 @@ class LocalScopeDeveloperTests(unittest.TestCase):
 
     def changed_case(self, header: bytes, old: bytes, new: bytes) -> bytes:
         start = self.trace.index(header + b"\n")
-        self.assertIn(old, self.trace[start:].split(b"\nC ", 1)[0])
-        return self.trace[:start] + self.trace[start:].replace(old, new, 1)
+        boundary = re.search(rb"\n(?:C|F) ", self.trace[start:])
+        end = start + boundary.start() if boundary else len(self.trace)
+        case = self.trace[start:end]
+        self.assertIn(old, case)
+        return self.trace[:start] + case.replace(old, new, 1) + self.trace[end:]
 
     def test_complete_trace(self) -> None:
         validate(self.trace)
@@ -58,6 +62,18 @@ class LocalScopeDeveloperTests(unittest.TestCase):
                              (f"G {nesting} 123 1 0".encode("ascii"), b"G 0 123 0 0")):
                 with self.subTest(nesting=nesting, old=old), self.assertRaises(ValueError):
                     validate(self.changed_case(header, old, new))
+
+    def test_discarded_local_and_external_function_names_have_no_lookup_or_output(self) -> None:
+        for header, old, new in ((b"F 0 0", b"G 2 100 0 0 0", b"G 2 100 1 0 0"),
+                                 (b"F 1 0", b"W 170", b"W 170 0")):
+            with self.subTest(header=header), self.assertRaises(ValueError):
+                validate(self.changed_case(header, old, new))
+
+    def test_discarded_name_ownership_and_file_pending_count_stay_separate(self) -> None:
+        for header, old, new in ((b"F 0 0", b"T 2", b"T"), (b"F 1 0", b"T 2 3", b"T 2"),
+                                 (b"F 1 1", b"G 2 99", b"G 2 100"), (b"F 0 1", b"T\nW", b"T 2\nW")):
+            with self.subTest(header=header), self.assertRaises(ValueError):
+                validate(self.changed_case(header, old, new))
 
 
 if __name__ == "__main__":
