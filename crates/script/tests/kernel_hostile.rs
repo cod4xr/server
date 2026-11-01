@@ -23,7 +23,7 @@ fn next(state: &mut u32) -> u32 {
 }
 
 fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
-    let choice = next(state) % 25;
+    let choice = next(state) % 26;
     let operand = next(state);
     let target = usize::try_from(operand).expect("Supported test host") % (count + 3);
     match choice {
@@ -70,6 +70,7 @@ fn instruction(state: &mut u32, count: usize) -> KernelInstruction {
             },
             arguments: usize::try_from(operand % 4).expect("Small builtin count"),
         },
+        25 => KernelInstruction::RequireInteger,
         _ => KernelInstruction::Return,
     }
 }
@@ -110,6 +111,7 @@ fn hostile_programs_are_rejected_or_execute_within_their_proof_and_fuel() -> Res
                 if !matches!(
                     error.kind,
                     KernelErrorKind::ExpectedNumber
+                        | KernelErrorKind::ExpectedInteger
                         | KernelErrorKind::UnmatchingTypes
                         | KernelErrorKind::ExpectedIndexable
                         | KernelErrorKind::Numeric(_)

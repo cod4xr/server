@@ -18,6 +18,7 @@ mod kernel_function_layout;
 mod kernel_function_reference;
 mod kernel_index_values;
 mod kernel_instruction;
+mod kernel_integer_value;
 mod kernel_locals;
 mod kernel_module_identity;
 mod kernel_numeric_values;

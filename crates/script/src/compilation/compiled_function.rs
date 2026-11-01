@@ -9,7 +9,7 @@ use crate::execution::VerifiedKernelProgram;
 pub enum FunctionSourceProfile {
     /// Zero parameters and empty/single-return body, validated by bounded pure execution.
     PureScalarReturn,
-    /// Numeric/vector expressions, locals, updates, blocks, branches, loops/transfers and returns.
+    /// Primitives, locals, updates, branches, loops/transfers, integer switches and returns.
     /// Publication verifies code without executing fabricated argument values.
     PrimitiveStatements,
 }
@@ -31,7 +31,7 @@ pub struct FunctionCompilationUsage {
     pub local_bindings: u64,
     /// Identifier bytes charged across declaration/read/initialization visits.
     pub identifier_bytes: u64,
-    /// Peak admitted live initialization snapshot flag payload.
+    /// Peak admitted live initialization facts and switch case record payload.
     pub peak_control_bytes: u64,
     /// Actual pure validation instructions; None when this profile does not pre-execute.
     pub validation_steps: Option<u64>,

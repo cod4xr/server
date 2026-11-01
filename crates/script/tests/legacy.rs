@@ -71,6 +71,8 @@ mod kernel_call_support;
 mod kernel_call_width;
 #[path = "kernel_function_references.rs"]
 mod kernel_function_references;
+#[path = "kernel_integer_admission.rs"]
+mod kernel_integer_admission;
 #[path = "kernel_module_hostile.rs"]
 mod kernel_module_hostile;
 #[path = "kernel_module_verification.rs"]

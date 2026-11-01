@@ -57,18 +57,13 @@ fn loop_slots_remain_stable_but_later_assignment_must_initialize_them_again() {
             KernelValue::Number(LegacyNumber::Integer(12))
         );
     }
-    for text in [
-        "main(){while(false){PrivateCall();}}",
-        "main(){switch(1){}}",
-    ] {
-        assert_eq!(
-            function_compile_support::compile_primitive(
-                text.as_bytes(),
-                FunctionCompilationBudget::default()
-            )
-            .expect_err("Unsupported statement remains explicit")
-            .kind,
-            FunctionCompileErrorKind::UnsupportedBody
-        );
-    }
+    assert_eq!(
+        function_compile_support::compile_primitive(
+            b"main(){while(false){PrivateCall();}}",
+            FunctionCompilationBudget::default()
+        )
+        .expect_err("Unsupported statement remains explicit")
+        .kind,
+        FunctionCompileErrorKind::UnsupportedBody
+    );
 }

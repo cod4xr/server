@@ -77,11 +77,7 @@ fn duplicate_parameters_nonfinal_returns_and_non_name_targets_fail_under_this_pr
 
 #[test]
 fn general_control_flow_richer_values_and_calls_remain_explicitly_unsupported() {
-    for text in [
-        "main(){switch(1){}}",
-        "main(){wait 1;}",
-        "main(){PrivateCall();}",
-    ] {
+    for text in ["main(){wait 1;}", "main(){PrivateCall();}"] {
         assert_eq!(
             function_compile_support::compile_primitive(
                 text.as_bytes(),

@@ -7,6 +7,7 @@ use crate::compilation::function_for;
 use crate::compilation::function_local_assignment;
 use crate::compilation::function_loop_transfer::{self, FunctionLoopTransfer};
 use crate::compilation::function_statement_body;
+use crate::compilation::function_switch;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::function_while;
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
@@ -30,6 +31,12 @@ pub(super) fn lower<'tree, 'source>(
     })?;
     match view.kind() {
         LegacyStatementKind::Empty => Ok(()),
+        LegacyStatementKind::Switch { expression, body } => {
+            function_switch::queue(builder, expression, body, syntax.span())
+        }
+        LegacyStatementKind::Case { .. } | LegacyStatementKind::Default => Err(
+            function_compile_error::at(syntax.span(), FunctionCompileErrorKind::IllegalCase),
+        ),
         LegacyStatementKind::Call { invocation } if builder.mode.bound() => {
             function_call::statement(builder, invocation)
         }

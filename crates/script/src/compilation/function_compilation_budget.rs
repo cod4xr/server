@@ -7,13 +7,13 @@ use crate::statement::StatementListBudget;
 /// Independent resource scopes for the restricted function compilers.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FunctionCompilationBudget {
-    /// Body/task/group probes, literal/name bytes, snapshot visits and resolution.
+    /// Body/task/group/case probes, literal/name bytes, facts, dispatch and resolution.
     pub max_steps: u64,
     /// Complete emitted primitive instruction count.
     pub max_instructions: u64,
     /// Maximum live iterative lowering frames.
     pub max_task_frames: u64,
-    /// Logical pending/task/binding-pair/snapshot payload and overlapping resolved code/maps.
+    /// Logical pending/task/binding/control payload and overlapping resolved code/maps.
     /// Excludes source/CST, spare vector/hash capacity, hash control bytes, fixed
     /// local-field/allocator overhead, body-index storage and kernel scopes.
     pub max_metadata_bytes: u64,
@@ -21,7 +21,7 @@ pub struct FunctionCompilationBudget {
     pub max_local_bindings: u64,
     /// Identifier bytes charged across declaration/read/initialization visits.
     pub max_identifier_bytes: u64,
-    /// Live initialization snapshot flag payload, also included in metadata bytes.
+    /// Live initialization facts and switch case records, also included in metadata.
     pub max_control_bytes: u64,
     /// Separately admitted immediate body index for the local-statements profile.
     pub body: StatementListBudget,

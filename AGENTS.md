@@ -310,6 +310,26 @@ error-unwind execution. Preserve shadow/case/developer/arity/order/maps/privacy,
 wide/deep/hostile/exact-one-less/isolated/quota/recovery tests. General builtins,
 heap/entity lifetime, isdefined, host services, full-mod/Linux gates remain open;
 see ADR 0051. New reference hashes were checked against pinned Git blobs.
+Primitive integer switch now owns case inventory/section tasks/exit joins/balanced
+dispatch under compilation/function_switch. Evaluate keys once, require integers
+without float coercion, preserve source-order fallthrough/default/adjacent labels
+and reject duplicate/misplaced/unsupported/unlabeled/unreachable forms explicitly.
+The full signed int32 domain is intentional capacity expansion; native encoded
+array-index bounds and short case counts are source-profile evidence, never new
+global storage rules or invalid-input parity claims. RequireInteger shares existing
+kernel proof/fuel/type/error contracts. Keep nearest break ownership separate from
+the active loop so continue crosses switches and preserves for-update facts.
+Flat tasks own outer contexts; no recursively linked boxes or source-host recursion.
+Case records share live control/total metadata quotas with initialization snapshots;
+sorting/search/emission/fixup/fact work is charged. Release records/facts exactly
+once and check all control payload/scopes close before publication. Dispatch nodes
+have checked fixed footprints and shrinking child ranges, using existing typed
+jumps/comparisons and global fuel. Run script_switch_reference.py and syntax guards;
+selected roles/mutations do not execute native compiler/VM/switch cleanup. Retain
+valid-domain versus full-word/count expansion evidence, all source nesting/joins/
+maps/privacy/type/quota/recovery and exact-one-less tests, 66,000 cases, 12,000 deep
+switches, hostile typed code and isolated-profile regressions. Strings, general
+heap/diagnostic/native cleanup/mod/Linux acceptance stay open; see ADR 0052.
 Local binding uses an explicit developer-script mode, retains inactive definition
 metadata, and validates active duplicate names/regions. Legacy long-name case
 fallback is a compatibility quirk, not a global string capacity; see ADR 0019.

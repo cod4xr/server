@@ -3,6 +3,7 @@ use crate::execution::kernel_builtin;
 use crate::execution::kernel_comparison_values;
 use crate::execution::kernel_error;
 use crate::execution::kernel_index_values;
+use crate::execution::kernel_integer_value;
 use crate::execution::kernel_locals::KernelLocals;
 use crate::execution::kernel_numeric_values;
 use crate::execution::kernel_stack::KernelStack;
@@ -22,6 +23,8 @@ pub(super) fn apply(
             function,
             arguments,
         } => kernel_builtin::apply(function, arguments, stack, pc)?,
+        KernelInstruction::RequireInteger => kernel_integer_value::require(stack.pop(pc)?)
+            .map_err(|kind| kernel_error::at(pc, kind))?,
         KernelInstruction::StoreLocal(slot) => {
             locals.store(slot, stack.pop(pc)?, pc)?;
             return Ok(());

@@ -810,8 +810,40 @@ largest 287 lines). No dependencies or alternate targets. General builtins, heap
 entity lifetime/isdefined, scheduling/game services, full mod/diagnostic/native
 cleanup and Linux acceptance remain open. No full legacy workstream is closed.
 
-Next: remaining source control flow and value ownership, alongside broader builtin/
-semantic/call/frame work. Full objects, calls, scheduling,
+Primitive integer switches now compile/execute under ADR 0052 in isolated primitive
+functions and bound modules. Key evaluation occurs once; RequireInteger preserves
+the word and rejects other runtime categories without float coercion. Integer-label
+syntax remains distinct from booleans that decode to integer values. Full int32
+keys deliberately expand the native encoded array-index domain; wide case inventories
+avoid the native serialized short. These are explicit capacity expansions, not native
+invalid-input parity. Default placement, adjacent labels, source-order fallthrough,
+scoped breaks/continues and actual initialization exits work through flat owned
+contexts. Continue keeps nearest-loop/for-update facts; returning/continuing paths
+do not establish after-switch initialization. Case records/facts share admitted
+control/metadata quotas and must release before scope publication. Sorting/search/
+emission/fixup/fact work is charged. Balanced out-of-line typed dispatch uses checked
+fixed footprints/shrinking ranges and existing proof/fuel/stack budgets.
+Twelve added frontend tests cover defaults/misses/fallthrough/adjacency, full-word
+expansion, every break/continue nesting direction, actual joins/unmatched/excluded
+paths, for-update initialization/global fuel, source-key/call evaluation, strict
+label/runtime types, duplicates/misplaced/prefix/unreachable forms, maps/privacy,
+isolated profiles and all exact-one-less compiler quotas. Stress tests reach 66,000
+reverse-ordered cases with at most 195 executed instructions per tested lookup and
+12,000 nested switches with flat failed cleanup. Two typed legacy tests cover word
+boundaries and noninteger/stale-reference rejection. Hostile typed/module streams
+include integer admission. Selected pinned switch scope/type/sort/duplicate/domain
+guards reject 39 mutations, and existing predicate/reference/call/argument guards
+and 99 syntax replays remain valid. These are source-role guards plus Rust execution,
+not original compiler/VM/switch cleanup execution. Full Windows workspace debug/
+release tests pass after the final label check (214 frontend/89 legacy plus doctests),
+along with formatting, denied-warning Clippy/rustdoc, repository policy (576 source
+files/eight crates, largest 287 lines) and diff checks. No dependencies, new source
+hashes or alternate targets. String switch, heap/general builtins/scheduler/game
+services/full native scope/diagnostics/cleanup/mod and Linux acceptance stay open.
+No complete legacy workstream is closed.
+
+Next: explicit offline primitive entry-point execution and value ownership,
+alongside broader builtin/semantic/call/frame work. Full objects, calls, scheduling,
 host services, modern language, and join/gameplay remain required. The user's
 latest full-GSC task-count question was answered as roughly 10–12 major remaining
 workstreams, each containing many implementation/testing tasks, not an exact task

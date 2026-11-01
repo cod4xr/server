@@ -79,6 +79,14 @@ pub(super) fn merge(
     release(builder, snapshot, span)
 }
 
+pub(super) fn merge_from(
+    builder: &mut FunctionBuilder<'_, '_>,
+    snapshot: &FunctionInitializationSnapshot,
+    span: Range<u64>,
+) -> Result<(), FunctionCompileError> {
+    apply(builder, snapshot, SnapshotAction::Merge, span)
+}
+
 fn apply(
     builder: &mut FunctionBuilder<'_, '_>,
     snapshot: &FunctionInitializationSnapshot,
@@ -121,7 +129,7 @@ fn apply(
     clippy::needless_pass_by_value,
     reason = "Consuming the snapshot releases its admitted flag payload exactly once."
 )]
-fn release(
+pub(super) fn release(
     builder: &mut FunctionBuilder<'_, '_>,
     snapshot: FunctionInitializationSnapshot,
     span: Range<u64>,

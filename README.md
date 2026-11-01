@@ -139,20 +139,20 @@ The complete server rewrite remains open.
 - Ordinary scalar blocks and `if`/`else` lower with wide checked branch targets.
   Initialization joins include only paths reaching each read; both source branches
   are checked. Snapshot storage/work is bounded. Tests cover 70,000 local snapshots
-  and 12,000 nested branches; full loop/switch and native scope/constant-folding parity remain open.
+  and 12,000 nested branches; full native scope/constant-folding parity remains open.
 - Scalar `while` now reevaluates conditions through verified backward jumps and
   bounded execution fuel. Exit initialization conservatively permits zero
   iterations. Tests cover 70,000 local snapshots, long backward jumps and 12,000
-  nested loops. `for`, switch and native watchdog timing remain open.
+  nested loops. Native watchdog timing remains open.
 - Scoped scalar while `break`/`continue` preserve nearest-loop targets and
   terminating-path initialization joins. Break links share admitted instruction
   records; tests resolve 20,000 fixups and lower 12,000 nested contexts.
 - Staged scalar `for` supports optional clauses and sends `continue` through the
   update. Update initialization merges continuing paths under existing quotas.
-  Clause/constant-folding restrictions remain explicit; switch/general GSC remains open.
+  Clause/constant-folding restrictions remain explicit; general GSC remains open.
 - Owned legacy vector helpers now preserve component-wise arithmetic, numeric
   broadcast, exact equality and addition's separate mixed-type rejection. They
-  match 19,852 recorded original-helper cases; source constructors remain open.
+  match 19,852 recorded original-helper cases; a full object heap remains open.
 - Verified primitive-kernel vectors now support construction, numeric/vector
   operators and copied locals/arguments under actual payload byte limits and fuel.
   18,116 native construction/operator cases execute through owned programs;
@@ -181,6 +181,10 @@ The complete server rewrite remains open.
   plugins. Active script definitions shadow these pure builtins; wrong argument
   counts fail at invocation after argument evaluation. General builtins/game
   services, the complete value heap and full-mod compatibility remain open.
+- Integer `switch` preserves default placement, adjacent labels, fallthrough,
+  nearest break/continue ownership and initialization joins. Tests cover 66,000
+  cases with balanced dispatch and 12,000 nested switches. Full int32 keys are an
+  intentional expansion beyond native encoded-ID bounds; string switch remains open.
 
 Function compilation returns `CompiledFunction` with `FunctionCompilationBudget`
 and `FunctionCompileError`. `compile_scalar_return_function` selects the bounded

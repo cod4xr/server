@@ -24,7 +24,7 @@ pub enum FunctionCompilationResource {
     LocalBindings,
     /// Identifier bytes across name visits.
     IdentifierBytes,
-    /// Live initialization snapshot flag payload.
+    /// Live initialization facts and switch case record payload.
     ControlBytes,
 }
 
@@ -59,10 +59,18 @@ pub enum FunctionCompileErrorKind {
     UnreachableStatement,
     /// A private initialization snapshot/accounting invariant did not hold.
     InvalidControlState,
-    /// Break requires an active loop in this restricted profile.
+    /// Break requires an active loop or switch in this restricted profile.
     IllegalBreak,
     /// Continue requires an active loop in this restricted profile.
     IllegalContinue,
+    /// A case/default label is outside an immediate switch body.
+    IllegalCase,
+    /// This primitive switch requires integer literal labels.
+    UnsupportedCase,
+    /// Multiple labels decode to the same integer key or default.
+    DuplicateCase,
+    /// A private switch context, case target or admission invariant did not hold.
+    InvalidSwitchContext,
     /// A private loop destination/context invariant did not hold.
     InvalidLoopContext,
     /// A private local slot/table invariant did not hold.

@@ -461,6 +461,28 @@ standard-library, language and engine integration remain required
 implementation work. Roadmap S5 requires named stock modes and existing mods to
 execute correctly; modern-mode features need their own acceptance evidence.
 
+PrimitiveStatements and bound source now lower integer switch, case and default
+with once-only key evaluation, strict integer typing, adjacent labels, source-order
+fallthrough, default anywhere and nearest-break ownership separate from continue.
+Exit initialization includes actual break/fallthrough paths and an unmatched path
+only without default; returning/continuing paths do not establish after-switch
+facts. Existing nonfinal-return/unreachable-source restrictions remain explicit.
+Case records share control/metadata budgets with snapshots; logical sorting/tree-
+search/emission/fixup/fact work is charged. Flat saved contexts release all payload
+before publication. Balanced typed dispatch has checked fixed footprints and
+shrinking child ranges; it shares global fuel without a linear case scan or new
+serialized/native ABI. Full int32 keys intentionally expand native encoded-ID
+bounds, while wide case counts avoid the native short. These are capacity changes,
+not native invalid-input parity. Tests reach 66,000 cases with at most 195 executed
+instructions per tested lookup, and 12,000 nested switches with flat failed cleanup.
+Source tests cover nesting, for-update continues/fuel, joins/excluded paths, defaults/
+fallthrough/duplicates/types/maps/privacy/isolated profiles and exact-one-less quotas;
+typed tests preserve complete word boundaries and reject other primitive categories.
+Selected native scope/type/sort/duplicate/domain roles reject 39 mutations; 99 syntax
+replays stay unchanged. These do not execute native switch routines. See ADR 0052;
+string switch, full heap/native scope/diagnostics/cleanup/mod and Linux gates remain
+open. No complete legacy workstream is closed by this subset.
+
 ## Remaining legacy acceptance workstreams
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of

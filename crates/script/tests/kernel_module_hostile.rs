@@ -66,6 +66,7 @@ fn hostile_forward_recursive_and_cyclic_inventories_remain_bounded_after_proof()
                             | KernelErrorKind::ExpectedFunctionReference
                             | KernelErrorKind::UninitializedLocal { .. }
                             | KernelErrorKind::ExpectedNumber
+                            | KernelErrorKind::ExpectedInteger
                             | KernelErrorKind::ExpectedIndexable
                             | KernelErrorKind::UnmatchingTypes
                             | KernelErrorKind::Numeric(_)
@@ -112,7 +113,7 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
             code.push(KernelInstruction::CallIndirect { arguments });
         }
     }
-    match next(state) % 7 {
+    match next(state) % 8 {
         0 => code.extend([integer(0), KernelInstruction::Divide]),
         1 => code.extend([
             KernelInstruction::Constant(KernelValue::Undefined),
@@ -128,6 +129,7 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
             function: KernelBuiltin::IsVector,
             arguments: 1,
         }),
+        6 => code.push(KernelInstruction::RequireInteger),
         _ => {}
     }
     code.push(KernelInstruction::Return);

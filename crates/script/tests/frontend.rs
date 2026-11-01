@@ -144,6 +144,18 @@ mod expression_operators;
 mod expression_structure;
 #[path = "function_names.rs"]
 mod function_names;
+#[path = "function_switch_budgets.rs"]
+mod function_switch_budgets;
+#[path = "function_switch_execution.rs"]
+mod function_switch_execution;
+#[path = "function_switch_initialization.rs"]
+mod function_switch_initialization;
+#[path = "function_switch_nesting.rs"]
+mod function_switch_nesting;
+#[path = "function_switch_rejections.rs"]
+mod function_switch_rejections;
+#[path = "function_switch_stress.rs"]
+mod function_switch_stress;
 #[path = "identifier_identity.rs"]
 mod identifier_identity;
 #[path = "identifier_vectors.rs"]

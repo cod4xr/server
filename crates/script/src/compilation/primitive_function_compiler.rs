@@ -19,7 +19,7 @@ use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacySta
 ///
 /// Accepts parameters, ordinary/compound assignments and integer-only postfix
 /// statements for plain names, empty statements, blocks, conditionals, while,
-/// scoped break/continue, primitive for clauses and returns.
+/// scoped break/continue, primitive for clauses, integer switch/fallthrough and returns.
 /// Numeric/vector expressions include singleton grouping and three-component
 /// construction in explicit right-to-left component order. Types check at invocation.
 /// Fallthrough returns Undefined. Names use legacy identity;
@@ -28,6 +28,8 @@ use crate::statement::{LegacyStatementKind, LegacyStatementListSyntax, LegacySta
 /// For updates merge continuing paths; an unreachable update checks incoming facts.
 /// Loop exits conservatively permit zero iterations. Clauses accept only primitive
 /// assignment/update/empty syntax; this is not full native scope/constant-folding parity.
+/// Switch keys/labels use full int32 words as intentional capacity expansion;
+/// encoded native variable-ID and short case-count limits are not inherited.
 /// Other statements/targets/values remain unsupported, including skipped source.
 /// Caller module/developer binding and native argument adaptation remain separate.
 /// Code/maps own no source/names and publish after verification without executing
@@ -91,6 +93,16 @@ pub(super) fn lower<'tree, 'source>(
     }
     drop(body);
     function_task_lowering::drain(builder)?;
+    if builder.active_loop.is_some()
+        || builder.active_switch.is_some()
+        || builder.break_owner.is_some()
+    {
+        return Err(function_compile_error::at(
+            function.span(),
+            FunctionCompileErrorKind::InvalidControlState,
+        ));
+    }
+    builder.ledger.finish_control(function.span())?;
     let count = builder.ledger.usage.local_bindings;
     KernelFunctionLayout::new(function.parameters().len() as u64, count).map_err(|error| {
         function_compile_error::at(function.span(), FunctionCompileErrorKind::Kernel(error))

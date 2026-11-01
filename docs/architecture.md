@@ -437,6 +437,18 @@ fuel/storage admission without allocating an argument array or callee frame.
 Source maps/compiler quotas remain unchanged. See ADR 0051; this is not a general
 plugin/callback system, heap, scheduler or game-service implementation.
 
+Integer switches keep case records in admitted control metadata and save outer
+contexts in flat tasks. An explicit nearest-break owner coexists with the active
+loop; switches do not replace continue destinations. Label entries merge incoming
+and fallthrough facts, while exits merge breaks/fallthrough and the unmatched path
+only without default. All payload/scopes must close before publication. Out-of-line
+balanced dispatch uses fixed checked instruction footprints, sorted full-word
+keys, shrinking child ranges and existing typed jumps/comparisons. Key expression
+evaluation occurs once; strict integer admission prevents float coercion. The full
+int32 domain and wide case counts deliberately exceed native encoded variable-ID/
+serialized-short bounds. They define no external ABI. See ADR 0052; string/heap/
+full native scope/diagnostic/cleanup compatibility remains open.
+
 ## Future custom client
 
 The future client must have an ordinary CoD4/CoD4X connection path and must not

@@ -7,6 +7,7 @@ use crate::compilation::function_expression_lowering;
 use crate::compilation::function_for;
 use crate::compilation::function_local_names;
 use crate::compilation::function_local_statements;
+use crate::compilation::function_switch;
 use crate::compilation::function_task::FunctionTask;
 use crate::compilation::function_while;
 use crate::execution::KernelInstruction;
@@ -15,6 +16,7 @@ pub(super) fn drain(builder: &mut FunctionBuilder<'_, '_>) -> Result<(), Functio
     while let Some(task) = builder.next_task() {
         builder.ledger.charge(1, task.span())?;
         match task {
+            FunctionTask::Switch(task) => function_switch::lower(builder, task)?,
             FunctionTask::Visit(node) => function_expression_lowering::visit(builder, node)?,
             FunctionTask::CallArguments { cursor, span } => {
                 function_call_arguments::next(builder, cursor, span)?;

@@ -5,6 +5,7 @@ use crate::binding::LegacyIdentifier;
 use crate::compilation::function_for::{FunctionForEnd, FunctionForPlan};
 use crate::compilation::function_initialization::FunctionInitializationSnapshot;
 use crate::compilation::function_loop_transfer::FunctionLoopContext;
+use crate::compilation::function_switch::FunctionSwitchTask;
 use crate::execution::{KernelBranchCondition, KernelInstruction};
 use crate::expression::ExpressionListCursor;
 use crate::expression::LegacyLogicalOperator;
@@ -18,6 +19,7 @@ pub(super) struct FunctionPatchSite(pub(super) usize);
 pub(super) struct FunctionLoopHead(pub(super) usize);
 
 pub(super) enum FunctionTask<'tree, 'source> {
+    Switch(FunctionSwitchTask<'tree, 'source>),
     Visit(LegacySyntaxNode<'tree, 'source>),
     CallArguments {
         cursor: ExpressionListCursor<'tree, 'source>,
@@ -88,6 +90,7 @@ pub(super) enum FunctionTask<'tree, 'source> {
 impl FunctionTask<'_, '_> {
     pub(super) fn span(&self) -> Range<u64> {
         match self {
+            Self::Switch(task) => task.span(),
             Self::Visit(node) => node.span(),
             Self::Statement { syntax, .. } => syntax.span(),
             Self::AfterForInit(plan) | Self::BeginForBody { plan, .. } => plan.span.clone(),

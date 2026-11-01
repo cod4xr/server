@@ -5,14 +5,22 @@ use crate::compilation::function_builder::FunctionBuilder;
 use crate::compilation::function_compile_error;
 use crate::compilation::function_for_update;
 use crate::compilation::function_initialization::FunctionInitializationSnapshot;
+use crate::compilation::function_switch;
 use crate::compilation::function_task::{FunctionLoopHead, FunctionPatchSite};
 use crate::compilation::{FunctionCompileError, FunctionCompileErrorKind};
 use crate::execution::KernelInstruction;
 
 pub(super) struct FunctionLoopContext {
+    previous_break_owner: Option<FunctionBreakOwner>,
     pub(super) head: FunctionLoopHead,
     pub(super) breaks: Option<FunctionPatchSite>,
     pub(super) continuation: FunctionContinueDestination,
+}
+
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub(super) enum FunctionBreakOwner {
+    Loop,
+    Switch,
 }
 
 pub(super) enum FunctionContinueDestination {
@@ -35,6 +43,7 @@ pub(super) fn enter(
     continuation: FunctionContinueDestination,
 ) -> Option<FunctionLoopContext> {
     builder.active_loop.replace(FunctionLoopContext {
+        previous_break_owner: builder.break_owner.replace(FunctionBreakOwner::Loop),
         head,
         breaks: None,
         continuation,
@@ -51,7 +60,7 @@ pub(super) fn leave(
         .active_loop
         .take()
         .ok_or_else(|| invalid(span.clone()))?;
-    if context.head != head {
+    if context.head != head || builder.break_owner != Some(FunctionBreakOwner::Loop) {
         return Err(invalid(span));
     }
     if matches!(
@@ -62,6 +71,7 @@ pub(super) fn leave(
         return Err(invalid(span));
     }
     builder.bind_transfers(context.breaks, span)?;
+    builder.break_owner = context.previous_break_owner;
     builder.active_loop = outer_loop;
     Ok(())
 }
@@ -71,6 +81,11 @@ pub(super) fn lower(
     kind: FunctionLoopTransfer,
     span: Range<u64>,
 ) -> Result<(), FunctionCompileError> {
+    if matches!(kind, FunctionLoopTransfer::Break)
+        && builder.break_owner == Some(FunctionBreakOwner::Switch)
+    {
+        return function_switch::record_break(builder, span);
+    }
     let Some(context) = builder.active_loop.as_ref() else {
         let kind = match kind {
             FunctionLoopTransfer::Break => FunctionCompileErrorKind::IllegalBreak,

@@ -122,6 +122,8 @@ pub enum KernelErrorKind {
     AllocationFailed,
     /// This operation requires a number; other primitive data is unsupported here.
     ExpectedNumber,
+    /// This operation requires an integer without implicit float conversion.
+    ExpectedInteger,
     /// This primitive pair/comparison has incompatible legacy value types.
     UnmatchingTypes,
     /// The current primitive profile requires a vector for an indexed object.

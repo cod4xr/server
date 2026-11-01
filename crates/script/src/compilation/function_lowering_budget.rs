@@ -9,13 +9,13 @@ const DEFAULT_MAX_CALL_ARGUMENTS: u64 = 1_000_000;
 /// Kernel proof and pure validation have separate admission scopes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct FunctionLoweringBudget {
-    /// Body/task/group probes, literal/name bytes, snapshots and resolution work.
+    /// Body/task/group/case probes, literal/name bytes, facts, dispatch and resolution.
     pub max_steps: u64,
     /// Complete emitted typed instructions.
     pub max_instructions: u64,
     /// Maximum live iterative lowering tasks.
     pub max_task_frames: u64,
-    /// Logical pending/task/binding/snapshot and overlapping resolved code/map payload.
+    /// Logical pending/task/binding/control and overlapping resolved code/map payload.
     /// Excludes source/CST, body-index/kernel scopes, hash controls/spare capacity,
     /// allocator rounding, fixed fields and process RSS.
     pub max_metadata_bytes: u64,
@@ -23,7 +23,7 @@ pub struct FunctionLoweringBudget {
     pub max_local_bindings: u64,
     /// Identifier bytes across declarations/reads/call resolution/initialization.
     pub max_identifier_bytes: u64,
-    /// Live initialization-snapshot flag payload, also counted in metadata.
+    /// Live initialization facts and switch case records, also counted in metadata.
     pub max_control_bytes: u64,
     /// Supplied argument expressions at any one bound-module call site.
     pub max_call_arguments: u64,

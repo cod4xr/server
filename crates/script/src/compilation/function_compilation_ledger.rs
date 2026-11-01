@@ -129,6 +129,16 @@ impl FunctionCompilationLedger {
         Ok(())
     }
 
+    pub(super) fn finish_control(&self, span: Range<u64>) -> Result<(), FunctionCompileError> {
+        if self.control_bytes != 0 {
+            return Err(function_compile_error::at(
+                span,
+                FunctionCompileErrorKind::InvalidControlState,
+            ));
+        }
+        Ok(())
+    }
+
     pub(super) fn admit(
         &mut self,
         instructions: usize,

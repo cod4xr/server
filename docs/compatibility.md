@@ -490,6 +490,17 @@ Rust references (72 successes/2,592 errors). Selected source-role guards reject
 self/receivers, heap/closures, imports/reload, builtins/scheduler/game services,
 full-mod/native cleanup/diagnostic and Linux gates open.
 Full strings/vectors/objects/arithmetic, compiler/VM, and gameplay remain open.
+Primitive integer switch now supports default placement, adjacent labels,
+fallthrough, nested break/continue ownership and path initialization joins. Strict
+integer admission preserves words without float coercion. Valid native in-range
+cases retain their results; full signed words and more than 65,535 cases are
+explicit capacity expansions, not native invalid-input parity. Tests cover 66,000
+cases with balanced dispatch, 12,000 nested switches/flat failed cleanup, all quota/
+join/nesting/type/privacy/unsupported/recovery paths and global fuel. Selected source
+guards reject 39 mutations without executing native compiler/VM/switch routines.
+Case/fact payload shares compiler control/metadata admission; typed code uses
+existing proof/fuel/stack limits and wide addresses. See ADR 0052; string switch,
+full heap/scope/native diagnostics/unwind/mod and Linux gates stay open.
 Three pure builtin calls now execute from bound source: isint/isfloat/isvector.
 Active script definitions shadow them; existing developer policy and canonical
 names remain enforced. Exact-one arity checks run after supplied arguments, so
