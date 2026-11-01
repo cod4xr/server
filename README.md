@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- The typed GSC VM now mutates initialized local array cells with checked COW,
+  distinct literal/computed Undefined behavior and prepaid failure cleanup.
+  Tests replay 32 native delete outcomes, preserve operand/result graphs through
+  collection, and cover 70,000 entries and bounded 100,000 updates. ADR 0088
+  scopes this component; source indexed assignment awaits native local-scope cleanup.
+
 - Bound GSC now constructs independent empty arrays with `[]`, including package
   calls and explicit owner transfer on return. The offline command runs
   `examples/gsc/empty_arrays.gsc` (integer 1), with readable development logs and

@@ -1,5 +1,20 @@
 # Project contract
 
+ADR 0088 accepts typed initialized-local nonnested mutation, with fifteen tests
+and complete Windows gates (345 frontend/257 legacy). Source writes remain rejected
+until native block/loop-local lifetime cleanup and source acceptance are complete.
+Stored Array values, nested/root/game targets, compound/postfix and scheduler
+edges remain gated. Never clone a receiver to obtain a writable local: borrow
+the frame-owned location and preserve registry membership across COW. Select
+autovivification/COW before key validation; keep RHS/key/current/caller/cache/world
+roots through retries. Literal Undefined clear and computed Undefined lvalue
+creation/removal differ, including transient child quotas and Undefined targets.
+Do not replace an existing payload merely to ensure a child. Before enabling
+populated independent data, prove struct/runtime-string read results survive
+last-array release and subsequent reclamation without host/cache backing. Run
+native primitive replays, every failure prefix, wide/churn/pressure/private CLI
+tests and full Windows gates. No general logical-RC/cycle/field ownership claim.
+
 ADR 0087 accepts independent EMPTY array construction. Its source guard passes
 39 native allocation/emission/type/dispatch mutations. Full Windows acceptance
 passes with eleven source/two standalone/three process tests. The

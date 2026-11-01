@@ -1,5 +1,14 @@
 # Expanded GSC runtime contract
 
+ADR 0088 accepts typed StoreArrayLocal/ClearArrayLocal with initialized targets,
+registry-checked receiver borrowing, COW before key validation and real transient
+computed-Undefined children. Stored/nested Array values remain forbidden. Checked
+read results reach their frames before last-receiver payload collection; tests
+preserve runtime strings/shared structs without host backing. Fifteen tests cover
+native D outcomes, exact/every-shorter budgets, pressure retries, wide fields and
+bounded updates. Source indexed assignment stays rejected until native block/
+loop-local lifetime lowering is established; typed cells do not prove that parity.
+
 ADR 0087 adds independent empty `[]` construction in bound source/packages and
 typed standalone execution with explicit object contexts. Empty data can travel
 through calls/returns and existing reads; all population paths remain closed, so

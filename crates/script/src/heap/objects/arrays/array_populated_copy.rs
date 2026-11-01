@@ -12,7 +12,8 @@ impl ObjectHeap {
     /// Copies reverse sibling order, own complete keys and preserve primitive/string
     /// values and ordinary struct identity. The selected location keeps its identity;
     /// other locations keep the original data. Current entries cannot contain nested
-    /// arrays. Cycle-alias markers and source/VM ownership remain unimplemented.
+    /// arrays. Cycle-alias markers and general stored-array/logical lifetimes
+    /// remain unimplemented.
     /// Unique selection performs no graph scan, copy or allocation.
     /// # Errors
     /// Invalid stores/references, private invariants, work/scratch/resource limits,

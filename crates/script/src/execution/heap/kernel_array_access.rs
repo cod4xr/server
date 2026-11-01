@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::heap::kernel_heap_error;
+use crate::execution::heap::kernel_array_keys;
 use crate::execution::heap::kernel_object_error;
 use crate::execution::{KernelErrorKind, KernelHeapContext, KernelValue};
-use crate::heap::{ArrayId, ArrayKey, ArrayValueId, LegacyArrayKeyError};
+use crate::heap::{ArrayId, ArrayValueId};
 use crate::legacy::LegacyNumber;
 
 impl KernelHeapContext<'_> {
-    // Current fields cannot contain Array values. Nonempty VM arrays derive from
-    // live host owners; independently constructed data cannot acquire entries.
-    // Result graphs therefore stay rooted as read operands release (0086/0087).
+    // Fields cannot contain Array values. Releases do not allocate/collect/yield,
+    // so a checked result reaches its frame before an unowned receiver's payload
+    // can be reclaimed. Later collection must include that frame's result roots.
     // No allocation, COW detach, field creation or independent owner originates here.
     pub(super) fn array_index(
         &mut self,
@@ -17,7 +17,7 @@ impl KernelHeapContext<'_> {
     ) -> Result<KernelValue, KernelErrorKind> {
         let data = self.array_snapshot(value)?;
         self.charge(1)?;
-        let key = ArrayKey::from_legacy_value(index, self.heap).map_err(key_error)?;
+        let key = kernel_array_keys::legacy_index(index, self.heap)?;
         let budget = self.remaining(0)?;
         let result = self
             .objects
@@ -70,13 +70,5 @@ impl KernelHeapContext<'_> {
             }
             Err(error) => Err(kernel_object_error::record(self, error, 0)?),
         }
-    }
-}
-
-fn key_error(error: LegacyArrayKeyError) -> KernelErrorKind {
-    match error {
-        LegacyArrayKeyError::ExpectedIndex => KernelErrorKind::ExpectedArrayIndex,
-        LegacyArrayKeyError::IndexOutOfRange => KernelErrorKind::ArrayIndexOutOfRange,
-        LegacyArrayKeyError::StringHeap(error) => kernel_heap_error::map(error),
     }
 }

@@ -14,6 +14,25 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0088 accepts typed local-cell mutation only; source indexed assignment remains
+proposed/rejected pending native local-scope lifetime cleanup. Runtime cells borrow
+the owning location, stage COW before key validation, distinguish literal versus
+computed Undefined and admit real transient child capacity. Shared keys stay in
+one mapper; KernelResource has its own leaf with its public re-export preserved.
+Fifteen new tests cover all 32 native D outcomes, B/N normalization, target/key/
+ownership errors, every shorter work/setup/instruction/publication prefix, sixteen
+one-less scopes, stack-only runtime RHS graphs through copy/insertion pressure,
+result graphs after last-array release, 70k fields and 100k updates beside 70k host
+aliases under 4 KiB scratch. Full Windows gates pass: 345 frontend/257 legacy/
+fifteen private script tests/two doctests, preserving prior names. Native 306
+O0/O2 traces, write/lifetime 141/61 mutations, 99 structural replays and twelve
+suite-policy tests pass; old outcome rows are unchanged. Policy: 981 sources/
+eight crates/largest 287. Linux/hosted CI is unrun; no complete GSC/S5/join gate closes.
+Next: native scope assessment/cleanup. Ephemeral Windows probes successfully
+linked/executed selected 32-bit NASM code through a freestanding modeled driver,
+then actual Scr_CalcLocalVarsVariableExpressionRef (duplicate-name/count behavior).
+These exploratory probes are not yet repository/CI evidence or native scope parity.
+
 ADR 0087 admits independently constructed EMPTY data through typed EmptyArray and
 bound [] source/package lowering. Every population path stays closed. A shared
 owner creation leaf preserves prepaid admission and pending coverage; one paired

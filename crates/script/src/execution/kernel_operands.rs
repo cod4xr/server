@@ -53,7 +53,10 @@ pub(super) fn verify(
                 },
             ))
         }
-        KernelInstruction::LoadLocal(slot) | KernelInstruction::StoreLocal(slot)
+        KernelInstruction::LoadLocal(slot)
+        | KernelInstruction::StoreLocal(slot)
+        | KernelInstruction::StoreArrayLocal(slot)
+        | KernelInstruction::ClearArrayLocal(slot)
             if slot >= layout.local_values =>
         {
             Err(kernel_error::at(

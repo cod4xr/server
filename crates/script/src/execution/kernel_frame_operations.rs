@@ -19,6 +19,12 @@ impl KernelFrame {
         parents: impl Iterator<Item = KernelValue> + Clone,
         pc: usize,
     ) -> Result<(), KernelError> {
+        if matches!(
+            instruction,
+            KernelInstruction::StoreArrayLocal(_) | KernelInstruction::ClearArrayLocal(_)
+        ) {
+            return self.array_assignment(instruction, owner, heap, parents, pc);
+        }
         if let KernelInstruction::LoadScriptRoot(root) = instruction {
             let value = heap
                 .as_deref_mut()

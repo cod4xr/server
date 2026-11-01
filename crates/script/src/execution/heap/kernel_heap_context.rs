@@ -30,10 +30,11 @@ use crate::heap::{
 /// [`ObjectHeap::release_array_value`]. Raw Rust handle copies create no owner.
 /// Error cleanup uses work reserved before publication, even when execution or
 /// heap fuel is exhausted. Read-only indexing and size accept checked host-origin
-/// arrays and independently constructed empty data (ADR 0087). Indexed writes and
-/// stored array fields remain unsupported, so independent data cannot gain payload
-/// edges. This profile does not implement nested/object logical lifetimes; another
-/// populated origin requires a new ownership review.
+/// arrays and independently constructed data. Proposal 0088 adds typed local-cell
+/// mutation for current nonnested values; source writes remain separately gated.
+/// Stored array fields, general root lvalues and nested/object logical lifetimes
+/// remain unsupported. A read result reaches its frame before a consumed array's
+/// unowned payload can be collected; releases cannot allocate, collect or yield.
 /// Fixed script roots are opt-in through [`Self::with_script_roots`]. Ordinary
 /// root-only graphs survive collection; game reads borrow the host binding and
 /// create separately owned VM copies. Missing roots never fabricate world state.

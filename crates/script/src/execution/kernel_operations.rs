@@ -74,6 +74,8 @@ pub(super) fn apply(
         | KernelInstruction::LoadScriptRoot(_)
         | KernelInstruction::EmptyArray
         | KernelInstruction::StoreLocal(_)
+        | KernelInstruction::StoreArrayLocal(_)
+        | KernelInstruction::ClearArrayLocal(_)
         | KernelInstruction::Duplicate
         | KernelInstruction::Discard
         | KernelInstruction::Call { .. }

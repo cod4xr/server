@@ -32,10 +32,18 @@ pub enum KernelInstruction {
     /// ordinary roots retain shared identity. No implicit world is created.
     LoadScriptRoot(KernelScriptRoot),
     /// Allocates independent empty data and one managed VM owner. Requires an
-    /// explicit object context; indexed writes and stored arrays remain unsupported.
+    /// explicit object context. Stored arrays remain unsupported; source indexed
+    /// writes are separately gated from typed local-cell mutation.
     EmptyArray,
     /// Consumes one value and initializes/replaces a local slot, including Undefined.
     StoreLocal(usize),
+    /// Consumes bottom-to-top RHS/key and writes through an initialized local's
+    /// owned array cell without cloning a receiver. Undefined targets autovivify.
+    /// Computed Undefined selects/creates a child then removes it; stored arrays reject.
+    StoreArrayLocal(usize),
+    /// Consumes a key and clears through an initialized local's owned array cell.
+    /// Undefined targets reject and missing keys do not create children.
+    ClearArrayLocal(usize),
     /// Calls a function in the complete verified module. Stack arguments run
     /// bottom-to-top last to first; parameter zero is popped first. Missing
     /// suffixes become Undefined. Not a native/source evaluation/serialized ABI.
@@ -151,8 +159,12 @@ impl KernelInstruction {
             | Self::RequireInteger => (1, 1),
             Self::Duplicate => (1, 2),
             Self::Swap => (2, 2),
-            Self::StoreField(_) => (2, 0),
-            Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),
+            Self::StoreField(_) | Self::StoreArrayLocal(_) => (2, 0),
+            Self::ClearArrayLocal(_)
+            | Self::Discard
+            | Self::StoreLocal(_)
+            | Self::Branch { .. }
+            | Self::Return => (1, 0),
             Self::Jump(_) => (0, 0),
         };
         Ok(effect)

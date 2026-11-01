@@ -11,6 +11,37 @@ use crate::heap::{
 };
 
 impl ObjectHeap {
+    /// Selects an existing child unchanged or inserts raw Undefined for a new one.
+    /// This internal lvalue phase charges transient field/key capacity separately
+    /// from later assignment/removal. It never replaces an existing payload.
+    /// # Errors
+    /// Invalid/shared locations, stores, keys, limits or allocation publish no
+    /// child or counter change. Spare arena capacity may grow outside logical usage.
+    pub(crate) fn array_ensure_unique(
+        &mut self,
+        value: ArrayValueId,
+        key: ArrayKey<'_>,
+        strings: &StringHeap,
+        budget: HeapWorkBudget,
+    ) -> Result<ArrayResult<()>, ObjectHeapError> {
+        array_operation::run(budget, |work| {
+            let data = unique(self, value, work)?;
+            let (owner, hash, found) = array_lookup::find(self, data, key, strings, work)?;
+            if found.field.is_some() {
+                return Ok(());
+            }
+            field_insertion::insert(
+                self,
+                owner,
+                hash,
+                FieldKey::Array(key),
+                KernelValue::Undefined,
+                found.bucket,
+                work,
+            )
+        })
+    }
+
     /// Reads a checked entry without creating an owner or detaching data.
     /// Missing entries differ from stored Undefined. Values use the current
     /// primitive/shared-struct profile; nested array values remain unsupported.
@@ -41,7 +72,7 @@ impl ObjectHeap {
     /// Shared values reject before mutation; this operation does not select COW
     /// data. Keys own a lossless private tag plus payload (nine bytes for an index,
     /// one plus byte-key length), included in key quotas. Raw Undefined is stored;
-    /// source Undefined assignment/deletion rules belong to future VM lowering.
+    /// typed lvalue selection and source Undefined rules belong above this storage API.
     /// New keys prepend to sibling order; replacements preserve their position.
     /// # Errors
     /// Invalid/shared values, invalid references, limits, overflow or allocation

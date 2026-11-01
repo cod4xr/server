@@ -1,10 +1,25 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use super::array_frame::{HEAP_RELEASE_STEPS, VALUE_CLEANUP};
+use crate::execution::heap::KernelArrayMutation;
 use crate::execution::heap::kernel_object_error;
-use crate::execution::{KernelErrorKind, KernelHeapContext};
+use crate::execution::{KernelErrorKind, KernelHeapContext, KernelValue};
 use crate::heap::{ArrayValueId, HeapWorkBudget};
 
 impl KernelHeapContext<'_> {
+    pub(in crate::execution) fn mutate_owned_array(
+        &mut self,
+        frame: usize,
+        value: ArrayValueId,
+        index: KernelValue,
+        operation: KernelArrayMutation,
+        roots: impl Iterator<Item = KernelValue> + Clone,
+    ) -> Result<(), KernelErrorKind> {
+        operation.validate()?;
+        self.owned_array_slot(frame, value)?;
+        self.select_unique_array(value, roots.clone())?;
+        self.mutate_array(value, index, operation, roots)
+    }
+
     pub(in crate::execution) fn copy_host_array(
         &mut self,
         frame: usize,

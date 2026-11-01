@@ -2,7 +2,10 @@
 mod array_owners;
 mod kernel_array_access;
 mod kernel_array_allocation;
+mod kernel_array_keys;
+mod kernel_array_mutation;
 mod kernel_array_operations;
+mod kernel_array_selection;
 mod kernel_heap_accounting;
 mod kernel_heap_collection;
 mod kernel_heap_context;
@@ -24,6 +27,7 @@ mod kernel_string_access;
 mod kernel_string_allocation;
 mod kernel_string_operations;
 
+pub(super) use kernel_array_mutation::KernelArrayMutation;
 pub use kernel_heap_context::KernelHeapContext;
 pub(super) use kernel_heap_operations::{apply, validate_arguments};
 pub(super) use kernel_heap_step::KernelHeapStep;
