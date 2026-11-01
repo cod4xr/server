@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Scalar/string compatibility suite; leaf files keep independent responsibilities.
+#[path = "string_access_limits.rs"]
+mod string_access_limits;
+#[path = "string_access_vectors.rs"]
+mod string_access_vectors;
 
 mod kernel_support;
 mod kernel_vector_support;

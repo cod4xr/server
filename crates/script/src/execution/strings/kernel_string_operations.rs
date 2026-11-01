@@ -23,6 +23,24 @@ pub(in crate::execution) fn apply(
     context: Option<&mut KernelHeapContext<'_>>,
     roots: impl Iterator<Item = KernelValue> + Clone,
 ) -> Result<Option<KernelValue>, KernelErrorKind> {
+    if matches!(instruction, KernelInstruction::Size) {
+        return match stack.top() {
+            Some(KernelValue::String(id)) => context
+                .ok_or(KernelErrorKind::HeapContextRequired)?
+                .size(id)
+                .map(Some),
+            _ => Err(KernelErrorKind::ExpectedSized),
+        };
+    }
+    if matches!(instruction, KernelInstruction::Index) {
+        return match stack.binary_values() {
+            Some((index, KernelValue::String(id))) => context
+                .ok_or(KernelErrorKind::HeapContextRequired)?
+                .index(id, index, roots)
+                .map(Some),
+            _ => Ok(None),
+        };
+    }
     if !matches!(
         instruction,
         KernelInstruction::Arithmetic(_)

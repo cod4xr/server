@@ -53,6 +53,9 @@ pub(super) fn apply(
             let index = stack.pop(pc)?;
             kernel_index_values::read(object, index).map_err(|kind| kernel_error::at(pc, kind))?
         }
+        KernelInstruction::Size => {
+            return Err(kernel_error::at(pc, KernelErrorKind::ExpectedSized));
+        }
         KernelInstruction::Integer(operator) => {
             let (left, right) = stack.pair(pc)?;
             let value = operator

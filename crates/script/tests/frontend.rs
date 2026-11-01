@@ -191,6 +191,8 @@ mod source_boundaries;
 mod source_localized_strings;
 #[path = "source_locations.rs"]
 mod source_locations;
+#[path = "source_string_access.rs"]
+mod source_string_access;
 #[path = "source_strings_diagnostics.rs"]
 mod source_strings_diagnostics;
 #[path = "source_strings_execution.rs"]

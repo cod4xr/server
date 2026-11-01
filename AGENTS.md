@@ -20,8 +20,15 @@ never imply raw localized bytes perform translation/catalog lookup. Identical
 validated immutable handles compare without payload visits; distinct handles need
 budgeted content comparison. Run generate_string_value_vectors.py --check (3,024
 actual C outcomes) and retain strict default oracle string services. Keep isolated
-scalar profiles distinct. Translation/mixed coercion, string indexing/switches and
+scalar profiles distinct. Translation/mixed coercion, string switches and
 full arrays/objects/scheduling remain open.
+
+ADR 0061 adds plain-string byte indexing and bound-source Size. Both stop at the
+first NUL; localized/noninteger/domain errors stay fixed/private. Prepay scans and
+allocate indexed bytes before collapsing rooted operands; unary/binary publication
+uses checked stack effects. Run generate_string_access_vectors.py --check (896
+actual helper outcomes) and script_string_access_reference.py (45 mutations).
+Returning oracle error callbacks are not native unwinding/interner/GC evidence.
 
 Array semantics are assessed in ADR 0060; no Rust array store or VM instructions
 exist yet. Preserve native local-slot copy-on-write, recursive nested-array copies,

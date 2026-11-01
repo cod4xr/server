@@ -12,7 +12,7 @@ and CLI strings follow in ADR 0057. Byte equality is source grounded; binary hos
 bytes do not establish native NUL/interner behavior. Runtime/rooting tests cover
 12,000 frames, 100,000 loop allocations in four slots, every pressure resource,
 exact-one-less work/scratch, failures/lifetimes and hostile streams. See ADR 0055;
-translation/mixed coercion, string indexing, objects/scheduling/full mods stay open.
+translation/mixed coercion, objects/scheduling/full mods stay open.
 Typed code literals/cache now pass 13 further tests, including owned binary bytes,
 70,000 rows, cached-only roots, complete standalone/module overlap, exact-one-less
 proof/runtime limits, independent heaps and repeated large values; see ADR 0056.
@@ -29,6 +29,12 @@ process tests cover tags/ownership/rooting/maps/budgets/privacy, 70,000 mixed ro
 and loop pressure. Native byte interning/ref cleanup and actual translation remain
 open. Isolated scalar source profiles stay
 restricted; the complete GSC and server gates remain open.
+
+Plain-string indexing and Size now replay all 896 native helper outcomes (36
+results/860 errors) with synthetic byte/ref/error services, not native interning/
+cleanup/unwinding. Selected source guards reject 45 mutations. Rust/source/process
+tests cover first-NUL semantics, raw bytes, wide input, exact work, complete roots
+and private located failures; see ADR 0061. General array/object size stays open.
 
 Compatibility targets are existing CoD4 and CoD4X clients, maps, and GSC mods;
 the future custom client also targets ordinary CoD4X servers. Exact supported

@@ -61,9 +61,9 @@ fn source_literal_and_operator_failures_preserve_exact_spans_without_private_pay
 }
 
 #[test]
-fn unsupported_localized_size_body_prevents_publication_and_developer_tables_stay_scoped()
+fn unsupported_localized_field_body_prevents_publication_and_developer_tables_stay_scoped()
 -> Result<(), String> {
-    let text = br#"main(){return "ordinary";}/# hidden(){return &"PrivateLocalized".size;}#/"#;
+    let text = br#"main(){return "ordinary";}/# hidden(){return &"PrivateLocalized".missing;}#/"#;
     let module = module_compile_support::compile(
         text,
         LegacyDeveloperMode::Disabled,
@@ -76,7 +76,7 @@ fn unsupported_localized_size_body_prevents_publication_and_developer_tables_sta
         LegacyDeveloperMode::Enabled,
         ModuleCompilationBudget::default(),
     )
-    .expect_err("Complete publication rejects active unsupported size access");
+    .expect_err("Complete publication rejects active unsupported field access");
     assert_eq!(error.declaration_index(), Some(1));
     assert_eq!(
         error.cause.kind,

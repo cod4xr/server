@@ -16,6 +16,11 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Plain-string byte indexing and `.size` preserve the legacy first-NUL prefix,
+  with explicit work/heap budgets and complete roots during result allocation.
+  All 896 native helper outcomes replay through Rust; source/process tests cover
+  wide inputs, raw bytes, pressure and private failures; ADR 0061.
+
 - Owned immutable runtime string storage with wide checked references, fallible
   allocation, independent memory/work budgets and explicit complete-root reclamation.
   Tests cover 70,000 live strings and bounded 100,000-value churn; see ADR 0054.
@@ -372,6 +377,8 @@ python tools/generate_literal_vectors.py ../cod4x-reference --check
 python tools/generate_syntax_tables.py ../cod4x-reference --check
 python tools/generate_array_vectors.py ../cod4x-reference --check
 python tools/script_array_reference.py ../cod4x-reference
+python tools/generate_string_access_vectors.py ../cod4x-reference --check
+python tools/script_string_access_reference.py ../cod4x-reference
 python tools/generate_cookie_vectors.py --check
 python tools/generate_archive_fixtures.py --check
 python tools/generate_fastfile_fixtures.py --check

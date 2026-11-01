@@ -96,6 +96,17 @@ fn primary<'tree, 'source>(
         LegacyPrimaryKind::FunctionReference { syntax } if builder.mode.bound() => {
             function_reference_value::lower(builder, syntax)
         }
+        LegacyPrimaryKind::Size { object } if builder.mode.bound() => {
+            let span = function_body::child(node, 1, 2)?.span();
+            builder.push_task(
+                FunctionTask::Emit {
+                    instruction: KernelInstruction::Size,
+                    span: span.clone(),
+                },
+                span,
+            )?;
+            builder.push_task(FunctionTask::Visit(object), object.span())
+        }
         LegacyPrimaryKind::Literal { token, polarity } => {
             builder
                 .ledger

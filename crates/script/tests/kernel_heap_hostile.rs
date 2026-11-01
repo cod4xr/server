@@ -10,7 +10,7 @@ use cod4x_script::execution::{
     KernelModuleVerificationBudget, KernelValue, VerifiedKernelModule,
 };
 use cod4x_script::heap::HeapWorkBudget;
-use cod4x_script::legacy::{LegacyArithmetic, LegacyComparison};
+use cod4x_script::legacy::{LegacyArithmetic, LegacyComparison, LegacyNumber};
 
 #[test]
 fn hostile_string_call_inventories_preserve_proof_heap_and_execution_bounds() -> Result<(), String>
@@ -63,7 +63,11 @@ fn hostile_string_call_inventories_preserve_proof_heap_and_execution_bounds() ->
                     assert!(error.peak_frames <= 16);
                     if !matches!(
                         error.cause.kind,
-                        KernelErrorKind::BudgetExceeded { .. } | KernelErrorKind::UnmatchingTypes
+                        KernelErrorKind::BudgetExceeded { .. }
+                            | KernelErrorKind::UnmatchingTypes
+                            | KernelErrorKind::ExpectedStringIndex
+                            | KernelErrorKind::StringIndexOutOfRange
+                            | KernelErrorKind::ExpectedSized
                     ) {
                         return Err(format!("Unexpected hostile runtime failure: {error:?}"));
                     }
@@ -87,7 +91,7 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
         KernelInstruction::LoadLocal(1),
     ];
     let target = usize::try_from(next(state) % 6).expect("Small target");
-    match next(state) % 8 {
+    match next(state) % 10 {
         0 => code.push(KernelInstruction::Call {
             function: target,
             arguments: 2,
@@ -100,7 +104,14 @@ fn code(state: &mut u64) -> Vec<KernelInstruction> {
         4 => code.push(KernelInstruction::Compare(LegacyComparison::Equal)),
         5 => code.push(KernelInstruction::Compare(LegacyComparison::NotEqual)),
         6 => code.push(KernelInstruction::Compare(LegacyComparison::Less)),
-        _ => code.push(KernelInstruction::Divide),
+        7 => code.push(KernelInstruction::Divide),
+        8 => {
+            let index = i32::try_from(next(state) % 5).expect("Small index") - 1;
+            code[0] =
+                KernelInstruction::Constant(KernelValue::Number(LegacyNumber::Integer(index)));
+            code.push(KernelInstruction::Index);
+        }
+        _ => code.extend([KernelInstruction::Discard, KernelInstruction::Size]),
     }
     if next(state).is_multiple_of(8) {
         code.extend([KernelInstruction::Discard, KernelInstruction::Jump(0)]);

@@ -35,8 +35,13 @@ value/literal tag with the same checked storage/cache/rooting. Only same-tag str
 equality and plain concatenation are supported; mixed/localized arithmetic rejects
 explicitly. Raw localized output performs no lookup or translation. The C oracle
 checks 3,024 synthetic-identity outcomes without relaxing default string services.
-String indexing/switches, translation/
+String switches, translation/
 mixed coercion, general objects and host/scheduling integration remain open.
+
+ADR 0061 adds plain-string byte indexing and unary Size through the explicit heap
+context. Both use the legacy first-NUL prefix; result allocation/collection retains
+all operand roots until success, and global work admits scans. Bound source keeps
+index-first evaluation and operator maps. Arrays/objects remain unimplemented.
 
 ## Dependency direction
 

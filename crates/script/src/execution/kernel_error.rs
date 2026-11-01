@@ -155,8 +155,14 @@ pub enum KernelErrorKind {
     ExpectedInteger,
     /// This primitive pair/comparison has incompatible legacy value types.
     UnmatchingTypes,
-    /// The current primitive profile requires a vector for an indexed object.
+    /// The current primitive profile requires a vector or plain string for indexing.
     ExpectedIndexable,
+    /// A plain string requires an integer index without float conversion.
+    ExpectedStringIndex,
+    /// A string index is negative, beyond the payload, or at/after its first NUL.
+    StringIndexOutOfRange,
+    /// Size is unsupported for this implemented value category.
+    ExpectedSized,
     /// Defined legacy numeric operation failure, without operand values.
     Numeric(LegacyNumberError),
     /// Defined legacy vector-domain operation failure, without coordinate data.

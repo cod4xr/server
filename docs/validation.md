@@ -3,6 +3,14 @@
 Date: 2026-10-31. Scope: implemented protocol, ordinary transport, query-only
 runtime, and structured/development logging. The complete server remains open.
 
+2026-11-01 string-access addendum: all required Windows workspace gates passed,
+including 239 frontend/140 legacy script tests and two new process tests. The
+896 native string index/size outcomes reproduce at O0/O2 and all replay in Rust;
+45 selected-role mutations reject. Wide/raw/NUL inputs, exact work, collection
+roots, source maps/privacy and hostile inventories pass. Policy checks 659 source
+files/eight crates, largest 287 lines. Structural, predicate and vector-index
+fixtures remain unchanged. Linux/hosted CI/full-mod acceptance stays open; ADR 0061.
+
 2026-11-01 array-research addendum: all required Windows workspace policy,
 formatting, warnings-denied Clippy/rustdoc and debug/release tests pass. There are
 650 source files/eight crates (largest 287 lines). The new selected native array

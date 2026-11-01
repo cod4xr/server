@@ -61,8 +61,12 @@ pub enum KernelInstruction {
     /// Preserves an integer word and rejects other primitive categories, without coercion.
     RequireInteger,
     /// Consumes bottom-to-top index/object and pushes a copied indexed result.
-    /// The current primitive profile indexes vectors only, with strict integer indices.
+    /// Vectors use strict integer component indices; plain strings return one byte
+    /// before the first NUL and require an explicit heap context.
     Index,
+    /// Replaces a plain string with its byte length before the first NUL.
+    /// Other implemented primitive categories reject; arrays/objects remain unsupported.
+    Size,
     /// Pops right then left operands. Plain-string addition requires a heap context;
     /// mixed string coercion and other string arithmetic remain unsupported.
     Arithmetic(LegacyArithmetic),
@@ -123,6 +127,7 @@ impl KernelInstruction {
             | Self::LogicalNot
             | Self::BitwiseNot
             | Self::IntegerUpdate(_)
+            | Self::Size
             | Self::RequireInteger => (1, 1),
             Self::Duplicate => (1, 2),
             Self::Discard | Self::StoreLocal(_) | Self::Branch { .. } | Self::Return => (1, 0),

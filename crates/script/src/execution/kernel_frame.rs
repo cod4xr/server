@@ -145,8 +145,12 @@ impl KernelFrame {
                 let value = strings::apply(instruction, &self.stack, heap, roots)
                     .map_err(|kind| kernel_error::at(pc, kind))?;
                 if let Some(value) = value {
-                    self.stack.pop(pc)?;
-                    self.stack.pop(pc)?;
+                    let (consumed, _) = instruction
+                        .stack_effect()
+                        .map_err(|kind| kernel_error::at(pc, kind))?;
+                    for _ in 0..consumed {
+                        self.stack.pop(pc)?;
+                    }
                     self.stack.push(value, pc)?;
                 } else {
                     kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;

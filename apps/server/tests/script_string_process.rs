@@ -66,8 +66,8 @@ fn offline_source_string_failures_keep_payloads_private_and_retain_compiler_runt
     for (text, phase, cause) in [
         (
             br#"main(){return &"PrivateLocalized".size;}"#.as_slice(),
-            "compile",
-            "UnsupportedPrimary",
+            "execute",
+            "ExpectedSized",
         ),
         (
             br#"main(){return "PrivatePayload"+1;}"#.as_slice(),

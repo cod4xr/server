@@ -518,7 +518,9 @@ bound plain-source literals and offline escaped output, with source-level wide/
 large/pressure/resource/map tests and process privacy/output checks. ADR 0059 now
 adds distinct localized values, same-type equality and raw escaped output, with
 3,024 actual C comparison/arithmetic outcomes, complete predicate tag replays and
-mixed 70,000-row/source/rooting/resource tests. Translation/mixed coercion, string indexing,
+mixed 70,000-row/source/rooting/resource tests. ADR 0061 now adds plain-string byte
+indexing/size with 896 native outcomes, source/process/rooting/resource tests and
+45 selected-role mutations. Translation/mixed coercion, string switches,
 objects/cycles/scheduling and general library/game roots remain integration work.
 
 The current planning estimate is roughly 10–12 major workstreams, not a count of

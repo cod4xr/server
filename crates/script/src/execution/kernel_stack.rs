@@ -101,6 +101,10 @@ impl KernelStack {
         Some((*left, *right))
     }
 
+    pub(super) fn top(&self) -> Option<KernelValue> {
+        self.values.last().copied()
+    }
+
     pub(super) fn peak(&self) -> u64 {
         self.peak as u64
     }
