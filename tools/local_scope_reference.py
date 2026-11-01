@@ -66,7 +66,7 @@ def checked(command: list[str], directory: Path) -> None:
 
 def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
         functions: tuple[str, ...] = FUNCTIONS, externals: set[str] = EXTERNALS,
-        drivers: tuple[str, ...] = DRIVERS) -> bytes:
+        drivers: tuple[str, ...] = DRIVERS, extra_sources: tuple[str, ...] = ()) -> bytes:
     """Build temporary freestanding 32-bit tools; never create Cargo targets/caches."""
     if sys.platform not in ("win32", "linux"):
         raise ValueError("Native scope harness currently supports Windows/Linux x86 hosts")
@@ -77,6 +77,11 @@ def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
         (directory / "native.asm").write_text(assembly(reference, functions, externals), encoding="utf-8")
         driver = "\n\n".join((ROOT / "tools/oracles" / name).read_text(encoding="utf-8") for name in drivers)
         (directory / "driver.c").write_text(driver, encoding="utf-8")
+        additional = []
+        for index, source in enumerate(extra_sources):
+            name = f"selected_{index}.c"
+            (directory / name).write_text(source, encoding="utf-8")
+            additional.append(name)
         windows = sys.platform == "win32"
         format_name = "win32" if windows else "elf32"
         prefix = ["--prefix", "_"] if windows else []
@@ -97,7 +102,7 @@ def run(reference: ReferenceSource, cc: str = "gcc", assembler: str = "nasm", *,
         for optimization in ("-O0", "-O2"):
             checked([cc, "-m32", "-std=c11", optimization, "-ffreestanding", "-fno-builtin",
                      "-fno-stack-protector", "-fno-pie", "-nostdlib", "-Wall", "-Wextra", "-Werror",
-                     *linker, "-Wl,--entry," + entry, "driver.c", "native.o", *libraries,
+                     *linker, "-Wl,--entry," + entry, "driver.c", *additional, "native.o", *libraries,
                      "-o", str(executable)], directory)
             flags = subprocess.CREATE_NO_WINDOW if windows else 0
             result = subprocess.run([str(executable)], capture_output=True, timeout=30, creationflags=flags)

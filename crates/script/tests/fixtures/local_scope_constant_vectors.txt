@@ -1,0 +1,78 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+# Actual selected x86 planning/primitive/slot/branch/loop/transfer helpers and pinned C Scr_CastBool.
+# Modeled dispatch/AST/string/opcode writer/temp allocation/nonreference release; driver O0/O2 agree.
+# No parser/VM/native value freeing/opcode optimization/alignment/unwinding execution.
+# K 0 true while break; 1 false while ANALYSIS ONLY; 2 true for break;
+# 3 false for ANALYSIS ONLY; 4 true while mixed exits; 5 true for mixed exits.
+# 6 true while disjoint break paths; 7 true for disjoint break paths.
+# Q expression-emitter dispatches (not runtime evaluation); D modeled scalar release callbacks.
+# False-loop emitters/diagnostics intentionally not executed; other fields follow scope fixtures.
+K 0
+P 0 2 2 3 3 0 n:1 n:3 n:2
+R 0 3 2 3 7 0 n:1 n:3 n:2
+B 0 3 3 3 7 0 n:1 n:3 n:2
+O 22:2 98 99 p:3
+Q 1
+D 1
+K 1
+P 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+B 2 2 2 3 3 0 n:1 n:3 n:2
+O p:0
+Q 0
+D 1
+K 2
+P 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+R 0 5 2 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 2 5 5 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 0 5 5 5 15 0 n:1 n:3 n:5 n:4 n:2
+O 22:5 22:4 22:2 98 99 p:3
+Q 1
+D 1
+K 3
+P 0 2 2 4 3 0 n:1 n:3 n:5 n:4
+R 0 2 2 4 3 0 n:1 n:3 n:5 n:4
+B 2 2 4 5 3 0 n:1 n:3 n:5 n:4 n:2
+B 0 2 4 4 3 0 n:1 n:3 n:5 n:4
+O p:0
+Q 0
+D 1
+K 4
+P 0 2 2 4 3 0 n:1 n:3 n:4 n:2
+R 0 4 2 4 11 0 n:1 n:3 n:4 n:2
+B 0 4 4 4 3 0 n:1 n:3 n:4 n:2
+B 2 4 4 4 11 0 n:1 n:3 n:4 n:2
+B 1 4 4 4 7 0 n:1 n:3 n:4 n:2
+O 22:4 22:2 94 98 98 98 99 p:5
+Q 2
+D 1
+K 5
+P 0 2 2 5 3 0 n:1 n:3 n:5 n:4 n:2
+R 0 5 2 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 0 5 5 5 7 0 n:1 n:3 n:5 n:4 n:2
+B 0 5 5 5 15 0 n:1 n:3 n:5 n:4 n:2
+B 2 5 5 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 1 5 5 5 15 0 n:1 n:3 n:5 n:4 n:2
+O 22:5 22:4 22:2 94 98 98 98 99 p:5
+Q 2
+D 1
+K 6
+P 0 2 2 2 3 0 n:1 n:3
+R 0 2 2 2 3 0 n:1 n:3
+B 0 2 2 2 3 0 n:1 n:3
+B 2 2 2 3 7 0 n:1 n:3 n:2
+B 2 2 2 3 7 0 n:1 n:3 n:4
+O 94 22:2 23:1 98 98 22:4 23:1 98 99 p:5
+Q 2
+D 1
+K 7
+P 0 2 2 4 3 0 n:1 n:3 n:5 n:4
+R 0 4 2 4 7 0 n:1 n:3 n:5 n:4
+B 0 4 4 4 7 0 n:1 n:3 n:5 n:4
+B 0 4 4 4 15 0 n:1 n:3 n:5 n:4
+B 2 4 4 5 23 0 n:1 n:3 n:5 n:4 n:2
+B 2 4 4 4 15 0 n:1 n:3 n:5 n:4
+O 22:5 22:4 94 22:2 23:1 98 98 98 99 p:5
+Q 2
+D 1

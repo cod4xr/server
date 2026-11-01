@@ -31,8 +31,10 @@ UNAVAILABLE(Com_Error)
 UNAVAILABLE(Scr_AllocVector)
 UNAVAILABLE(AddRefToValue)
 UNAVAILABLE(Scr_EvalBinaryOperator)
+#if !defined(NATIVE_SCOPE_CONSTANTS)
 UNAVAILABLE(RemoveRefToValue)
 UNAVAILABLE(Scr_CastBool)
+#endif
 #undef UNAVAILABLE
 
 __attribute__((regparm(2))) void Scr_CalcLocalVarsVariableExpressionRef(Word *, Word *);

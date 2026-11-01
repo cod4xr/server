@@ -14,6 +14,18 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+Assessment 0093 adds eight selected literal-constant loop cases: six emitted,
+two false-condition analysis-only. Actual pinned x86 primitive/planning/emission
+helpers and the extracted C bool helper execute with explicit modeled remaining
+services; independent states/requests/scalar callbacks agree at O0/O2. Single
+true-loop break names can export while disjoint break names remain private;
+iteration declarations and exiting initialization need separate rules. Seven
+more admission tests bring the scope total to 32; prior 34/36/10/9 fixtures remain
+identical. Windows tools/guards/policy pass (1016 sources/eight crates/largest 287).
+No Rust behavior changes; complete Rust gates remain ADR 0088 and Linux/hosted CI
+is unrun. Next: iterative metered Rust physical-lifetime planning/cleanup, then
+reviewed source writes; unsupported constants/developer profiles remain gated.
+
 Assessment 0092 adds nine selected native integer-switch scope-emission cases
 with independent state/request/condition expectations and six admission tests.
 Fallthrough removes a private local before the next case body; no-default/disjoint

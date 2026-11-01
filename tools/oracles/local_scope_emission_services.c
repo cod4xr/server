@@ -36,11 +36,16 @@ const char *SL_ConvertToString(Word id)
 {
     (void)id; unexpected("scope unsupported diagnostic");
 }
+__attribute__((regparm(2))) Word EvalPrimitiveExpression(Word *, Word *);
 __attribute__((regparm(3))) Word EmitOrEvalExpression(Word *value, void *result, Word *block)
 {
     if (value[0] != 6 || !result || !block) unexpected("scope condition profile");
     ++conditions;
+#if defined(NATIVE_SCOPE_CONSTANTS)
+    return EvalPrimitiveExpression((Word *)value[1], result);
+#else
     return 0;
+#endif
 }
 void EmitValue(void) { unexpected("scope constant emission"); }
 __attribute__((regparm(3))) Word Scr_FindLocalVarIndex(Word, Word, Word, Word *);

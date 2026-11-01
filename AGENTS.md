@@ -1,5 +1,17 @@
 # Project contract
 
+Assessment 0093 records eight literal-constant scope cases (six true emitted/two
+false analysis-only), actual pinned primitive/planning/emission instructions and
+the extracted C bool helper. Other dispatch/string/output/storage/scalar-release
+services stay modeled; no parser/VM/freeing/false-emitter/unwinding claim. Single
+true-loop break names can export; disjoint break names remain private. Iteration
+declarations, exiting facts and physical initialized owners are separate. Keep
+all prior 34/36/10/9 fixture bytes unchanged; run five generators, 32 admission
+tests and existing mutations/structural guards. Float/binary/general constants
+and developer statements need reviewed support or explicit source rejection.
+Next is iterative metered Rust scope planning/cleanup; source indexed writes
+and complete GSC remain open under ADR 0088.
+
 Assessment 0092 adds nine selected executed native integer-switch scope cases
 with independent state/request expectations and six admission tests (25 scope
 admission tests total). Native switch/comparator/slot/branch/loop/transfer helpers
