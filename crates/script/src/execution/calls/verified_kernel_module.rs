@@ -124,6 +124,8 @@ impl VerifiedKernelModule {
 
     /// Invokes with caller-owned strings, complete external roots and global heap work.
     /// Legacy argument-prefix binding and all existing call budgets still apply.
+    /// Array arguments borrow host owners; an array result transfers one owner to
+    /// the host. See [`KernelHeapContext`] for copy/release and cleanup rules.
     ///
     /// # Errors
     /// Rejects stale/foreign arguments and located runtime/resource failures. Failed

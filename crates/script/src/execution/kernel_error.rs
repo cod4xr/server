@@ -51,6 +51,10 @@ pub enum KernelResource {
 /// Fixed kernel failure category; never contains constants, source, or private names.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum KernelErrorKind {
+    /// A private managed-array frame ownership or prepaid-cleanup invariant failed.
+    ArrayOwnershipInvariant,
+    /// Immutable executable constants cannot retain managed runtime array locations.
+    RuntimeArrayConstant,
     /// A field operand is outside this function's immutable field-name table.
     InvalidFieldName {
         /// Rejected wide table index, without field bytes.

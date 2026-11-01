@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::kernel_error;
 use crate::execution::kernel_stack::KernelStack;
-use crate::execution::{KernelError, KernelErrorKind, KernelValue};
+use crate::execution::{KernelErrorKind, KernelValue};
 use crate::legacy::LegacyNumber;
 
 /// Sealed deterministic builtins, without host callbacks, plugins or ambient authority.
@@ -15,7 +14,7 @@ pub enum KernelBuiltin {
     IsVector,
     /// Original isstring: true only for plain string values, not localized strings.
     IsString,
-    /// Tests primitives/checked ordinary structs for definedness. Requires a first
+    /// Tests primitives/checked structs/managed arrays for definedness. Requires a first
     /// argument; evaluated extras are discarded. Entity/thread lifetimes stay unsupported.
     IsDefined,
     /// Allocates an empty shared struct through an explicit object context.
@@ -23,12 +22,11 @@ pub enum KernelBuiltin {
     SpawnStruct,
 }
 
-pub(super) fn apply(
+pub(super) fn evaluate(
     function: KernelBuiltin,
     arguments: usize,
-    stack: &mut KernelStack,
-    pc: usize,
-) -> Result<KernelValue, KernelError> {
+    stack: &KernelStack,
+) -> Result<KernelValue, KernelErrorKind> {
     let accepted = match function {
         KernelBuiltin::IsInt
         | KernelBuiltin::IsFloat
@@ -36,37 +34,28 @@ pub(super) fn apply(
         | KernelBuiltin::IsString => arguments == 1,
         KernelBuiltin::IsDefined => arguments >= 1,
         KernelBuiltin::SpawnStruct => {
-            return Err(kernel_error::at(
-                pc,
-                KernelErrorKind::ObjectExecutionUnsupported,
-            ));
+            return Err(KernelErrorKind::ObjectExecutionUnsupported);
         }
     };
     if !accepted {
-        return Err(kernel_error::at(
-            pc,
-            KernelErrorKind::ArgumentCount {
-                expected: 1,
-                actual: arguments as u64,
-            },
-        ));
+        return Err(KernelErrorKind::ArgumentCount {
+            expected: 1,
+            actual: arguments as u64,
+        });
     }
-    let value = stack.pop(pc)?;
-    // Every discarded value required an earlier admitted push instruction. This
-    // work is bounded by the verified stack and the invocation's global fuel.
-    for _ in 1..arguments {
-        stack.pop(pc)?;
+    if !stack.has_values(arguments) {
+        return Err(KernelErrorKind::InvalidExecutionState);
     }
+    // Evaluate without consuming any operands. The frame publishes the result
+    // and commits discarded arguments after evaluation succeeds, like heap ops.
+    let value = stack.top().ok_or(KernelErrorKind::InvalidExecutionState)?;
     let result = match function {
         KernelBuiltin::IsInt => matches!(value, KernelValue::Number(LegacyNumber::Integer(_))),
         KernelBuiltin::IsFloat => matches!(value, KernelValue::Number(LegacyNumber::Float(_))),
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
         KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
         KernelBuiltin::SpawnStruct => {
-            return Err(kernel_error::at(
-                pc,
-                KernelErrorKind::ObjectExecutionUnsupported,
-            ));
+            return Err(KernelErrorKind::ObjectExecutionUnsupported);
         }
         KernelBuiltin::IsDefined => match value {
             KernelValue::Undefined => false,
@@ -75,7 +64,8 @@ pub(super) fn apply(
             | KernelValue::Function(_)
             | KernelValue::String(_)
             | KernelValue::LocalizedString(_)
-            | KernelValue::Object(_) => true,
+            | KernelValue::Object(_)
+            | KernelValue::Array(_) => true,
         },
     };
     Ok(KernelValue::Number(LegacyNumber::Integer(i32::from(

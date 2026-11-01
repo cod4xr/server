@@ -46,10 +46,11 @@ pub struct KernelCallUsage {
     pub peak_local_bytes: u64,
 }
 
-/// Completed owned primitive result; Debug omits the returned value's contents.
+/// Completed execution result; Debug omits returned contents and identities.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct KernelCallOutcome {
-    /// Returned copied data; string handles remain in an explicit caller-owned heap.
+    /// Returned data in caller-owned storage. An array result transfers one owner
+    /// requiring explicit release; copying this outcome creates no additional owner.
     pub value: KernelValue,
     /// Global work and maximum live payload over this complete invocation.
     pub usage: KernelCallUsage,

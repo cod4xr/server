@@ -55,7 +55,8 @@ fn result_matches(value: KernelValue, kind: &str, bits: &str) -> Result<(), Stri
         | KernelValue::Function(_)
         | KernelValue::String(_)
         | KernelValue::LocalizedString(_)
-        | KernelValue::Object(_) => {
+        | KernelValue::Object(_)
+        | KernelValue::Array(_) => {
             return Err("Expected numeric execution result".to_owned());
         }
     }

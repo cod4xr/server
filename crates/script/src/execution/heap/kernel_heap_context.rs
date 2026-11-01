@@ -2,6 +2,7 @@
 use std::fmt;
 
 use crate::execution::heap::KernelHeapUsage;
+use crate::execution::heap::array_owners::KernelArrayOwners;
 use crate::execution::heap::kernel_heap_error;
 use crate::execution::heap::kernel_literal_cache::KernelLiteralCache;
 use crate::execution::heap::kernel_object_validation;
@@ -19,9 +20,19 @@ use crate::heap::{
 /// or successful reclamation; individual store operations remain atomic.
 /// Work accumulates when this context is reused; it never resets per callee.
 /// Each invocation prepares a fresh admitted literal cache; cached-only strings
-/// remain roots until the next invocation. Cache, root IDs and mark flags share
-/// the supplied scratch ceiling. Dropping a cache does not drop heap payload.
+/// remain roots until the next invocation. Cache, owned-array registries, root
+/// IDs and mark flags share the scratch ceiling. Dropping a cache does not drop payload.
+///
+/// Array arguments borrow host owners; entry cells clone separate managed
+/// locations. Local/operand copies clone and moves transfer those locations.
+/// Callee return releases other callee locations before the caller resumes.
+/// A successful array result transfers one owner to the host; release it with
+/// [`ObjectHeap::release_array_value`]. Raw Rust handle copies create no owner.
+/// Error cleanup uses work reserved before publication, even when execution or
+/// heap fuel is exhausted. Array constructors, indexing and owned fields remain
+/// unsupported; this transport does not implement nested/object lifetimes.
 pub struct KernelHeapContext<'heap> {
+    pub(super) array_owners: KernelArrayOwners,
     pub(super) literals: KernelLiteralCache,
     pub(super) heap: &'heap mut StringHeap,
     pub(super) external_roots: &'heap [StringId],
@@ -41,6 +52,7 @@ impl<'heap> KernelHeapContext<'heap> {
         budget: HeapWorkBudget,
     ) -> Self {
         Self {
+            array_owners: KernelArrayOwners::default(),
             literals: KernelLiteralCache::empty(),
             heap,
             external_roots,
@@ -55,7 +67,9 @@ impl<'heap> KernelHeapContext<'heap> {
     /// Entry validation checks the bound string store and every supplied reference.
     /// Pressure reclamation traces all frame values and external object graphs,
     /// then strings; a later failure may retain a completed object collection.
-    /// Backs struct transport/allocation; fields, array COW and scheduling stay separate.
+    /// Backs checked structs and managed array transport. All live array locations
+    /// already root their data in the object store, including host-owned locations.
+    /// Nested array fields, source array operations and scheduling remain separate.
     #[must_use]
     pub fn with_objects(
         mut self,
@@ -102,6 +116,22 @@ impl<'heap> KernelHeapContext<'heap> {
             self.charge(1)?;
             if let KernelValue::Object(id) = value {
                 kernel_object_validation::reference(self, *id)?;
+            }
+            if let KernelValue::Array(id) = value {
+                let budget = self.remaining(0)?;
+                let result = self
+                    .objects
+                    .as_deref()
+                    .ok_or(KernelErrorKind::ObjectExecutionUnsupported)?
+                    .array_data(*id, budget);
+                match result {
+                    Ok(result) => self.record(result.usage, 0)?,
+                    Err(error) => {
+                        return Err(crate::execution::heap::kernel_object_error::record(
+                            self, error, 0,
+                        )?);
+                    }
+                }
             }
             if let Some(id) = value.string_id() {
                 self.heap.get(id).map_err(kernel_heap_error::map)?;

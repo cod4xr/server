@@ -15,6 +15,7 @@ pub(crate) fn kind(value: KernelValue) -> &'static str {
         KernelValue::String(_) => "string",
         KernelValue::LocalizedString(_) => "localized_string",
         KernelValue::Object(_) => "object",
+        KernelValue::Array(_) => "array",
     }
 }
 
@@ -25,6 +26,7 @@ pub(crate) enum ScriptResult<'a> {
     Vector([f32; 3]),
     Function,
     Object,
+    Array,
     String(&'a [u8]),
     LocalizedString(&'a [u8]),
 }
@@ -44,6 +46,7 @@ impl<'a> ScriptResult<'a> {
             KernelValue::LocalizedString(id) => Self::LocalizedString(heap.get(id)?),
             // Opaque kind only, like functions; this never reads fields or exposes an ID.
             KernelValue::Object(_) => Self::Object,
+            KernelValue::Array(_) => Self::Array,
         })
     }
 
@@ -63,6 +66,7 @@ fn write_result(output: &mut impl Write, value: &ScriptResult<'_>) -> io::Result
         }
         ScriptResult::Function => writeln!(output, "function")?,
         ScriptResult::Object => writeln!(output, "object")?,
+        ScriptResult::Array => writeln!(output, "array")?,
         ScriptResult::String(bytes) => writeln!(output, "string b\"{}\"", bytes.escape_ascii())?,
         ScriptResult::LocalizedString(bytes) => {
             writeln!(output, "localized_string b\"{}\"", bytes.escape_ascii())?;

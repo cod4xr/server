@@ -1,5 +1,20 @@
 # Project contract
 
+ADR 0081 adds managed host-array transport through VM cells and direct/indirect
+calls. Raw handles are snapshots: explicit copies create locations, moves transfer
+them, callee return releases dead aliases and successful top-level arrays transfer
+one host owner requiring explicit release. Keep the private per-frame probe table:
+preflight complete logical buckets/rows and overlapping staging before allocation;
+meter hashes/probes/rehash/relocation, prepay cleanup before publication and cover
+fresh/detached values in the pending-owner slot. Failure cleanup cannot allocate,
+probe, borrow remaining instruction/heap fuel or scan unrelated host heap rows.
+Preserve fifteen integration/two private tests, independent 512-program peak model,
+every-shorter work/setup/instruction/growth failures, exact quotas, 70k owners,
+100k overwrites under 4KiB beside 70k host aliases, 12k frames and pressure roots.
+Run array_transport_workload and full Windows gates. No source array operations,
+nested array fields, ordinary logical RC/cycle aliases, game/self roots, scheduling,
+native whole-VM or full-GSC/S5 parity follows; proposal 0071/ADR 0075 still gate it.
+
 ADR 0080 adds opt-in with_includes slices and closed-package CLI include resolution.
 Keep direct and imported origins distinct: named calls select direct/builtin/import;
 script references select direct/import; qualified lookup exports direct names only.

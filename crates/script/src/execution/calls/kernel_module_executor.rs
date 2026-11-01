@@ -7,6 +7,7 @@ use crate::execution::calls::{
 use crate::execution::heap;
 use crate::execution::kernel_error;
 use crate::execution::kernel_frame::{KernelFrame, KernelFrameStep};
+use crate::execution::kernel_frame_identity::KernelFrameIdentity;
 use crate::execution::kernel_locals::KernelArgumentBinding;
 use crate::execution::{
     KernelError, KernelErrorKind, KernelHeapContext, KernelResource, KernelValue,
@@ -14,6 +15,32 @@ use crate::execution::{
 };
 
 pub(super) fn execute(
+    module: &VerifiedKernelModule,
+    entry: u64,
+    arguments: &[KernelValue],
+    budget: KernelCallBudget,
+    mut heap: Option<&mut KernelHeapContext<'_>>,
+) -> Result<KernelCallOutcome, KernelModuleError> {
+    let result = execute_inner(module, entry, arguments, budget, heap.as_deref_mut());
+    if let Some(context) = heap
+        && let Err(kind) = context.finish_array_owners()
+    {
+        return Err(match result {
+            Err(mut error) => {
+                error.cause.kind = kind;
+                error
+            }
+            Ok(outcome) => {
+                let mut ledger = KernelCallLedger::new(budget);
+                ledger.usage = outcome.usage;
+                ledger.error(None, None, kernel_error::general(kind))
+            }
+        });
+    }
+    result
+}
+
+fn execute_inner(
     module: &VerifiedKernelModule,
     entry: u64,
     arguments: &[KernelValue],
@@ -47,13 +74,16 @@ pub(super) fn execute(
     }
     let mut frames = Vec::new();
     reserve(&mut frames).map_err(|cause| ledger.error(Some(index), None, cause))?;
-    let machine = KernelFrame::new(
+    let mut machine = KernelFrame::new(
         proof,
         arguments,
         admission,
         KernelArgumentBinding::LegacyScript,
     )
     .map_err(|cause| ledger.error(Some(index), None, cause))?;
+    machine
+        .bind_array_arguments(arguments, heap.as_deref_mut())
+        .map_err(|cause| ledger.error(Some(index), None, cause))?;
     frames.push(KernelCallFrame {
         function: index,
         machine,
@@ -83,7 +113,10 @@ fn run(
                 proof,
                 &mut ledger.usage.steps,
                 maximum_steps,
-                Some(module.identity),
+                KernelFrameIdentity {
+                    depth: parents.len(),
+                    module: Some(module.identity),
+                },
                 heap.as_deref_mut(),
                 parents.iter().flat_map(|parent| parent.machine.values()),
             )
@@ -103,10 +136,29 @@ fn run(
                 arguments,
                 pc,
             } => {
-                push_call(module, frames, ledger, target, arguments, pc)
-                    .map_err(|cause| ledger.error(Some(function), Some(pc), cause))?;
+                push_call(
+                    module,
+                    frames,
+                    ledger,
+                    target,
+                    arguments,
+                    pc,
+                    heap.as_deref_mut(),
+                )
+                .map_err(|cause| ledger.error(Some(function), Some(pc), cause))?;
             }
             KernelFrameStep::Return(value) => {
+                if let Some(context) = heap.as_deref_mut() {
+                    let owner = frames
+                        .len()
+                        .checked_sub(1)
+                        .ok_or_else(|| ledger.error(Some(function), None, state()))?;
+                    context
+                        .return_array_frame(owner, value, owner.checked_sub(1))
+                        .map_err(|kind| {
+                            ledger.error(Some(function), None, kernel_error::general(kind))
+                        })?;
+                }
                 let finished = frames
                     .pop()
                     .ok_or_else(|| ledger.error(Some(function), None, state()))?;
@@ -138,17 +190,25 @@ fn push_call(
     function: usize,
     arguments: usize,
     pc: usize,
+    mut heap: Option<&mut KernelHeapContext<'_>>,
 ) -> Result<(), KernelError> {
     let proof: &VerifiedKernelProgram = module.functions.get(function).ok_or_else(state)?;
     check_arguments(proof, arguments)?;
     let admission = ledger.admit(proof, arguments)?;
     reserve(frames)?;
     let mut machine = KernelFrame::new(proof, &[], admission, KernelArgumentBinding::LegacyScript)?;
+    let owner = frames.len();
+    let parent = owner.checked_sub(1).ok_or_else(state)?;
     let caller = frames.last_mut().ok_or_else(state)?;
     for parameter in 0..arguments {
-        machine
-            .locals
-            .store(parameter, caller.machine.stack.pop(pc)?, pc)?;
+        let value = caller.machine.stack.pop(pc)?;
+        if let KernelValue::Array(id) = value {
+            heap.as_deref_mut()
+                .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::ObjectExecutionUnsupported))?
+                .move_owned_array(parent, owner, id)
+                .map_err(|kind| kernel_error::at(pc, kind))?;
+        }
+        machine.locals.store(parameter, value, pc)?;
     }
     frames.push(KernelCallFrame { function, machine });
     Ok(())

@@ -40,6 +40,13 @@ The complete server rewrite remains open.
   and 70,000-byte tests. Native/error/model/privacy evidence is scoped in ADR 0076.
   Closed cross-file compilation follows ADR 0077; filesystem loading remains open.
 
+- Managed host arrays now travel through VM locals, operands, direct/indirect
+  calls and returns with explicit ownership and prepaid failure cleanup. Tests
+  cover 70,000 locals, 12,001 frames, 100,000 overwrites, independent ownership
+  models and exact exhausted-budget cleanup. ADR 0081 and
+  `array_transport_workload` scope this transport; source array operations,
+  nested/ordinary logical lifetimes and scheduling remain open.
+
 - Populated array copies now stage complete keys/entries/index changes before
   switching one managed value. They preserve shared struct identity and reverse
   key order. Tests cover 70,000 entries/owners, bounded 100,000-copy churn and an

@@ -32,7 +32,8 @@ pub(super) fn gather(
             KernelValue::Undefined
             | KernelValue::Number(_)
             | KernelValue::Vector(_)
-            | KernelValue::Function(_) => {}
+            | KernelValue::Function(_)
+            | KernelValue::Array(_) => {}
         }
     }
     let bytes = objects
@@ -54,7 +55,8 @@ pub(super) fn gather(
             KernelValue::Undefined
             | KernelValue::Number(_)
             | KernelValue::Vector(_)
-            | KernelValue::Function(_) => {}
+            | KernelValue::Function(_)
+            | KernelValue::Array(_) => {}
         }
     }
     for id in context.external_objects.iter().copied() {

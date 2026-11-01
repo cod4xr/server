@@ -45,6 +45,7 @@ pub(super) fn validate_value(
 ) -> Result<(), ObjectHeapErrorKind> {
     work.charge(1)?;
     match value {
+        KernelValue::Array(_) => return Err(ObjectHeapErrorKind::ManagedArrayFieldUnsupported),
         KernelValue::Object(id) => {
             heap.resolve_struct(id)?;
         }

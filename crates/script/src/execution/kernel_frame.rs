@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::heap;
 use crate::execution::kernel_error;
+use crate::execution::kernel_frame_identity::KernelFrameIdentity;
 use crate::execution::kernel_locals::{KernelArgumentBinding, KernelLocalAdmission, KernelLocals};
-use crate::execution::kernel_module_identity::KernelModuleIdentity;
-use crate::execution::kernel_operations;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
     KernelBranchCondition, KernelError, KernelErrorKind, KernelExecutionBudget,
@@ -60,10 +58,14 @@ impl KernelFrame {
         program: &VerifiedKernelProgram,
         steps: &mut u64,
         maximum: u64,
-        module: Option<KernelModuleIdentity>,
+        identity: KernelFrameIdentity,
         heap: Option<&mut KernelHeapContext<'_>>,
         parents: impl Iterator<Item = KernelValue> + Clone,
     ) -> Result<KernelFrameStep, KernelError> {
+        let KernelFrameIdentity {
+            depth: owner_frame,
+            module,
+        } = identity;
         let pc = self.pc;
         let next = steps
             .checked_add(1)
@@ -81,6 +83,13 @@ impl KernelFrame {
             .copied()
             .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
         match instruction {
+            KernelInstruction::LoadLocal(_)
+            | KernelInstruction::StoreLocal(_)
+            | KernelInstruction::Duplicate
+            | KernelInstruction::Discard => {
+                self.stack_or_local(instruction, owner_frame, heap, pc)?;
+                self.pc = advance(pc)?;
+            }
             KernelInstruction::StringLiteral(_) | KernelInstruction::LocalizedStringLiteral(_) => {
                 self.load_literal(program, instruction, heap, parents, pc)?;
                 self.pc = advance(pc)?;
@@ -141,25 +150,7 @@ impl KernelFrame {
                 self.pc = if take { target } else { advance(pc)? };
             }
             _ => {
-                let roots = self.values().chain(parents);
-                let value = heap::apply(program, instruction, &self.stack, heap, roots)
-                    .map_err(|kind| kernel_error::at(pc, kind))?;
-                if let heap::KernelHeapStep::Applied(value) = value {
-                    let (consumed, produced) = instruction
-                        .stack_effect()
-                        .map_err(|kind| kernel_error::at(pc, kind))?;
-                    if produced != usize::from(value.is_some()) {
-                        return Err(kernel_error::at(pc, KernelErrorKind::InvalidExecutionState));
-                    }
-                    for _ in 0..consumed {
-                        self.stack.pop(pc)?;
-                    }
-                    if let Some(value) = value {
-                        self.stack.push(value, pc)?;
-                    }
-                } else {
-                    kernel_operations::apply(instruction, &mut self.stack, &mut self.locals, pc)?;
-                }
+                self.data_step(program, instruction, owner_frame, heap, parents, pc)?;
                 self.pc = advance(pc)?;
             }
         }

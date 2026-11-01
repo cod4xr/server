@@ -52,6 +52,11 @@ source-array execution. This does not close S5 or a full-GSC workstream.
 
 ## Next concrete work
 
+ADR 0081 supplies managed host-array frame/call ownership with prepaid cleanup,
+including pending values and fully admitted/metered private registry storage.
+It does not activate source array operations or close the ordinary/nested logical
+lifetime, cycle-retained alias, scheduling, stock-mod or full-GSC gates.
+
 ADR 0080 adds closed-catalog includes through the package compiler and offline
 command, with checked one-hop import scopes and native source-role evidence.
 It does not implement source discovery/mount/preprocessing or close the module

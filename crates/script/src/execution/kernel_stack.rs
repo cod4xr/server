@@ -66,7 +66,8 @@ impl KernelStack {
             | KernelValue::Function(_)
             | KernelValue::String(_)
             | KernelValue::LocalizedString(_)
-            | KernelValue::Object(_) => Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber)),
+            | KernelValue::Object(_)
+            | KernelValue::Array(_) => Err(kernel_error::at(pc, KernelErrorKind::ExpectedNumber)),
         }
     }
 
@@ -76,17 +77,12 @@ impl KernelStack {
         Ok((left, right))
     }
 
-    pub(super) fn duplicate(&mut self, pc: usize) -> Result<(), KernelError> {
-        let value = self
-            .values
-            .last()
-            .copied()
-            .ok_or_else(|| kernel_error::at(pc, KernelErrorKind::InvalidExecutionState))?;
-        self.push(value, pc)
-    }
-
     pub(super) fn empty(&self) -> bool {
         self.values.is_empty()
+    }
+
+    pub(super) fn has_values(&self, count: usize) -> bool {
+        self.values.len() >= count
     }
 
     pub(super) fn swap(&mut self, pc: usize) -> Result<(), KernelError> {

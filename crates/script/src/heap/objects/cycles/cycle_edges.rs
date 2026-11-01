@@ -28,6 +28,7 @@ pub(super) fn walk(
             return Err(ObjectHeapErrorKind::InvalidState);
         }
         match field.value {
+            KernelValue::Array(_) => return Err(ObjectHeapErrorKind::ManagedArrayFieldUnsupported),
             KernelValue::Object(id) => {
                 work.charge(1)?;
                 reference(heap.resolve(id)?)?;

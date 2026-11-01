@@ -123,7 +123,8 @@ fn string(slot: &FieldSlot) -> Option<StringId> {
             | KernelValue::Number(_)
             | KernelValue::Vector(_)
             | KernelValue::Function(_)
-            | KernelValue::Object(_) => None,
+            | KernelValue::Object(_)
+            | KernelValue::Array(_) => None,
         },
         FieldSlot::Vacant { .. } => None,
     }

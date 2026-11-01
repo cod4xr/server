@@ -55,7 +55,8 @@ fn number(value: KernelValue) -> Result<LegacyNumber, KernelErrorKind> {
         | KernelValue::Function(_)
         | KernelValue::String(_)
         | KernelValue::LocalizedString(_)
-        | KernelValue::Object(_) => Err(KernelErrorKind::ExpectedNumber),
+        | KernelValue::Object(_)
+        | KernelValue::Array(_) => Err(KernelErrorKind::ExpectedNumber),
     }
 }
 
@@ -67,6 +68,7 @@ fn operand(value: KernelValue) -> Result<LegacyVectorOperand, KernelErrorKind> {
         | KernelValue::Function(_)
         | KernelValue::String(_)
         | KernelValue::LocalizedString(_)
-        | KernelValue::Object(_) => Err(KernelErrorKind::ExpectedNumber),
+        | KernelValue::Object(_)
+        | KernelValue::Array(_) => Err(KernelErrorKind::ExpectedNumber),
     }
 }

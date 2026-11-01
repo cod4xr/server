@@ -162,6 +162,12 @@ mod field_vectors;
 mod field_verification;
 #[path = "function_reference_vectors.rs"]
 mod function_reference_vectors;
+#[path = "kernel_array_hostile.rs"]
+mod kernel_array_hostile;
+#[path = "kernel_array_transport.rs"]
+mod kernel_array_transport;
+#[path = "kernel_array_transport_model.rs"]
+mod kernel_array_transport_model;
 #[path = "kernel_builtin_limits.rs"]
 mod kernel_builtin_limits;
 #[path = "kernel_call_arity.rs"]

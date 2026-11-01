@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-use crate::execution::kernel_builtin;
 use crate::execution::kernel_comparison_values;
 use crate::execution::kernel_error;
 use crate::execution::kernel_index_values;
 use crate::execution::kernel_integer_value;
-use crate::execution::kernel_locals::KernelLocals;
 use crate::execution::kernel_numeric_values;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{KernelError, KernelErrorKind, KernelInstruction, KernelValue};
@@ -13,22 +11,12 @@ use crate::legacy::LegacyNumber;
 pub(super) fn apply(
     instruction: KernelInstruction,
     stack: &mut KernelStack,
-    locals: &mut KernelLocals,
     pc: usize,
 ) -> Result<(), KernelError> {
     let value = match instruction {
         KernelInstruction::Constant(value) => value,
-        KernelInstruction::LoadLocal(slot) => locals.load(slot, pc)?,
-        KernelInstruction::Builtin {
-            function,
-            arguments,
-        } => kernel_builtin::apply(function, arguments, stack, pc)?,
         KernelInstruction::RequireInteger => kernel_integer_value::require(stack.pop(pc)?)
             .map_err(|kind| kernel_error::at(pc, kind))?,
-        KernelInstruction::StoreLocal(slot) => {
-            locals.store(slot, stack.pop(pc)?, pc)?;
-            return Ok(());
-        }
         KernelInstruction::Compare(comparison) => {
             let right = stack.pop(pc)?;
             let left = stack.pop(pc)?;
@@ -81,13 +69,13 @@ pub(super) fn apply(
                 .map_err(|error| kernel_error::at(pc, KernelErrorKind::Numeric(error)))?;
             KernelValue::Number(value)
         }
-        KernelInstruction::Duplicate => return stack.duplicate(pc),
         KernelInstruction::Swap => return stack.swap(pc),
-        KernelInstruction::Discard => {
-            stack.pop(pc)?;
-            return Ok(());
-        }
-        KernelInstruction::Call { .. }
+        KernelInstruction::LoadLocal(_)
+        | KernelInstruction::StoreLocal(_)
+        | KernelInstruction::Duplicate
+        | KernelInstruction::Discard
+        | KernelInstruction::Call { .. }
+        | KernelInstruction::Builtin { .. }
         | KernelInstruction::LoadField(_)
         | KernelInstruction::StoreField(_)
         | KernelInstruction::StringLiteral(_)

@@ -3,6 +3,7 @@ use crate::execution::heap::KernelHeapStep;
 use crate::execution::heap::{
     kernel_object_comparison, kernel_object_validation, kernel_string_operations,
 };
+use crate::execution::kernel_builtin;
 use crate::execution::kernel_stack::KernelStack;
 use crate::execution::{
     KernelBuiltin, KernelErrorKind, KernelHeapContext, KernelInstruction, KernelValue,
@@ -19,7 +20,7 @@ pub(in crate::execution) fn validate_arguments(
         .is_none_or(|context| context.objects.is_none())
         && arguments
             .iter()
-            .any(|value| matches!(value, KernelValue::Object(_)))
+            .any(|value| matches!(value, KernelValue::Object(_) | KernelValue::Array(_)))
     {
         return Err(KernelErrorKind::ObjectExecutionUnsupported);
     }
@@ -78,6 +79,14 @@ pub(in crate::execution) fn apply(
             .ok_or(KernelErrorKind::ObjectExecutionUnsupported)?
             .allocate_object(roots)
             .map(KernelValue::Object)
+            .map(|value| KernelHeapStep::Applied(Some(value)));
+    }
+    if let KernelInstruction::Builtin {
+        function,
+        arguments,
+    } = instruction
+    {
+        return kernel_builtin::evaluate(function, arguments, stack)
             .map(|value| KernelHeapStep::Applied(Some(value)));
     }
     if let (KernelInstruction::Size, Some(KernelValue::Object(id))) = (instruction, stack.top()) {

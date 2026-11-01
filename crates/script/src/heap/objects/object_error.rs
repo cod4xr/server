@@ -36,6 +36,8 @@ pub enum ObjectResource {
 /// Sanitized shared-object failure without keys, values, identities or addresses.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ObjectHeapErrorKind {
+    /// Managed array locations cannot yet be stored in struct fields or array entries.
+    ManagedArrayFieldUnsupported,
     /// The explicitly empty-only detachment API received populated data.
     ExpectedEmptyArray,
     /// Indexed mutation requires a unique managed value; no COW selection occurred.

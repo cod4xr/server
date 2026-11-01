@@ -2,7 +2,7 @@
 use std::fmt;
 
 use crate::execution::KernelFunctionReference;
-use crate::heap::{ObjectId, StringId};
+use crate::heap::{ArrayValueId, ObjectId, StringId};
 use crate::legacy::{LegacyNumber, LegacyVector};
 
 /// Primitive execution data and object-store snapshots; not the full GSC runtime.
@@ -26,6 +26,10 @@ pub enum KernelValue {
     /// Nonowning shared struct snapshot requiring an explicit object-aware context.
     /// Construction/transport does not supply field operations or array COW.
     Object(ObjectId),
+    /// Nonowning snapshot of a managed array location. VM cells make explicit
+    /// copies/moves/releases; a returned location transfers one owner to the host.
+    /// Copying this Rust enum alone creates no additional managed owner.
+    Array(ArrayValueId),
 }
 
 impl KernelValue {
@@ -47,6 +51,7 @@ impl fmt::Debug for KernelValue {
             Self::String(_) => "KernelValue::String(..)",
             Self::LocalizedString(_) => "KernelValue::LocalizedString(..)",
             Self::Object(_) => "KernelValue::Object(..)",
+            Self::Array(_) => "KernelValue::Array(..)",
         })
     }
 }

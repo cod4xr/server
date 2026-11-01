@@ -228,6 +228,16 @@ mod primary_literals;
 mod reference_views;
 #[path = "source_array_gate.rs"]
 mod source_array_gate;
+#[path = "source_array_transport_calls.rs"]
+mod source_array_transport_calls;
+#[path = "source_array_transport_growth.rs"]
+mod source_array_transport_growth;
+#[path = "source_array_transport_limits.rs"]
+mod source_array_transport_limits;
+#[path = "source_array_transport_pressure.rs"]
+mod source_array_transport_pressure;
+#[path = "source_array_transport_stress.rs"]
+mod source_array_transport_stress;
 #[path = "source_boundaries.rs"]
 mod source_boundaries;
 #[path = "source_field_collection.rs"]

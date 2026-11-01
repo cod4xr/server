@@ -14,6 +14,20 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0081 implements checked managed host-array transport across VM cells and
+direct/indirect calls, host result transfer, immediate dead-callee release and
+prepaid cleanup including pending registration/return values. A private explicit
+probe table replaces the initial HashSet prototype so complete bucket admission
+precedes allocation and every probe is metered. Fifteen integration/two private
+tests cover independent 512-program peak ownership, exact/shorter scopes, 70k
+locals, 12k frames, 100k bounded overwrites beside 70k host aliases, hostile
+handles/fields and paired pressure roots. Full Windows debug/release, formatting,
+all-target denied-warning Clippy/rustdoc, policy (924 sources/eight crates/largest
+287) and diff checks pass: 310 frontend/235 legacy/15 private script tests plus two
+doctests. Native lifetime 210 O0/O2 replays and 61/77/38 lifetime/include/package
+mutations plus syntax guards pass. Linux/hosted CI remains unrun. Source operations
+and ordinary/nested logical lifetimes remain gated; no full-GSC or join gate closes.
+
 ADR 0066 now compiles/executes spawnstruct through explicit object contexts and the
 offline runner. Arguments evaluate before allocation and remain roots through one
 pressure collection/retry. New native helper traces match at O0/O2 (32 cases,

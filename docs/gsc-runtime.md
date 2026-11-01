@@ -1,5 +1,13 @@
 # Expanded GSC runtime contract
 
+ADR 0081 transports host-managed arrays through VM cells and direct/indirect
+calls, with explicit cloning/moves/releases, callee cleanup before caller resume,
+host-owned returns and prepaid failure cleanup. A narrow metered registry admits
+all buckets before allocation and covers pending values. Wide/deep/churn/model/
+resource/hostile/pressure tests assess transport. General source array operations,
+ordinary/nested logical lifetimes, retained cycle aliases, game/self roots,
+scheduling and full stock/mod acceptance remain open.
+
 ADR 0080 links explicit include directives against the supplied closed catalog,
 with one-hop aliases, original function scopes/maps, checked developer/builtin
 distinctions and separate edge/alias admission. Thirteen core/four process tests

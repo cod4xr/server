@@ -1,23 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 use crate::execution::heap::kernel_heap_error;
-use crate::execution::{KernelErrorKind, KernelHeapContext, KernelResource};
+use crate::execution::{KernelErrorKind, KernelHeapContext, KernelHeapUsage, KernelResource};
 use crate::heap::{HeapError, HeapWorkBudget, HeapWorkUsage};
 
 impl KernelHeapContext<'_> {
     pub(super) fn charge(&mut self, steps: u64) -> Result<(), KernelErrorKind> {
-        let next = self
-            .usage
-            .steps
-            .checked_add(steps)
-            .ok_or(KernelErrorKind::SizeOverflow)?;
-        check(KernelResource::HeapWorkSteps, next, self.budget.max_steps)?;
-        self.usage.steps = next;
-        Ok(())
+        charge(&mut self.usage, self.budget.max_steps, steps)
     }
 
     pub(super) fn scratch(&mut self, bytes: u64) -> Result<(), KernelErrorKind> {
         let bytes = bytes
             .checked_add(self.literals.bytes)
+            .and_then(|bytes| bytes.checked_add(self.array_owners.bytes))
             .ok_or(KernelErrorKind::SizeOverflow)?;
         check(
             KernelResource::HeapScratchBytes,
@@ -40,6 +34,7 @@ impl KernelHeapContext<'_> {
                 .max_scratch_bytes
                 .checked_sub(root_bytes)
                 .and_then(|bytes| bytes.checked_sub(self.literals.bytes))
+                .and_then(|bytes| bytes.checked_sub(self.array_owners.bytes))
                 .ok_or(KernelErrorKind::InvalidExecutionState)?,
         })
     }
@@ -92,6 +87,7 @@ impl KernelHeapContext<'_> {
                     *requested = root_bytes
                         .checked_add(*requested)
                         .and_then(|bytes| bytes.checked_add(self.literals.bytes))
+                        .and_then(|bytes| bytes.checked_add(self.array_owners.bytes))
                         .ok_or(KernelErrorKind::SizeOverflow)?;
                     *maximum = self.budget.max_scratch_bytes;
                 }
@@ -100,6 +96,20 @@ impl KernelHeapContext<'_> {
         }
         Ok(())
     }
+}
+
+pub(super) fn charge(
+    usage: &mut KernelHeapUsage,
+    maximum: u64,
+    steps: u64,
+) -> Result<(), KernelErrorKind> {
+    let next = usage
+        .steps
+        .checked_add(steps)
+        .ok_or(KernelErrorKind::SizeOverflow)?;
+    check(KernelResource::HeapWorkSteps, next, maximum)?;
+    usage.steps = next;
+    Ok(())
 }
 
 fn check(resource: KernelResource, requested: u64, maximum: u64) -> Result<(), KernelErrorKind> {

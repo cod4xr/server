@@ -54,6 +54,9 @@ impl KernelHeapContext<'_> {
         &mut self,
         count: u64,
     ) -> Result<(), KernelErrorKind> {
+        if !self.array_owners.ready() {
+            return Err(KernelErrorKind::ArrayOwnershipInvariant);
+        }
         self.literals = KernelLiteralCache::empty();
         let bytes = count
             .checked_mul((size_of::<Option<StringId>>() + size_of::<usize>()) as u64)

@@ -36,10 +36,11 @@ pub struct KernelProgramUsage {
     pub verification_metadata_bytes: u64,
 }
 
-/// Completed pure execution result; Debug omits the returned primitive contents.
+/// Completed execution result; Debug omits returned contents and identities.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct KernelOutcome {
-    /// Returned primitive data, not a full GSC runtime value.
+    /// Returned data. Array locations transfer one owner requiring explicit host
+    /// release; copying this outcome does not create another managed owner.
     pub value: KernelValue,
     /// Executed instructions, including return.
     pub steps: u64,
@@ -186,6 +187,8 @@ impl VerifiedKernelProgram {
     /// Executes with caller-owned strings and legacy missing/extra-argument binding.
     /// All frame values and supplied external roots survive pressure reclamation.
     /// Context work accumulates across calls; results borrow no temporary store.
+    /// Array arguments borrow host owners; successful array results transfer one
+    /// owner to the host. See [`KernelHeapContext`] for copy/release and cleanup rules.
     ///
     /// # Errors
     /// Returns located runtime/resource errors and rejects foreign/stale string

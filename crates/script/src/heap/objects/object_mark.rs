@@ -63,6 +63,9 @@ pub(super) fn trace(
                 return Err(ObjectHeapErrorKind::InvalidState);
             }
             match field.value {
+                KernelValue::Array(_) => {
+                    return Err(ObjectHeapErrorKind::ManagedArrayFieldUnsupported);
+                }
                 KernelValue::Object(id) => {
                     work.charge(1)?;
                     enqueue(heap.resolve(id)?, &mut flags, &mut queue, live)?;

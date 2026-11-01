@@ -38,7 +38,8 @@ impl<'a> ArrayKey<'a> {
             | KernelValue::Vector(_)
             | KernelValue::Function(_)
             | KernelValue::LocalizedString(_)
-            | KernelValue::Object(_) => Err(LegacyArrayKeyError::ExpectedIndex),
+            | KernelValue::Object(_)
+            | KernelValue::Array(_) => Err(LegacyArrayKeyError::ExpectedIndex),
         }
     }
 }

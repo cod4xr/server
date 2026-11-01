@@ -15,6 +15,9 @@ pub(super) fn verify(
     field_names: usize,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::Constant(KernelValue::Array(_)) => {
+            Err(kernel_error::at(pc, KernelErrorKind::RuntimeArrayConstant))
+        }
         KernelInstruction::LoadField(name) | KernelInstruction::StoreField(name)
             if name >= field_names =>
         {
