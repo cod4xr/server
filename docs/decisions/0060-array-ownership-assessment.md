@@ -70,6 +70,27 @@ branches and whole-source execution stay open.
 
 ## Storage alternatives and requirements
 
+The separate cycle-alias corpus now executes 20 O0/O2 traces using actual native
+AddRefToObject, selected nonfreeing RemoveRefToObject decrements, Scr_EvalArrayRef,
+CopyArray and key enumeration. Its modeled root/field ownership setup makes one
+through four self-cyclic structs retain references to a live array. Dropping each
+struct root decrements to zero excess references without clearing/freeing fields;
+the outgoing array aliases remain. Detaching the live slot copies and reverses
+its keys; a second write to the new unique slot does not allocate/copy again.
+Clear/free/entity paths abort if reached. This is not native cycle detection,
+tracing GC, allocator/freeing, unwinding or VM evidence. Existing 306 array traces
+remain unchanged; a separate ref-role guard rejects 14 mutations.
+
+This makes a collector compatibility problem concrete: reclaiming an unreachable
+reference cycle can remove a native-retained alias and suppress an observable COW
+copy/key reversal. Simply counting reachable aliases is insufficient. A possible
+bounded solution is to identify garbage retained by cycles through indegree
+peeling, then preserve a logical alias marker on live arrays reached by that
+garbage before reclaiming payload. The marker must stay on the old array, not its
+fresh COW copies. This is an assessment candidate, not implemented/accepted
+runtime architecture. It needs independent graph-model, resource/workload and
+native-trace validation before array source activation.
+
 Do not choose a collector from the string workload alone. A shared mutable array
 handle would change legacy scripts. Unconditional deep cloning on every write
 would make repeated unique insertion quadratic. Persistent maps need a concrete

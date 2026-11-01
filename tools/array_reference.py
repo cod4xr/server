@@ -15,7 +15,8 @@ import script_array_write_reference as writes
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(reference: ReferenceSource, cc: str) -> bytes:
+def core(reference: ReferenceSource) -> list[str]:
+    """Build actual shared array helpers and the explicit bounded pool/lookup model."""
     if sys.byteorder != "little":
         raise ValueError("Array oracle requires little-endian native union word layout")
     roles.verify(*roles.inputs(reference))
@@ -44,8 +45,13 @@ def run(reference: ReferenceSource, cc: str) -> bytes:
                  "GetArrayVariableIndex", "GetArrayVariable", "GetArraySize",
                  "FindFirstSibling", "FindNextSibling", "CopyArray", "Scr_AddArrayKeys"):
         parts.append(reference.function("src/cscr_variable.cpp", name))
-    parts.extend((ROOT / f"tools/oracles/array_{name}.c").read_text(encoding="utf-8")
-                 for name in ("pool", "lvalue_services"))
+    parts.append((ROOT / "tools/oracles/array_pool.c").read_text(encoding="utf-8"))
+    return parts
+
+
+def run(reference: ReferenceSource, cc: str) -> bytes:
+    parts = core(reference)
+    parts.append((ROOT / "tools/oracles/array_lvalue_services.c").read_text(encoding="utf-8"))
     parts.append((ROOT / "tools/oracles/array_removal_services.c").read_text(encoding="utf-8"))
     for name in ("MakeVariableExternal", "FreeChildValue", "Scr_EvalArrayRef", "Scr_EvalVariable", "SetVariableValue", "RemoveVariableValue",
                  "SafeRemoveVariable", "SafeRemoveArrayVariable", "ClearArray"):

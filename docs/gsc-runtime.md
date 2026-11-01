@@ -1,5 +1,11 @@
 # Expanded GSC runtime contract
 
+Array ownership assessment now includes 20 selected native cycle-alias traces:
+root release can retain aliases that still trigger COW/key-order reversal. A
+collector must preserve that observable behavior when reclaiming cycle payload.
+The proposed logical-marker approach remains under assessment (ADR 0060), and
+arrays remain unavailable to source execution.
+
 Ordinary struct equality/inequality now validate and compare shared identities
 (ADR 0069), with fixed logical work and no field scans. Native ordinary-pointer
 helper evidence and Rust wide/reference/source/process tests cover the subset;

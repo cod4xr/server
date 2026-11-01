@@ -1,5 +1,13 @@
 # Project contract
 
+Array ownership assessment now includes generate_array_alias_vectors.py --check
+(20 actual selected nonfreeing ref-drop/COW/key traces with modeled graph setup)
+and script_array_alias_reference.py (14 mutations). Native-retained cycle aliases
+can change copy/key order after root release. Do not collect them away and silently
+change COW decisions. Indegree peeling plus retained logical alias markers is only
+an assessment candidate; validate ownership, work/memory and graph behavior before
+array source activation. Existing 306 array traces must stay unchanged.
+
 ADR 0069 adds checked ordinary struct identity equality/inequality. Validate both
 references before identity comparison, never compare fields or use KernelValue's
 derived equality as a language rule. Keep mixed/ordered errors, fixed work and

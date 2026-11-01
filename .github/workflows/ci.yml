@@ -87,6 +87,8 @@ jobs:
           python tools/generate_array_vectors.py reference --check
           python tools/script_array_reference.py reference
           python tools/script_array_write_reference.py reference
+          python tools/generate_array_alias_vectors.py reference --check
+          python tools/script_array_alias_reference.py reference
           python tools/generate_string_access_vectors.py reference --check
           python tools/generate_object_size_vectors.py reference --check
           python tools/generate_struct_vectors.py reference --check

@@ -1,0 +1,27 @@
+# Actual selected native add/remove-ref, COW, copy and key enumeration helpers; O0/O2.
+# Modeled collision-free pool/root/field ownership setup/output; no native allocation/free/VM/GC claim.
+# Cycle roots drop through actual nonfreeing decrements; clear/free/entity paths abort.
+# L holders key_count old_excess_after_detach new_excess old_keys | copied_keys
+# A second write through the copied slot stays unique without another allocation/copy.
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Upstream ddd65fce1a1093017bad2dbb6840d75d11c0d56f; hashes in upstream.lock.json
+L 1 0 0 0 |
+L 1 1 0 0 i:0 | i:0
+L 1 2 0 0 i:1 i:0 | i:0 i:1
+L 1 3 0 0 i:2 i:1 i:0 | i:0 i:1 i:2
+L 1 4 0 0 i:3 i:2 i:1 i:0 | i:0 i:1 i:2 i:3
+L 2 0 1 0 |
+L 2 1 1 0 i:0 | i:0
+L 2 2 1 0 i:1 i:0 | i:0 i:1
+L 2 3 1 0 i:2 i:1 i:0 | i:0 i:1 i:2
+L 2 4 1 0 i:3 i:2 i:1 i:0 | i:0 i:1 i:2 i:3
+L 3 0 2 0 |
+L 3 1 2 0 i:0 | i:0
+L 3 2 2 0 i:1 i:0 | i:0 i:1
+L 3 3 2 0 i:2 i:1 i:0 | i:0 i:1 i:2
+L 3 4 2 0 i:3 i:2 i:1 i:0 | i:0 i:1 i:2 i:3
+L 4 0 3 0 |
+L 4 1 3 0 i:0 | i:0
+L 4 2 3 0 i:1 i:0 | i:0 i:1
+L 4 3 3 0 i:2 i:1 i:0 | i:0 i:1 i:2
+L 4 4 3 0 i:3 i:2 i:1 i:0 | i:0 i:1 i:2 i:3
