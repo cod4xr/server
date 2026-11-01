@@ -1,5 +1,14 @@
 # Project contract
 
+ADR 0063 implements explicit-root shared struct storage only. Preserve flat checked
+object/field arenas, owned exact keys, separately admitted index buckets/probes,
+atomic staged growth/collection, nonwrapping generations and nested string roots.
+The object_heap_workload example and wide/churn/deep/cycle/hostile tests assess
+this component; they do not establish native GC or choose array ownership. Raw
+ObjectId copies are not owners. Current immutable constants and primitive entry
+points must reject Object values until complete object-aware VM roots/lifetimes
+are implemented. String-only VM collection cannot silently ignore an object graph.
+
 The heap string store backs typed execution, bound plain/localized GSC literals
 and escaped offline byte output. Preserve complete-root ownership, stale/foreign/
 generation checks, atomic failed collection and independent retained/work/scratch budgets.

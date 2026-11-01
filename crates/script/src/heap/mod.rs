@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Owned immutable string slots with checked identities and complete-root reclamation.
+//! Owned immutable strings and a prototype shared-object store with checked identities.
 //!
 //! This storage boundary is not a complete VM/object collector. Callers own the
 //! complete root set; copied IDs are checked references, never ownership leases.
@@ -10,6 +10,7 @@ mod heap_error;
 mod heap_identity;
 mod heap_usage;
 mod heap_work;
+mod objects;
 mod string_allocation;
 mod string_heap;
 mod string_id;
@@ -19,5 +20,10 @@ mod string_slot;
 pub use heap_budget::{HeapWorkBudget, StringHeapBudget};
 pub use heap_error::{HeapError, HeapErrorKind, HeapResource};
 pub use heap_usage::{HeapAllocation, HeapWorkUsage, StringCollection, StringHeapUsage};
+pub use objects::{
+    ObjectAllocation, ObjectCollection, ObjectFieldResult, ObjectHeap, ObjectHeapBudget,
+    ObjectHeapError, ObjectHeapErrorKind, ObjectHeapUsage, ObjectId, ObjectResource,
+    ObjectStringCollection,
+};
 pub use string_heap::StringHeap;
 pub use string_id::StringId;

@@ -14,6 +14,33 @@ that block. The separate WSL validation directory was already absent when checke
 
 ## Current tree
 
+ADR 0063 now assesses explicit-root shared struct storage: opaque wide checked
+identities, flat object/field arenas, owned exact binary keys, metered probes and
+staged tombstone rebuilds, atomic iterative graph reclamation and composite stored/
+external string roots. Fourteen new integration tests plus two private boundary
+tests cover 70,000 objects/fields, 100,000 churn cycles, 12,000-object shared/cyclic
+graphs, 1 MiB keys, exact/one-less retained/work/scratch limits, every insufficient
+growth/collection work prefix, late invalid roots, namespace/generation/lifetime
+checks and an independent 4,096-operation graph model. Script suites are now
+243 frontend/156 legacy tests, six private units and two doctests. Immutable object
+constants and every current primitive invocation path explicitly reject snapshots;
+no object-aware VM/source execution or array implementation is activated.
+
+The runnable object_heap_workload performs 100,000 updates under 64-object/string
+budgets and reports 1,613 paired collection rounds, 8,825,031 logical work steps,
+4,096 peak scratch bytes, 576 peak key bytes, 1,012 peak string bytes and 21,504
+peak logical retained metadata bytes. Final storage is one object/field, five key
+bytes and four string bytes, with 64 object slots/128 field slots/256 index buckets/
+64 string slots. Local debug/release elapsed observations were 683,795/48,573 us,
+not native speed/RSS claims. Full Windows workspace debug/release, formatting,
+denied-warning Clippy/rustdoc, policy (699 sources/eight crates/largest 287) and
+diff checks pass. Native array 306/69/141, string-value 3,024 and isolated defined
+351 checks still match. Linux/hosted CI, full GSC/stock mods and joins remain open.
+Next: source-grounded object field semantics and complete object-aware frame,
+temporary, caller, cached-literal, external and result roots before VM activation.
+No complete GSC workstream is closed; the approximate 10–12-workstream estimate
+has not decreased based on this component's tests or commit.
+
 The owned string-store component now has 11 integration tests plus private
 namespace/generation boundary tests. It admits 70,000 live values and sustains
 100,000 temporary values under 64 slots. One local release workload observed

@@ -14,6 +14,9 @@ pub(super) fn verify(
     literals: usize,
 ) -> Result<(), KernelError> {
     match instruction {
+        KernelInstruction::Constant(KernelValue::Object(_)) => {
+            Err(kernel_error::at(pc, KernelErrorKind::RuntimeObjectConstant))
+        }
         KernelInstruction::StringLiteral(literal)
         | KernelInstruction::LocalizedStringLiteral(literal)
             if literal >= literals =>

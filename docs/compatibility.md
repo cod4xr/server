@@ -1,5 +1,13 @@
 # Compatibility contract
 
+ADR 0063 assesses a shared struct storage component with 70,000 objects/fields,
+100,000 churn cycles, deep/cyclic graph reclamation, exact resource failures and
+an independent 4,096-operation graph model. These are Rust storage/ownership tests,
+not native object VM/collector conformance. Copied ObjectId values preserve shared
+identity without owning their store; current executable constants and primitive
+invocations reject them. Arrays, entity subtypes, object-aware VM lifetime handling
+and source object execution remain open.
+
 The owned string-store component replays 54 native plain-concatenation successes
 through literal decoding, storage, concatenation and explicit reclamation; another
 54 native capacity failures intentionally succeed under larger budgets. These are

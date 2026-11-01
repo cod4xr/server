@@ -1,5 +1,14 @@
 # Architecture and expansion
 
+ADR 0063 adds a separately assessed shared struct graph with flat object/field
+arenas, opaque checked identities, owned exact keys and a purpose-specific metered
+field index. Explicit-root iterative collection reclaims unreachable cycles only
+after complete admission/preflight; composite string collection retains every
+stored plain/localized field plus supplied external roots. Retained metadata,
+key bytes, work and staging scratch have separate budgets. Wide/churn/deep/cycle/
+hostile workloads assess this storage component. The current VM rejects object
+snapshots; object-aware frame/result ownership and legacy array COW remain open.
+
 The script heap now owns immutable byte strings in growable slots with opaque
 store/slot/generation references. Copies do not copy payload or grant ownership.
 Explicit complete-root reclamation validates references and preflights resources
@@ -41,7 +50,7 @@ mixed coercion, general objects and host/scheduling integration remain open.
 ADR 0061 adds plain-string byte indexing and unary Size through the explicit heap
 context. Both use the legacy first-NUL prefix; result allocation/collection retains
 all operand roots until success, and global work admits scans. Bound source keeps
-index-first evaluation and operator maps. Arrays/objects remain unimplemented.
+index-first evaluation and operator maps. Arrays and object execution remain unimplemented.
 
 ADR 0062 adds primitive definedness with a required first argument and evaluated,
 discarded extras. Exhaustive value/arity policies require explicit decisions for

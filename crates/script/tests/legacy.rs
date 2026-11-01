@@ -4,6 +4,23 @@
 mod defined_limits;
 #[path = "defined_vectors.rs"]
 mod defined_vectors;
+#[path = "object_execution_boundary.rs"]
+mod object_execution_boundary;
+#[path = "object_heap_budgets.rs"]
+mod object_heap_budgets;
+#[path = "object_heap_collection_limits.rs"]
+mod object_heap_collection_limits;
+#[path = "object_heap_graphs.rs"]
+mod object_heap_graphs;
+#[path = "object_heap_growth.rs"]
+mod object_heap_growth;
+#[path = "object_heap_hostile.rs"]
+mod object_heap_hostile;
+#[path = "object_heap_ownership.rs"]
+mod object_heap_ownership;
+#[path = "object_heap_stress.rs"]
+mod object_heap_stress;
+mod object_heap_support;
 #[path = "string_access_limits.rs"]
 mod string_access_limits;
 #[path = "string_access_vectors.rs"]

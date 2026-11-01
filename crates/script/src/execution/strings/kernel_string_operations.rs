@@ -8,6 +8,12 @@ pub(in crate::execution) fn validate_arguments(
     arguments: &[KernelValue],
     context: Option<&mut KernelHeapContext<'_>>,
 ) -> Result<(), KernelErrorKind> {
+    if arguments
+        .iter()
+        .any(|value| matches!(value, KernelValue::Object(_)))
+    {
+        return Err(KernelErrorKind::ObjectExecutionUnsupported);
+    }
     if let Some(context) = context {
         return context.validate(arguments);
     }

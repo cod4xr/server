@@ -1,5 +1,11 @@
 # Expanded GSC runtime contract
 
+Shared struct storage now has explicit-root iterative graph collection and composite
+string roots (ADR 0063), with wide/churn/cycle/resource/model workloads. This is a
+component boundary: object snapshots are rejected by the primitive VM until complete
+frame/temporary/result ownership is integrated. Legacy arrays still require their
+distinct copy-on-write, nested-copy and key-order behavior (ADR 0060).
+
 The user requires a substantially richer GSC implementation integrated into the
 Rust engine. Ordinary language/service features must not require native CoD4X
 plugins. Existing scripts remain a compatibility target. This is a product/design

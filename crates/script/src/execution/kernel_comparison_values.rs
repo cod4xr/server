@@ -55,6 +55,7 @@ fn operand(value: KernelValue) -> Result<LegacyVectorOperand, KernelErrorKind> {
         KernelValue::Undefined
         | KernelValue::Function(_)
         | KernelValue::String(_)
-        | KernelValue::LocalizedString(_) => Err(KernelErrorKind::UnmatchingTypes),
+        | KernelValue::LocalizedString(_)
+        | KernelValue::Object(_) => Err(KernelErrorKind::UnmatchingTypes),
     }
 }

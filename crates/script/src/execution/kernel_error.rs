@@ -57,6 +57,10 @@ pub enum KernelErrorKind {
     },
     /// Immutable code cannot retain nonowning references into a mutable heap.
     RuntimeStringConstant,
+    /// Immutable executable constants cannot root mutable object-store references.
+    RuntimeObjectConstant,
+    /// Object-store values are not yet supported by the primitive execution profile.
+    ObjectExecutionUnsupported,
     /// String arguments/operations require an explicit caller-owned heap context.
     HeapContextRequired,
     /// The string belongs to a different or dropped/recreated heap owner.

@@ -34,6 +34,11 @@ index/size under admitted compiler/runtime budgets. S5 remains open: arrays/
 objects, general library/scheduling/game services and recorded stock/mod runs are
 still required. See docs/gsc-runtime.md for exact evidence and remaining work.
 
+Explicit-root shared struct storage is separately implemented and workload-tested
+under ADR 0063. This does not close object execution or the S5 gate: the VM must
+still own complete object roots and lifetimes, and arrays need legacy copy-on-write
+semantics before source activation.
+
 ## Next concrete work
 
 1. Continue remaining delta/user-command/snapshot codecs and legacy/profile

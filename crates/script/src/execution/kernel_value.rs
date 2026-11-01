@@ -2,10 +2,10 @@
 use std::fmt;
 
 use crate::execution::KernelFunctionReference;
-use crate::heap::StringId;
+use crate::heap::{ObjectId, StringId};
 use crate::legacy::{LegacyNumber, LegacyVector};
 
-/// Primitive-kernel values only; not the full GSC value/object/heap representation.
+/// Primitive execution data and object-store snapshots; not the full GSC runtime.
 ///
 /// Derived data equality is Rust equality, never a GSC language comparison.
 /// Language comparisons use the explicit comparison instruction.
@@ -23,6 +23,9 @@ pub enum KernelValue {
     String(StringId),
     /// Distinct legacy localized-string tag; no translation or host lookup occurs.
     LocalizedString(StringId),
+    /// Nonowning shared-object storage snapshot. Current primitive execution rejects
+    /// these values until object-aware frame/root ownership is integrated.
+    Object(ObjectId),
 }
 
 impl KernelValue {
@@ -43,6 +46,7 @@ impl fmt::Debug for KernelValue {
             Self::Function(_) => "KernelValue::Function(..)",
             Self::String(_) => "KernelValue::String(..)",
             Self::LocalizedString(_) => "KernelValue::LocalizedString(..)",
+            Self::Object(_) => "KernelValue::Object(..)",
         })
     }
 }

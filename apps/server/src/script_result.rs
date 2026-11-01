@@ -14,6 +14,7 @@ pub(crate) fn kind(value: KernelValue) -> &'static str {
         KernelValue::Function(_) => "function",
         KernelValue::String(_) => "string",
         KernelValue::LocalizedString(_) => "localized_string",
+        KernelValue::Object(_) => "object",
     }
 }
 
@@ -40,6 +41,9 @@ impl<'a> ScriptResult<'a> {
             KernelValue::Function(_) => Self::Function,
             KernelValue::String(id) => Self::String(heap.get(id)?),
             KernelValue::LocalizedString(id) => Self::LocalizedString(heap.get(id)?),
+            // Executable constants/arguments cannot admit objects in this profile.
+            // A result here would violate that proof, not grant object formatting.
+            KernelValue::Object(_) => return Err(HeapErrorKind::InvalidState),
         })
     }
 

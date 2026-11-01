@@ -16,6 +16,12 @@ The complete server rewrite remains open.
 
 ## Implemented
 
+- Explicit-root shared struct storage uses wide checked identities, owned binary
+  field keys, metered hash probes and atomic graph/string reclamation. Tests cover
+  70,000 objects/fields, cyclic graphs, 100,000 churn cycles and hostile operations.
+  A runnable workload measures logical storage/work. Objects remain blocked from
+  primitive execution; arrays and the full object VM are still open; ADR 0063.
+
 - Primitive `isdefined` preserves Undefined, optional parameters, evaluated extra
   arguments and local-function shadowing. Wide stack/source/process tests and
   isolated archival instruction evidence cover the subset; entity lifetimes stay

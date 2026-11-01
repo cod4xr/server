@@ -54,6 +54,12 @@ pub(super) fn apply(
         KernelBuiltin::IsVector => matches!(value, KernelValue::Vector(_)),
         KernelBuiltin::IsString => matches!(value, KernelValue::String(_)),
         KernelBuiltin::IsDefined => match value {
+            KernelValue::Object(_) => {
+                return Err(kernel_error::at(
+                    pc,
+                    KernelErrorKind::ObjectExecutionUnsupported,
+                ));
+            }
             KernelValue::Undefined => false,
             KernelValue::Number(_)
             | KernelValue::Vector(_)
